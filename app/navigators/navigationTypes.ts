@@ -6,6 +6,7 @@ import {
   NavigatorScreenParams,
 } from "@react-navigation/native"
 import { NativeStackScreenProps } from "@react-navigation/native-stack"
+import type { ProjectSummaryFormNavigatorParamList } from "./ProjectSummaryFormNavigator"
 
 // Demo Tab Navigator types
 export type DemoTabParamList = {
@@ -20,11 +21,8 @@ export type AppStackParamList = {
   Welcome: undefined
   Login: undefined
   Demo: NavigatorScreenParams<DemoTabParamList>
-  // 🔥 Your screens go here
-  ProjectSummaryStep1: undefined
-  ProjectSummaryStep2: undefined
-  ProjectSummaryStep3: undefined
-  ProjectSummaryStep4: undefined
+  // Nested navigators
+  ProjectSummary: NavigatorScreenParams<ProjectSummaryFormNavigatorParamList>
   // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
 

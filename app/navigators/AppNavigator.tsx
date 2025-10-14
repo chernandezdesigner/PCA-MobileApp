@@ -15,6 +15,7 @@ import { WelcomeScreen } from "@/screens/WelcomeScreen"
 import { useAppTheme } from "@/theme/context"
 
 import { DemoNavigator } from "./DemoNavigator"
+import { ProjectSummaryFormNavigator } from "./ProjectSummaryFormNavigator"
 import type { AppStackParamList, NavigationProps } from "./navigationTypes"
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 
@@ -50,6 +51,7 @@ const AppStack = () => {
           <Stack.Screen name="Welcome" component={WelcomeScreen} />
 
           <Stack.Screen name="Demo" component={DemoNavigator} />
+          <Stack.Screen name="ProjectSummary" component={ProjectSummaryFormNavigator} />
         </>
       ) : (
         <>

@@ -1,14 +1,25 @@
 import { Instance, SnapshotOut, types } from "mobx-state-tree"
-import { ProjectSummaryStore } from "./ProjectSummaryStore"
+import { AssessmentModel } from "./Assessment"
 
 export const RootStore = types
 .model("RootStore")
 .props({
-  projectSummaryStore: types.optional(ProjectSummaryStore, {}),
+  assessments: types.optional(types.map(AssessmentModel), {}),
+  activeAssessmentId: types.maybe(types.string),
 })
 .actions((self) => ({
+  createAssessment(id: string) {
+    if (!self.assessments.has(id)) {
+      self.assessments.set(id, AssessmentModel.create({ id }))
+    }
+    self.activeAssessmentId = id
+  },
+  setActiveAssessment(id: string) {
+    if (self.assessments.has(id)) self.activeAssessmentId = id
+  },
   resetAll() {
-    self.projectSummaryStore = ProjectSummaryStore.create({})
+    self.assessments.clear()
+    self.activeAssessmentId = undefined
   },
 }))
 
