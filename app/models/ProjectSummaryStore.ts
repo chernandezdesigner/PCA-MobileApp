@@ -51,6 +51,8 @@ export const ProjectSummaryStore = types
     propertyZip: types.optional(types.string, ""),
     weather: types.optional(types.string, ""),
     temperature: types.optional(types.number, 0),
+    inspectionDate: types.optional(types.Date, () => new Date()),
+    inspectionTime: types.optional(types.string, ""),
     inspectorName: types.optional(types.string, ""),
     inspectorNumber: types.optional(types.string, ""),
     surroundingProperties: types.optional(types.string, ""),
@@ -63,7 +65,6 @@ export const ProjectSummaryStore = types
     yearRenovated: types.optional(types.number, 0),
     numberOfBuildings: types.optional(types.number, 0),
     netSqFt: types.optional(types.number, 0),
-    otherStructures: types.optional(types.string, ""),
     numberOfUnits: types.optional(types.number, 0),
     GSF: types.optional(types.number, 0),
     numberOfVacantUnits: types.optional(types.number, 0),
@@ -210,11 +211,11 @@ export const ProjectSummaryStore = types
                 self.lastModified = new Date()
             }
         },
-        updateStep1: (data: Partial<{ projectName: string; projectNumber: string; propertyAddress: string; propertyCity: string; propertyState: string; propertyZip: string; weather: string; temperature: number; inspectorName: string; inspectorNumber: string; surroundingProperties: string }>) => {
+        updateStep1: (data: Partial<{ projectName: string; projectNumber: string; propertyAddress: string; propertyCity: string; propertyState: string; propertyZip: string; weather: string; temperature: number; inspectionDate: Date; inspectionTime: string; inspectorName: string; inspectorNumber: string; surroundingProperties: string }>) => {
             Object.assign(self, data)
             self.lastModified = new Date()
         },
-        updateStep2: (data: Partial<{ acreage: number; numberSignDown: number; yearRenovated: number; numberOfBuildings: number; netSqFt: number; otherStructures: string; numberOfUnits: number; GSF: number; numberOfVacantUnits: number; yearBuilt: number; leaseType: string; recentCapitalImprovements: string }>) => {
+        updateStep2: (data: Partial<{ acreage: number; numberSignDown: number; yearRenovated: number; numberOfBuildings: number; netSqFt: number; numberOfUnits: number; GSF: number; numberOfVacantUnits: number; yearBuilt: number; leaseType: string; recentCapitalImprovements: string }>) => {
             Object.assign(self, data)
             self.lastModified = new Date()
         },
@@ -245,6 +246,8 @@ export const ProjectSummaryStore = types
             self.propertyZip = ""
             self.weather = ""
             self.temperature = 0
+            self.inspectionDate = new Date()
+            self.inspectionTime = ""
             self.inspectorName = ""
             self.inspectorNumber = ""
             self.surroundingProperties = ""
@@ -254,7 +257,6 @@ export const ProjectSummaryStore = types
             self.yearRenovated = 0
             self.numberOfBuildings = 0
             self.netSqFt = 0
-            self.otherStructures = ""
             self.numberOfUnits = 0
             self.GSF = 0
             self.numberOfVacantUnits = 0

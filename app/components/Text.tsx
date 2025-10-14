@@ -104,13 +104,26 @@ const $presets: Record<Presets, ThemedStyleArray<TextStyle>> = {
   bold: [$baseStyle, { ...$fontWeightStyles.bold }],
   heading: [
     $baseStyle,
+    (theme) => ({ color: theme.colors.heading }),
     {
       ...$sizeStyles.xxl,
       ...$fontWeightStyles.bold,
     },
   ],
-  subheading: [$baseStyle, { ...$sizeStyles.lg, ...$fontWeightStyles.medium }],
-  formLabel: [$baseStyle, { ...$fontWeightStyles.medium }],
-  formHelper: [$baseStyle, { ...$sizeStyles.sm, ...$fontWeightStyles.normal }],
+  subheading: [
+    $baseStyle,
+    (theme) => ({ color: theme.colors.subheading }),
+    { ...$sizeStyles.lg, ...$fontWeightStyles.medium },
+  ],
+  formLabel: [
+    $baseStyle,
+    (theme) => ({ color: theme.colors.label }),
+    { ...$fontWeightStyles.medium },
+  ],
+  formHelper: [
+    $baseStyle,
+    (theme) => ({ color: theme.colors.helper }),
+    { ...$sizeStyles.sm, ...$fontWeightStyles.normal },
+  ],
 }
 const $rtlStyle: TextStyle = isRTL ? { writingDirection: "rtl" } : {}

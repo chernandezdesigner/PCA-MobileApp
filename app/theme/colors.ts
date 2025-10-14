@@ -55,6 +55,13 @@ export const colors = {
    */
   textDim: palette.neutral600,
   /**
+   * Semantic text roles for easy global adjustments.
+   */
+  heading: palette.neutral900,
+  subheading: palette.neutral700,
+  label: palette.neutral800,
+  helper: palette.neutral600,
+  /**
    * The default color of the screen background.
    */
   background: palette.neutral200,

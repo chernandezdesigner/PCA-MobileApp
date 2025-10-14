@@ -1,5 +1,5 @@
-import { FC, useEffect, useMemo, useRef } from "react"
-import { View, ViewStyle } from "react-native"
+import { FC, useEffect, useMemo, useRef, useState } from "react"
+import { View, ViewStyle, Platform, StyleSheet } from "react-native"
 import { useForm, Controller } from "react-hook-form"
 import { observer } from "mobx-react-lite"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
@@ -8,8 +8,11 @@ import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
 import { TextField } from "@/components/TextField"
 import { Button } from "@/components/Button"
+import { Dropdown } from "@/components/Dropdown"
 import { useNavigation } from "@react-navigation/native"
 import { useStores } from "@/models/RootStoreProvider"
+import DateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker"
+import { format as formatDateFns } from "date-fns/format"
 
 interface ProjectSummaryStep1ScreenProps extends NativeStackScreenProps<ProjectSummaryFormNavigatorParamList, "ProjectSummaryStep1"> {}
 
@@ -22,6 +25,8 @@ type Step1FormValues = {
   propertyZip: string
   weather: string
   temperature: number
+  inspectionDate: Date
+  inspectionTime: string
   inspectorName: string
   inspectorNumber: string
   surroundingProperties: string
@@ -35,6 +40,9 @@ export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = obs
     : undefined
   const projectSummaryStore = activeAssessment?.projectSummary
 
+  const [showDatePicker, setShowDatePicker] = useState(false)
+  const [showTimePicker, setShowTimePicker] = useState(false)
+
   const defaultValues = useMemo<Step1FormValues>(() => ({
     projectName: projectSummaryStore?.projectName ?? "",
     projectNumber: projectSummaryStore?.projectNumber ?? "",
@@ -44,6 +52,8 @@ export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = obs
     propertyZip: projectSummaryStore?.propertyZip ?? "",
     weather: projectSummaryStore?.weather ?? "",
     temperature: projectSummaryStore?.temperature ?? 0,
+    inspectionDate: projectSummaryStore?.inspectionDate ?? new Date(),
+    inspectionTime: projectSummaryStore?.inspectionTime ?? "",
     inspectorName: projectSummaryStore?.inspectorName ?? "",
     inspectorNumber: projectSummaryStore?.inspectorNumber ?? "",
     surroundingProperties: projectSummaryStore?.surroundingProperties ?? "",
@@ -77,7 +87,7 @@ export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = obs
 
   return (
     <Screen style={$root} preset="scroll" contentContainerStyle={$content}>
-      <Text preset="heading" text="Project Summary - Step 1" />
+      <Text preset="heading" text="Project Summary" />
 
       <View style={$fieldGroup}>
         <Controller
@@ -124,55 +134,147 @@ export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = obs
           )}
         />
 
+        <View style={$threeColumnContainer}>
+          <Controller
+            control={control}
+            name="propertyCity"
+            render={({ field: { value, onChange, onBlur } }) => (
+              <TextField 
+                label="City" 
+                value={value} 
+                onChangeText={onChange} 
+                onBlur={onBlur}
+                containerStyle={$cityField}
+              />
+            )}
+          />
+
+          <Controller
+            control={control}
+            name="propertyState"
+            render={({ field: { value, onChange, onBlur } }) => (
+              <TextField 
+                label="State" 
+                value={value} 
+                onChangeText={onChange} 
+                onBlur={onBlur}
+                containerStyle={$stateField}
+              />
+            )}
+          />
+
+          <Controller
+            control={control}
+            name="propertyZip"
+            render={({ field: { value, onChange, onBlur } }) => (
+              <TextField
+                label="ZIP Code"
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                keyboardType="number-pad"
+                containerStyle={$zipField}
+              />
+            )}
+          />
+        </View>
+
+        <View style={$twoColumnContainer}>
+          <Controller
+            control={control}
+            name="weather"
+            render={({ field: { value, onChange, onBlur } }) => (
+              <TextField 
+                label="Weather" 
+                value={value} 
+                onChangeText={onChange} 
+                onBlur={onBlur}
+                containerStyle={$weatherField}
+              />
+            )}
+          />
+
+          <Controller
+            control={control}
+            name="temperature"
+            render={({ field: { value, onChange, onBlur } }) => (
+              <TextField
+                label="Temperature (°F)"
+                value={String(value ?? "")}
+                onChangeText={(txt) => onChange(Number(txt.replace(/[^0-9.-]/g, "")) || 0)}
+                onBlur={onBlur}
+                keyboardType="numeric"
+                containerStyle={$temperatureField}
+              />
+            )}
+          />
+        </View>
+
         <Controller
           control={control}
-          name="propertyCity"
+          name="inspectionDate"
           render={({ field: { value, onChange, onBlur } }) => (
-            <TextField label="City" value={value} onChangeText={onChange} onBlur={onBlur} />
+            <>
+              <TextField
+                label="Inspection Date"
+                value={formatDateFns(value, "MMM dd, yyyy")}
+                onChangeText={() => {}}
+                onBlur={onBlur}
+                showSoftInputOnFocus={false}
+                onFocus={() => setShowDatePicker(true)}
+              />
+              {showDatePicker && (
+                <DateTimePicker
+                  value={value}
+                  mode="date"
+                  display={Platform.OS === "ios" ? "spinner" : "default"}
+                  onChange={(event: DateTimePickerEvent, selectedDate?: Date) => {
+                    if (Platform.OS === "android") setShowDatePicker(false)
+                    if (event.type === "dismissed") return
+                    if (selectedDate) {
+                      onChange(selectedDate)
+                      onBlur()
+                    }
+                  }}
+                  onTouchCancel={() => setShowDatePicker(false)}
+                />
+              )}
+            </>
           )}
         />
 
         <Controller
           control={control}
-          name="propertyState"
+          name="inspectionTime"
           render={({ field: { value, onChange, onBlur } }) => (
-            <TextField label="State" value={value} onChangeText={onChange} onBlur={onBlur} />
-          )}
-        />
-
-        <Controller
-          control={control}
-          name="propertyZip"
-          render={({ field: { value, onChange, onBlur } }) => (
-            <TextField
-              label="ZIP Code"
-              value={value}
-              onChangeText={onChange}
-              onBlur={onBlur}
-              keyboardType="number-pad"
-            />
-          )}
-        />
-
-        <Controller
-          control={control}
-          name="weather"
-          render={({ field: { value, onChange, onBlur } }) => (
-            <TextField label="Weather" value={value} onChangeText={onChange} onBlur={onBlur} />
-          )}
-        />
-
-        <Controller
-          control={control}
-          name="temperature"
-          render={({ field: { value, onChange, onBlur } }) => (
-            <TextField
-              label="Temperature (°F)"
-              value={String(value ?? "")}
-              onChangeText={(txt) => onChange(Number(txt.replace(/[^0-9.-]/g, "")) || 0)}
-              onBlur={onBlur}
-              keyboardType="numeric"
-            />
+            <>
+              <TextField
+                label="Inspection Time"
+                value={value}
+                onChangeText={() => {}}
+                onBlur={onBlur}
+                keyboardType="number-pad"
+                showSoftInputOnFocus={false}
+                onFocus={() => setShowTimePicker(true)}
+              />
+              {showTimePicker && (
+                <DateTimePicker
+                  value={value ? new Date(`1970-01-01T${value}:00`) : new Date()}
+                  mode="time"
+                  display={Platform.OS === "ios" ? "spinner" : "default"}
+                  onChange={(event: DateTimePickerEvent, selectedDate?: Date) => {
+                    if (Platform.OS === "android") setShowTimePicker(false)
+                    if (event.type === "dismissed") return
+                    if (selectedDate) {
+                      const formatted = formatDateFns(selectedDate, "HH:mm")
+                      onChange(formatted)
+                      onBlur()
+                    }
+                  }}
+                  onTouchCancel={() => setShowTimePicker(false)}
+                />
+              )}
+            </>
           )}
         />
 
@@ -196,12 +298,19 @@ export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = obs
           control={control}
           name="surroundingProperties"
           render={({ field: { value, onChange, onBlur } }) => (
-            <TextField
+            <Dropdown
               label="Surrounding Properties"
               value={value}
-              onChangeText={onChange}
-              onBlur={onBlur}
-              multiline
+              onValueChange={(newValue) => {
+                onChange(newValue)
+                onBlur()
+              }}
+              options={[
+                { label: "Residential", value: "Residential" },
+                { label: "Commercial", value: "Commercial" },
+                { label: "Industrial", value: "Industrial" },
+                { label: "Mixed Use", value: "Mixed Use" },
+              ]}
             />
           )}
         />
@@ -223,4 +332,37 @@ const $content: ViewStyle = {
 
 const $fieldGroup: ViewStyle = {
   gap: 12,
+}
+
+const $row: ViewStyle = {
+  flexDirection: "row",
+  gap: 12,
+}
+
+const $threeColumnContainer: ViewStyle = {
+  ...$row,
+}
+
+const $twoColumnContainer: ViewStyle = {
+  ...$row,
+}
+
+const $cityField: ViewStyle = {
+  flex: 2,
+}
+
+const $stateField: ViewStyle = {
+  flex: 1,
+}
+
+const $zipField: ViewStyle = {
+  flex: 1,
+}
+
+const $weatherField: ViewStyle = {
+  flex: 1,
+}
+
+const $temperatureField: ViewStyle = {
+  flex: 1,
 }
