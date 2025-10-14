@@ -10,6 +10,7 @@ import { useNavigation } from "@react-navigation/native"
 import { Controller, useForm } from "react-hook-form"
 import { TextField } from "@/components/TextField"
 import { Button } from "@/components/Button"
+import { Dropdown } from "@/components/Dropdown"
 interface ProjectSummaryStep2ScreenProps extends NativeStackScreenProps<ProjectSummaryFormNavigatorParamList, "ProjectSummaryStep2"> {}
 
 type Step2FormValues = {
@@ -77,7 +78,7 @@ export const ProjectSummaryStep2Screen: FC<ProjectSummaryStep2ScreenProps> = obs
 
   return (
     <Screen style={$root} preset="scroll" contentContainerStyle={$content}>
-      <Text preset="heading" text="Project Summary" />
+      <Text preset="heading" text="Unit Info" />
 
       <View style={$fieldGroup}>
         <Controller
@@ -208,15 +209,23 @@ export const ProjectSummaryStep2Screen: FC<ProjectSummaryStep2ScreenProps> = obs
           )}
         />
 
-        <Controller
+<Controller
           control={control}
           name="leaseType"
           render={({ field: { value, onChange, onBlur } }) => (
-            <TextField
+            <Dropdown
               label="Lease Type"
               value={value}
-              onChangeText={onChange}
-              onBlur={onBlur}
+              onValueChange={(newValue) => {
+                onChange(newValue)
+                onBlur()
+              }}
+              options={[
+                { label: "Modified Triple Net", value: "Modified Triple Net" },
+                { label: "True Triple Net", value: "True Triple Net" },
+                { label: "Gross", value: "Gross" },
+                { label: "Net", value: "Net" },
+              ]}
             />
           )}
         />
@@ -230,15 +239,15 @@ export const ProjectSummaryStep2Screen: FC<ProjectSummaryStep2ScreenProps> = obs
               value={value}
               onChangeText={onChange}
               onBlur={onBlur}
+              multiline
+              style={{ minHeight: 100, textAlignVertical: "top" }}
+              containerStyle={{ flex: 1 }}
             />
           )}
         />
 
         <Button preset="filled" text="Next" onPress={onNext} />
       
-
-
-
       </View>
     </Screen>
   )
