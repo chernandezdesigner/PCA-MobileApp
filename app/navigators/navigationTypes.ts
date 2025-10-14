@@ -21,6 +21,10 @@ export type AppStackParamList = {
   Login: undefined
   Demo: NavigatorScreenParams<DemoTabParamList>
   // 🔥 Your screens go here
+  ProjectSummaryStep1: undefined
+  ProjectSummaryStep2: undefined
+  ProjectSummaryStep3: undefined
+  ProjectSummaryStep4: undefined
   // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
 
