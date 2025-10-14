@@ -1,35 +1,35 @@
 const palette = {
-  neutral100: "#FFFFFF",
-  neutral200: "#F4F2F1",
-  neutral300: "#D7CEC9",
-  neutral400: "#B6ACA6",
-  neutral500: "#978F8A",
-  neutral600: "#564E4A",
-  neutral700: "#3C3836",
-  neutral800: "#191015",
-  neutral900: "#000000",
+  neutral100: "#f9fafb",
+  neutral200: "#f3f4f6",
+  neutral300: "#e5e7eb", 
+  neutral400: "#d1d5db",
+  neutral500: "#9ca3af",
+  neutral600: "#6b7280",
+  neutral700: "#4b5563",
+  neutral800: "#374151",
+  neutral900: "#1f2937",
 
-  primary100: "#F4E0D9",
-  primary200: "#E8C1B4",
-  primary300: "#DDA28E",
-  primary400: "#D28468",
-  primary500: "#C76542",
-  primary600: "#A54F31",
+  primary100: "#dbeafe",
+  primary200: "#bfdbfe",
+  primary300: "#93c5fd", 
+  primary400: "#60a5fa",
+  primary500: "#3b82f6",
+  primary600: "#2563eb",
 
-  secondary100: "#DCDDE9",
-  secondary200: "#BCC0D6",
-  secondary300: "#9196B9",
-  secondary400: "#626894",
-  secondary500: "#41476E",
+  secondary100: "#e0e7ff", // indigo-100
+  secondary200: "#c7d2fe", // indigo-200
+  secondary300: "#a5b4fc", // indigo-300
+  secondary400: "#818cf8", // indigo-400
+  secondary500: "#6366f1", // indigo-500
 
-  accent100: "#FFEED4",
-  accent200: "#FFE1B2",
-  accent300: "#FDD495",
-  accent400: "#FBC878",
-  accent500: "#FFBB50",
+  accent100: "#fef3c7", // amber-100
+  accent200: "#fde68a", // amber-200
+  accent300: "#fcd34d", // amber-300
+  accent400: "#fbbf24", // amber-400
+  accent500: "#f59e0b", // amber-500
 
-  angry100: "#F2D6CD",
-  angry500: "#C03403",
+  angry100: "#fee2e2", // red-200 (lighter error bg)
+  angry500: "#ef4444", // red-500
 
   overlay20: "rgba(25, 16, 21, 0.2)",
   overlay50: "rgba(25, 16, 21, 0.5)",

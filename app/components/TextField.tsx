@@ -1,4 +1,4 @@
-import { ComponentType, forwardRef, Ref, useImperativeHandle, useRef } from "react"
+import { ComponentType, forwardRef, Ref, useImperativeHandle, useRef, useState } from "react"
 import {
   ImageStyle,
   StyleProp,
@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   View,
   ViewStyle,
+  Platform,
 } from "react-native"
 
 import { isRTL } from "@/i18n"
@@ -132,6 +133,7 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
     ...TextInputProps
   } = props
   const input = useRef<TextInput>(null)
+  const [isFocused, setIsFocused] = useState(false)
 
   const {
     themed,
@@ -155,6 +157,14 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
     TextInputProps.multiline && { minHeight: 112 },
     LeftAccessory && { paddingStart: 0 },
     RightAccessory && { paddingEnd: 0 },
+    isFocused && {
+      borderColor: colors.tint,
+      shadowColor: colors.tint,
+      shadowOpacity: 0.25,
+      shadowRadius: 8,
+      shadowOffset: { width: 0, height: 2 },
+      elevation: 4,
+    },
     $inputWrapperStyleOverride,
   ]
 
@@ -219,7 +229,18 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
           placeholderTextColor={colors.textDim}
           {...TextInputProps}
           editable={!disabled}
-          style={themed($inputStyles)}
+          onFocus={(e) => {
+            setIsFocused(true)
+            TextInputProps.onFocus?.(e)
+          }}
+          onBlur={(e) => {
+            setIsFocused(false)
+            TextInputProps.onBlur?.(e)
+          }}
+          style={themed([
+            $inputStyles,
+            Platform.OS === "web" && ({ outlineWidth: 0, outlineColor: "transparent", outlineStyle: "none" } as any),
+          ])}
         />
 
         {!!RightAccessory && (
@@ -246,17 +267,18 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
   )
 })
 
-const $labelStyle: ThemedStyle<TextStyle> = ({ spacing }) => ({
+const $labelStyle: ThemedStyle<TextStyle> = ({ spacing, colors }) => ({
   marginBottom: spacing.xs,
+  color: colors.palette.neutral800,
 })
 
 const $inputWrapperStyle: ThemedStyle<ViewStyle> = ({ colors }) => ({
   alignItems: "flex-start",
   borderWidth: 1,
-  borderRadius: 4,
-  backgroundColor: colors.palette.neutral200,
-  borderColor: colors.palette.neutral400,
-  overflow: "hidden",
+  borderRadius: 12,
+  backgroundColor: colors.palette.neutral100,
+  borderColor: colors.palette.neutral300,
+  overflow: "visible",
 })
 
 const $inputStyle: ThemedStyle<TextStyle> = ({ colors, typography, spacing }) => ({
