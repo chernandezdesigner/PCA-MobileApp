@@ -218,7 +218,7 @@ function ScreenWithScrolling(props: ScreenProps) {
         onContentSizeChange(w, h)
         ScrollViewProps?.onContentSizeChange?.(w, h)
       }}
-      style={[$outerStyle, ScrollViewProps?.style, style]}
+      style={[$outerStyle, { flex: 1 }, ScrollViewProps?.style, style]}
       contentContainerStyle={[
         $innerStyle,
         ScrollViewProps?.contentContainerStyle,
