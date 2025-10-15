@@ -28,14 +28,15 @@ export const RetainingWallsAccordionModel = types.model("RetainingWallsAccordion
     retainingWallsType: types.optional(types.string, ""),
     assessment: types.optional(ConditionAssessment, {}),
     railing: types.optional(types.enumeration("railing", ["yes", "no"]), "no"),
-    railingForRetainingWalls: types.optional(types.array(types.late(() => railingForRetainingWallsModel)), []),
+    // When railing is "yes", we render a single nested assessment block for railings
+    railingDetails: types.maybe(types.late(() => railingForRetainingWallsModel)),
     })
     .actions((self) => ({
-        update(data: { retainingWallsType?: string; assessment?: Record<string, any>; railing?: "yes" | "no"; railingForRetainingWalls?: any[] }) {
+        update(data: { retainingWallsType?: string; assessment?: Record<string, any>; railing?: "yes" | "no"; railingDetails?: any }) {
         if (data.retainingWallsType !== undefined) self.retainingWallsType = data.retainingWallsType
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
         if (data.railing !== undefined) self.railing = data.railing
-        if (data.railingForRetainingWalls !== undefined) self.railingForRetainingWalls.replace(data.railingForRetainingWalls as any)
+        if (data.railingDetails !== undefined) (self as any).railingDetails = data.railingDetails as any
     },
 }))
 
@@ -65,14 +66,15 @@ export const ScreenWallsAccordionModel = types.model("ScreenWallsAccordionModel"
     screenWallsType: types.optional(types.string, ""),
     assessment: types.optional(ConditionAssessment, {}),
     railing: types.optional(types.enumeration("railing", ["yes", "no"]), "no"),
-    railingForScreenWalls: types.optional(types.array(types.late(() => railingForScreenWallsModel)), []),
+    // When railing is "yes", we render a single nested assessment block for railings
+    railingDetails: types.maybe(types.late(() => railingForScreenWallsModel)),
     })
     .actions((self) => ({
-        update(data: { screenWallsType?: string; assessment?: Record<string, any>; railing?: "yes" | "no"; railingForScreenWalls?: any[] }) {
+        update(data: { screenWallsType?: string; assessment?: Record<string, any>; railing?: "yes" | "no"; railingDetails?: any }) {
         if (data.screenWallsType !== undefined) self.screenWallsType = data.screenWallsType
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
         if (data.railing !== undefined) self.railing = data.railing
-        if (data.railingForScreenWalls !== undefined) self.railingForScreenWalls.replace(data.railingForScreenWalls as any)
+        if (data.railingDetails !== undefined) (self as any).railingDetails = data.railingDetails as any
     },
 }))
 
@@ -98,6 +100,7 @@ export const SiteGroundsStep2 = types
     retainingWalls: types.optional(RetainingWallsAccordionModel, {}),
     screenWalls: types.optional(ScreenWallsAccordionModel, {}),
     waterFeatures: types.optional(WaterFeaturesAccordionModel, {}),
+    comments: types.optional(types.string, ""),
     lastModified: types.optional(types.Date, () => new Date()),
 })
 .actions((self) => ({
@@ -122,6 +125,10 @@ export const SiteGroundsStep2 = types
     },
     updateWaterFeatures(data: Parameters<typeof self.waterFeatures.update>[0]) {
         self.waterFeatures.update(data)
+        self.lastModified = new Date()
+    },
+    updateComments(data: string) {
+        self.comments = data
         self.lastModified = new Date()
     },
 }))
