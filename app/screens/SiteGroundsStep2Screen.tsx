@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useState } from "react"
+import { FC, useEffect, useMemo, useRef, useState } from "react"
 import { View, ViewStyle } from "react-native"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import { Screen } from "@/components/Screen"
@@ -7,11 +7,11 @@ import { SectionAccordion } from "@/components/SectionAccordion"
 import { TextField } from "@/components/TextField"
 import { ConditionAssessment } from "@/components/ConditionAssessment"
 import { RepairStatus } from "@/components/RepairStatus"
-import { Button } from "@/components/Button"
 import { useStores } from "@/models/RootStoreProvider"
 import { observer } from "mobx-react-lite"
 import { useAppTheme } from "@/theme/context"
 import type { SiteGroundsFormNavigatorParamList } from "@/navigators/SiteGroundsFormNavigator"
+import { Controller, useForm } from "react-hook-form"
 
 interface SiteGroundsStep2ScreenProps
   extends NativeStackScreenProps<SiteGroundsFormNavigatorParamList, "SiteGroundsStep2"> {}
@@ -27,9 +27,147 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
   // local accordion control: only one open at a time, default all closed
   const [openKey, setOpenKey] = useState<string | null>(null)
 
-  // rerender when lastModified changes
-  const deps = useMemo(() => [store?.lastModified], [store?.lastModified])
-  useEffect(() => {}, deps as any)
+  // react-hook-form setup
+  type ConditionT = "good" | "fair" | "poor"
+  type RepairT = "IR" | "ST" | "RR" | "RM" | "INV" | "NA"
+  type YesNo = "yes" | "no"
+
+  type AssessmentVals = {
+    condition: ConditionT
+    repairStatus: RepairT
+    amountToRepair: string
+  }
+
+  type RailingDetailsVals = {
+    railingType: string
+    assessment: AssessmentVals
+  }
+
+  type Step2FormValues = {
+    topographySlope: { slopeType: string; assessment: AssessmentVals }
+    landscaping: { landscapingType: string; assessment: AssessmentVals }
+    retainingWalls: {
+      retainingWallsType: string
+      assessment: AssessmentVals
+      railing: YesNo
+      railingDetails: RailingDetailsVals
+    }
+    screenWalls: {
+      screenWallsType: string
+      assessment: AssessmentVals
+      railing: YesNo
+      railingDetails: RailingDetailsVals
+    }
+    waterFeatures: {
+      waterFeaturesType: string
+      pumpLocation: string
+      pumpAge: string
+      assessment: AssessmentVals
+    }
+    comments: string
+  }
+
+  const defaultValues = useMemo<Step2FormValues>(
+    () => ({
+      topographySlope: {
+        slopeType: store?.topographySlope.slopeType ?? "",
+        assessment: {
+          condition: (store?.topographySlope.assessment.condition as ConditionT) ?? "good",
+          repairStatus: (store?.topographySlope.assessment.repairStatus as RepairT) ?? "IR",
+          amountToRepair: store?.topographySlope.assessment.amountToRepair ?? "",
+        },
+      },
+      landscaping: {
+        landscapingType: store?.landscaping.landscapingType ?? "",
+        assessment: {
+          condition: (store?.landscaping.assessment.condition as ConditionT) ?? "good",
+          repairStatus: (store?.landscaping.assessment.repairStatus as RepairT) ?? "IR",
+          amountToRepair: store?.landscaping.assessment.amountToRepair ?? "",
+        },
+      },
+      retainingWalls: {
+        retainingWallsType: store?.retainingWalls.retainingWallsType ?? "",
+        assessment: {
+          condition: (store?.retainingWalls.assessment.condition as ConditionT) ?? "good",
+          repairStatus: (store?.retainingWalls.assessment.repairStatus as RepairT) ?? "IR",
+          amountToRepair: store?.retainingWalls.assessment.amountToRepair ?? "",
+        },
+        railing: (store?.retainingWalls.railing as YesNo) ?? "no",
+        railingDetails: {
+          railingType: store?.retainingWalls.railingDetails?.railingType ?? "",
+          assessment: {
+            condition: (store?.retainingWalls.railingDetails?.assessment.condition as ConditionT) ?? "good",
+            repairStatus: (store?.retainingWalls.railingDetails?.assessment.repairStatus as RepairT) ?? "IR",
+            amountToRepair: store?.retainingWalls.railingDetails?.assessment.amountToRepair ?? "",
+          },
+        },
+      },
+      screenWalls: {
+        screenWallsType: store?.screenWalls.screenWallsType ?? "",
+        assessment: {
+          condition: (store?.screenWalls.assessment.condition as ConditionT) ?? "good",
+          repairStatus: (store?.screenWalls.assessment.repairStatus as RepairT) ?? "IR",
+          amountToRepair: store?.screenWalls.assessment.amountToRepair ?? "",
+        },
+        railing: (store?.screenWalls.railing as YesNo) ?? "no",
+        railingDetails: {
+          railingType: store?.screenWalls.railingDetails?.railingType ?? "",
+          assessment: {
+            condition: (store?.screenWalls.railingDetails?.assessment.condition as ConditionT) ?? "good",
+            repairStatus: (store?.screenWalls.railingDetails?.assessment.repairStatus as RepairT) ?? "IR",
+            amountToRepair: store?.screenWalls.railingDetails?.assessment.amountToRepair ?? "",
+          },
+        },
+      },
+      waterFeatures: {
+        waterFeaturesType: store?.waterFeatures.waterFeaturesType ?? "",
+        pumpLocation: store?.waterFeatures.pumpLocation ?? "",
+        pumpAge: store?.waterFeatures.pumpAge ?? "",
+        assessment: {
+          condition: (store?.waterFeatures.assessment.condition as ConditionT) ?? "good",
+          repairStatus: (store?.waterFeatures.assessment.repairStatus as RepairT) ?? "IR",
+          amountToRepair: store?.waterFeatures.assessment.amountToRepair ?? "",
+        },
+      },
+      comments: store?.comments ?? "",
+    }),
+    [store?.lastModified],
+  )
+
+  const { control, reset, watch } = useForm<Step2FormValues>({ defaultValues, mode: "onChange" })
+  useEffect(() => { reset(defaultValues) }, [defaultValues, reset])
+
+  const debounceRef = useRef<NodeJS.Timeout | null>(null)
+  useEffect(() => {
+    const subscription = watch((values) => {
+      if (debounceRef.current) clearTimeout(debounceRef.current)
+      debounceRef.current = setTimeout(() => {
+        const v = values as Required<Step2FormValues>
+        store?.updateTopographySlope({ slopeType: v.topographySlope.slopeType, assessment: v.topographySlope.assessment as any })
+        store?.updateLandscaping({ landscapingType: v.landscaping.landscapingType, assessment: v.landscaping.assessment as any })
+        store?.updateRetainingWalls({
+          retainingWallsType: v.retainingWalls.retainingWallsType,
+          assessment: v.retainingWalls.assessment as any,
+          railing: v.retainingWalls.railing,
+          railingDetails: v.retainingWalls.railing === "yes" ? (v.retainingWalls.railingDetails as any) : undefined,
+        })
+        store?.updateScreenWalls({
+          screenWallsType: v.screenWalls.screenWallsType,
+          assessment: v.screenWalls.assessment as any,
+          railing: v.screenWalls.railing,
+          railingDetails: v.screenWalls.railing === "yes" ? (v.screenWalls.railingDetails as any) : undefined,
+        })
+        store?.updateWaterFeatures({
+          waterFeaturesType: v.waterFeatures.waterFeaturesType,
+          pumpLocation: v.waterFeatures.pumpLocation,
+          pumpAge: v.waterFeatures.pumpAge,
+          assessment: v.waterFeatures.assessment as any,
+        })
+        store?.updateComments(v.comments)
+      }, 300)
+    })
+    return () => subscription.unsubscribe()
+  }, [watch, store])
 
   return (
     <Screen style={$root} preset="scroll" contentContainerStyle={themed($content)}>
@@ -41,11 +179,18 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
         onToggle={(n) => setOpenKey(n ? "topography" : null)}
       >
         <View style={themed($sectionBody)}>
-          <TextField
-            label="Slope Type"
-            placeholder="e.g., Flat, Gentle, Steep"
-            value={store?.topographySlope.slopeType}
-            onChangeText={(t) => store?.updateTopographySlope({ slopeType: t })}
+          <Controller
+            control={control}
+            name="topographySlope.slopeType"
+            render={({ field: { value, onChange, onBlur } }) => (
+              <TextField
+                label="Slope Type"
+                placeholder="e.g., Flat, Gentle, Steep"
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+              />
+            )}
           />
 
             <ConditionAssessment
@@ -57,11 +202,18 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
             value={store?.topographySlope.assessment.repairStatus as any}
             onChange={(v) => store?.updateTopographySlope({ assessment: { repairStatus: v } })}
           />
-          <TextField
-            label="Amount to Repair ($)"
-            keyboardType="numeric"
-            value={store?.topographySlope.assessment.amountToRepair}
-            onChangeText={(t) => store?.updateTopographySlope({ assessment: { amountToRepair: t } })}
+          <Controller
+            control={control}
+            name="topographySlope.assessment.amountToRepair"
+            render={({ field: { value, onChange, onBlur } }) => (
+              <TextField
+                label="Amount to Repair ($)"
+                keyboardType="numeric"
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+              />
+            )}
           />
         </View>
       </SectionAccordion>
@@ -72,11 +224,18 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
         onToggle={(n) => setOpenKey(n ? "landscaping" : null)}
       >
         <View style={themed($sectionBody)}>
-          <TextField
-            label="Landscaping Type"
-            placeholder="e.g., Lawn, Xeriscape"
-            value={store?.landscaping.landscapingType}
-            onChangeText={(t) => store?.updateLandscaping({ landscapingType: t })}
+          <Controller
+            control={control}
+            name="landscaping.landscapingType"
+            render={({ field: { value, onChange, onBlur } }) => (
+              <TextField
+                label="Landscaping Type"
+                placeholder="e.g., Lawn, Xeriscape"
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+              />
+            )}
           />
           <ConditionAssessment
             value={store?.landscaping.assessment.condition as any}
@@ -86,11 +245,18 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
             value={store?.landscaping.assessment.repairStatus as any}
             onChange={(v) => store?.updateLandscaping({ assessment: { repairStatus: v } })}
           />
-          <TextField
-            label="Amount to Repair ($)"
-            keyboardType="numeric"
-            value={store?.landscaping.assessment.amountToRepair}
-            onChangeText={(t) => store?.updateLandscaping({ assessment: { amountToRepair: t } })}
+          <Controller
+            control={control}
+            name="landscaping.assessment.amountToRepair"
+            render={({ field: { value, onChange, onBlur } }) => (
+              <TextField
+                label="Amount to Repair ($)"
+                keyboardType="numeric"
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+              />
+            )}
           />
         </View>
       </SectionAccordion>
@@ -101,11 +267,18 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
         onToggle={(n) => setOpenKey(n ? "retainingWalls" : null)}
       >
         <View style={themed($sectionBody)}>
-          <TextField
-            label="Retaining Walls Type"
-            placeholder="e.g., Concrete, Timber"
-            value={store?.retainingWalls.retainingWallsType}
-            onChangeText={(t) => store?.updateRetainingWalls({ retainingWallsType: t })}
+          <Controller
+            control={control}
+            name="retainingWalls.retainingWallsType"
+            render={({ field: { value, onChange, onBlur } }) => (
+              <TextField
+                label="Retaining Walls Type"
+                placeholder="e.g., Concrete, Timber"
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+              />
+            )}
           />
           {/** Parent-level assessment for retaining walls */}
           <ConditionAssessment
@@ -191,11 +364,18 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
         onToggle={(n) => setOpenKey(n ? "screenWalls" : null)}
       >
         <View style={themed($sectionBody)}>
-          <TextField
-            label="Screen Walls Type"
-            placeholder="e.g., CMU, Fence"
-            value={store?.screenWalls.screenWallsType}
-            onChangeText={(t) => store?.updateScreenWalls({ screenWallsType: t })}
+          <Controller
+            control={control}
+            name="screenWalls.screenWallsType"
+            render={({ field: { value, onChange, onBlur } }) => (
+              <TextField
+                label="Screen Walls Type"
+                placeholder="e.g., CMU, Fence"
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+              />
+            )}
           />
           {/** Parent-level assessment for screen walls */}
           <ConditionAssessment
@@ -280,21 +460,32 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
         onToggle={(n) => setOpenKey(n ? "waterFeatures" : null)}
       >
         <View style={themed($sectionBody)}>
-          <TextField
-            label="Water Features Type"
-            placeholder="e.g., Fountain, Pond"
-            value={store?.waterFeatures.waterFeaturesType}
-            onChangeText={(t) => store?.updateWaterFeatures({ waterFeaturesType: t })}
+          <Controller
+            control={control}
+            name="waterFeatures.waterFeaturesType"
+            render={({ field: { value, onChange, onBlur } }) => (
+              <TextField
+                label="Water Features Type"
+                placeholder="e.g., Fountain, Pond"
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+              />
+            )}
           />
-          <TextField
-            label="Pump Location"
-            value={store?.waterFeatures.pumpLocation}
-            onChangeText={(t) => store?.updateWaterFeatures({ pumpLocation: t })}
+          <Controller
+            control={control}
+            name="waterFeatures.pumpLocation"
+            render={({ field: { value, onChange, onBlur } }) => (
+              <TextField label="Pump Location" value={value} onChangeText={onChange} onBlur={onBlur} />
+            )}
           />
-          <TextField
-            label="Pump Age"
-            value={store?.waterFeatures.pumpAge}
-            onChangeText={(t) => store?.updateWaterFeatures({ pumpAge: t })}
+          <Controller
+            control={control}
+            name="waterFeatures.pumpAge"
+            render={({ field: { value, onChange, onBlur } }) => (
+              <TextField label="Pump Age" value={value} onChangeText={onChange} onBlur={onBlur} />
+            )}
           />
           <ConditionAssessment
             value={store?.waterFeatures.assessment.condition as any}
@@ -313,10 +504,12 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
         </View>
       </SectionAccordion>
 
-      <TextField
-        label="Comments"
-        value={store?.comments}
-        onChangeText={(t) => store?.updateComments(t)}
+      <Controller
+        control={control}
+        name="comments"
+        render={({ field: { value, onChange, onBlur } }) => (
+          <TextField label="Comments" value={value} onChangeText={onChange} onBlur={onBlur} />
+        )}
       />
     </Screen>
   )
