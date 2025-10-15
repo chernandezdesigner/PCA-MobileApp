@@ -1,14 +1,5 @@
 import { Instance, SnapshotOut, types, destroy } from "mobx-state-tree"
 
-
-export const DocumentChecklistModel = types
-.model("DocumentChecklistItem")
-.props({
-    type: types.identifier,
-    label: types.string,
-    provided: types.optional(types.boolean, false),
-})
-
 export const PersonnelInterviewedModel = types
 .model("PersonnelInterviewed")
 .props({
@@ -28,14 +19,7 @@ export const CommercialTenantModel = types
     accessed: types.optional(types.boolean, false),
 })
 
-export const ProblematicMaterialsModel = types
-.model("ProblematicMaterials")
-.props({
-    id: types.identifier,
-    name: types.string,
-    provided: types.optional(types.boolean, false),
-    comments: types.optional(types.string, ""),
-})
+// Problematic materials are stored as a map keyed by id with provided/comments values
 
 
 
@@ -73,12 +57,22 @@ export const ProjectSummaryStore = types
     recentCapitalImprovements: types.optional(types.string, ""),
 
     //step 3
-    documents: types.optional(types.array(DocumentChecklistModel), []),
+    // Persist only user selection state: document id -> provided
+    documents: types.optional(types.map(types.boolean), {}),
     personnelInterviewed: types.optional(types.array(PersonnelInterviewedModel), []),
     commercialTenants: types.optional(types.array(CommercialTenantModel), []),
     
     //step 4
-    problematicMaterials: types.optional(types.array(ProblematicMaterialsModel), []),
+    // Persist only user state per material id
+    problematicMaterials: types.optional(
+        types.map(
+            types.model({
+                provided: types.optional(types.boolean, false),
+                comments: types.optional(types.string, ""),
+            }),
+        ),
+        {},
+    ),
     domesticWater: types.optional(types.string, ""),
     domesticSewage: types.optional(types.string, ""),
     stormWaterDrainage: types.optional(types.string, ""),
@@ -92,77 +86,10 @@ export const ProjectSummaryStore = types
 
 })
 .actions(self => {
-    const initializeDocumentsChecklist = () => {
-        const defaultDocuments = [
-            { type: "ADASurvey", label: "ADA Survey", provided: false },
-            { type: "ALTASurvey", label: "ALTA Survey", provided: false },
-            { type: "CapExPlan", label: "CapEx Plan", provided: false },
-            { type: "CapExHistory", label: "CapEx History", provided: false },
-            { type: "SitePlansSurveys", label: "Site Plans / Surveys", provided: false },
-            { type: "BuildingPlans", label: "Building Plans", provided: false },
-            { type: "FloorPlans", label: "Floor Plans", provided: false },
-            { type: "RoofWarranty", label: "Roof Warranty", provided: false },
-            { type: "Warranties", label: "Warranties", provided: false },
-            { type: "CertificateOfOccupancy", label: "Certificate of Occupancy", provided: false },
-            { type: "MarketingBrochure", label: "Marketing Brochure", provided: false },
-            { type: "EquipmentInventory", label: "Equipment Inventory", provided: false },
-            { type: "FireDepartmentInspection", label: "Fire Department Inspection", provided: false },
-            { type: "FireAlarmInspection", label: "Fire Alarm Inspection", provided: false },
-            { type: "FireSprinklerInspection", label: "Fire Sprinkler Inspection", provided: false },
-            { type: "ElevatorCertificates", label: "Elevator Certificates", provided: false },
-            { type: "BoilerPermits", label: "Boiler Permits", provided: false },
-            { type: "OccupancySummary", label: "Occupancy Summary", provided: false },
-            { type: "PendingRepairProposals", label: "Pending Repair Proposals", provided: false },
-            { type: "PreviousPCAReports", label: "Previous PCA Reports", provided: false },
-            { type: "RentRollTenantList", label: "Rent Roll / Tenant List", provided: false },
-            { type: "UnitTypeAndQuantityList", label: "Unit Type and Quantity List", provided: false },
-            { type: "VendorList", label: "Vendor List", provided: false },
-            { type: "HealthcareInspection", label: "Healthcare Inspection", provided: false },
-            { type: "Other", label: "Other", provided: false },
-        ]
-        defaultDocuments.forEach(document => {
-            self.documents.push(document)
-        })
-    }
-
-    const initializeProblematicMaterials = () => {
-        const defaultProblematicMaterials = [
-            { id: "frtPlywood", name: "FRT Plywood", provided: false, comments: "" },
-            { id: "compositeWoodSiding", name: "Composite Wood Siding", provided: false, comments: "" },
-            { id: "eifs", name: "EIFS", provided: false, comments: "" },
-            { id: "chineseDrywall", name: "Chinese Drywall", provided: false, comments: "" },
-            { id: "lessThan60AMPElectricService", name: "Less than 60 AMP Electric Service", provided: false, comments: "" },
-            { id: "aluminumBranchWiring", name: "Aluminum Branch Wiring", provided: false, comments: "" },
-            { id: "fusedElectricalSubpanels", name: "Fused Electrical sub-panels", provided: false, comments: "" },
-            { id: "recalledBreakerPanels", name: "Recalled Breaker Panels", provided: false, comments: "" },
-            { id: "polybutyleneWaterPiping", name: "Polybutylene Water Piping", provided: false, comments: "" },
-            { id: "galvanizedSteelWaterPiping", name: "Galvanized Steel Water Piping", provided: false, comments: "" },
-            { id: "leadPipingFittings", name: "Lead Piping / Fittings", provided: false, comments: "" },
-            { id: "absSanitarySewerLines", name: "ABS Sanitary Sewer Lines", provided: false, comments: "" },
-            { id: "recalledFireSprinkelerHeads", name: "Recalled Fire Sprinkeler Heads", provided: false, comments: "" },
-            { id: "recalledInWallElectricHeaters", name: "Recalled In-wall Electric Heaters", provided: false, comments: "" },
-        ]
-        defaultProblematicMaterials.forEach(material => {
-            self.problematicMaterials.push(material)
-        })
-    }
-
     return ({
-        afterCreate: () => {
-            if (self.documents.length === 0) {
-                initializeDocumentsChecklist()
-            }
-            if (self.problematicMaterials.length === 0) {
-                initializeProblematicMaterials()
-            }
-        },
-        initializeDocumentsChecklist,
-        updateDocumentChecklist: (type: string, provided: boolean) => {
-            const document = self.documents.find(document => document.type === type)
-            if (document) {
-                document.provided = provided
-                self.lastModified = new Date()
-            }
+        updateDocumentChecklist: (id: string, provided: boolean) => {
+            self.documents.set(id, provided)
+            self.lastModified = new Date()
         },
 
         addPersonnel(name: string, title: string, yearsAtProperty: number, phoneNumber: string) {
@@ -202,14 +129,14 @@ export const ProjectSummaryStore = types
                 self.lastModified = new Date()
             }
         },
-        initializeProblematicMaterials,
         updateProblematicMaterial: (id: string, provided: boolean, comments: string) => {
-            const material = self.problematicMaterials.find(material => material.id === id)
-            if (material) {
-                material.provided = provided
-                material.comments = comments
-                self.lastModified = new Date()
+            const current = self.problematicMaterials.get(id)
+            if (current) {
+                self.problematicMaterials.set(id, { provided, comments })
+            } else {
+                self.problematicMaterials.set(id, { provided, comments })
             }
+            self.lastModified = new Date()
         },
         updateStep1: (data: Partial<{ projectName: string; projectNumber: string; propertyAddress: string; propertyCity: string; propertyState: string; propertyZip: string; weather: string; temperature: number; inspectionDate: Date; inspectionTime: string; inspectorName: string; inspectorNumber: string; surroundingProperties: string }>) => {
             Object.assign(self, data)
@@ -279,9 +206,6 @@ export const ProjectSummaryStore = types
             self.wellSystem = ""
             self.septicSystem = ""
             self.wastewaterTreatmentPlant = ""
-
-            initializeDocumentsChecklist()
-            initializeProblematicMaterials()
             self.currentStep = 1
             self.lastModified = new Date()
         },
@@ -289,7 +213,5 @@ export const ProjectSummaryStore = types
 })
 
 export interface ProjectSummaryStore extends Instance<typeof ProjectSummaryStore> {}
-export interface DocumentChecklistItem extends Instance<typeof DocumentChecklistModel> {}
 export interface PersonnelInterviewed extends Instance<typeof PersonnelInterviewedModel> {}
 export interface CommercialTenant extends Instance<typeof CommercialTenantModel> {}
-export interface ProblematicMaterials extends Instance<typeof ProblematicMaterialsModel> {}

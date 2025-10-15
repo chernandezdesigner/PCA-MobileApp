@@ -14,6 +14,35 @@ import { useStores } from "@/models/RootStoreProvider"
 
 interface ProjectSummaryStep3ScreenProps extends NativeStackScreenProps<ProjectSummaryFormNavigatorParamList, "ProjectSummaryStep3"> {}
 
+// Local, static catalog of documents (labels kept out of MST)
+const DOCUMENTS = [
+  { id: "ADASurvey", label: "ADA Survey" },
+  { id: "ALTASurvey", label: "ALTA Survey" },
+  { id: "CapExPlan", label: "CapEx Plan" },
+  { id: "CapExHistory", label: "CapEx History" },
+  { id: "SitePlansSurveys", label: "Site Plans / Surveys" },
+  { id: "BuildingPlans", label: "Building Plans" },
+  { id: "FloorPlans", label: "Floor Plans" },
+  { id: "RoofWarranty", label: "Roof Warranty" },
+  { id: "Warranties", label: "Warranties" },
+  { id: "CertificateOfOccupancy", label: "Certificate of Occupancy" },
+  { id: "MarketingBrochure", label: "Marketing Brochure" },
+  { id: "EquipmentInventory", label: "Equipment Inventory" },
+  { id: "FireDepartmentInspection", label: "Fire Department Inspection" },
+  { id: "FireAlarmInspection", label: "Fire Alarm Inspection" },
+  { id: "FireSprinklerInspection", label: "Fire Sprinkler Inspection" },
+  { id: "ElevatorCertificates", label: "Elevator Certificates" },
+  { id: "BoilerPermits", label: "Boiler Permits" },
+  { id: "OccupancySummary", label: "Occupancy Summary" },
+  { id: "PendingRepairProposals", label: "Pending Repair Proposals" },
+  { id: "PreviousPCAReports", label: "Previous PCA Reports" },
+  { id: "RentRollTenantList", label: "Rent Roll / Tenant List" },
+  { id: "UnitTypeAndQuantityList", label: "Unit Type and Quantity List" },
+  { id: "VendorList", label: "Vendor List" },
+  { id: "HealthcareInspection", label: "Healthcare Inspection" },
+  { id: "Other", label: "Other" },
+] as const
+
 export const ProjectSummaryStep3Screen: FC<ProjectSummaryStep3ScreenProps> = observer(() => {
   const navigation = useNavigation()
   const rootStore = useStores()
@@ -24,7 +53,14 @@ export const ProjectSummaryStep3Screen: FC<ProjectSummaryStep3ScreenProps> = obs
 
   const [docModalVisible, setDocModalVisible] = useState(false)
 
-  const documents = projectSummaryStore?.documents ?? []
+  // Derive renderable documents by combining constants with store map state
+  const documents = useMemo(() => (
+    DOCUMENTS.map((d) => ({
+      type: d.id,
+      label: d.label,
+      provided: projectSummaryStore?.documents.get(d.id) ?? false,
+    }))
+  ), [projectSummaryStore?.lastModified])
   const personnel = projectSummaryStore?.personnelInterviewed ?? []
   const tenants = projectSummaryStore?.commercialTenants ?? []
 
@@ -44,7 +80,7 @@ export const ProjectSummaryStep3Screen: FC<ProjectSummaryStep3ScreenProps> = obs
 
   const docsProvidedCount = useMemo(
     () => documents.reduce((acc, d) => acc + (d.provided ? 1 : 0), 0),
-    [projectSummaryStore?.lastModified],
+    [documents],
   )
 
   function onNext() {
@@ -68,7 +104,7 @@ export const ProjectSummaryStep3Screen: FC<ProjectSummaryStep3ScreenProps> = obs
             {/* Inline scrollable checklist preview */}
             <View style={$docPreviewContainer}>
               <ListWithFadingDot
-                data={documents.slice()}
+                data={documents}
                 keyExtractor={(d: { type: string }) => d.type}
                 ItemSeparatorComponent={() => <View style={{ height: 1, backgroundColor: "#e5e7eb" }} />}
                 contentContainerStyle={$docPreviewContentPadding}
@@ -210,18 +246,18 @@ export const ProjectSummaryStep3Screen: FC<ProjectSummaryStep3ScreenProps> = obs
             <View style={$row}>
               <Button
                 text="Select All"
-                onPress={() => documents.forEach((d) => projectSummaryStore?.updateDocumentChecklist(d.type, true))}
+                onPress={() => DOCUMENTS.forEach((d) => projectSummaryStore?.updateDocumentChecklist(d.id, true))}
               />
               <Button
                 preset="reversed"
                 text="Clear All"
-                onPress={() => documents.forEach((d) => projectSummaryStore?.updateDocumentChecklist(d.type, false))}
+                onPress={() => DOCUMENTS.forEach((d) => projectSummaryStore?.updateDocumentChecklist(d.id, false))}
               />
             </View>
           </View>
           <View style={$flex1}>
             <ListWithFadingDot
-              data={documents.slice()}
+              data={documents}
               keyExtractor={(d: { type: string }) => d.type}
               ItemSeparatorComponent={() => <View style={{ height: 1, backgroundColor: "#e5e7eb" }} />}
               renderItem={({ item }: { item: { label: string; provided: boolean; type: string } }) => (

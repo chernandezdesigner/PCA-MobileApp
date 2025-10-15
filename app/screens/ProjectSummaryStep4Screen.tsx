@@ -28,6 +28,24 @@ type UtilitiesFormValues = {
   wastewaterTreatmentPlant: string
 }
 
+// Local, static catalog of problematic materials
+const PROBLEMATIC_MATERIALS = [
+  { id: "frtPlywood", label: "FRT Plywood" },
+  { id: "compositeWoodSiding", label: "Composite Wood Siding" },
+  { id: "eifs", label: "EIFS" },
+  { id: "chineseDrywall", label: "Chinese Drywall" },
+  { id: "lessThan60AMPElectricService", label: "Less than 60 AMP Electric Service" },
+  { id: "aluminumBranchWiring", label: "Aluminum Branch Wiring" },
+  { id: "fusedElectricalSubpanels", label: "Fused Electrical sub-panels" },
+  { id: "recalledBreakerPanels", label: "Recalled Breaker Panels" },
+  { id: "polybutyleneWaterPiping", label: "Polybutylene Water Piping" },
+  { id: "galvanizedSteelWaterPiping", label: "Galvanized Steel Water Piping" },
+  { id: "leadPipingFittings", label: "Lead Piping / Fittings" },
+  { id: "absSanitarySewerLines", label: "ABS Sanitary Sewer Lines" },
+  { id: "recalledFireSprinkelerHeads", label: "Recalled Fire Sprinkeler Heads" },
+  { id: "recalledInWallElectricHeaters", label: "Recalled In-wall Electric Heaters" },
+] as const
+
 export const ProjectSummaryStep4Screen: FC<ProjectSummaryStep4ScreenProps> = observer(() => {
   const navigation = useNavigation()
   const rootStore = useStores()
@@ -38,11 +56,22 @@ export const ProjectSummaryStep4Screen: FC<ProjectSummaryStep4ScreenProps> = obs
 
   const [materialsModalVisible, setMaterialsModalVisible] = useState(false)
 
-  const materials = projectSummaryStore?.problematicMaterials ?? []
+  // Derive renderable materials by combining constants with store map state
+  const materials = useMemo(() => (
+    PROBLEMATIC_MATERIALS.map((m) => {
+      const s = projectSummaryStore?.problematicMaterials.get(m.id)
+      return {
+        id: m.id,
+        name: m.label,
+        provided: s?.provided ?? false,
+        comments: s?.comments ?? "",
+      }
+    })
+  ), [projectSummaryStore?.lastModified])
 
   const providedCount = useMemo(
     () => materials.reduce((acc, m) => acc + (m.provided ? 1 : 0), 0),
-    [projectSummaryStore?.lastModified],
+    [materials],
   )
 
   // Utilities form setup with autosave
@@ -82,11 +111,11 @@ export const ProjectSummaryStep4Screen: FC<ProjectSummaryStep4ScreenProps> = obs
           <View style={$sectionContent}>
             <View style={$rowBetween}>
               <Text text={`${providedCount} of ${materials.length} selected`} />
-              <Button text="Open List" onPress={() => setMaterialsModalVisible(true)} />
+              <Button text="Open Checklist" onPress={() => setMaterialsModalVisible(true)} />
             </View>
             <View style={$docPreviewContainer}>
               <ListWithFadingDot
-                data={materials.slice()}
+                data={materials}
                 keyExtractor={(m: { id: string }) => m.id}
                 ItemSeparatorComponent={() => <View style={{ height: 1, backgroundColor: "#e5e7eb" }} />}
                 contentContainerStyle={$docPreviewContentPadding}
@@ -195,7 +224,7 @@ export const ProjectSummaryStep4Screen: FC<ProjectSummaryStep4ScreenProps> = obs
           </View>
           <View style={$flex1}>
             <ListWithFadingDot
-              data={materials.slice()}
+              data={materials}
               keyExtractor={(m: { id: string }) => m.id}
               ItemSeparatorComponent={() => <View style={{ height: 1, backgroundColor: "#e5e7eb" }} />}
               renderItem={({ item }: { item: { id: string; name: string; provided: boolean; comments?: string } }) => (
