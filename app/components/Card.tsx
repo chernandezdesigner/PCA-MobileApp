@@ -284,7 +284,7 @@ const $containerPresets: Record<Presets, ThemedStyleArray<ViewStyle>> = {
     $styles.row,
     $containerBase,
     (theme) => ({
-      backgroundColor: theme.colors.palette.neutral100,
+      backgroundColor: "rgba(250, 250, 250, 0.7)",
       borderColor: theme.colors.palette.neutral300,
     }),
   ],

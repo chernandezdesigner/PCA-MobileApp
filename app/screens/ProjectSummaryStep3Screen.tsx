@@ -1,5 +1,5 @@
 import { FC, useEffect, useMemo, useRef, useState } from "react"
-import { FlatList, Modal, TouchableOpacity, View, ViewStyle } from "react-native"
+import { Animated, FlatList, Modal, TouchableOpacity, View, ViewStyle } from "react-native"
 import { observer } from "mobx-react-lite"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { ProjectSummaryFormNavigatorParamList } from "@/navigators/ProjectSummaryFormNavigator"
@@ -67,11 +67,12 @@ export const ProjectSummaryStep3Screen: FC<ProjectSummaryStep3ScreenProps> = obs
             </View>
             {/* Inline scrollable checklist preview */}
             <View style={$docPreviewContainer}>
-              <FlatList
+              <ListWithFadingDot
                 data={documents.slice()}
-                keyExtractor={(d) => d.type}
+                keyExtractor={(d: { type: string }) => d.type}
                 ItemSeparatorComponent={() => <View style={{ height: 1, backgroundColor: "#e5e7eb" }} />}
-                renderItem={({ item }) => (
+                contentContainerStyle={$docPreviewContentPadding}
+                renderItem={({ item }: { item: { label: string; provided: boolean; type: string } }) => (
                   <View style={$docRow}>
                     <Text text={item.label} />
                     <View style={$row}>
@@ -219,12 +220,11 @@ export const ProjectSummaryStep3Screen: FC<ProjectSummaryStep3ScreenProps> = obs
             </View>
           </View>
           <View style={$flex1}>
-            <FlatList
-              style={$flex1}
+            <ListWithFadingDot
               data={documents.slice()}
-              keyExtractor={(d) => d.type}
+              keyExtractor={(d: { type: string }) => d.type}
               ItemSeparatorComponent={() => <View style={{ height: 1, backgroundColor: "#e5e7eb" }} />}
-              renderItem={({ item }) => (
+              renderItem={({ item }: { item: { label: string; provided: boolean; type: string } }) => (
                 <TouchableOpacity
                   onPress={() => projectSummaryStore?.updateDocumentChecklist(item.type, !item.provided)}
                   style={$docRow}
@@ -248,6 +248,63 @@ export const ProjectSummaryStep3Screen: FC<ProjectSummaryStep3ScreenProps> = obs
     </Screen>
   )
 })
+
+// Lightweight wrapper that hides the scrollbar and shows a floating dot that fades away
+function ListWithFadingDot(props: any) {
+  const { data, renderItem, keyExtractor, ItemSeparatorComponent, style, contentContainerStyle } = props
+  const [listHeight, setListHeight] = useState(1)
+  const [contentHeight, setContentHeight] = useState(1)
+  const scrollY = useRef(new Animated.Value(0)).current
+  const opacity = useRef(new Animated.Value(0)).current
+  const fadeTimeout = useRef<NodeJS.Timeout | null>(null)
+
+  function handleScroll(e: any) {
+    const y = e.nativeEvent.contentOffset.y || 0
+    scrollY.setValue(y)
+    if (fadeTimeout.current) clearTimeout(fadeTimeout.current)
+    Animated.timing(opacity, { toValue: 1, duration: 120, useNativeDriver: true }).start()
+    fadeTimeout.current = setTimeout(() => {
+      Animated.timing(opacity, { toValue: 0, duration: 400, useNativeDriver: true }).start()
+    }, 650)
+  }
+
+  const maxScroll = Math.max(1, contentHeight - listHeight)
+  const travel = Math.max(0, listHeight - 20) // 20 = dot size
+  const translateY = scrollY.interpolate({ inputRange: [0, maxScroll], outputRange: [0, travel], extrapolate: "clamp" })
+
+  return (
+    <View style={[$flex1, { position: "relative" }, style]} onLayout={(e) => setListHeight(e.nativeEvent.layout.height)}>
+      <FlatList
+        data={data}
+        keyExtractor={keyExtractor}
+        renderItem={renderItem}
+        ItemSeparatorComponent={ItemSeparatorComponent}
+        contentContainerStyle={contentContainerStyle}
+        showsVerticalScrollIndicator={false}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+        onContentSizeChange={(w, h) => setContentHeight(h)}
+        decelerationRate="fast"
+        style={$flex1}
+      />
+      {contentHeight > listHeight && (
+        <Animated.View
+          pointerEvents="none"
+          style={{
+            position: "absolute",
+            right: 4,
+            width: 6,
+            height: 24,
+            borderRadius: 3,
+            backgroundColor: "rgba(0,0,0,0.35)",
+            opacity,
+            transform: [{ translateY }],
+          }}
+        />
+      )}
+    </View>
+  )
+}
 
 const $root: ViewStyle = {
   flex: 1,
@@ -310,6 +367,12 @@ const $pill = (on: boolean): ViewStyle => ({
 
 const $docPreviewContainer: ViewStyle = {
   maxHeight: 240,
+  backgroundColor: "#f3f4f6",
+  borderRadius: 8,
+  borderWidth: 1,
+  borderColor: "#e5e7eb",
 }
+
+const $docPreviewContentPadding: ViewStyle = { padding: 8, paddingHorizontal: 16 }
 
 const $flex1: ViewStyle = { flex: 1 }
