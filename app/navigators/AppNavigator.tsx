@@ -18,6 +18,7 @@ import { DemoNavigator } from "./DemoNavigator"
 import { ProjectSummaryFormNavigator } from "./ProjectSummaryFormNavigator"
 import type { AppStackParamList, NavigationProps } from "./navigationTypes"
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
+import { SiteGroundsFormNavigator } from "./SiteGroundsFormNavigator"
 
 /**
  * This is a list of all the route names that will exit the app if the back button
@@ -52,6 +53,7 @@ const AppStack = () => {
 
           <Stack.Screen name="Demo" component={DemoNavigator} />
           <Stack.Screen name="ProjectSummary" component={ProjectSummaryFormNavigator} />
+          <Stack.Screen name="SiteGrounds" component={SiteGroundsFormNavigator} />
         </>
       ) : (
         <>

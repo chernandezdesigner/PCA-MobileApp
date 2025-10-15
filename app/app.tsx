@@ -59,6 +59,15 @@ const config = {
         ProjectSummaryStep4: "step-4",
       },
     },
+      SiteGrounds: {
+        path: "site-grounds",
+        screens: {
+          SiteGroundsStep1: "",
+          SiteGroundsStep2: "step-2",
+          SiteGroundsStep3: "step-3",
+          SiteGroundsStep4: "step-4",
+        },
+      },
   },
 }
 

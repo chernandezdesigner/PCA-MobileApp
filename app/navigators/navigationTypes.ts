@@ -7,6 +7,7 @@ import {
 } from "@react-navigation/native"
 import { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { ProjectSummaryFormNavigatorParamList } from "./ProjectSummaryFormNavigator"
+import type { SiteGroundsFormNavigatorParamList } from "./SiteGroundsFormNavigator"
 
 // Demo Tab Navigator types
 export type DemoTabParamList = {
@@ -23,6 +24,8 @@ export type AppStackParamList = {
   Demo: NavigatorScreenParams<DemoTabParamList>
   // Nested navigators
   ProjectSummary: NavigatorScreenParams<ProjectSummaryFormNavigatorParamList>
+  SiteGrounds: NavigatorScreenParams<SiteGroundsFormNavigatorParamList>
+
   // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
 

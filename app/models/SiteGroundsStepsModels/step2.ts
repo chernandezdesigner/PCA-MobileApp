@@ -90,3 +90,38 @@ export const WaterFeaturesAccordionModel = types.model("WaterFeaturesAccordionMo
         if (data.pumpAge !== undefined) self.pumpAge = data.pumpAge
     },
 }))
+
+export const SiteGroundsStep2 = types
+.model("SiteGroundsStep2", {
+    topographySlope: types.optional(TopographySlopeAccordionModel, {}),
+    landscaping: types.optional(LandscapingAccordionModel, {}),
+    retainingWalls: types.optional(RetainingWallsAccordionModel, {}),
+    screenWalls: types.optional(ScreenWallsAccordionModel, {}),
+    waterFeatures: types.optional(WaterFeaturesAccordionModel, {}),
+    lastModified: types.optional(types.Date, () => new Date()),
+})
+.actions((self) => ({
+    touch() {
+        self.lastModified = new Date()
+    },
+    updateTopographySlope(data: Parameters<typeof self.topographySlope.update>[0]) {
+        self.topographySlope.update(data)
+        self.lastModified = new Date()
+    },
+    updateLandscaping(data: Parameters<typeof self.landscaping.update>[0]) {
+        self.landscaping.update(data)
+        self.lastModified = new Date()
+    },
+    updateRetainingWalls(data: Parameters<typeof self.retainingWalls.update>[0]) {
+        self.retainingWalls.update(data)
+        self.lastModified = new Date()
+    },
+    updateScreenWalls(data: Parameters<typeof self.screenWalls.update>[0]) {
+        self.screenWalls.update(data)
+        self.lastModified = new Date()
+    },
+    updateWaterFeatures(data: Parameters<typeof self.waterFeatures.update>[0]) {
+        self.waterFeatures.update(data)
+        self.lastModified = new Date()
+    },
+}))
