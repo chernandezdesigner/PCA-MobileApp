@@ -128,7 +128,7 @@ export const SiteGroundsStep2 = types
         self.lastModified = new Date()
     },
     updateComments(data: string) {
-        self.comments = data
+        self.comments = data 
         self.lastModified = new Date()
     },
 }))

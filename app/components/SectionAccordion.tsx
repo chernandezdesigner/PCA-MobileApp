@@ -107,7 +107,7 @@ const $container: ThemedStyleArray<ViewStyle> = [
     borderRadius: theme.spacing.md,
     borderWidth: 1,
     borderColor: theme.colors.border,
-    backgroundColor: theme.colors.background,
+    backgroundColor: theme.colors.palette.neutral200,
   }),
 ]
 

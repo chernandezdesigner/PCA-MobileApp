@@ -12,6 +12,77 @@ import { observer } from "mobx-react-lite"
 import { useAppTheme } from "@/theme/context"
 import type { SiteGroundsFormNavigatorParamList } from "@/navigators/SiteGroundsFormNavigator"
 import { Controller, useForm } from "react-hook-form"
+import { Dropdown } from "@/components/Dropdown"
+
+// Static dropdown options for step 2 inputs
+const SLOPE_TYPE_OPTIONS = [
+  { label: "Flat", value: "Flat" },
+  { label: "Gentle Slope", value: "Gentle Slope" },
+  { label: "Moderate Slope", value: "Moderate Slope" },
+  { label: "Significant Slope", value: "Significant Slope" },
+  { label: "Highly Variable", value: "Highly Variable" },
+  { label: "Erosion", value: "Erosion" },
+]
+
+const LANDSCAPING_TYPE_OPTIONS = [
+  { label: "Typical", value: "Typical" },
+  { label: "Grass", value: "Grass" },
+  { label: "Shrubs", value: "Shrubs" },
+  { label: "Flowerbeds", value: "Flowerbeds" },
+  { label: "Drought tolerant", value: "Drought tolerant" },
+  { label: "Trees", value: "Trees" },
+  { label: "Sprinkler", value: "Sprinkler" },
+  { label: "Drip Irrig.", value: "Drip Irrig." },
+  { label: "Stone/Rocks/Mulch", value: "Stone/Rocks/Mulch" },
+]
+
+const RETAINING_WALLS_TYPE_OPTIONS = [
+  { label: "N/A", value: "N/A" },
+  { label: "Timber", value: "Timber" },
+  { label: "Stone", value: "Stone" },
+  { label: "CMU Block", value: "CMU Block" },
+  { label: "Concrete", value: "Concrete" },
+  { label: "Brick", value: "Brick" },
+  { label: "Railroad Ties", value: "Railroad Ties" },
+  { label: "Lumber", value: "Lumber" },
+  { label: "Other", value: "Other" },
+]
+
+const SCREEN_WALLS_TYPE_OPTIONS = [
+  { label: "N/A", value: "N/A" },
+  { label: "Timber", value: "Timber" },
+  { label: "Stone", value: "Stone" },
+  { label: "CMU Block", value: "CMU Block" },
+  { label: "Concrete", value: "Concrete" },
+  { label: "Brick", value: "Brick" },
+  { label: "Railroad Ties", value: "Railroad Ties" },
+  { label: "Lumber", value: "Lumber" },
+  { label: "Other", value: "Other" },
+]
+
+const WATER_FEATURES_TYPE_OPTIONS = [
+  { label: "N/A", value: "N/A" },
+  { label: "Decorative Fountain", value: "Decorative Fountain" },
+  { label: "Artifical Pond", value: "Artifical Pond" },
+  { label: "Creek", value: "Creek" },
+  { label: "Reg. Pond", value: "Reg. Pond" },
+  { label: "Lake", value: "Lake" },
+  { label: "Ocean Shoreline", value: "Ocean Shoreline" },
+]
+
+const PUMP_LOCATION_OPTIONS = [
+  { label: "Vault", value: "Vault" },
+  { label: "Water", value: "Water" },
+  { label: "Enclosure", value: "Enclosure" },
+]
+
+const RAILING_TYPE_OPTIONS = [
+  { label: "N/A", value: "N/A" },
+  { label: "Metal", value: "Metal" },
+  { label: "Wood", value: "Wood" },
+  { label: "Vinyl", value: "Vinyl" },
+  { label: "Chainlink", value: "Chainlink" },
+]
 
 interface SiteGroundsStep2ScreenProps
   extends NativeStackScreenProps<SiteGroundsFormNavigatorParamList, "SiteGroundsStep2"> {}
@@ -182,13 +253,12 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
           <Controller
             control={control}
             name="topographySlope.slopeType"
-            render={({ field: { value, onChange, onBlur } }) => (
-              <TextField
+            render={({ field: { value, onChange } }) => (
+              <Dropdown
                 label="Slope Type"
-                placeholder="e.g., Flat, Gentle, Steep"
                 value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
+                onValueChange={onChange}
+                options={SLOPE_TYPE_OPTIONS}
               />
             )}
           />
@@ -227,13 +297,12 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
           <Controller
             control={control}
             name="landscaping.landscapingType"
-            render={({ field: { value, onChange, onBlur } }) => (
-              <TextField
+            render={({ field: { value, onChange } }) => (
+              <Dropdown
                 label="Landscaping Type"
-                placeholder="e.g., Lawn, Xeriscape"
                 value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
+                onValueChange={onChange}
+                options={LANDSCAPING_TYPE_OPTIONS}
               />
             )}
           />
@@ -270,13 +339,12 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
           <Controller
             control={control}
             name="retainingWalls.retainingWallsType"
-            render={({ field: { value, onChange, onBlur } }) => (
-              <TextField
+            render={({ field: { value, onChange } }) => (
+              <Dropdown
                 label="Retaining Walls Type"
-                placeholder="e.g., Concrete, Timber"
                 value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
+                onValueChange={onChange}
+                options={RETAINING_WALLS_TYPE_OPTIONS}
               />
             )}
           />
@@ -314,17 +382,17 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
             <View style={themed($nestedList)}>
               <Text preset="subheading" text="Railing" />
               <View style={themed($nestedCard)}>
-                <TextField
+                <Dropdown
                   label="Railing Type"
-                  placeholder="e.g., Metal, Wood"
                   value={store?.retainingWalls.railingDetails?.railingType ?? ""}
-                  onChangeText={(t) => {
+                  onValueChange={(t) => {
                     if (store?.retainingWalls.railingDetails) {
                       store?.retainingWalls.railingDetails.update({ railingType: t })
                     } else {
                       store?.updateRetainingWalls({ railingDetails: { railingType: t } as any })
                     }
                   }}
+                  options={RAILING_TYPE_OPTIONS}
                 />
                 <ConditionAssessment
                   value={store?.retainingWalls.railingDetails?.assessment.condition as any}
@@ -367,13 +435,12 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
           <Controller
             control={control}
             name="screenWalls.screenWallsType"
-            render={({ field: { value, onChange, onBlur } }) => (
-              <TextField
+            render={({ field: { value, onChange } }) => (
+              <Dropdown
                 label="Screen Walls Type"
-                placeholder="e.g., CMU, Fence"
                 value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
+                onValueChange={onChange}
+                options={SCREEN_WALLS_TYPE_OPTIONS}
               />
             )}
           />
@@ -411,16 +478,17 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
             <View style={themed($nestedList)}>
               <Text preset="subheading" text="Railing" />
               <View style={themed($nestedCard)}>
-                <TextField
+                <Dropdown
                   label="Railing Type"
                   value={store?.screenWalls.railingDetails?.railingType ?? ""}
-                  onChangeText={(t) => {
+                  onValueChange={(t) => {
                     if (store?.screenWalls.railingDetails) {
                       store?.screenWalls.railingDetails.update({ railingType: t })
                     } else {
                       store?.updateScreenWalls({ railingDetails: { railingType: t } as any })
                     }
                   }}
+                  options={RAILING_TYPE_OPTIONS}
                 />
                 <ConditionAssessment
                   value={store?.screenWalls.railingDetails?.assessment.condition as any}
@@ -463,21 +531,25 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
           <Controller
             control={control}
             name="waterFeatures.waterFeaturesType"
-            render={({ field: { value, onChange, onBlur } }) => (
-              <TextField
+            render={({ field: { value, onChange } }) => (
+              <Dropdown
                 label="Water Features Type"
-                placeholder="e.g., Fountain, Pond"
                 value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
+                onValueChange={onChange}
+                options={WATER_FEATURES_TYPE_OPTIONS}
               />
             )}
           />
           <Controller
             control={control}
             name="waterFeatures.pumpLocation"
-            render={({ field: { value, onChange, onBlur } }) => (
-              <TextField label="Pump Location" value={value} onChangeText={onChange} onBlur={onBlur} />
+            render={({ field: { value, onChange } }) => (
+              <Dropdown
+                label="Pump Location"
+                value={value}
+                onValueChange={onChange}
+                options={PUMP_LOCATION_OPTIONS}
+              />
             )}
           />
           <Controller
