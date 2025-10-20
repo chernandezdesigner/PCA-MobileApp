@@ -1,5 +1,5 @@
 import { FC, useEffect, useMemo, useRef, useState } from "react"
-import { Animated, FlatList, Modal, TouchableOpacity, View, ViewStyle } from "react-native"
+import { Animated, FlatList, Modal, TouchableOpacity, View, ViewStyle, ScrollView } from "react-native"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { ProjectSummaryFormNavigatorParamList } from "@/navigators/ProjectSummaryFormNavigator"
 import { Screen } from "@/components/Screen"
@@ -12,6 +12,11 @@ import { useStores } from "@/models/RootStoreProvider"
 import { observer } from "mobx-react-lite"
 import { Controller, useForm } from "react-hook-form"
 import { useNavigation } from "@react-navigation/native"
+import { HeaderBar } from "@/components/HeaderBar"
+import { ProgressBar } from "@/components/ProgressBar"
+import { StickyFooterNav } from "@/components/StickyFooterNav"
+import { useAppTheme } from "@/theme/context"
+import type { ThemedStyle } from "@/theme/types"
 
 interface ProjectSummaryStep4ScreenProps extends NativeStackScreenProps<ProjectSummaryFormNavigatorParamList, "ProjectSummaryStep4"> {}
 
@@ -48,6 +53,7 @@ const PROBLEMATIC_MATERIALS = [
 
 export const ProjectSummaryStep4Screen: FC<ProjectSummaryStep4ScreenProps> = observer(() => {
   const navigation = useNavigation()
+  const { themed } = useAppTheme()
   const rootStore = useStores()
   const activeAssessment = rootStore.activeAssessmentId
     ? rootStore.assessments.get(rootStore.activeAssessmentId)
@@ -101,8 +107,15 @@ export const ProjectSummaryStep4Screen: FC<ProjectSummaryStep4ScreenProps> = obs
   }, [watch, projectSummaryStore])
 
   return (
-    <Screen style={$root} preset="scroll" contentContainerStyle={$content}>
-      <Text preset="heading" text="Problematic Materials & Utilities" />
+    <Screen style={$root} preset="fixed" contentContainerStyle={$screenInner}>
+      <View style={$stickyHeader}>
+        <HeaderBar title="Project Summary" leftIcon="back" onLeftPress={() => navigation.goBack()} rightIcon="view" />
+      </View>
+      <ScrollView contentContainerStyle={$content} style={$scrollArea}>
+        <View style={$introBlock}>
+          <Text preset="subheading" text="Problematic Materials & Utilities" style={themed($titleStyle)} />
+          <ProgressBar current={4} total={4} />
+        </View>
 
       {/* Problematic Materials */}
       <Card
@@ -215,39 +228,43 @@ export const ProjectSummaryStep4Screen: FC<ProjectSummaryStep4ScreenProps> = obs
       </View>
 
 
-      {/* Modal for full materials list */}
-      <Modal visible={materialsModalVisible} animationType="slide" onRequestClose={() => setMaterialsModalVisible(false)}>
-        <Screen preset="fixed" style={{ flex: 1 }} contentContainerStyle={$modalContainer}>
-          <View style={$rowBetween}>
-            <Text preset="subheading" text="Problematic Materials" />
-            <Button text="Done" onPress={() => setMaterialsModalVisible(false)} />
-          </View>
-          <View style={$flex1}>
-            <ListWithFadingDot
-              data={materials}
-              keyExtractor={(m: { id: string }) => m.id}
-              ItemSeparatorComponent={() => <View style={{ height: 1, backgroundColor: "#e5e7eb" }} />}
-              renderItem={({ item }: { item: { id: string; name: string; provided: boolean; comments?: string } }) => (
-                <TouchableOpacity
-                  onPress={() => projectSummaryStore?.updateProblematicMaterial(item.id, !item.provided, item.comments ?? "")}
-                  style={$docRow}
-                >
-                  <Text text={item.name} />
-                  <View style={$row}>
-                    <Checkbox
-                      value={item.provided}
-                      onValueChange={(v) => projectSummaryStore?.updateProblematicMaterial(item.id, v, item.comments ?? "")}
-                    />
-                    <View style={$pill(item.provided)}>
-                      <Text text={item.provided ? "Yes" : "No"} />
-                    </View>
+    </ScrollView>
+    <View style={$stickyFooter}>
+      <StickyFooterNav onBack={() => navigation.goBack()} onNext={() => {}} nextDisabled showCamera={true} />
+    </View>
+    {/* Modal for full materials list */}
+    <Modal visible={materialsModalVisible} animationType="slide" onRequestClose={() => setMaterialsModalVisible(false)}>
+      <Screen preset="fixed" style={{ flex: 1 }} contentContainerStyle={$modalContainer}>
+        <View style={$rowBetween}>
+          <Text preset="subheading" text="Problematic Materials" />
+          <Button text="Done" onPress={() => setMaterialsModalVisible(false)} />
+        </View>
+        <View style={$flex1}>
+          <ListWithFadingDot
+            data={materials}
+            keyExtractor={(m: { id: string }) => m.id}
+            ItemSeparatorComponent={() => <View style={{ height: 1, backgroundColor: "#e5e7eb" }} />}
+            renderItem={({ item }: { item: { id: string; name: string; provided: boolean; comments?: string } }) => (
+              <TouchableOpacity
+                onPress={() => projectSummaryStore?.updateProblematicMaterial(item.id, !item.provided, item.comments ?? "")}
+                style={$docRow}
+              >
+                <Text text={item.name} />
+                <View style={$row}>
+                  <Checkbox
+                    value={item.provided}
+                    onValueChange={(v) => projectSummaryStore?.updateProblematicMaterial(item.id, v, item.comments ?? "")}
+                  />
+                  <View style={$pill(item.provided)}>
+                    <Text text={item.provided ? "Yes" : "No"} />
                   </View>
-                </TouchableOpacity>
-              )}
-            />
-          </View>
-        </Screen>
-      </Modal>
+                </View>
+              </TouchableOpacity>
+            )}
+          />
+        </View>
+      </Screen>
+    </Modal>
     </Screen>
   )
 })
@@ -372,3 +389,11 @@ const $pill = (on: boolean): ViewStyle => ({
 })
 
 const $flex1: ViewStyle = { flex: 1 }
+
+const $progressHeaderText: ThemedStyle<any> = ({ colors }) => ({ color: colors.palette.primary2 as any })
+const $screenInner: ViewStyle = { flex: 1 }
+const $stickyHeader: ViewStyle = { position: "absolute", top: 0, left: 0, right: 0, zIndex: 2 }
+const $stickyFooter: ViewStyle = { position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 2 }
+const $scrollArea: ViewStyle = { paddingTop: 72, paddingBottom: 96 }
+const $titleStyle: ThemedStyle<any> = ({ colors }) => ({ color: colors.palette.primary2, fontSize: 24 })
+const $introBlock: ViewStyle = { paddingBottom: 32 }

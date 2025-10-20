@@ -1,5 +1,5 @@
 import { FC, useEffect, useMemo, useRef } from "react"
-import { View, ViewStyle } from "react-native"
+import { View, ViewStyle, ScrollView } from "react-native"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { ProjectSummaryFormNavigatorParamList } from "@/navigators/ProjectSummaryFormNavigator"
 import { Screen } from "@/components/Screen"
@@ -11,6 +11,11 @@ import { Controller, useForm } from "react-hook-form"
 import { TextField } from "@/components/TextField"
 import { Button } from "@/components/Button"
 import { Dropdown } from "@/components/Dropdown"
+import { HeaderBar } from "@/components/HeaderBar"
+import { ProgressBar } from "@/components/ProgressBar"
+import { StickyFooterNav } from "@/components/StickyFooterNav"
+import { useAppTheme } from "@/theme/context"
+import type { ThemedStyle } from "@/theme/types"
 interface ProjectSummaryStep2ScreenProps extends NativeStackScreenProps<ProjectSummaryFormNavigatorParamList, "ProjectSummaryStep2"> {}
 
 type Step2FormValues = {
@@ -30,6 +35,7 @@ type Step2FormValues = {
 export const ProjectSummaryStep2Screen: FC<ProjectSummaryStep2ScreenProps> = observer(() => {
   // Pull in navigation via hook
   const navigation = useNavigation()
+  const { themed } = useAppTheme()
 
   const rootStore = useStores()
   const activeAssessment = rootStore.activeAssessmentId
@@ -77,10 +83,16 @@ export const ProjectSummaryStep2Screen: FC<ProjectSummaryStep2ScreenProps> = obs
 
 
   return (
-    <Screen style={$root} preset="scroll" contentContainerStyle={$content}>
-      <Text preset="heading" text="Unit Info" />
-
-      <View style={$fieldGroup}>
+    <Screen style={$root} preset="fixed" contentContainerStyle={$screenInner}>
+      <View style={$stickyHeader}>
+        <HeaderBar title="Project Summary" leftIcon="back" onLeftPress={() => navigation.goBack()} rightIcon="view" />
+      </View>
+      <ScrollView contentContainerStyle={$content} style={$scrollArea}>
+        <View style={$introBlock}>
+          <Text preset="subheading" text="Unit Info" style={themed($titleStyle)} />
+          <ProgressBar current={2} total={4} />
+        </View>
+        <View style={$fieldGroup}>
         <Controller
           control={control}
           name="acreage"
@@ -246,8 +258,11 @@ export const ProjectSummaryStep2Screen: FC<ProjectSummaryStep2ScreenProps> = obs
           )}
         />
 
-        <Button preset="filled" text="Next" onPress={onNext} />
-      
+          
+        </View>
+      </ScrollView>
+      <View style={$stickyFooter}>
+        <StickyFooterNav onBack={() => navigation.goBack()} onNext={onNext} showCamera={true} />
       </View>
     </Screen>
   )
@@ -270,3 +285,11 @@ const $row: ViewStyle = {
   flexDirection: "row",
   gap: 12,
 }
+
+const $scrollArea: ViewStyle = { flex: 1, paddingTop: 72, paddingBottom: 96 }
+const $progressHeaderText: ThemedStyle<any> = ({ colors }) => ({ color: colors.palette.primary2 as any })
+const $titleStyle: ThemedStyle<any> = ({ colors }) => ({ color: colors.palette.primary2 as any, fontSize: 24 })
+const $screenInner: ViewStyle = { flex: 1 }
+const $stickyHeader: ViewStyle = { position: "absolute", top: 0, left: 0, right: 0, zIndex: 2 }
+const $stickyFooter: ViewStyle = { position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 2 }
+const $introBlock: ViewStyle = { paddingBottom: 32 }

@@ -16,6 +16,28 @@ const palette = {
   primary200: "#C76542",
   primary100: "#A54F31",
 
+  // Added semantic tokens to mirror light palette
+  primary1: "#0EA5E9",
+  primary2: "#0B7DB1",
+  primary3: "#7DD3FC",
+
+  // Neutral grays to mirror light tokens (approximate for dark scheme)
+  gray1: "#111827",
+  gray2: "#1F2937",
+  gray3: "#374151",
+  gray4: "#4B5563",
+  gray5: "#9CA3AF",
+  gray6: "#F9FAFB",
+
+  // Surfaces / UI roles used by components
+  background1: "#191015",
+  headerFooterBackground: "#1F2937",
+  progressBarBackground: "#374151",
+  progressBarActive: "#7DD3FC",
+  TopBarHeaderText: "#FFFFFF",
+  SecondaryButtonBackground: "#111827",
+  SecondaryButtonBorder: "#374151",
+
   secondary500: "#DCDDE9",
   secondary400: "#BCC0D6",
   secondary300: "#9196B9",

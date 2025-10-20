@@ -13,6 +13,10 @@ import { useAppTheme } from "@/theme/context"
 import type { SiteGroundsFormNavigatorParamList } from "@/navigators/SiteGroundsFormNavigator"
 import { Controller, useForm } from "react-hook-form"
 import { Dropdown } from "@/components/Dropdown"
+import { HeaderBar } from "@/components/HeaderBar"
+import { ProgressBar } from "@/components/ProgressBar"
+import { StickyFooterNav } from "@/components/StickyFooterNav"
+import { useNavigation } from "@react-navigation/native"
 
 // Static dropdown options for step 2 inputs
 const SLOPE_TYPE_OPTIONS = [
@@ -89,6 +93,7 @@ interface SiteGroundsStep2ScreenProps
 
 export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(() => {
   const { themed, theme } = useAppTheme()
+  const navigation = useNavigation()
   const rootStore = useStores()
   const activeAssessment = rootStore.activeAssessmentId
     ? rootStore.assessments.get(rootStore.activeAssessmentId)
@@ -242,7 +247,9 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
 
   return (
     <Screen style={$root} preset="scroll" contentContainerStyle={themed($content)}>
-      <Text preset="heading" text="Site & Grounds - Topography, Landscaping, Walls, Water" />
+      <HeaderBar title="Site & Grounds" leftIcon="back" onLeftPress={() => navigation.goBack()} rightIcon="view" />
+      <Text preset="subheading" text="Topography, Landscaping, Walls, Water" />
+      <ProgressBar current={2} total={4} />
 
       <SectionAccordion
         title="Topography & Slope"
@@ -583,6 +590,12 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
           <TextField label="Comments" value={value} onChangeText={onChange} onBlur={onBlur} />
         )}
       />
+      <View style={themed($bottomSpace)} />
+      <StickyFooterNav
+        onBack={() => navigation.navigate("SiteGroundsStep1" as never)}
+        onNext={() => navigation.navigate("SiteGroundsStep3" as never)}
+        showCamera={true}
+      />
     </Screen>
   )
 })
@@ -650,3 +663,5 @@ const $chipButton: ViewStyle = {
 }
 
 const $chipButtonText: ViewStyle = {}
+
+const $bottomSpace: ViewStyle = { height: 80 }
