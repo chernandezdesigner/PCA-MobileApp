@@ -9,6 +9,60 @@ const palette = {
   neutral800: "#374151",
   neutral900: "#1f2937",
 
+  // New Colors Pallette
+
+  gray1:"#F9FAFB",
+  gray2:"#F3F4F6",
+  gray3:"#E5E7EB",
+  gray4:"#D1D5DB",
+  gray5:"#6B7280",
+  gray6:"#18181B",
+
+  primary1: "#0EA5E9",
+  primary2: "#0B7DB1",
+  primary3: "#7DD3FC",
+
+  background1: palette.gray1,
+  accordionBackground: "rgba(219, 229, 239, 0.4)",
+  checklistBackground: "rgba(250, 250, 250, 0.6)",
+  checklistAlternatingBackground: "rgba(229, 231, 235, 0.3)",
+  
+
+  TopBarHeaderText: "000000",
+
+  SectionHeaderText: palette.primary2,
+
+  progressBarBackground: palette.gray3,
+  progressBarActive: palette.primary3,
+
+  FormLabelText: "rgba(0, 0, 0, 0.8)",
+  FormInputPlaceholderText: "rgba(0, 0, 0, 0.6)",
+  FormInputText: "rgba(0, 0, 0, 1)",
+  FormInputFill: "#F9FAFB",
+
+  accordionHeaderActiveText: "000000",
+  accordionHeaderInactiveText: "rgba(0, 0, 0, 0.8)",
+
+  conditionGoodBackground: "rgba(167, 243, 208, 0.4)",
+  conditionFairBackground: "rgba(250, 204, 21, 0.4)",
+  conditionPoorBackground: "rgba(239, 68, 68, 0.4)",
+
+  conditionGoodBorder: "#34d399",
+  conditionFairBorder: "#fbbf24",
+  conditionPoorBorder: "#ef4444",
+
+  SecondaryButtonActiveBackground: "#18181B",
+  SecondaryButtonBackground: "#FAFAFA",
+  SecondaryButtonBorder: palette.gray4, 
+
+
+  //Pallette end
+
+
+
+
+
+
   primary100: "#dbeafe",
   primary200: "#bfdbfe",
   primary300: "#93c5fd", 
