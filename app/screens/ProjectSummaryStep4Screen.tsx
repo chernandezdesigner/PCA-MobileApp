@@ -132,8 +132,8 @@ export const ProjectSummaryStep4Screen: FC<ProjectSummaryStep4ScreenProps> = obs
                 keyExtractor={(m: { id: string }) => m.id}
                 ItemSeparatorComponent={() => <View style={{ height: 1, backgroundColor: "#e5e7eb" }} />}
                 contentContainerStyle={$docPreviewContentPadding}
-                renderItem={({ item }: { item: { id: string; name: string; provided: boolean; comments?: string } }) => (
-                  <View style={$docRow}>
+                renderItem={({ item, index }: { item: { id: string; name: string; provided: boolean; comments?: string }; index: number }) => (
+                  <View style={[$docRow, index % 2 === 1 ? themed($altRow) : undefined]}>
                     <Text text={item.name} />
                     <View style={$row}>
                       <Checkbox
@@ -244,10 +244,10 @@ export const ProjectSummaryStep4Screen: FC<ProjectSummaryStep4ScreenProps> = obs
             data={materials}
             keyExtractor={(m: { id: string }) => m.id}
             ItemSeparatorComponent={() => <View style={{ height: 1, backgroundColor: "#e5e7eb" }} />}
-            renderItem={({ item }: { item: { id: string; name: string; provided: boolean; comments?: string } }) => (
+            renderItem={({ item, index }: { item: { id: string; name: string; provided: boolean; comments?: string }; index: number }) => (
               <TouchableOpacity
                 onPress={() => projectSummaryStore?.updateProblematicMaterial(item.id, !item.provided, item.comments ?? "")}
-                style={$docRow}
+                style={[$docRow, index % 2 === 1 ? themed($altRow) : undefined]}
               >
                 <Text text={item.name} />
                 <View style={$row}>
@@ -368,6 +368,7 @@ const $docRow: ViewStyle = {
   flexDirection: "row",
   alignItems: "center",
   justifyContent: "space-between",
+  paddingHorizontal: 16,
   paddingVertical: 12,
 }
 
@@ -379,13 +380,20 @@ const $docPreviewContainer: ViewStyle = {
   borderColor: "#e5e7eb",
 }
 
-const $docPreviewContentPadding: ViewStyle = { padding: 8, paddingHorizontal: 16 }
+const $docPreviewContentPadding: ViewStyle = { paddingVertical: 8 }
 
 const $pill = (on: boolean): ViewStyle => ({
   paddingHorizontal: 12,
   paddingVertical: 6,
   borderRadius: 12,
+  // Fixed width to keep layout stable between "Yes" and "No"
+  width: 56,
+  alignItems: "center",
   backgroundColor: on ? "#dbeafe" : "#e5e7eb",
+})
+
+const $altRow: ThemedStyle<any> = ({ isDark }) => ({
+  backgroundColor: isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.035)",
 })
 
 const $flex1: ViewStyle = { flex: 1 }
