@@ -5,7 +5,6 @@ import {
   TouchableOpacity,
   View,
   ViewStyle,
-  Modal,
   FlatList,
   Platform,
 } from "react-native"
@@ -79,6 +78,8 @@ export function Dropdown(props: DropdownProps) {
 
   const [isOpen, setIsOpen] = useState(false)
   const [isFocused, setIsFocused] = useState(false)
+  const [inputHeight, setInputHeight] = useState<number>(44)
+  const [inputY, setInputY] = useState<number>(0)
 
   const {
     themed,
@@ -88,7 +89,11 @@ export function Dropdown(props: DropdownProps) {
   const selectedOption = options.find((option) => option.value === value)
   const disabled = status === "disabled"
 
-  const $containerStyles = [$containerStyle, $containerStyleOverride]
+  const $containerStyles = [
+    $containerStyle,
+    isOpen && $containerOpenStyle,
+    $containerStyleOverride,
+  ]
 
   const $labelStyles = [$labelStyle]
 
@@ -106,6 +111,7 @@ export function Dropdown(props: DropdownProps) {
       shadowOffset: { width: 0, height: 2 },
       elevation: 4,
     },
+    isOpen && $inputActiveBorder,
     $inputWrapperStyleOverride,
   ]
 
@@ -124,8 +130,8 @@ export function Dropdown(props: DropdownProps) {
 
   const $optionTextStyles = [$optionTextStyle]
 
-  const $modalStyles = [
-    $modalStyle,
+  const $menuStyles = [
+    $menuStyle,
     {
       backgroundColor: colors.palette.neutral100,
       borderColor: colors.palette.neutral300,
@@ -152,9 +158,14 @@ export function Dropdown(props: DropdownProps) {
 
       <TouchableOpacity
         activeOpacity={0.8}
-        style={themed($inputWrapperStyles)}
+        style={themed([$inputWrapperStyles])}
         onPress={toggleDropdown}
         disabled={disabled}
+        onLayout={(e) => {
+          const { y, height } = e.nativeEvent.layout
+          setInputHeight(Math.round(height) || 44)
+          setInputY(Math.round(y) || 0)
+        }}
       >
         {!!LeftAccessory && (
           <LeftAccessory
@@ -172,9 +183,10 @@ export function Dropdown(props: DropdownProps) {
           icon="caretRight"
           size={20}
           color={colors.textDim}
+          containerStyle={themed($caretStyle)}
           style={[
-            themed($caretStyle),
-            { transform: [{ rotate: isOpen ? "90deg" : "0deg" }] },
+            // caretRight rotated 90deg = down; 270deg = up when open
+            { transform: [{ rotate: isOpen ? "270deg" : "90deg" }] },
           ]}
         />
 
@@ -186,42 +198,39 @@ export function Dropdown(props: DropdownProps) {
         )}
       </TouchableOpacity>
 
-      <Modal
-        visible={isOpen}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setIsOpen(false)}
-      >
-        <TouchableOpacity
-          style={$overlay}
-          activeOpacity={1}
-          onPress={() => setIsOpen(false)}
+      {isOpen && (
+        <View
+          style={themed([
+            $menuStyles,
+            { top: (inputY || 0) + (inputHeight || 44) + 8 },
+            isFocused && { borderColor: colors.tint },
+          ])}
         >
-          <View style={themed($modalStyles)}>
-            <FlatList
-              data={options}
-              keyExtractor={(item) => item.value}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={themed($optionStyles)}
-                  onPress={() => selectOption(item)}
-                >
-                  <Text
-                    text={item.label}
-                    style={themed($optionTextStyles)}
-                  />
-                </TouchableOpacity>
-              )}
-            />
-          </View>
-        </TouchableOpacity>
-      </Modal>
+          <FlatList
+            data={options}
+            keyExtractor={(item) => item.value}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={themed($optionStyles)}
+                onPress={() => selectOption(item)}
+              >
+                <Text text={item.label} style={themed($optionTextStyles)} />
+              </TouchableOpacity>
+            )}
+          />
+        </View>
+      )}
     </View>
   )
 }
 
 const $containerStyle: ViewStyle = {
   gap: 4,
+  position: "relative",
+}
+
+const $containerOpenStyle: ViewStyle = {
+  zIndex: 50,
 }
 
 const $labelStyle: ThemedStyle<TextStyle> = ({ spacing, colors }) => ({
@@ -235,7 +244,13 @@ const $inputWrapperStyle: ThemedStyle<ViewStyle> = ({ colors }) => ({
   borderRadius: 12,
   backgroundColor: colors.palette.neutral100,
   borderColor: colors.palette.neutral300,
-  overflow: "hidden",
+  overflow: "visible",
+})
+
+const $inputActiveBorder: ThemedStyle<ViewStyle> = ({ colors }) => ({
+  borderBottomLeftRadius: 0,
+  borderBottomRightRadius: 0,
+  borderColor: colors.tint,
 })
 
 const $valueStyle: ThemedStyle<TextStyle> = ({ colors, typography, spacing }) => ({
@@ -271,20 +286,21 @@ const $caretStyle: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   alignItems: "center",
 })
 
-const $overlay: ViewStyle = {
-  flex: 1,
-  backgroundColor: "rgba(0, 0, 0, 0.5)",
-  justifyContent: "center",
-  alignItems: "center",
-  padding: 20,
-}
-
-const $modalStyle: ThemedStyle<ViewStyle> = ({ colors }) => ({
+const $menuStyle: ThemedStyle<ViewStyle> = ({ colors }) => ({
+  position: "absolute",
+  left: 0,
+  right: 0,
   width: "100%",
   maxHeight: 300,
   borderRadius: 12,
   borderWidth: 1,
   overflow: "hidden",
+  shadowColor: "#000",
+  shadowOpacity: 0.15,
+  shadowRadius: 10,
+  shadowOffset: { width: 0, height: 4 },
+  elevation: 6,
+  zIndex: 10,
 })
 
 const $optionStyle: ThemedStyle<ViewStyle> = ({ spacing }) => ({
