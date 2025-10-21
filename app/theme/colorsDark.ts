@@ -38,6 +38,10 @@ const palette = {
   SecondaryButtonBackground: "#111827",
   SecondaryButtonBorder: "#374151",
 
+  // Checklist surfaces (dark equivalents)
+  checklistBackground: "rgba(17, 24, 39, 0.6)",
+  checklistAlternatingBackground: "rgba(55, 65, 81, 0.3)",
+
   secondary500: "#DCDDE9",
   secondary400: "#BCC0D6",
   secondary300: "#9196B9",

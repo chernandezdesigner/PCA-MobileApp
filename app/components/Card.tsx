@@ -284,8 +284,8 @@ const $containerPresets: Record<Presets, ThemedStyleArray<ViewStyle>> = {
     $styles.row,
     $containerBase,
     (theme) => ({
-      backgroundColor: "rgba(250, 250, 250, 0.7)",
-      borderColor: theme.colors.palette.neutral300,
+      backgroundColor: theme.colors.palette.checklistBackground,
+      borderColor: theme.colors.palette.gray3,
     }),
   ],
   reversed: [

@@ -114,7 +114,7 @@ export const ProjectSummaryStep3Screen: FC<ProjectSummaryStep3ScreenProps> = obs
               <Button text="Open Checklist" onPress={() => setDocModalVisible(true)} />
             </View>
             {/* Inline scrollable checklist preview */}
-            <View style={$docPreviewContainer}>
+            <View style={themed($docPreviewContainer)}>
               <ListWithFadingDot
                 data={documents}
                 keyExtractor={(d: { type: string }) => d.type}
@@ -410,8 +410,8 @@ const $docRow: ViewStyle = {
   paddingVertical: 12,
 }
 
-const $altRow: ThemedStyle<any> = ({ isDark }) => ({
-  backgroundColor: isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.035)",
+const $altRow: ThemedStyle<any> = ({ colors }) => ({
+  backgroundColor: colors.palette.checklistAlternatingBackground,
 })
 
 const $pill = (on: boolean): ViewStyle => ({
@@ -424,13 +424,13 @@ const $pill = (on: boolean): ViewStyle => ({
   backgroundColor: on ? "#dbeafe" : "#e5e7eb",
 })
 
-const $docPreviewContainer: ViewStyle = {
+const $docPreviewContainer: ThemedStyle<ViewStyle> = ({ colors }) => ({
   maxHeight: 240,
-  backgroundColor: "#f3f4f6",
+  backgroundColor: colors.palette.checklistBackground,
   borderRadius: 8,
   borderWidth: 1,
-  borderColor: "#e5e7eb",
-}
+  borderColor: colors.palette.gray3,
+})
 
 const $docPreviewContentPadding: ViewStyle = { paddingVertical: 8 }
 

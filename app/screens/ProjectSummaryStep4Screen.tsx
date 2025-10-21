@@ -8,6 +8,7 @@ import { Card } from "@/components/Card"
 import { Button } from "@/components/Button"
 import { Checkbox } from "@/components/Toggle/Checkbox"
 import { TextField } from "@/components/TextField"
+import { PressableIcon } from "@/components/Icon"
 import { useStores } from "@/models/RootStoreProvider"
 import { observer } from "mobx-react-lite"
 import { Controller, useForm } from "react-hook-form"
@@ -61,6 +62,11 @@ export const ProjectSummaryStep4Screen: FC<ProjectSummaryStep4ScreenProps> = obs
   const projectSummaryStore = activeAssessment?.projectSummary
 
   const [materialsModalVisible, setMaterialsModalVisible] = useState(false)
+  const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({})
+
+  function toggleCommentsRow(id: string) {
+    setExpandedRows((prev) => ({ ...prev, [id]: !prev[id] }))
+  }
 
   // Derive renderable materials by combining constants with store map state
   const materials = useMemo(() => (
@@ -126,24 +132,42 @@ export const ProjectSummaryStep4Screen: FC<ProjectSummaryStep4ScreenProps> = obs
               <Text text={`${providedCount} of ${materials.length} selected`} />
               <Button text="Open Checklist" onPress={() => setMaterialsModalVisible(true)} />
             </View>
-            <View style={$docPreviewContainer}>
+            <View style={themed($docPreviewContainer)}>
               <ListWithFadingDot
                 data={materials}
                 keyExtractor={(m: { id: string }) => m.id}
                 ItemSeparatorComponent={() => <View style={{ height: 1, backgroundColor: "#e5e7eb" }} />}
                 contentContainerStyle={$docPreviewContentPadding}
                 renderItem={({ item, index }: { item: { id: string; name: string; provided: boolean; comments?: string }; index: number }) => (
-                  <View style={[$docRow, index % 2 === 1 ? themed($altRow) : undefined]}>
-                    <Text text={item.name} />
-                    <View style={$row}>
-                      <Checkbox
-                        value={item.provided}
-                        onValueChange={(v) => projectSummaryStore?.updateProblematicMaterial(item.id, v, item.comments ?? "")}
-                      />
-                      <View style={$pill(item.provided)}>
-                        <Text text={item.provided ? "Yes" : "No"} />
+                  <View style={[$rowWrapper, index % 2 === 1 ? themed($altRow) : undefined]}>
+                    <View style={$docRow}>
+                      <Text text={item.name} />
+                      <View style={$row}>
+                        <Checkbox
+                          value={item.provided}
+                          onValueChange={(v) => projectSummaryStore?.updateProblematicMaterial(item.id, v, item.comments ?? "")}
+                        />
+                        <View style={$pill(item.provided)}>
+                          <Text text={item.provided ? "Yes" : "No"} />
+                        </View>
+                        <PressableIcon
+                          icon="more"
+                          size={18}
+                          onPress={() => toggleCommentsRow(item.id)}
+                          containerStyle={themed($commentIconContainer(!!expandedRows[item.id]))}
+                        />
                       </View>
                     </View>
+                    {expandedRows[item.id] && (
+                      <View style={$commentContainer}>
+                        <TextField
+                          placeholder="Add comments..."
+                          multiline
+                          value={item.comments ?? ""}
+                          onChangeText={(t) => projectSummaryStore?.updateProblematicMaterial(item.id, item.provided, t)}
+                        />
+                      </View>
+                    )}
                   </View>
                 )}
               />
@@ -245,21 +269,39 @@ export const ProjectSummaryStep4Screen: FC<ProjectSummaryStep4ScreenProps> = obs
             keyExtractor={(m: { id: string }) => m.id}
             ItemSeparatorComponent={() => <View style={{ height: 1, backgroundColor: "#e5e7eb" }} />}
             renderItem={({ item, index }: { item: { id: string; name: string; provided: boolean; comments?: string }; index: number }) => (
-              <TouchableOpacity
-                onPress={() => projectSummaryStore?.updateProblematicMaterial(item.id, !item.provided, item.comments ?? "")}
-                style={[$docRow, index % 2 === 1 ? themed($altRow) : undefined]}
-              >
-                <Text text={item.name} />
-                <View style={$row}>
-                  <Checkbox
-                    value={item.provided}
-                    onValueChange={(v) => projectSummaryStore?.updateProblematicMaterial(item.id, v, item.comments ?? "")}
-                  />
-                  <View style={$pill(item.provided)}>
-                    <Text text={item.provided ? "Yes" : "No"} />
+              <View style={[$rowWrapper, index % 2 === 1 ? themed($altRow) : undefined]}>
+                <TouchableOpacity
+                  onPress={() => projectSummaryStore?.updateProblematicMaterial(item.id, !item.provided, item.comments ?? "")}
+                  style={$docRow}
+                >
+                  <Text text={item.name} />
+                  <View style={$row}>
+                    <Checkbox
+                      value={item.provided}
+                      onValueChange={(v) => projectSummaryStore?.updateProblematicMaterial(item.id, v, item.comments ?? "")}
+                    />
+                    <View style={$pill(item.provided)}>
+                      <Text text={item.provided ? "Yes" : "No"} />
+                    </View>
+                    <PressableIcon
+                      icon="more"
+                      size={18}
+                      onPress={() => toggleCommentsRow(item.id)}
+                      containerStyle={themed($commentIconContainer(!!expandedRows[item.id]))}
+                    />
                   </View>
-                </View>
-              </TouchableOpacity>
+                </TouchableOpacity>
+                {expandedRows[item.id] && (
+                  <View style={$commentContainer}>
+                    <TextField
+                      placeholder="Add comments..."
+                      multiline
+                      value={item.comments ?? ""}
+                      onChangeText={(t) => projectSummaryStore?.updateProblematicMaterial(item.id, item.provided, t)}
+                    />
+                  </View>
+                )}
+              </View>
             )}
           />
         </View>
@@ -372,13 +414,17 @@ const $docRow: ViewStyle = {
   paddingVertical: 12,
 }
 
-const $docPreviewContainer: ViewStyle = {
+const $rowWrapper: ViewStyle = {
+  // Wrapper so alternating background spans the expanded comment area too
+}
+
+const $docPreviewContainer: ThemedStyle<ViewStyle> = ({ colors }) => ({
   maxHeight: 240,
-  backgroundColor: "#f3f4f6",
+  backgroundColor: colors.palette.checklistBackground,
   borderRadius: 8,
   borderWidth: 1,
-  borderColor: "#e5e7eb",
-}
+  borderColor: colors.palette.gray3,
+})
 
 const $docPreviewContentPadding: ViewStyle = { paddingVertical: 8 }
 
@@ -392,8 +438,24 @@ const $pill = (on: boolean): ViewStyle => ({
   backgroundColor: on ? "#dbeafe" : "#e5e7eb",
 })
 
-const $altRow: ThemedStyle<any> = ({ isDark }) => ({
-  backgroundColor: isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.035)",
+const $altRow: ThemedStyle<any> = ({ colors }) => ({
+  backgroundColor: colors.palette.checklistAlternatingBackground,
+})
+
+const $commentContainer: ViewStyle = {
+  paddingHorizontal: 16,
+  paddingBottom: 12,
+}
+
+const $commentIconContainer = (active: boolean): ThemedStyle<any> => ({ colors, isDark }) => ({
+  width: 40,
+  height: 36,
+  borderRadius: 8,
+  justifyContent: "center",
+  alignItems: "center",
+  borderWidth: 1,
+  backgroundColor: active ? (isDark ? "rgba(99,102,241,0.25)" : "#eef2ff") : "transparent",
+  borderColor: active ? (isDark ? "#a5b4fc" : "#c7d2fe") : (isDark ? "#4b5563" : "#e5e7eb"),
 })
 
 const $flex1: ViewStyle = { flex: 1 }

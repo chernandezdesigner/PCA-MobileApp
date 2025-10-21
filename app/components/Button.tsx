@@ -213,8 +213,8 @@ const $viewPresets: Record<Presets, ThemedStyleArray<ViewStyle>> = {
     $baseViewStyle,
     ({ colors }) => ({
       borderWidth: 1,
-      borderColor: colors.palette.neutral300,
-      backgroundColor: colors.palette.neutral300,
+      borderColor: colors.palette.gray4,
+      backgroundColor: colors.palette.SecondaryButtonBackground,
     }),
   ],
   filled: [
