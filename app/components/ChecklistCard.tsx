@@ -8,6 +8,7 @@ import { TextField } from "@/components/TextField"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
 import { ListWithFadingDot } from "@/components/ListWithFadingDot"
+import { Icon } from "@/components/Icon"
 
 export type ChecklistItem = { id: string; label: string; checked: boolean; comments?: string }
 
@@ -71,10 +72,12 @@ export const ChecklistCard: FC<Props> = (props) => {
                       </View>
                       {showComments && (
                         <Button
-                          text={expanded[item.id] ? "Hide" : "Comment"}
-                          preset="reversed"
                           onPress={() => toggleRow(item.id)}
-                          style={{ minHeight: 36, paddingHorizontal: 12 }}
+                          style={themed($commentBtn(!!expanded[item.id]))}
+                          LeftAccessory={({ style }) => (
+                            <Icon icon="more" size={16} containerStyle={style} />
+                          )}
+                          accessibilityLabel="Toggle comment"
                         />
                       )}
                     </View>
@@ -107,8 +110,16 @@ const $countLight: ViewStyle = { opacity: 0.7 }
 const $contentPadding: ViewStyle = { paddingVertical: 8 }
 const $rowWrapper: ViewStyle = {}
 const $commentContainer: ViewStyle = { paddingHorizontal: 16, paddingBottom: 12 }
-const $pill = (on: boolean): ViewStyle => ({ paddingHorizontal: 12, paddingVertical: 6, borderRadius: 12, width: 56, alignItems: "center", backgroundColor: on ? "#dbeafe" : "#e5e7eb" })
+const $pill = (on: boolean): ViewStyle => ({ height: 32, minWidth: 64, paddingHorizontal: 12, borderRadius: 16, alignItems: "center", justifyContent: "center", backgroundColor: on ? "#dbeafe" : "#e5e7eb" })
 const $container: ThemedStyle<ViewStyle> = ({ colors }) => ({ maxHeight: 240, backgroundColor: colors.palette.checklistBackground, borderRadius: 8, borderWidth: 1, borderColor: colors.palette.gray3 })
 const $altRow: ThemedStyle<any> = ({ colors }) => ({ backgroundColor: colors.palette.checklistAlternatingBackground })
+const $commentBtn = (active: boolean): ThemedStyle<ViewStyle> => ({ colors }) => ({
+  minHeight: 32,
+  minWidth: 32,
+  paddingHorizontal: 10,
+  backgroundColor: active ? colors.palette.secondary100 : colors.palette.SecondaryButtonBackground,
+  borderWidth: 1,
+  borderColor: active ? colors.palette.secondary200 : colors.palette.SecondaryButtonBorder,
+})
 
 

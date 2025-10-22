@@ -400,12 +400,12 @@ const $docPreviewContainer: ThemedStyle<ViewStyle> = ({ colors }) => ({
 const $docPreviewContentPadding: ViewStyle = { paddingVertical: 8 }
 
 const $pill = (on: boolean): ViewStyle => ({
+  height: 32,
+  minWidth: 64,
   paddingHorizontal: 12,
-  paddingVertical: 6,
-  borderRadius: 12,
-  // Fixed width to keep layout stable between "Yes" and "No"
-  width: 56,
+  borderRadius: 16,
   alignItems: "center",
+  justifyContent: "center",
   backgroundColor: on ? "#dbeafe" : "#e5e7eb",
 })
 

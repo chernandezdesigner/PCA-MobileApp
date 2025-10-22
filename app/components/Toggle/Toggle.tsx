@@ -257,8 +257,8 @@ const $inputWrapper: ViewStyle = {
 }
 
 export const $inputOuterBase: ViewStyle = {
-  height: 24,
-  width: 24,
+  height: 32,
+  width: 32,
   borderWidth: 2,
   alignItems: "center",
   overflow: "hidden",
