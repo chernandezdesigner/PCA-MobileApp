@@ -32,9 +32,12 @@ const palette = {
   // Surfaces / UI roles used by components
   background1: "#191015",
   headerFooterBackground: "#1F2937",
+  accordionBackground: "#1F2937",
   progressBarBackground: "#374151",
   progressBarActive: "#7DD3FC",
   TopBarHeaderText: "#FFFFFF",
+  accordionHeaderActiveText: "#FFFFFF",
+  accordionHeaderInactiveText: "rgba(255, 255, 255, 0.85)",
   SecondaryButtonBackground: "#111827",
   SecondaryButtonBorder: "#374151",
 

@@ -87,7 +87,7 @@ export const SectionAccordion = (props: SectionAccordionProps) => {
         style={[
           headerStyles,
           // Background responds to expansion state per figma
-          { backgroundColor: isExpanded ? theme.colors.palette.accordionBackground : theme.colors.background },
+          { backgroundColor: isExpanded ? (theme.colors.palette as any).accordionBackground : theme.colors.background },
           headerStyle,
         ] as StyleProp<ViewStyle>}
         activeOpacity={0.8}
@@ -98,14 +98,14 @@ export const SectionAccordion = (props: SectionAccordionProps) => {
           tx={titleTx as any}
           style={{
             color: isExpanded
-              ? theme.colors.palette.accordionHeaderActiveText
-              : theme.colors.palette.accordionHeaderInactiveText,
+              ? (theme.colors.palette as any).accordionHeaderActiveText
+              : (theme.colors.palette as any).accordionHeaderInactiveText,
           }}
         />
 
         <View style={themed($headerRight)}>
           {RightComponent}
-          <View style={{ transform: [{ rotate: isExpanded ? "90deg" : "0deg" }] }}>
+          <View style={{ transform: [{ rotate: isExpanded ? "-90deg" : "90deg" }] }}>
             <Icon icon="caretRight" size={18} color={theme.colors.textDim} />
           </View>
         </View>
@@ -116,7 +116,7 @@ export const SectionAccordion = (props: SectionAccordionProps) => {
           style={[
             themed($content),
             // Expanded body uses the darker accordion background and preserves the container bottom border
-            { backgroundColor: theme.colors.palette.accordionBackground },
+            { backgroundColor: (theme.colors.palette as any).accordionBackground },
             contentStyle,
           ] as StyleProp<ViewStyle>}
         >
@@ -142,7 +142,7 @@ const $header: ThemedStyleArray<ViewStyle> = [
     alignItems: "center",
     justifyContent: "space-between",
     paddingVertical: theme.spacing.sm,
-    paddingHorizontal: theme.spacing.sm,
+    paddingHorizontal: theme.spacing.md,
   }),
 ]
 
@@ -153,7 +153,7 @@ const $headerRight: ViewStyle = {
 
 const $content: ThemedStyleArray<ViewStyle> = [
   (theme) => ({
-    paddingHorizontal: theme.spacing.sm,
+    paddingHorizontal: theme.spacing.md,
     paddingBottom: theme.spacing.sm,
   }),
 ]
