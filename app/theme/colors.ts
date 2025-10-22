@@ -113,7 +113,8 @@ export const colors = {
    * Semantic text roles for easy global adjustments.
    */
   heading: palette.neutral900,
-  subheading: palette.neutral700,
+  // Make subheadings (like card section headers) darker per new design
+  subheading: palette.gray6,
   label: palette.neutral800,
   helper: palette.neutral600,
   /**

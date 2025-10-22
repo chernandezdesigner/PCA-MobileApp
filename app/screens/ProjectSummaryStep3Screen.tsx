@@ -16,6 +16,7 @@ import { ProgressBar } from "@/components/ProgressBar"
 import { StickyFooterNav } from "@/components/StickyFooterNav"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
+import { ListWithFadingDot as ScrollListWithFadingDot } from "@/components/ListWithFadingDot"
 
 interface ProjectSummaryStep3ScreenProps extends NativeStackScreenProps<ProjectSummaryFormNavigatorParamList, "ProjectSummaryStep3"> {}
 
@@ -106,16 +107,20 @@ export const ProjectSummaryStep3Screen: FC<ProjectSummaryStep3ScreenProps> = obs
 
       {/* Documentation Section */}
       <Card
-        HeadingComponent={<Text preset="subheading" text="Documentation" />}
+        HeadingComponent={
+          <View style={$headerRow}>
+            <View>
+              <Text preset="subheading" text="Documentation" />
+              <Text size="xs" weight="normal" style={$countLight} text={`${docsProvidedCount} of ${documents.length} selected`} />
+            </View>
+            <Button text="Open Checklist" onPress={() => setDocModalVisible(true)} />
+          </View>
+        }
         ContentComponent={
           <View style={$sectionContent}>
-            <View style={$rowBetween}>
-              <Text text={`${docsProvidedCount} of ${documents.length} selected`} />
-              <Button text="Open Checklist" onPress={() => setDocModalVisible(true)} />
-            </View>
             {/* Inline scrollable checklist preview */}
             <View style={themed($docPreviewContainer)}>
-              <ListWithFadingDot
+              <ScrollListWithFadingDot
                 data={documents}
                 keyExtractor={(d: { type: string }) => d.type}
                 ItemSeparatorComponent={() => <View style={{ height: 1, backgroundColor: "#e5e7eb" }} />}
@@ -271,7 +276,7 @@ export const ProjectSummaryStep3Screen: FC<ProjectSummaryStep3ScreenProps> = obs
             </View>
           </View>
           <View style={$flex1}>
-            <ListWithFadingDot
+            <ScrollListWithFadingDot
               data={documents}
               keyExtractor={(d: { type: string }) => d.type}
               ItemSeparatorComponent={() => <View style={{ height: 1, backgroundColor: "#e5e7eb" }} />}
@@ -368,9 +373,16 @@ const $content: ViewStyle = {
 
 const $sectionContent: ViewStyle = {
   gap: 12,
+  marginTop: 16,
 }
 
 const $sectionHeaderRow: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+}
+
+const $headerRow: ViewStyle = {
   flexDirection: "row",
   alignItems: "center",
   justifyContent: "space-between",
@@ -443,3 +455,4 @@ const $stickyFooter: ViewStyle = { position: "absolute", bottom: 0, left: 0, rig
 const $scrollArea: ViewStyle = { paddingTop: 72, paddingBottom: 96 }
 const $titleStyle: ThemedStyle<any> = ({ colors }) => ({ color: colors.palette.primary2 as any, fontSize: 24 })
 const $introBlock: ViewStyle = { paddingBottom: 32 }
+const $countLight: ViewStyle = { opacity: 0.7 }

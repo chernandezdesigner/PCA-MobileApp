@@ -18,6 +18,7 @@ import { ProgressBar } from "@/components/ProgressBar"
 import { StickyFooterNav } from "@/components/StickyFooterNav"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
+import { ChecklistCard } from "@/components/ChecklistCard"
 
 interface ProjectSummaryStep4ScreenProps extends NativeStackScreenProps<ProjectSummaryFormNavigatorParamList, "ProjectSummaryStep4"> {}
 
@@ -123,57 +124,20 @@ export const ProjectSummaryStep4Screen: FC<ProjectSummaryStep4ScreenProps> = obs
           <ProgressBar current={4} total={4} />
         </View>
 
-      {/* Problematic Materials */}
-      <Card
-        HeadingComponent={<Text preset="subheading" text="Problematic Materials" />}
-        ContentComponent={
-          <View style={$sectionContent}>
-            <View style={$rowBetween}>
-              <Text text={`${providedCount} of ${materials.length} selected`} />
-              <Button text="Open Checklist" onPress={() => setMaterialsModalVisible(true)} />
-            </View>
-            <View style={themed($docPreviewContainer)}>
-              <ListWithFadingDot
-                data={materials}
-                keyExtractor={(m: { id: string }) => m.id}
-                ItemSeparatorComponent={() => <View style={{ height: 1, backgroundColor: "#e5e7eb" }} />}
-                contentContainerStyle={$docPreviewContentPadding}
-                renderItem={({ item, index }: { item: { id: string; name: string; provided: boolean; comments?: string }; index: number }) => (
-                  <View style={[$rowWrapper, index % 2 === 1 ? themed($altRow) : undefined]}>
-                    <View style={$docRow}>
-                      <Text text={item.name} />
-                      <View style={$row}>
-                        <Checkbox
-                          value={item.provided}
-                          onValueChange={(v) => projectSummaryStore?.updateProblematicMaterial(item.id, v, item.comments ?? "")}
-                        />
-                        <View style={$pill(item.provided)}>
-                          <Text text={item.provided ? "Yes" : "No"} />
-                        </View>
-                        <PressableIcon
-                          icon="more"
-                          size={18}
-                          onPress={() => toggleCommentsRow(item.id)}
-                          containerStyle={themed($commentIconContainer(!!expandedRows[item.id]))}
-                        />
-                      </View>
-                    </View>
-                    {expandedRows[item.id] && (
-                      <View style={$commentContainer}>
-                        <TextField
-                          placeholder="Add comments..."
-                          multiline
-                          value={item.comments ?? ""}
-                          onChangeText={(t) => projectSummaryStore?.updateProblematicMaterial(item.id, item.provided, t)}
-                        />
-                      </View>
-                    )}
-                  </View>
-                )}
-              />
-            </View>
-          </View>
-        }
+      {/* Problematic Materials (refactored) */}
+      <ChecklistCard
+        title="Problematic Materials"
+        items={materials.map((m) => ({ id: m.id, label: m.name, checked: m.provided, comments: m.comments }))}
+        showComments
+        onOpen={() => setMaterialsModalVisible(true)}
+        onToggle={(id, checked) => {
+          const found = materials.find((m) => m.id === id)
+          if (found) projectSummaryStore?.updateProblematicMaterial(id, checked, found.comments ?? "")
+        }}
+        onChangeComment={(id, text) => {
+          const found = materials.find((m) => m.id === id)
+          if (found) projectSummaryStore?.updateProblematicMaterial(id, found.provided, text)
+        }}
       />
 
       {/* Utilities */}
@@ -379,6 +343,7 @@ const $content: ViewStyle = {
 
 const $sectionContent: ViewStyle = {
   gap: 12,
+  marginTop: 16,
 }
 
 const $row: ViewStyle = {
@@ -388,6 +353,12 @@ const $row: ViewStyle = {
 }
 
 const $rowBetween: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+}
+
+const $headerRow: ViewStyle = {
   flexDirection: "row",
   alignItems: "center",
   justifyContent: "space-between",
@@ -467,3 +438,4 @@ const $stickyFooter: ViewStyle = { position: "absolute", bottom: 0, left: 0, rig
 const $scrollArea: ViewStyle = { paddingTop: 72, paddingBottom: 96 }
 const $titleStyle: ThemedStyle<any> = ({ colors }) => ({ color: colors.palette.primary2, fontSize: 24 })
 const $introBlock: ViewStyle = { paddingBottom: 32 }
+const $countLight: ViewStyle = { opacity: 0.7 }
