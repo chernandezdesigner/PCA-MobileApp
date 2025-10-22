@@ -87,7 +87,7 @@ export const SectionAccordion = (props: SectionAccordionProps) => {
         style={[
           headerStyles,
           // Background responds to expansion state per figma
-          { backgroundColor: isExpanded ? (theme.colors.palette as any).accordionBackground : theme.colors.background },
+          { backgroundColor: isExpanded ? (theme.colors.palette as any).accordionBackground : theme.colors.palette.gray1 },
           headerStyle,
         ] as StyleProp<ViewStyle>}
         activeOpacity={0.8}

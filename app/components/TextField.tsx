@@ -103,6 +103,11 @@ export interface TextFieldProps extends Omit<TextInputProps, "ref"> {
    * Note: It is a good idea to memoize this.
    */
   LeftAccessory?: ComponentType<TextFieldAccessoryProps>
+  /**
+   * Minimum number of rows when `multiline` is true. Defaults to 3 when set.
+   * Works on native and web by mapping to a minimum height.
+   */
+  minRows?: number
 }
 
 /**
@@ -130,6 +135,7 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
     style: $inputStyleOverride,
     containerStyle: $containerStyleOverride,
     inputWrapperStyle: $inputWrapperStyleOverride,
+    minRows,
     ...TextInputProps
   } = props
   const input = useRef<TextInput>(null)
@@ -150,11 +156,20 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
 
   const $labelStyles = [$labelStyle, LabelTextProps?.style]
 
+  // Compute a corresponding wrapper minHeight so the container doesn't cap the input
+  const computedWrapperMinHeight = (() => {
+    if (!TextInputProps.multiline) return undefined
+    const rows = minRows ?? 3
+    const line = 24
+    // Add some padding and label spacing headroom
+    return Math.max(rows * line + 32, 96)
+  })()
+
   const $inputWrapperStyles = [
     $styles.row,
     $inputWrapperStyle,
     status === "error" && { borderColor: colors.error },
-    TextInputProps.multiline && { minHeight: 112 },
+    TextInputProps.multiline && { minHeight: computedWrapperMinHeight },
     LeftAccessory && { paddingStart: 0 },
     RightAccessory && { paddingEnd: 0 },
     isFocused && {
@@ -168,11 +183,20 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
     $inputWrapperStyleOverride,
   ]
 
+  // Compute a min height when multiline is enabled
+  const computedMinHeight = (() => {
+    if (!TextInputProps.multiline) return undefined
+    const rows = minRows ?? 3
+    // 24 is the base line-height proxy from $inputStyle height; add vertical paddings/margins
+    const line = 24
+    return Math.max(rows * line + 16, 72)
+  })()
+
   const $inputStyles: ThemedStyleArray<TextStyle> = [
     $inputStyle,
     disabled && { color: colors.textDim },
     isRTL && { textAlign: "right" as TextStyle["textAlign"] },
-    TextInputProps.multiline && { height: "auto" },
+    TextInputProps.multiline && { height: "auto", minHeight: computedMinHeight },
     $inputStyleOverride,
   ]
 
@@ -229,6 +253,7 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
           placeholderTextColor={colors.textDim}
           {...TextInputProps}
           editable={!disabled}
+          multiline={TextInputProps.multiline}
           onFocus={(e) => {
             setIsFocused(true)
             TextInputProps.onFocus?.(e)

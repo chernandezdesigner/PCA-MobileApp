@@ -625,12 +625,19 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
           </View>
         </SectionAccordion>
 
-        <View style={themed($paddedBlock)}>
+        <View style={themed($commentsBlock)}>
           <Controller
             control={control}
             name="comments"
             render={({ field: { value, onChange, onBlur } }) => (
-              <TextField label="Comments" value={value} onChangeText={onChange} onBlur={onBlur} />
+              <TextField
+                label="Comments"
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                multiline
+                minRows={2}
+              />
             )}
           />
         </View>
@@ -700,7 +707,8 @@ const $chipButton: ViewStyle = {
 const $chipButtonText: ViewStyle = {}
 
 const $scrollArea: ViewStyle = { flex: 1, paddingTop: 72, paddingBottom: 96 }
-const $paddedBlock: ViewStyle = { paddingHorizontal: 16, paddingBottom: 16, gap: 8 }
+const $paddedBlock: ViewStyle = { paddingHorizontal: 16, paddingBottom: 16, paddingTop: 16, gap: 8 }
+const $commentsBlock: ViewStyle = { paddingHorizontal: 16, paddingBottom: 16, paddingTop: 24, gap: 8 }
 const $titleStyle: any = ({ colors }: any) => ({ color: colors.palette.primary2 as any, fontSize: 24 })
 const $screenInner: ViewStyle = { flex: 1 }
 const $stickyHeader: ViewStyle = { position: "absolute", top: 0, left: 0, right: 0, zIndex: 2 }
