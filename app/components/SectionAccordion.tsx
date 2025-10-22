@@ -74,16 +74,34 @@ export const SectionAccordion = (props: SectionAccordionProps) => {
     onToggle?.(next)
   }
 
+  const containerStyles = themed([$container])
+
+  const headerStyles = themed([$header])
+
   return (
-    <View style={[themed($container), style] as StyleProp<ViewStyle>}>
+    <View style={[containerStyles, style] as StyleProp<ViewStyle>}>
       <TouchableOpacity
         accessibilityRole="button"
         accessibilityState={{ expanded: isExpanded }}
         onPress={handleToggle}
-        style={[themed($header), headerStyle] as StyleProp<ViewStyle>}
+        style={[
+          headerStyles,
+          // Background responds to expansion state per figma
+          { backgroundColor: isExpanded ? theme.colors.palette.accordionBackground : theme.colors.background },
+          headerStyle,
+        ] as StyleProp<ViewStyle>}
         activeOpacity={0.8}
       >
-        <Text preset="subheading" text={title} tx={titleTx as any} />
+        <Text
+          preset="subheading"
+          text={title}
+          tx={titleTx as any}
+          style={{
+            color: isExpanded
+              ? theme.colors.palette.accordionHeaderActiveText
+              : theme.colors.palette.accordionHeaderInactiveText,
+          }}
+        />
 
         <View style={themed($headerRight)}>
           {RightComponent}
@@ -94,7 +112,14 @@ export const SectionAccordion = (props: SectionAccordionProps) => {
       </TouchableOpacity>
 
       {isExpanded && (
-        <View style={[themed($content), contentStyle] as StyleProp<ViewStyle>}>
+        <View
+          style={[
+            themed($content),
+            // Expanded body uses the darker accordion background and preserves the container bottom border
+            { backgroundColor: theme.colors.palette.accordionBackground },
+            contentStyle,
+          ] as StyleProp<ViewStyle>}
+        >
           {children}
         </View>
       )}
@@ -104,10 +129,10 @@ export const SectionAccordion = (props: SectionAccordionProps) => {
 
 const $container: ThemedStyleArray<ViewStyle> = [
   (theme) => ({
-    borderRadius: theme.spacing.md,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
-    backgroundColor: theme.colors.palette.neutral200,
+    // Faint top and bottom borders; sections stack with no gaps
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: theme.colors.palette.gray3,
   }),
 ]
 
@@ -132,3 +157,4 @@ const $content: ThemedStyleArray<ViewStyle> = [
     paddingBottom: theme.spacing.sm,
   }),
 ]
+

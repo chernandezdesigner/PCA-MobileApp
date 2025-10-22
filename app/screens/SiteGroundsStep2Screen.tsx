@@ -1,5 +1,5 @@
 import { FC, useEffect, useMemo, useRef, useState } from "react"
-import { View, ViewStyle } from "react-native"
+import { View, ViewStyle, ScrollView } from "react-native"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
@@ -246,17 +246,22 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
   }, [watch, store])
 
   return (
-    <Screen style={$root} preset="scroll" contentContainerStyle={themed($content)}>
-      <HeaderBar title="Site & Grounds" leftIcon="back" onLeftPress={() => navigation.goBack()} rightIcon="view" />
-      <Text preset="subheading" text="Topography, Landscaping, Walls, Water" />
-      <ProgressBar current={2} total={4} />
+    <Screen style={$root} preset="fixed" contentContainerStyle={$screenInner}>
+      <View style={$stickyHeader}>
+        <HeaderBar title="Site & Grounds" leftIcon="back" onLeftPress={() => navigation.goBack()} rightIcon="view" />
+      </View>
+      <ScrollView contentContainerStyle={themed($content)} style={$scrollArea}>
+        <View style={themed($paddedBlock)}>
+          <Text preset="subheading" text="Topography" style={themed($titleStyle)} />
+          <ProgressBar current={2} total={4} />
+        </View>
 
-      <SectionAccordion
-        title="Topography & Slope"
-        expanded={openKey === "topography"}
-        onToggle={(n) => setOpenKey(n ? "topography" : null)}
-      >
-        <View style={themed($sectionBody)}>
+        <SectionAccordion
+          title="Topography Slope"
+          expanded={openKey === "topography"}
+          onToggle={(n) => setOpenKey(n ? "topography" : null)}
+        >
+          <View style={themed($sectionBody)}>
           <Controller
             control={control}
             name="topographySlope.slopeType"
@@ -270,11 +275,13 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
             )}
           />
 
+            <Text preset="formLabel" text="Condition" />
             <ConditionAssessment
               value={store?.topographySlope.assessment.condition as any}
               onChange={(v) => store?.updateTopographySlope({ assessment: { condition: v } })}
             />
 
+          <Text preset="formLabel" text="Repair Status" />
           <RepairStatus
             value={store?.topographySlope.assessment.repairStatus as any}
             onChange={(v) => store?.updateTopographySlope({ assessment: { repairStatus: v } })}
@@ -292,15 +299,15 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
               />
             )}
           />
-        </View>
-      </SectionAccordion>
+          </View>
+        </SectionAccordion>
 
-      <SectionAccordion
-        title="Landscaping"
-        expanded={openKey === "landscaping"}
-        onToggle={(n) => setOpenKey(n ? "landscaping" : null)}
-      >
-        <View style={themed($sectionBody)}>
+        <SectionAccordion
+          title="Landscaping"
+          expanded={openKey === "landscaping"}
+          onToggle={(n) => setOpenKey(n ? "landscaping" : null)}
+        >
+          <View style={themed($sectionBody)}>
           <Controller
             control={control}
             name="landscaping.landscapingType"
@@ -313,10 +320,12 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
               />
             )}
           />
+          <Text preset="formLabel" text="Condition" />
           <ConditionAssessment
             value={store?.landscaping.assessment.condition as any}
             onChange={(v) => store?.updateLandscaping({ assessment: { condition: v } })}
           />
+          <Text preset="formLabel" text="Repair Status" />
           <RepairStatus
             value={store?.landscaping.assessment.repairStatus as any}
             onChange={(v) => store?.updateLandscaping({ assessment: { repairStatus: v } })}
@@ -334,15 +343,15 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
               />
             )}
           />
-        </View>
-      </SectionAccordion>
+          </View>
+        </SectionAccordion>
 
-      <SectionAccordion
-        title="Retaining Walls"
-        expanded={openKey === "retainingWalls"}
-        onToggle={(n) => setOpenKey(n ? "retainingWalls" : null)}
-      >
-        <View style={themed($sectionBody)}>
+        <SectionAccordion
+          title="Retaining Walls"
+          expanded={openKey === "retainingWalls"}
+          onToggle={(n) => setOpenKey(n ? "retainingWalls" : null)}
+        >
+          <View style={themed($sectionBody)}>
           <Controller
             control={control}
             name="retainingWalls.retainingWallsType"
@@ -356,10 +365,12 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
             )}
           />
           {/** Parent-level assessment for retaining walls */}
+          <Text preset="formLabel" text="Condition" />
           <ConditionAssessment
             value={store?.retainingWalls.assessment.condition as any}
             onChange={(v) => store?.updateRetainingWalls({ assessment: { condition: v } })}
           />
+          <Text preset="formLabel" text="Repair Status" />
           <RepairStatus
             value={store?.retainingWalls.assessment.repairStatus as any}
             onChange={(v) => store?.updateRetainingWalls({ assessment: { repairStatus: v } })}
@@ -401,6 +412,7 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
                   }}
                   options={RAILING_TYPE_OPTIONS}
                 />
+                <Text preset="formLabel" text="Condition" />
                 <ConditionAssessment
                   value={store?.retainingWalls.railingDetails?.assessment.condition as any}
                   onChange={(v) =>
@@ -409,6 +421,7 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
                       : store?.updateRetainingWalls({ railingDetails: { assessment: { condition: v } } as any })
                   }
                 />
+                <Text preset="formLabel" text="Repair Status" />
                 <RepairStatus
                   value={store?.retainingWalls.railingDetails?.assessment.repairStatus as any}
                   onChange={(v) =>
@@ -430,15 +443,15 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
               </View>
             </View>
           )}
-        </View>
-      </SectionAccordion>
+          </View>
+        </SectionAccordion>
 
-      <SectionAccordion
-        title="Screen Walls"
-        expanded={openKey === "screenWalls"}
-        onToggle={(n) => setOpenKey(n ? "screenWalls" : null)}
-      >
-        <View style={themed($sectionBody)}>
+        <SectionAccordion
+          title="Screen Walls"
+          expanded={openKey === "screenWalls"}
+          onToggle={(n) => setOpenKey(n ? "screenWalls" : null)}
+        >
+          <View style={themed($sectionBody)}>
           <Controller
             control={control}
             name="screenWalls.screenWallsType"
@@ -452,10 +465,12 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
             )}
           />
           {/** Parent-level assessment for screen walls */}
+          <Text preset="formLabel" text="Condition" />
           <ConditionAssessment
             value={store?.screenWalls.assessment.condition as any}
             onChange={(v) => store?.updateScreenWalls({ assessment: { condition: v } })}
           />
+          <Text preset="formLabel" text="Repair Status" />
           <RepairStatus
             value={store?.screenWalls.assessment.repairStatus as any}
             onChange={(v) => store?.updateScreenWalls({ assessment: { repairStatus: v } })}
@@ -497,6 +512,7 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
                   }}
                   options={RAILING_TYPE_OPTIONS}
                 />
+                <Text preset="formLabel" text="Condition" />
                 <ConditionAssessment
                   value={store?.screenWalls.railingDetails?.assessment.condition as any}
                   onChange={(v) =>
@@ -505,6 +521,7 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
                       : store?.updateScreenWalls({ railingDetails: { assessment: { condition: v } } as any })
                   }
                 />
+                <Text preset="formLabel" text="Repair Status" />
                 <RepairStatus
                   value={store?.screenWalls.railingDetails?.assessment.repairStatus as any}
                   onChange={(v) =>
@@ -526,15 +543,15 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
               </View>
             </View>
           )}
-        </View>
-      </SectionAccordion>
+          </View>
+        </SectionAccordion>
 
-      <SectionAccordion
-        title="Water Features"
-        expanded={openKey === "waterFeatures"}
-        onToggle={(n) => setOpenKey(n ? "waterFeatures" : null)}
-      >
-        <View style={themed($sectionBody)}>
+        <SectionAccordion
+          title="Water Features"
+          expanded={openKey === "waterFeatures"}
+          onToggle={(n) => setOpenKey(n ? "waterFeatures" : null)}
+        >
+          <View style={themed($sectionBody)}>
           <Controller
             control={control}
             name="waterFeatures.waterFeaturesType"
@@ -566,10 +583,12 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
               <TextField label="Pump Age" value={value} onChangeText={onChange} onBlur={onBlur} />
             )}
           />
+          <Text preset="formLabel" text="Condition" />
           <ConditionAssessment
             value={store?.waterFeatures.assessment.condition as any}
             onChange={(v) => store?.updateWaterFeatures({ assessment: { condition: v } })}
           />
+          <Text preset="formLabel" text="Repair Status" />
           <RepairStatus
             value={store?.waterFeatures.assessment.repairStatus as any}
             onChange={(v) => store?.updateWaterFeatures({ assessment: { repairStatus: v } })}
@@ -580,22 +599,26 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
             value={store?.waterFeatures.assessment.amountToRepair}
             onChangeText={(t) => store?.updateWaterFeatures({ assessment: { amountToRepair: t } })}
           />
-        </View>
-      </SectionAccordion>
+          </View>
+        </SectionAccordion>
 
-      <Controller
-        control={control}
-        name="comments"
-        render={({ field: { value, onChange, onBlur } }) => (
-          <TextField label="Comments" value={value} onChangeText={onChange} onBlur={onBlur} />
-        )}
-      />
-      <View style={themed($bottomSpace)} />
-      <StickyFooterNav
-        onBack={() => navigation.navigate("SiteGroundsStep1" as never)}
-        onNext={() => navigation.navigate("SiteGroundsStep3" as never)}
-        showCamera={true}
-      />
+        <View style={themed($paddedBlock)}>
+          <Controller
+            control={control}
+            name="comments"
+            render={({ field: { value, onChange, onBlur } }) => (
+              <TextField label="Comments" value={value} onChangeText={onChange} onBlur={onBlur} />
+            )}
+          />
+        </View>
+      </ScrollView>
+      <View style={$stickyFooter}>
+        <StickyFooterNav
+          onBack={() => navigation.navigate("SiteGroundsStep1" as never)}
+          onNext={() => navigation.navigate("SiteGroundsStep3" as never)}
+          showCamera={true}
+        />
+      </View>
     </Screen>
   )
 })
@@ -605,13 +628,11 @@ const $root: ViewStyle = {
 }
 
 const $content: ViewStyle = {
-  padding: 16,
-  gap: 16,
+  // Remove side padding so accordions span full width and touch edges
+  gap: 0,
 }
 
-const $sectionBody: ViewStyle = {
-  gap: 12,
-}
+const $sectionBody: ViewStyle = { gap: 12, paddingHorizontal: 16, paddingBottom: 16, paddingTop: 8 }
 
 const $row: ViewStyle = {
   flexDirection: "row",
@@ -664,4 +685,9 @@ const $chipButton: ViewStyle = {
 
 const $chipButtonText: ViewStyle = {}
 
-const $bottomSpace: ViewStyle = { height: 80 }
+const $scrollArea: ViewStyle = { flex: 1, paddingTop: 72, paddingBottom: 96 }
+const $paddedBlock: ViewStyle = { paddingHorizontal: 16, paddingBottom: 16, gap: 8 }
+const $titleStyle: any = ({ colors }: any) => ({ color: colors.palette.primary2 as any, fontSize: 24 })
+const $screenInner: ViewStyle = { flex: 1 }
+const $stickyHeader: ViewStyle = { position: "absolute", top: 0, left: 0, right: 0, zIndex: 2 }
+const $stickyFooter: ViewStyle = { position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 2 }

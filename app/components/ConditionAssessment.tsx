@@ -3,7 +3,6 @@ import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle, ThemedStyleArray } from "@/theme/types"
 import { Text } from "@/components/Text"
-import { Icon } from "@/components/Icon"
 
 type ConditionValue = "good" | "fair" | "poor"
 
@@ -35,15 +34,15 @@ export const ConditionAssessment = (props: ConditionAssessmentProps) => {
 
   const Option = ({
     id,
-    icon,
     label,
     accentColor,
+    fillColor,
     rightAdornment,
   }: {
     id: ConditionValue
-    icon?: ReactNode
     label: string
     accentColor: string
+    fillColor: string
     rightAdornment?: ReactNode
   }) => {
     const selected = value === id
@@ -54,12 +53,9 @@ export const ConditionAssessment = (props: ConditionAssessmentProps) => {
         accessibilityRole="button"
         accessibilityState={{ selected, disabled: !!disabled }}
         onPress={() => onChange?.(id)}
-        style={themed([$tile, selected && [$tileSelected, { borderColor: accentColor }]])}
+        style={themed([$tile, selected && [$tileSelected, { borderColor: accentColor, backgroundColor: fillColor }]])}
       >
-        <View style={themed([$iconWrap, selected && { backgroundColor: accentColor }])}>
-          {icon}
-        </View>
-        <Text size="xs" weight="medium" text={label} style={themed($tileLabel)} />
+        <Text size="sm" weight="medium" text={label} style={themed($tileLabel)} />
         {rightAdornment}
       </TouchableOpacity>
     )
@@ -69,22 +65,21 @@ export const ConditionAssessment = (props: ConditionAssessmentProps) => {
     <View style={themed([$container, style])}>
       <Option
         id="good"
-        icon={<Icon icon="check" size={16} color={theme.colors.palette.neutral100} />}
-        label="Excellent"
-        accentColor={theme.colors.palette.primary500}
+        label="Good"
+        accentColor={theme.colors.palette.conditionGoodBorder}
+        fillColor={theme.colors.palette.conditionGoodBackground}
       />
       <Option
         id="fair"
-        // using emoji to avoid adding new assets for a warning triangle
-        icon={<Text size="xs">⚠️</Text>}
         label="Fair"
-        accentColor={theme.colors.palette.accent500}
+        accentColor={theme.colors.palette.conditionFairBorder}
+        fillColor={theme.colors.palette.conditionFairBackground}
       />
       <Option
         id="poor"
-        icon={<Icon icon="x" size={16} color={theme.colors.palette.neutral100} />}
         label="Poor"
-        accentColor={theme.colors.palette.angry500}
+        accentColor={theme.colors.palette.conditionPoorBorder}
+        fillColor={theme.colors.palette.conditionPoorBackground}
       />
     </View>
   )
@@ -101,14 +96,15 @@ const $container: ThemedStyleArray<ViewStyle> = [
 const $tile: ThemedStyleArray<ViewStyle> = [
   (theme) => ({
     width: "32%",
-    minHeight: 88,
+    minHeight: 48,
     borderRadius: theme.spacing.md,
     borderWidth: 1,
-    borderColor: theme.colors.border,
-    backgroundColor: "rgba(250,250,250,0.7)",
+    borderColor: theme.colors.palette.SecondaryButtonBorder,
+    backgroundColor: theme.colors.palette.SecondaryButtonBackground,
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: theme.spacing.sm,
+    paddingVertical: theme.spacing.xs,
+    paddingHorizontal: theme.spacing.md,
   }),
 ]
 
@@ -118,15 +114,5 @@ const $tileSelected: ViewStyle = {
   shadowRadius: 8,
   elevation: 6,
 }
-
-const $iconWrap: ThemedStyle<ViewStyle> = (theme) => ({
-  width: 28,
-  height: 28,
-  borderRadius: 6,
-  alignItems: "center",
-  justifyContent: "center",
-  backgroundColor: theme.colors.palette.neutral300,
-  marginBottom: theme.spacing.xs,
-})
 
 const $tileLabel: ThemedStyle<ViewStyle> = () => ({})

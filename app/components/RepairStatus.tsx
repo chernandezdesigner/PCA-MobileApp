@@ -28,9 +28,18 @@ export const RepairStatus = (props: RepairStatusProps) => {
         accessibilityRole="button"
         accessibilityState={{ selected, disabled: !!disabled }}
         onPress={() => onChange?.(code)}
-        style={themed([$tile, selected && $tileSelected])}
+        style={themed([
+          $tile,
+          selected && [
+            $tileSelected,
+            {
+              backgroundColor: theme.colors.palette.SecondaryButtonActiveBackground,
+              borderColor: theme.colors.palette.SecondaryButtonActiveBackground,
+            },
+          ],
+        ])}
       >
-        <Text weight="medium" text={code} />
+        <Text weight="medium" text={code} style={themed(selected ? $tileTextSelected : $tileText)} />
       </TouchableOpacity>
     )
   }
@@ -58,22 +67,25 @@ const $grid: ThemedStyleArray<ViewStyle> = [
 const $tile: ThemedStyleArray<ViewStyle> = [
   (theme) => ({
     width: "32%",
-    minHeight: 64,
+    minHeight: 48,
     borderRadius: theme.spacing.md,
     borderWidth: 1,
-    borderColor: theme.colors.border,
-    backgroundColor: "rgba(250,250,250,0.7)",
+    borderColor: theme.colors.palette.SecondaryButtonBorder,
+    backgroundColor: theme.colors.palette.SecondaryButtonBackground,
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: theme.spacing.sm,
+    paddingVertical: theme.spacing.xs,
+    paddingHorizontal: theme.spacing.md,
     marginBottom: theme.spacing.sm,
   }),
 ]
 
 const $tileSelected: ViewStyle = {
-  borderColor: "#6366f1",
   shadowColor: "#000000",
   shadowOpacity: 0.06,
   shadowRadius: 8,
   elevation: 6,
 }
+
+const $tileText: ThemedStyle<any> = ({ colors }) => ({ color: colors.palette.gray6 })
+const $tileTextSelected: ThemedStyle<any> = ({ colors }) => ({ color: colors.palette.neutral100 })
