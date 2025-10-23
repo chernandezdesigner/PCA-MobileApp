@@ -75,12 +75,14 @@ export const DumpsterAccordionModel = types.model("DumpsterAccordionModel", {
 export const RecreationalFacilitiesAccordionModel = types.model("RecreationalFacilitiesAccordionModel", {
     NotApplicable: types.optional(types.boolean, false),
     recreationalFacilitiesType: types.optional(types.string, ""),
+    otherType: types.optional(types.string, ""),
     assessment: types.optional(ConditionAssessment, {}),
     })
     .actions((self) => ({
-        update(data: { NotApplicable?: boolean; recreationalFacilitiesType?: string; assessment?: Record<string, any> }) {
+        update(data: { NotApplicable?: boolean; recreationalFacilitiesType?: string; otherType?: string; assessment?: Record<string, any> }) {
         if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
         if (data.recreationalFacilitiesType !== undefined) self.recreationalFacilitiesType = data.recreationalFacilitiesType
+        if (data.otherType !== undefined) self.otherType = data.otherType
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
     },
 }))

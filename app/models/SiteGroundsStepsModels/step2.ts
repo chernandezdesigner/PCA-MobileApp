@@ -27,15 +27,17 @@ export const LandscapingAccordionModel = types.model("LandscapingAccordionModel"
 export const RetainingWallsAccordionModel = types.model("RetainingWallsAccordionModel", {
     NotApplicable: types.optional(types.boolean, false),
     retainingWallsType: types.optional(types.string, ""),
+    otherType: types.optional(types.string, ""),
     assessment: types.optional(ConditionAssessment, {}),
     railing: types.optional(types.enumeration("railing", ["yes", "no"]), "no"),
     // When railing is "yes", we render a single nested assessment block for railings
     railingDetails: types.maybe(types.late(() => railingForRetainingWallsModel)),
     })
     .actions((self) => ({
-        update(data: { NotApplicable?: boolean; retainingWallsType?: string; assessment?: Record<string, any>; railing?: "yes" | "no"; railingDetails?: any }) {
+        update(data: { NotApplicable?: boolean; retainingWallsType?: string; otherType?: string; assessment?: Record<string, any>; railing?: "yes" | "no"; railingDetails?: any }) {
         if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
         if (data.retainingWallsType !== undefined) self.retainingWallsType = data.retainingWallsType
+        if (data.otherType !== undefined) self.otherType = data.otherType
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
         if (data.railing !== undefined) self.railing = data.railing
         if (data.railingDetails !== undefined) (self as any).railingDetails = data.railingDetails as any
@@ -67,15 +69,17 @@ export const railingForScreenWallsModel = types.model("railingForScreenWallsMode
 export const ScreenWallsAccordionModel = types.model("ScreenWallsAccordionModel", {
     NotApplicable: types.optional(types.boolean, false),
     screenWallsType: types.optional(types.string, ""),
+    otherType: types.optional(types.string, ""),
     assessment: types.optional(ConditionAssessment, {}),
     railing: types.optional(types.enumeration("railing", ["yes", "no"]), "no"),
     // When railing is "yes", we render a single nested assessment block for railings
     railingDetails: types.maybe(types.late(() => railingForScreenWallsModel)),
     })
     .actions((self) => ({
-        update(data: { NotApplicable?: boolean; screenWallsType?: string; assessment?: Record<string, any>; railing?: "yes" | "no"; railingDetails?: any }) {
+        update(data: { NotApplicable?: boolean; screenWallsType?: string; otherType?: string; assessment?: Record<string, any>; railing?: "yes" | "no"; railingDetails?: any }) {
         if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
         if (data.screenWallsType !== undefined) self.screenWallsType = data.screenWallsType
+        if (data.otherType !== undefined) self.otherType = data.otherType
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
         if (data.railing !== undefined) self.railing = data.railing
         if (data.railingDetails !== undefined) (self as any).railingDetails = data.railingDetails as any
