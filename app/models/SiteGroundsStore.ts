@@ -1,8 +1,8 @@
 import { types } from "mobx-state-tree"
 import { SiteGroundsStep2 } from "./SiteGroundsStepsModels/step2"
 import { SiteGroundsStep3 } from "./SiteGroundsStepsModels/step3"
+import { SiteGroundsStep4 } from "./SiteGroundsStepsModels/step4"
 // import { DrainageErosionStep1Model } from "./SiteGroundsStepsModels/Step1" // uncomment when Step1 is ready
-
 
 export const SiteGroundsStore = types
 .model("SiteGroundsStore")
@@ -10,6 +10,7 @@ export const SiteGroundsStore = types
     // step1: types.optional(DrainageErosionStep1Model, {}),
     step2: types.optional(SiteGroundsStep2, {}),
     step3: types.optional(SiteGroundsStep3, {}),
+    step4: types.optional(SiteGroundsStep4, {}),
     currentStep: types.optional(types.number, 1),
     lastModified: types.optional(types.Date, () => new Date()),
 })

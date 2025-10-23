@@ -2,12 +2,14 @@ import { types } from "mobx-state-tree"
 import { ConditionAssessment } from "../SharedModels"
 
 export const CarportsAccordionModel = types.model("CarportsAccordionModel", {
+    NotApplicable: types.optional(types.boolean, false),
     GeneralConstruction: types.optional(types.string, ""),
     RoofType: types.optional(types.string, ""),
     assessment: types.optional(ConditionAssessment, {}),
     })
     .actions((self) => ({
-        update(data: { GeneralConstruction?: string; RoofType?: string; assessment?: Record<string, any> }) {
+        update(data: { NotApplicable?: boolean; GeneralConstruction?: string; RoofType?: string; assessment?: Record<string, any> }) {
+        if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
         if (data.GeneralConstruction !== undefined) self.GeneralConstruction = data.GeneralConstruction
         if (data.RoofType !== undefined) self.RoofType = data.RoofType
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
@@ -15,12 +17,14 @@ export const CarportsAccordionModel = types.model("CarportsAccordionModel", {
 }))
 
 export const MaintenanceBldgAccordionModel = types.model("MaintenanceBldgAccordionModel", {
+    NotApplicable: types.optional(types.boolean, false),
     GeneralConstruction: types.optional(types.string, ""),
     RoofType: types.optional(types.string, ""),
     assessment: types.optional(ConditionAssessment, {}),
     })
     .actions((self) => ({
-        update(data: { GeneralConstruction?: string; RoofType?: string; assessment?: Record<string, any> }) {
+        update(data: { NotApplicable?: boolean; GeneralConstruction?: string; RoofType?: string; assessment?: Record<string, any> }) {
+        if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
         if (data.GeneralConstruction !== undefined) self.GeneralConstruction = data.GeneralConstruction
         if (data.RoofType !== undefined) self.RoofType = data.RoofType
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
@@ -28,12 +32,14 @@ export const MaintenanceBldgAccordionModel = types.model("MaintenanceBldgAccordi
 }))
 
 export const FirePumpBldgAccordionModel = types.model("FirePumpBldgAccordionModel", {
+    NotApplicable: types.optional(types.boolean, false),
     GeneralConstruction: types.optional(types.string, ""),
     RoofType: types.optional(types.string, ""),
     assessment: types.optional(ConditionAssessment, {}),
     })
     .actions((self) => ({
-        update(data: { GeneralConstruction?: string; RoofType?: string; assessment?: Record<string, any> }) {
+        update(data: { NotApplicable?: boolean; GeneralConstruction?: string; RoofType?: string; assessment?: Record<string, any> }) {
+        if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
         if (data.GeneralConstruction !== undefined) self.GeneralConstruction = data.GeneralConstruction
         if (data.RoofType !== undefined) self.RoofType = data.RoofType
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
@@ -41,12 +47,14 @@ export const FirePumpBldgAccordionModel = types.model("FirePumpBldgAccordionMode
 }))
 
 export const ResidentialGaragesAccordionModel = types.model("ResidentialGaragesAccordionModel", {
+    NotApplicable: types.optional(types.boolean, false),
     GeneralConstruction: types.optional(types.string, ""),
     RoofType: types.optional(types.string, ""),
     assessment: types.optional(ConditionAssessment, {}),
     })
     .actions((self) => ({
-        update(data: { GeneralConstruction?: string; RoofType?: string; assessment?: Record<string, any> }) {
+        update(data: { NotApplicable?: boolean; GeneralConstruction?: string; RoofType?: string; assessment?: Record<string, any> }) {
+        if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
         if (data.GeneralConstruction !== undefined) self.GeneralConstruction = data.GeneralConstruction
         if (data.RoofType !== undefined) self.RoofType = data.RoofType
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
@@ -54,12 +62,14 @@ export const ResidentialGaragesAccordionModel = types.model("ResidentialGaragesA
 }))
 
 export const GazeboPavilionAccordionModel = types.model("GazeboPavilionAccordionModel", {
+    NotApplicable: types.optional(types.boolean, false),
     GeneralConstruction: types.optional(types.string, ""),
     RoofType: types.optional(types.string, ""),
     assessment: types.optional(ConditionAssessment, {}),
     })
     .actions((self) => ({
-        update(data: { GeneralConstruction?: string; RoofType?: string; assessment?: Record<string, any> }) {
+        update(data: { NotApplicable?: boolean; GeneralConstruction?: string; RoofType?: string; assessment?: Record<string, any> }) {
+        if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
         if (data.GeneralConstruction !== undefined) self.GeneralConstruction = data.GeneralConstruction
         if (data.RoofType !== undefined) self.RoofType = data.RoofType
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
@@ -67,12 +77,14 @@ export const GazeboPavilionAccordionModel = types.model("GazeboPavilionAccordion
 }))
 
 export const GreenhousesAccordionModel = types.model("GreenhousesAccordionModel", {
+    NotApplicable: types.optional(types.boolean, false),
     GeneralConstruction: types.optional(types.string, ""),
     RoofType: types.optional(types.string, ""),
     assessment: types.optional(ConditionAssessment, {}),
     })
     .actions((self) => ({
-        update(data: { GeneralConstruction?: string; RoofType?: string; assessment?: Record<string, any> }) {
+        update(data: { NotApplicable?: boolean; GeneralConstruction?: string; RoofType?: string; assessment?: Record<string, any> }) {
+        if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
         if (data.GeneralConstruction !== undefined) self.GeneralConstruction = data.GeneralConstruction
         if (data.RoofType !== undefined) self.RoofType = data.RoofType
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
@@ -80,12 +92,14 @@ export const GreenhousesAccordionModel = types.model("GreenhousesAccordionModel"
 }))
 
 export const LaundryBldgAccordionModel = types.model("LaundryBldgAccordionModel", {
+    NotApplicable: types.optional(types.boolean, false),
     GeneralConstruction: types.optional(types.string, ""),
     RoofType: types.optional(types.string, ""),
     assessment: types.optional(ConditionAssessment, {}),
     })
     .actions((self) => ({
-        update(data: { GeneralConstruction?: string; RoofType?: string; assessment?: Record<string, any> }) {
+        update(data: { NotApplicable?: boolean; GeneralConstruction?: string; RoofType?: string; assessment?: Record<string, any> }) {
+        if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
         if (data.GeneralConstruction !== undefined) self.GeneralConstruction = data.GeneralConstruction
         if (data.RoofType !== undefined) self.RoofType = data.RoofType
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
@@ -93,12 +107,14 @@ export const LaundryBldgAccordionModel = types.model("LaundryBldgAccordionModel"
 }))
 
 export const WellPumpHouseAccordionModel = types.model("WellPumpHouseAccordionModel", {
+    NotApplicable: types.optional(types.boolean, false),
     GeneralConstruction: types.optional(types.string, ""),
     RoofType: types.optional(types.string, ""),
     assessment: types.optional(ConditionAssessment, {}),
     })
     .actions((self) => ({
-        update(data: { GeneralConstruction?: string; RoofType?: string; assessment?: Record<string, any> }) {
+        update(data: { NotApplicable?: boolean; GeneralConstruction?: string; RoofType?: string; assessment?: Record<string, any> }) {
+        if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
         if (data.GeneralConstruction !== undefined) self.GeneralConstruction = data.GeneralConstruction
         if (data.RoofType !== undefined) self.RoofType = data.RoofType
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
@@ -106,12 +122,14 @@ export const WellPumpHouseAccordionModel = types.model("WellPumpHouseAccordionMo
 }))
 
 export const SewerPumpHouseAccordionModel = types.model("SewerPumpHouseAccordionModel", {
+    NotApplicable: types.optional(types.boolean, false),
     GeneralConstruction: types.optional(types.string, ""),
     RoofType: types.optional(types.string, ""),
     assessment: types.optional(ConditionAssessment, {}),
     })
     .actions((self) => ({
-        update(data: { GeneralConstruction?: string; RoofType?: string; assessment?: Record<string, any> }) {
+        update(data: { NotApplicable?: boolean; GeneralConstruction?: string; RoofType?: string; assessment?: Record<string, any> }) {
+        if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
         if (data.GeneralConstruction !== undefined) self.GeneralConstruction = data.GeneralConstruction
         if (data.RoofType !== undefined) self.RoofType = data.RoofType
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
@@ -123,8 +141,13 @@ export const TenantResponsibilityChecklistModel = types.model("TenantResponsibil
     tenantResponsibilityChecklist: types.optional(types.map(types.boolean), {}),
     })
     .actions((self) => ({
-        update(data: { tenantResponsibilityChecklist?: Record<string, any> }) {
-        if (data.tenantResponsibilityChecklist !== undefined) self.tenantResponsibilityChecklist = data.tenantResponsibilityChecklist
+        update(data: { tenantResponsibilityChecklist?: Record<string, boolean> }) {
+        if (data.tenantResponsibilityChecklist !== undefined) {
+            self.tenantResponsibilityChecklist.clear()
+            Object.entries(data.tenantResponsibilityChecklist).forEach(([key, value]) => {
+                self.tenantResponsibilityChecklist.set(key, value)
+            })
+        }
     },
 }))
 
@@ -158,7 +181,7 @@ export const SiteGroundsStep4 = types.model("SiteGroundsStep4", {
     wellPumpHouse: types.optional(WellPumpHouseAccordionModel, {}),
     sewerPumpHouse: types.optional(SewerPumpHouseAccordionModel, {}),
     tenantResponsibilityChecklist: types.optional(TenantResponsibilityChecklistModel, {}),
-    otherStructure: types.optional(OtherStructureAccordionModel, {}),
+    otherStructure: types.maybe(OtherStructureAccordionModel),
     comments: types.optional(types.string, ""),
     lastModified: types.optional(types.Date, () => new Date()),
 })
@@ -210,8 +233,10 @@ export const SiteGroundsStep4 = types.model("SiteGroundsStep4", {
         self.tenantResponsibilityChecklist.update(data)
         self.lastModified = new Date()
     },
-    updateOtherStructure(data: Parameters<typeof self.otherStructure.update>[0]) {
-        self.otherStructure.update(data)
+    updateOtherStructure(data: any) {
+        if (self.otherStructure) {
+            self.otherStructure.update(data)
+        }
         self.lastModified = new Date()
     },
     updateComments(data: string) {
