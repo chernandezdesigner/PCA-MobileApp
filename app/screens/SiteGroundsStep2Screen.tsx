@@ -373,6 +373,14 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
               />
             )}
           />
+          {store?.retainingWalls.retainingWallsType === "Other" && (
+            <TextField
+              label="Specify Other"
+              value={store?.retainingWalls.otherType ?? ""}
+              onChangeText={(t) => store?.updateRetainingWalls({ otherType: t })}
+              placeholder="Enter custom type"
+            />
+          )}
           {/** Parent-level assessment for retaining walls */}
           <View style={themed($controlGroup)}>
             <Text preset="formLabel" text="Condition" />
@@ -478,6 +486,14 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
               />
             )}
           />
+          {store?.screenWalls.screenWallsType === "Other" && (
+            <TextField
+              label="Specify Other"
+              value={store?.screenWalls.otherType ?? ""}
+              onChangeText={(t) => store?.updateScreenWalls({ otherType: t })}
+              placeholder="Enter custom type"
+            />
+          )}
           {/** Parent-level assessment for screen walls */}
           <View style={themed($controlGroup)}>
             <Text preset="formLabel" text="Condition" />

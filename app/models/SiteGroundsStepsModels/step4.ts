@@ -132,12 +132,14 @@ export const OtherStructureAccordionModel = types
 .model("OtherStructureAccordionModel")
 .props({
     id: types.identifier,
+    name: types.optional(types.string, ""),
     GeneralConstruction: types.optional(types.string, ""),
     RoofType: types.optional(types.string, ""),
     assessment: types.optional(ConditionAssessment, {}),
     })
     .actions((self) => ({
-        update(data: { GeneralConstruction?: string; RoofType?: string; assessment?: Record<string, any> }) {
+        update(data: { name?: string; GeneralConstruction?: string; RoofType?: string; assessment?: Record<string, any> }) {
+        if (data.name !== undefined) self.name = data.name
         if (data.GeneralConstruction !== undefined) self.GeneralConstruction = data.GeneralConstruction
         if (data.RoofType !== undefined) self.RoofType = data.RoofType
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)

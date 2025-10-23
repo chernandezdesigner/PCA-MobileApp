@@ -19,7 +19,6 @@ export const CommercialTenantModel = types
     accessed: types.optional(types.boolean, false),
 })
 
-// Problematic materials are stored as a map keyed by id with provided/comments values
 
 
 
