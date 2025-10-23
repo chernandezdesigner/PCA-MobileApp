@@ -1,5 +1,5 @@
 import { FC, useEffect, useMemo, useRef, useState } from "react"
-import { View, ViewStyle, ScrollView } from "react-native"
+import { View, ViewStyle, ScrollView, TouchableOpacity } from "react-native"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
@@ -11,6 +11,7 @@ import { useStores } from "@/models/RootStoreProvider"
 import { observer } from "mobx-react-lite"
 import { useAppTheme } from "@/theme/context"
 import type { SiteGroundsFormNavigatorParamList } from "@/navigators/SiteGroundsFormNavigator"
+import type { ThemedStyle } from "@/theme/types"
 import { Controller, useForm } from "react-hook-form"
 import { Checkbox } from "@/components/Toggle/Checkbox"
 import { Dropdown } from "@/components/Dropdown"
@@ -357,10 +358,31 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
 
         <SectionAccordion
           title="Retaining Walls"
-          expanded={openKey === "retainingWalls"}
-          onToggle={(n) => setOpenKey(n ? "retainingWalls" : null)}
+          expanded={!store?.retainingWalls.NotApplicable && openKey === "retainingWalls"}
+          onToggle={(n) => {
+            if (!store?.retainingWalls.NotApplicable) {
+              setOpenKey(n ? "retainingWalls" : null)
+            }
+          }}
+          headerStyle={
+            store?.retainingWalls.NotApplicable
+              ? themed($naHeaderStyle)
+              : undefined
+          }
+          RightComponent={
+            <TouchableOpacity
+              style={themed($naButton(store?.retainingWalls.NotApplicable ?? false))}
+              onPress={() => store?.updateRetainingWalls({ NotApplicable: !store?.retainingWalls.NotApplicable })}
+            >
+              <Text
+                text="N/A"
+                style={themed($naButtonText(store?.retainingWalls.NotApplicable ?? false))}
+              />
+            </TouchableOpacity>
+          }
         >
-          <View style={themed($sectionBody)}>
+          {!store?.retainingWalls.NotApplicable && (
+            <View style={themed($sectionBody)}>
           <Controller
             control={control}
             name="retainingWalls.retainingWallsType"
@@ -462,18 +484,40 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
                       : store?.updateRetainingWalls({ railingDetails: { assessment: { amountToRepair: t } } as any })
                   }
                 />
-              </View>
-            </View>
-          )}
-          </View>
+               </View>
+             </View>
+           )}
+             </View>
+           )}
         </SectionAccordion>
 
         <SectionAccordion
           title="Screen Walls"
-          expanded={openKey === "screenWalls"}
-          onToggle={(n) => setOpenKey(n ? "screenWalls" : null)}
+          expanded={!store?.screenWalls.NotApplicable && openKey === "screenWalls"}
+          onToggle={(n) => {
+            if (!store?.screenWalls.NotApplicable) {
+              setOpenKey(n ? "screenWalls" : null)
+            }
+          }}
+          headerStyle={
+            store?.screenWalls.NotApplicable
+              ? themed($naHeaderStyle)
+              : undefined
+          }
+          RightComponent={
+            <TouchableOpacity
+              style={themed($naButton(store?.screenWalls.NotApplicable ?? false))}
+              onPress={() => store?.updateScreenWalls({ NotApplicable: !store?.screenWalls.NotApplicable })}
+            >
+              <Text
+                text="N/A"
+                style={themed($naButtonText(store?.screenWalls.NotApplicable ?? false))}
+              />
+            </TouchableOpacity>
+          }
         >
-          <View style={themed($sectionBody)}>
+          {!store?.screenWalls.NotApplicable && (
+            <View style={themed($sectionBody)}>
           <Controller
             control={control}
             name="screenWalls.screenWallsType"
@@ -575,10 +619,11 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
                       : store?.updateScreenWalls({ railingDetails: { assessment: { amountToRepair: t } } as any })
                   }
                 />
-              </View>
-            </View>
-          )}
-          </View>
+               </View>
+             </View>
+           )}
+             </View>
+           )}
         </SectionAccordion>
 
         <SectionAccordion
@@ -732,3 +777,26 @@ const $stickyFooter: ViewStyle = { position: "absolute", bottom: 0, left: 0, rig
 const $toggleWrap: ViewStyle = { flexDirection: "row", alignItems: "center", gap: 8 }
 const $pill = (on: boolean): ViewStyle => ({ height: 32, minWidth: 64, paddingHorizontal: 12, borderRadius: 16, alignItems: "center", justifyContent: "center", backgroundColor: on ? "#dbeafe" : "#e5e7eb" })
 const $controlGroup: ViewStyle = { gap: 8 }
+
+const $naHeaderStyle: ThemedStyle<ViewStyle> = ({ colors }) => ({
+  backgroundColor: colors.palette.background1,
+})
+
+const $naButton = (isActive: boolean): ThemedStyle<ViewStyle> => ({ colors }) => ({
+  height: 36,
+  minWidth: 60,
+  paddingHorizontal: 16,
+  borderRadius: 8,
+  alignItems: "center",
+  justifyContent: "center",
+  marginRight: 16,
+  backgroundColor: isActive ? colors.palette.gray6 : "transparent",
+  borderWidth: 1,
+  borderColor: isActive ? colors.palette.gray6 : colors.palette.gray4,
+})
+
+const $naButtonText = (isActive: boolean): ThemedStyle<any> => ({ colors }) => ({
+  color: isActive ? "#FFFFFF" : colors.palette.gray5,
+  fontSize: 14,
+  fontWeight: "600",
+})
