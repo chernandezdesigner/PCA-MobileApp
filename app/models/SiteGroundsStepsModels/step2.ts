@@ -25,6 +25,7 @@ export const LandscapingAccordionModel = types.model("LandscapingAccordionModel"
 }))
 
 export const RetainingWallsAccordionModel = types.model("RetainingWallsAccordionModel", {
+    NotApplicable: types.optional(types.boolean, false),
     retainingWallsType: types.optional(types.string, ""),
     assessment: types.optional(ConditionAssessment, {}),
     railing: types.optional(types.enumeration("railing", ["yes", "no"]), "no"),
@@ -32,7 +33,8 @@ export const RetainingWallsAccordionModel = types.model("RetainingWallsAccordion
     railingDetails: types.maybe(types.late(() => railingForRetainingWallsModel)),
     })
     .actions((self) => ({
-        update(data: { retainingWallsType?: string; assessment?: Record<string, any>; railing?: "yes" | "no"; railingDetails?: any }) {
+        update(data: { NotApplicable?: boolean; retainingWallsType?: string; assessment?: Record<string, any>; railing?: "yes" | "no"; railingDetails?: any }) {
+        if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
         if (data.retainingWallsType !== undefined) self.retainingWallsType = data.retainingWallsType
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
         if (data.railing !== undefined) self.railing = data.railing
@@ -63,6 +65,7 @@ export const railingForScreenWallsModel = types.model("railingForScreenWallsMode
 }))
 
 export const ScreenWallsAccordionModel = types.model("ScreenWallsAccordionModel", {
+    NotApplicable: types.optional(types.boolean, false),
     screenWallsType: types.optional(types.string, ""),
     assessment: types.optional(ConditionAssessment, {}),
     railing: types.optional(types.enumeration("railing", ["yes", "no"]), "no"),
@@ -70,7 +73,8 @@ export const ScreenWallsAccordionModel = types.model("ScreenWallsAccordionModel"
     railingDetails: types.maybe(types.late(() => railingForScreenWallsModel)),
     })
     .actions((self) => ({
-        update(data: { screenWallsType?: string; assessment?: Record<string, any>; railing?: "yes" | "no"; railingDetails?: any }) {
+        update(data: { NotApplicable?: boolean; screenWallsType?: string; assessment?: Record<string, any>; railing?: "yes" | "no"; railingDetails?: any }) {
+        if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
         if (data.screenWallsType !== undefined) self.screenWallsType = data.screenWallsType
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
         if (data.railing !== undefined) self.railing = data.railing
@@ -79,13 +83,15 @@ export const ScreenWallsAccordionModel = types.model("ScreenWallsAccordionModel"
 }))
 
 export const WaterFeaturesAccordionModel = types.model("WaterFeaturesAccordionModel", {
+    NotApplicable: types.optional(types.boolean, false),
     waterFeaturesType: types.optional(types.string, ""),
     pumpLocation: types.optional(types.string, ""),
     pumpAge: types.optional(types.string, ""),
     assessment: types.optional(ConditionAssessment, {}),
     })
     .actions((self) => ({
-        update(data: { waterFeaturesType?: string; pumpLocation?: string; pumpAge?: string; assessment?: Record<string, any> }) {
+        update(data: { NotApplicable?: boolean; waterFeaturesType?: string; pumpLocation?: string; pumpAge?: string; assessment?: Record<string, any> }) {
+        if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
         if (data.waterFeaturesType !== undefined) self.waterFeaturesType = data.waterFeaturesType
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
         if (data.pumpLocation !== undefined) self.pumpLocation = data.pumpLocation

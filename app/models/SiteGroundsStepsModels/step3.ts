@@ -2,44 +2,52 @@ import { types } from "mobx-state-tree"
 import { ConditionAssessment } from "../SharedModels"
 
 export const SignageAccordionModel = types.model("SignageAccordionModel", {
+    NotApplicable: types.optional(types.boolean, false),
     signageType: types.optional(types.string, ""),
     assessment: types.optional(ConditionAssessment, {}),
     })
     .actions((self) => ({
-        update(data: { signageType?: string; assessment?: Record<string, any> }) {
+        update(data: { NotApplicable?: boolean; signageType?: string; assessment?: Record<string, any> }) {
+        if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
         if (data.signageType !== undefined) self.signageType = data.signageType
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
     },
 }))
 
 export const LotLightingAccordionModel = types.model("LotLightingAccordionModel", {
+    NotApplicable: types.optional(types.boolean, false),
     lotLightingType: types.optional(types.string, ""),
     assessment: types.optional(ConditionAssessment, {}),    
     })
     .actions((self) => ({
-        update(data: { lotLightingType?: string; assessment?: Record<string, any> }) {
+        update(data: { NotApplicable?: boolean; lotLightingType?: string; assessment?: Record<string, any> }) {
+        if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
         if (data.lotLightingType !== undefined) self.lotLightingType = data.lotLightingType
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
     },
 }))
 
 export const BldgLightingAccordionModel = types.model("BldgLightingAccordionModel", {
+    NotApplicable: types.optional(types.boolean, false),
     bldgLightingType: types.optional(types.string, ""),
     assessment: types.optional(ConditionAssessment, {}),
     })
     .actions((self) => ({
-        update(data: { bldgLightingType?: string; assessment?: Record<string, any> }) {
+        update(data: { NotApplicable?: boolean; bldgLightingType?: string; assessment?: Record<string, any> }) {
+        if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
         if (data.bldgLightingType !== undefined) self.bldgLightingType = data.bldgLightingType
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
     },
 }))
 
 export const SiteFencingAccordionModel = types.model("SiteFencingAccordionModel", {
+    NotApplicable: types.optional(types.boolean, false),
     siteFencingType: types.optional(types.string, ""),
     assessment: types.optional(ConditionAssessment, {}),
     })
     .actions((self) => ({
-        update(data: { siteFencingType?: string; assessment?: Record<string, any> }) {
+        update(data: { NotApplicable?: boolean; siteFencingType?: string; assessment?: Record<string, any> }) {
+        if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
         if (data.siteFencingType !== undefined) self.siteFencingType = data.siteFencingType
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
     },
@@ -65,23 +73,27 @@ export const DumpsterAccordionModel = types.model("DumpsterAccordionModel", {
 }))
 
 export const RecreationalFacilitiesAccordionModel = types.model("RecreationalFacilitiesAccordionModel", {
+    NotApplicable: types.optional(types.boolean, false),
     recreationalFacilitiesType: types.optional(types.string, ""),
     assessment: types.optional(ConditionAssessment, {}),
     })
     .actions((self) => ({
-        update(data: { recreationalFacilitiesType?: string; assessment?: Record<string, any> }) {
+        update(data: { NotApplicable?: boolean; recreationalFacilitiesType?: string; assessment?: Record<string, any> }) {
+        if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
         if (data.recreationalFacilitiesType !== undefined) self.recreationalFacilitiesType = data.recreationalFacilitiesType
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
     },
 }))
 
 export const CompactorsAccordionModel = types.model("CompactorsAccordionModel", {
+    NotApplicable: types.optional(types.boolean, false),
     compactorsType: types.optional(types.string, ""),
     location: types.optional(types.string, ""),
     assessment: types.optional(ConditionAssessment, {}),
     })
     .actions((self) => ({
-        update(data: { compactorsType?: string; location?: string; assessment?: Record<string, any> }) {
+        update(data: { NotApplicable?: boolean; compactorsType?: string; location?: string; assessment?: Record<string, any> }) {
+        if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
         if (data.compactorsType !== undefined) self.compactorsType = data.compactorsType
         if (data.location !== undefined) self.location = data.location
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
@@ -89,6 +101,7 @@ export const CompactorsAccordionModel = types.model("CompactorsAccordionModel", 
 }))
 
 export const BridgesAccordionModel = types.model("BridgesAccordionModel", {
+    NotApplicable: types.optional(types.boolean, false),
     bridgesType: types.optional(types.string, ""),
     assessment: types.optional(ConditionAssessment, {}),
     railing: types.optional(types.enumeration("railing", ["yes", "no"]), "no"),
@@ -96,7 +109,8 @@ export const BridgesAccordionModel = types.model("BridgesAccordionModel", {
     railingDetails: types.maybe(types.late(() => railingForBridgesModel)),
     })
     .actions((self) => ({
-        update(data: { bridgesType?: string; assessment?: Record<string, any>; railing?: "yes" | "no"; railingDetails?: any }) {
+        update(data: { NotApplicable?: boolean; bridgesType?: string; assessment?: Record<string, any>; railing?: "yes" | "no"; railingDetails?: any }) {
+        if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
         if (data.bridgesType !== undefined) self.bridgesType = data.bridgesType
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
         if (data.railing !== undefined) self.railing = data.railing

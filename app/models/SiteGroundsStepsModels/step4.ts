@@ -145,6 +145,7 @@ export const OtherStructureAccordionModel = types
 }))
 
 export const SiteGroundsStep4 = types.model("SiteGroundsStep4", {
+    stepNotApplicable: types.optional(types.boolean, false),
     carports: types.optional(CarportsAccordionModel, {}),
     maintenanceBldg: types.optional(MaintenanceBldgAccordionModel, {}),
     firePumpBldg: types.optional(FirePumpBldgAccordionModel, {}),
@@ -161,6 +162,10 @@ export const SiteGroundsStep4 = types.model("SiteGroundsStep4", {
 })
 .actions((self) => ({
     touch() {
+        self.lastModified = new Date()
+    },
+    updateStepNotApplicable(data: boolean) {
+        self.stepNotApplicable = data
         self.lastModified = new Date()
     },
     updateCarports(data: Parameters<typeof self.carports.update>[0]) {
