@@ -43,12 +43,14 @@ export const BldgLightingAccordionModel = types.model("BldgLightingAccordionMode
 export const SiteFencingAccordionModel = types.model("SiteFencingAccordionModel", {
     NotApplicable: types.optional(types.boolean, false),
     siteFencingType: types.optional(types.string, ""),
+    otherType: types.optional(types.string, ""),
     assessment: types.optional(ConditionAssessment, {}),
     })
     .actions((self) => ({
-        update(data: { NotApplicable?: boolean; siteFencingType?: string; assessment?: Record<string, any> }) {
+        update(data: { NotApplicable?: boolean; siteFencingType?: string; otherType?: string; assessment?: Record<string, any> }) {
         if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
         if (data.siteFencingType !== undefined) self.siteFencingType = data.siteFencingType
+        if (data.otherType !== undefined) self.otherType = data.otherType
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
     },
 }))
@@ -89,14 +91,14 @@ export const RecreationalFacilitiesAccordionModel = types.model("RecreationalFac
 
 export const CompactorsAccordionModel = types.model("CompactorsAccordionModel", {
     NotApplicable: types.optional(types.boolean, false),
-    compactorsType: types.optional(types.string, ""),
+    tenantOwned: types.optional(types.enumeration("tenantOwned", ["yes", "no"]), "no"),
     location: types.optional(types.string, ""),
     assessment: types.optional(ConditionAssessment, {}),
     })
     .actions((self) => ({
-        update(data: { NotApplicable?: boolean; compactorsType?: string; location?: string; assessment?: Record<string, any> }) {
+        update(data: { NotApplicable?: boolean; tenantOwned?: "yes" | "no"; location?: string; assessment?: Record<string, any> }) {
         if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
-        if (data.compactorsType !== undefined) self.compactorsType = data.compactorsType
+        if (data.tenantOwned !== undefined) self.tenantOwned = data.tenantOwned
         if (data.location !== undefined) self.location = data.location
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
     },
