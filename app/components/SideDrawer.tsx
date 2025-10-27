@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { 
   StyleProp, 
   TextStyle, 
@@ -6,14 +6,15 @@ import {
   ViewStyle, 
   ScrollView, 
   TouchableOpacity,
-  TextInput,
   SafeAreaView,
 } from "react-native"
-import { useNavigation, useRoute } from "@react-navigation/native"
+import { useNavigationState } from "@react-navigation/native"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle, ThemedStyleArray } from "@/theme/types"
 import { Text } from "@/components/Text"
 import { Icon } from "@/components/Icon"
+import { TextField } from "@/components/TextField"
+import { navigate } from "@/navigators/navigationUtilities"
 
 export interface SideDrawerProps {
   /**
@@ -81,13 +82,42 @@ const NAVIGATION_STRUCTURE: NavigationItem[] = [
 export const SideDrawer = (props: SideDrawerProps) => {
   const { style, onNavigate, onClose } = props
   const { themed, theme } = useAppTheme()
-  const navigation = useNavigation()
-  const route = useRoute()
+  
+  // Determine the deepest active route inside the Assessment navigator
+  const activeChildRoute = useNavigationState((state) => {
+    const assessmentRoute = state?.routes?.find((r) => r.name === "Assessment") as any
+    function getDeepestRouteName(s: any): string | undefined {
+      if (!s) return undefined
+      const current = s.routes?.[s.index ?? 0]
+      return current?.state ? getDeepestRouteName(current.state) : current?.name
+    }
+    return getDeepestRouteName(assessmentRoute?.state)
+  })
   
   const [searchQuery, setSearchQuery] = useState("")
+
+  // Find which section contains the current route
+  const activeSectionId = useMemo(() => {
+    if (!activeChildRoute) return null
+    for (const section of NAVIGATION_STRUCTURE) {
+      if (section.children?.some(child => child.route === activeChildRoute)) {
+        return section.id
+      }
+    }
+    return null
+  }, [activeChildRoute])
+
+  // Initialize expanded sections with only the active section
   const [expandedSections, setExpandedSections] = useState<Set<string>>(
-    new Set(["project-summary", "site-grounds"])
+    new Set(activeSectionId ? [activeSectionId] : ["project-summary"])
   )
+
+  // Update expanded sections when route changes (only if not searching)
+  useEffect(() => {
+    if (!searchQuery.trim() && activeSectionId) {
+      setExpandedSections(new Set([activeSectionId]))
+    }
+  }, [activeSectionId, searchQuery])
 
   // Filter navigation based on search
   const filteredNavigation = useMemo(() => {
@@ -112,8 +142,8 @@ export const SideDrawer = (props: SideDrawerProps) => {
     }).filter(Boolean) as NavigationItem[]
   }, [searchQuery])
 
-  // Auto-expand sections with search results
-  useMemo(() => {
+  // Auto-expand sections with search results when searching
+  useEffect(() => {
     if (searchQuery.trim()) {
       const sectionsWithResults = new Set<string>()
       filteredNavigation.forEach((section) => {
@@ -138,12 +168,13 @@ export const SideDrawer = (props: SideDrawerProps) => {
   }
 
   const handleNavigate = (routeName: string) => {
-    navigation.navigate(routeName as never)
+    // Navigate into the nested Assessment stack
+    navigate("Assessment", { screen: routeName })
     onNavigate?.()
   }
 
   const isActiveRoute = (routeName?: string) => {
-    return routeName === route.name
+    return routeName === activeChildRoute
   }
 
   return (
@@ -162,26 +193,27 @@ export const SideDrawer = (props: SideDrawerProps) => {
 
       {/* Search Bar */}
       <View style={themed($searchContainer)}>
-        <Icon 
-          icon="menu" 
-          size={20} 
-          color={theme.colors.textDim} 
-          containerStyle={themed($searchIcon)} 
-        />
-        <TextInput
-          style={themed($searchInput)}
+        <TextField
           placeholder="Search Sections"
-          placeholderTextColor={theme.colors.textDim}
           value={searchQuery}
           onChangeText={setSearchQuery}
           autoCapitalize="none"
           autoCorrect={false}
+          containerStyle={themed($searchFieldContainer)}
+          inputWrapperStyle={themed($searchInputWrapper)}
+          LeftAccessory={() => (
+            <Icon 
+              icon="menu" 
+              size={20} 
+              color={theme.colors.textDim} 
+            />
+          )}
+          RightAccessory={searchQuery.length > 0 ? () => (
+            <TouchableOpacity onPress={() => setSearchQuery("")}>
+              <Icon icon="x" size={18} color={theme.colors.textDim} />
+            </TouchableOpacity>
+          ) : undefined}
         />
-        {searchQuery.length > 0 && (
-          <TouchableOpacity onPress={() => setSearchQuery("")} style={themed($clearButton)}>
-            <Icon icon="x" size={16} color={theme.colors.textDim} />
-          </TouchableOpacity>
-        )}
       </View>
 
       {/* Table of Contents Label */}
@@ -239,6 +271,9 @@ export const SideDrawer = (props: SideDrawerProps) => {
                           text={child.label} 
                           style={themed([$childLabel, isActive && $childLabelActive])}
                         />
+                        {isActive && (
+                          <View style={themed($activeDot)} />
+                        )}
                       </TouchableOpacity>
                     )
                   })}
@@ -285,37 +320,22 @@ const $headerTitle: ThemedStyleArray<TextStyle> = [
 
 const $searchContainer: ThemedStyleArray<ViewStyle> = [
   (theme) => ({
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: theme.colors.palette.gray1,
     marginHorizontal: theme.spacing.md,
     marginVertical: theme.spacing.md,
-    paddingHorizontal: theme.spacing.sm,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
   }),
 ]
 
-const $searchIcon: ThemedStyleArray<ViewStyle> = [
+const $searchFieldContainer: ThemedStyleArray<ViewStyle> = [
   () => ({
-    marginRight: 8,
+    marginBottom: 0,
   }),
 ]
 
-const $searchInput: ThemedStyleArray<TextStyle> = [
+const $searchInputWrapper: ThemedStyleArray<ViewStyle> = [
   (theme) => ({
-    flex: 1,
-    fontSize: 16,
-    color: theme.colors.text,
-    paddingVertical: 12,
-    fontFamily: theme.typography.primary.normal,
-  }),
-]
-
-const $clearButton: ThemedStyleArray<ViewStyle> = [
-  () => ({
-    padding: 4,
+    minHeight: 48,
+    backgroundColor: theme.colors.palette.gray1,
+    borderColor: theme.colors.border,
   }),
 ]
 
@@ -384,6 +404,9 @@ const $childrenContainer: ThemedStyleArray<ViewStyle> = [
 
 const $childItem: ThemedStyleArray<ViewStyle> = [
   (theme) => ({
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingVertical: theme.spacing.sm,
     paddingHorizontal: theme.spacing.xl,
     backgroundColor: theme.colors.background,
@@ -396,6 +419,7 @@ const $childItemActive: ViewStyle = {
 
 const $childLabel: ThemedStyleArray<TextStyle> = [
   (theme) => ({
+    flex: 1,
     fontSize: 15,
     color: theme.colors.text,
   }),
@@ -405,5 +429,15 @@ const $childLabelActive: ThemedStyleArray<TextStyle> = [
   (theme) => ({
     color: theme.colors.palette.primary500,
     fontFamily: theme.typography.primary.medium,
+  }),
+]
+
+const $activeDot: ThemedStyleArray<ViewStyle> = [
+  (theme) => ({
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: theme.colors.palette.primary500,
+    marginLeft: theme.spacing.sm,
   }),
 ]
