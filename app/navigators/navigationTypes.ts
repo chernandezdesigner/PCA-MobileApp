@@ -6,9 +6,6 @@ import {
   NavigatorScreenParams,
 } from "@react-navigation/native"
 import { NativeStackScreenProps } from "@react-navigation/native-stack"
-import type { ProjectSummaryFormNavigatorParamList } from "./ProjectSummaryFormNavigator"
-import type { SiteGroundsFormNavigatorParamList } from "./SiteGroundsFormNavigator"
-
 // Demo Tab Navigator types
 export type DemoTabParamList = {
   DemoCommunity: undefined
@@ -22,9 +19,8 @@ export type AppStackParamList = {
   Welcome: undefined
   Login: undefined
   Demo: NavigatorScreenParams<DemoTabParamList>
-  // Nested navigators
-  ProjectSummary: NavigatorScreenParams<ProjectSummaryFormNavigatorParamList>
-  SiteGrounds: NavigatorScreenParams<SiteGroundsFormNavigatorParamList>
+  // Assessment contains all form screens via Drawer
+  Assessment: undefined
 
   // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }

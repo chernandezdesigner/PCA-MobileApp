@@ -17,6 +17,7 @@ import { StickyFooterNav } from "@/components/StickyFooterNav"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
 import { ListWithFadingDot as ScrollListWithFadingDot } from "@/components/ListWithFadingDot"
+import { useDrawerControl } from "@/context/DrawerContext"
 
 interface ProjectSummaryStep3ScreenProps extends NativeStackScreenProps<ProjectSummaryFormNavigatorParamList, "ProjectSummaryStep3"> {}
 
@@ -52,6 +53,7 @@ const DOCUMENTS = [
 export const ProjectSummaryStep3Screen: FC<ProjectSummaryStep3ScreenProps> = observer(() => {
   const navigation = useNavigation()
   const { themed } = useAppTheme()
+  const { openDrawer } = useDrawerControl()
   const rootStore = useStores()
   const activeAssessment = rootStore.activeAssessmentId
     ? rootStore.assessments.get(rootStore.activeAssessmentId)
@@ -97,7 +99,7 @@ export const ProjectSummaryStep3Screen: FC<ProjectSummaryStep3ScreenProps> = obs
   return (
     <Screen style={$root} preset="fixed" contentContainerStyle={$screenInner}>
       <View style={$stickyHeader}>
-        <HeaderBar title="Project Summary" leftIcon="back" onLeftPress={() => navigation.goBack()} rightIcon="view" />
+        <HeaderBar title="Project Summary" leftIcon="back" onLeftPress={() => navigation.goBack()} rightIcon="view" onRightPress={openDrawer} />
       </View>
       <ScrollView contentContainerStyle={$content} style={$scrollArea}>
         <View style={$introBlock}>

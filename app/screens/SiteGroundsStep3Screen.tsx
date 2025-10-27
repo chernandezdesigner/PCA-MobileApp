@@ -15,6 +15,7 @@ import type { ThemedStyle } from "@/theme/types"
 import { Controller, useForm } from "react-hook-form"
 import { Checkbox } from "@/components/Toggle/Checkbox"
 import { Dropdown } from "@/components/Dropdown"
+import { useDrawerControl } from "@/context/DrawerContext"
 import { HeaderBar } from "@/components/HeaderBar"
 import { ProgressBar } from "@/components/ProgressBar"
 import { StickyFooterNav } from "@/components/StickyFooterNav"
@@ -93,6 +94,7 @@ interface SiteGroundsStep3ScreenProps
 export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(() => {
   const { themed, theme } = useAppTheme()
   const navigation = useNavigation()
+  const { openDrawer } = useDrawerControl()
   const rootStore = useStores()
   const activeAssessment = rootStore.activeAssessmentId
     ? rootStore.assessments.get(rootStore.activeAssessmentId)
@@ -279,7 +281,7 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
   return (
     <Screen style={$root} preset="fixed" contentContainerStyle={$screenInner}>
       <View style={$stickyHeader}>
-        <HeaderBar title="Site & Grounds" leftIcon="back" onLeftPress={() => navigation.goBack()} rightIcon="view" />
+        <HeaderBar title="Site & Grounds" leftIcon="back" onLeftPress={() => navigation.goBack()} rightIcon="view" onRightPress={openDrawer} />
       </View>
       <ScrollView contentContainerStyle={themed($content)} style={$scrollArea}>
         <View style={themed($paddedBlock)}>

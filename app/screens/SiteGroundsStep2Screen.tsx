@@ -19,6 +19,7 @@ import { HeaderBar } from "@/components/HeaderBar"
 import { ProgressBar } from "@/components/ProgressBar"
 import { StickyFooterNav } from "@/components/StickyFooterNav"
 import { useNavigation } from "@react-navigation/native"
+import { useDrawerControl } from "@/context/DrawerContext"
 
 // Static dropdown options for step 2 inputs
 const SLOPE_TYPE_OPTIONS = [
@@ -96,6 +97,7 @@ interface SiteGroundsStep2ScreenProps
 export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(() => {
   const { themed, theme } = useAppTheme()
   const navigation = useNavigation()
+  const { openDrawer } = useDrawerControl()
   const rootStore = useStores()
   const activeAssessment = rootStore.activeAssessmentId
     ? rootStore.assessments.get(rootStore.activeAssessmentId)
@@ -250,7 +252,7 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
   return (
     <Screen style={$root} preset="fixed" contentContainerStyle={$screenInner}>
       <View style={$stickyHeader}>
-        <HeaderBar title="Site & Grounds" leftIcon="back" onLeftPress={() => navigation.goBack()} rightIcon="view" />
+        <HeaderBar title="Site & Grounds" leftIcon="back" onLeftPress={() => navigation.goBack()} rightIcon="view" onRightPress={openDrawer} />
       </View>
       <ScrollView contentContainerStyle={themed($content)} style={$scrollArea}>
         <View style={themed($paddedBlock)}>

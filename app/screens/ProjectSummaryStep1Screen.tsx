@@ -18,6 +18,7 @@ import DateTimePicker, { DateTimePickerEvent } from "@react-native-community/dat
 import { format as formatDateFns } from "date-fns/format"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
+import { useDrawerControl } from "@/context/DrawerContext"
 
 interface ProjectSummaryStep1ScreenProps extends NativeStackScreenProps<ProjectSummaryFormNavigatorParamList, "ProjectSummaryStep1"> {}
 
@@ -40,6 +41,7 @@ type Step1FormValues = {
 export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = observer(() => {
   const navigation = useNavigation()
   const { themed } = useAppTheme()
+  const { openDrawer } = useDrawerControl()
   const rootStore = useStores()
   const activeAssessment = rootStore.activeAssessmentId
     ? rootStore.assessments.get(rootStore.activeAssessmentId)
@@ -95,7 +97,7 @@ export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = obs
   return (
     <Screen style={$root} preset="fixed" contentContainerStyle={$screenInner}>
       <View style={$stickyHeader}>
-        <HeaderBar title="Project Summary" leftIcon="back" onLeftPress={onBack} rightIcon="view" />
+        <HeaderBar title="Project Summary" leftIcon="back" onLeftPress={onBack} rightIcon="view" onRightPress={openDrawer} />
       </View>
       <ScrollView contentContainerStyle={$content} style={$scrollArea}>
         <View style={$introBlock}>
