@@ -80,14 +80,21 @@ export const ProjectSummaryStep2Screen: FC<ProjectSummaryStep2ScreenProps> = obs
   }, [watch, projectSummaryStore])
 
   const onNext = handleSubmit(() => {
-    navigation.navigate("ProjectSummaryStep3" as never)
+    // slide forward
+    // @ts-expect-error route params for animation
+    navigation.navigate("ProjectSummaryStep3" as never, { transition: "slide_from_right" } as never)
   })
+  const onBack = () => {
+    // slide back
+    // @ts-expect-error route params for animation
+    navigation.navigate("ProjectSummaryStep1" as never, { transition: "slide_from_left" } as never)
+  }
 
 
   return (
     <Screen style={$root} preset="fixed" contentContainerStyle={$screenInner}>
       <View style={$stickyHeader}>
-        <HeaderBar title="Project Summary" leftIcon="back" onLeftPress={() => navigation.goBack()} rightIcon="view" onRightPress={openDrawer} />
+        <HeaderBar title="Project Summary" leftIcon="back" onLeftPress={() => navigation.goBack()} rightIcon="menu" onRightPress={openDrawer} />
       </View>
       <ScrollView contentContainerStyle={$content} style={$scrollArea}>
         <View style={$introBlock}>
@@ -264,7 +271,7 @@ export const ProjectSummaryStep2Screen: FC<ProjectSummaryStep2ScreenProps> = obs
         </View>
       </ScrollView>
       <View style={$stickyFooter}>
-        <StickyFooterNav onBack={() => navigation.goBack()} onNext={onNext} showCamera={true} />
+        <StickyFooterNav onBack={onBack} onNext={onNext} showCamera={true} />
       </View>
     </Screen>
   )

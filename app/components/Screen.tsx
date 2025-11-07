@@ -1,9 +1,11 @@
-import { ReactNode, useRef, useState } from "react"
+import { ReactNode, useEffect, useRef, useState } from "react"
 import {
   KeyboardAvoidingView,
   KeyboardAvoidingViewProps,
   LayoutChangeEvent,
+  LayoutAnimation,
   Platform,
+  Keyboard,
   ScrollView,
   ScrollViewProps,
   StyleProp,
@@ -253,6 +255,17 @@ export function Screen(props: ScreenProps) {
   } = props
 
   const $containerInsets = useSafeAreaInsetsStyle(safeAreaEdges)
+
+  // Smooth micro-animations on keyboard show/hide
+  useEffect(() => {
+    const configure = () => LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+    const showSub = Keyboard.addListener(isIos ? "keyboardWillShow" : "keyboardDidShow", configure)
+    const hideSub = Keyboard.addListener(isIos ? "keyboardWillHide" : "keyboardDidHide", configure)
+    return () => {
+      showSub.remove()
+      hideSub.remove()
+    }
+  }, [])
 
   return (
     <View

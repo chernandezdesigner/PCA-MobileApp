@@ -93,13 +93,15 @@ export const ProjectSummaryStep3Screen: FC<ProjectSummaryStep3ScreenProps> = obs
   )
 
   function onNext() {
-    navigation.navigate("ProjectSummaryStep4" as never)
+    // slide forward
+    // @ts-expect-error route params for animation
+    navigation.navigate("ProjectSummaryStep4" as never, { transition: "slide_from_right" } as never)
   }
 
   return (
     <Screen style={$root} preset="fixed" contentContainerStyle={$screenInner}>
       <View style={$stickyHeader}>
-        <HeaderBar title="Project Summary" leftIcon="back" onLeftPress={() => navigation.goBack()} rightIcon="view" onRightPress={openDrawer} />
+        <HeaderBar title="Project Summary" leftIcon="back" onLeftPress={() => navigation.goBack()} rightIcon="menu" onRightPress={openDrawer} />
       </View>
       <ScrollView contentContainerStyle={$content} style={$scrollArea}>
         <View style={$introBlock}>

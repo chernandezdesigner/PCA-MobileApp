@@ -228,7 +228,7 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
   return (
     <Screen style={$root} preset="fixed" contentContainerStyle={$screenInner}>
       <View style={$stickyHeader}>
-        <HeaderBar title="Site & Grounds" leftIcon="back" onLeftPress={() => navigation.goBack()} rightIcon="view" onRightPress={openDrawer} />
+        <HeaderBar title="Site & Grounds" leftIcon="back" onLeftPress={() => navigation.goBack()} rightIcon="menu" onRightPress={openDrawer} />
       </View>
       <ScrollView contentContainerStyle={themed($content)} style={$scrollArea}>
         <View style={themed($paddedBlock)}>
@@ -946,7 +946,11 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
       </ScrollView>
       <View style={$stickyFooter}>
         <StickyFooterNav
-          onBack={() => navigation.navigate("SiteGroundsStep3" as never)}
+          onBack={() => {
+            // slide back
+            // @ts-expect-error route params for animation
+            navigation.navigate("SiteGroundsStep3" as never, { transition: "slide_from_left" } as never)
+          }}
           onNext={() => {
             // Navigate to next section or finish
             navigation.goBack()

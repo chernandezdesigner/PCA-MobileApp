@@ -118,7 +118,7 @@ export const ProjectSummaryStep4Screen: FC<ProjectSummaryStep4ScreenProps> = obs
   return (
     <Screen style={$root} preset="fixed" contentContainerStyle={$screenInner}>
       <View style={$stickyHeader}>
-        <HeaderBar title="Project Summary" leftIcon="back" onLeftPress={() => navigation.goBack()} rightIcon="view" onRightPress={openDrawer} />
+        <HeaderBar title="Project Summary" leftIcon="back" onLeftPress={() => navigation.goBack()} rightIcon="menu" onRightPress={openDrawer} />
       </View>
       <ScrollView contentContainerStyle={$content} style={$scrollArea}>
         <View style={$introBlock}>
@@ -220,7 +220,16 @@ export const ProjectSummaryStep4Screen: FC<ProjectSummaryStep4ScreenProps> = obs
 
     </ScrollView>
     <View style={$stickyFooter}>
-      <StickyFooterNav onBack={() => navigation.goBack()} onNext={() => {}} nextDisabled showCamera={true} />
+      <StickyFooterNav
+        onBack={() => {
+          // slide back
+          // @ts-expect-error route params for animation
+          navigation.navigate("ProjectSummaryStep3" as never, { transition: "slide_from_left" } as never)
+        }}
+        onNext={() => {}}
+        nextDisabled
+        showCamera={true}
+      />
     </View>
     {/* Modal for full materials list */}
     <Modal visible={materialsModalVisible} animationType="slide" onRequestClose={() => setMaterialsModalVisible(false)}>

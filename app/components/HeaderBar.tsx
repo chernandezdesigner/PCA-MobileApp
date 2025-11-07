@@ -10,14 +10,14 @@ export interface HeaderBarProps {
   title: string
   leftIcon?: "menu" | "back"
   onLeftPress?: () => void
-  rightIcon?: "view" | "more" | "settings" | undefined
+  rightIcon?: "menu" | "view" | "more" | "settings" | undefined
   onRightPress?: () => void
   elevated?: boolean
   safeTop?: boolean
 }
 
 export const HeaderBar = (props: HeaderBarProps) => {
-  const { style, title, leftIcon = "back", onLeftPress, rightIcon, onRightPress, elevated, safeTop = true } = props
+  const { style, title, leftIcon = "back", onLeftPress, rightIcon = "menu", onRightPress, elevated, safeTop = true } = props
   const { themed } = useAppTheme()
   const safe = useSafeAreaInsetsStyle([safeTop ? "top" : (undefined as any)].filter(Boolean) as any)
 

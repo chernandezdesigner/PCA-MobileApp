@@ -54,9 +54,9 @@ const NAVIGATION_STRUCTURE: NavigationItem[] = [
     label: "Site Grounds",
     children: [
       { id: "sg-step1", label: "Drainage & Erosion", route: "SiteGroundsStep1" },
-      { id: "sg-step2", label: "Landscaping & Features", route: "SiteGroundsStep2" },
-      { id: "sg-step3", label: "Paving & Parking", route: "SiteGroundsStep3" },
-      { id: "sg-step4", label: "Site Amenities", route: "SiteGroundsStep4" },
+      { id: "sg-step2", label: "Topography", route: "SiteGroundsStep2" },
+      { id: "sg-step3", label: "Site Elements", route: "SiteGroundsStep3" },
+      { id: "sg-step4", label: "Other Structures", route: "SiteGroundsStep4" },
     ],
   },
   {
@@ -168,8 +168,8 @@ export const SideDrawer = (props: SideDrawerProps) => {
   }
 
   const handleNavigate = (routeName: string) => {
-    // Navigate into the nested Assessment stack
-    navigate("Assessment", { screen: routeName })
+    // Fade transition when navigating via drawer
+    navigate("Assessment", { screen: routeName, params: { transition: "fade" } })
     onNavigate?.()
   }
 
@@ -178,7 +178,7 @@ export const SideDrawer = (props: SideDrawerProps) => {
   }
 
   return (
-    <SafeAreaView style={themed([$container, style])}>
+    <SafeAreaView style={[themed($container), style]}>
       {/* Header */}
       <View style={themed($header)}>
         <TouchableOpacity
@@ -236,7 +236,7 @@ export const SideDrawer = (props: SideDrawerProps) => {
               {/* Section Header */}
               <TouchableOpacity
                 onPress={() => hasChildren && toggleSection(section.id)}
-                style={themed([$sectionHeader, isExpanded && $sectionHeaderExpanded])}
+                style={[themed($sectionHeader), isExpanded && $sectionHeaderExpanded]}
                 disabled={!hasChildren}
               >
                 <Text 
@@ -265,11 +265,11 @@ export const SideDrawer = (props: SideDrawerProps) => {
                       <TouchableOpacity
                         key={child.id}
                         onPress={() => child.route && handleNavigate(child.route)}
-                        style={themed([$childItem, isActive && $childItemActive])}
+                        style={[themed($childItem), isActive && $childItemActive]}
                       >
                         <Text 
                           text={child.label} 
-                          style={themed([$childLabel, isActive && $childLabelActive])}
+                          style={[themed($childLabel), isActive ? themed($childLabelActive) : undefined]}
                         />
                         {isActive && (
                           <View style={themed($activeDot)} />

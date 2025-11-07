@@ -25,7 +25,15 @@ const Stack = createNativeStackNavigator<AssessmentFormStackParamList>()
 
 export const AssessmentFormStackNavigator = () => {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator
+      screenOptions={({ route }) => ({
+        headerShown: false,
+        // Allow per-navigation transition via route params
+        // e.g., navigation.navigate("Step2", { transition: "slide_from_right" })
+        // Fallback to default native animation
+        animation: (route as any)?.params?.transition,
+      })}
+    >
       {/* Project Summary */}
       <Stack.Screen name="ProjectSummaryStep1" component={ProjectSummaryStep1Screen} />
       <Stack.Screen name="ProjectSummaryStep2" component={ProjectSummaryStep2Screen} />

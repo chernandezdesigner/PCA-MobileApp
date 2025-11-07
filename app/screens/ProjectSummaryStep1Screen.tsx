@@ -90,14 +90,16 @@ export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = obs
   }, [watch, projectSummaryStore])
 
   const onNext = handleSubmit(() => {
-    navigation.navigate("ProjectSummaryStep2" as never)
+    // slide forward
+    // @ts-expect-error route params for animation
+    navigation.navigate("ProjectSummaryStep2" as never, { transition: "slide_from_right" } as never)
   })
   const onBack = () => navigation.goBack()
 
   return (
     <Screen style={$root} preset="fixed" contentContainerStyle={$screenInner}>
       <View style={$stickyHeader}>
-        <HeaderBar title="Project Summary" leftIcon="back" onLeftPress={onBack} rightIcon="view" onRightPress={openDrawer} />
+        <HeaderBar title="Project Summary" leftIcon="back" onLeftPress={onBack} rightIcon="menu" onRightPress={openDrawer} />
       </View>
       <ScrollView contentContainerStyle={$content} style={$scrollArea}>
         <View style={$introBlock}>
