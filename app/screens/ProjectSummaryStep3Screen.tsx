@@ -1,5 +1,5 @@
-import { FC, useEffect, useMemo, useRef, useState } from "react"
-import { Animated, FlatList, Modal, TouchableOpacity, View, ViewStyle, ScrollView } from "react-native"
+import { FC, useEffect, useMemo, useRef } from "react"
+import { FlatList, View, ViewStyle, ScrollView } from "react-native"
 import { observer } from "mobx-react-lite"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { ProjectSummaryFormNavigatorParamList } from "@/navigators/ProjectSummaryFormNavigator"
@@ -7,6 +7,7 @@ import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
 import { useNavigation } from "@react-navigation/native"
 import { Card } from "@/components/Card"
+import { ChecklistCard } from "@/components/ChecklistCard"
 import { Button } from "@/components/Button"
 import { TextField } from "@/components/TextField"
 import { Checkbox } from "@/components/Toggle/Checkbox"
@@ -16,7 +17,6 @@ import { ProgressBar } from "@/components/ProgressBar"
 import { StickyFooterNav } from "@/components/StickyFooterNav"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
-import { ListWithFadingDot as ScrollListWithFadingDot } from "@/components/ListWithFadingDot"
 import { useDrawerControl } from "@/context/DrawerContext"
 
 interface ProjectSummaryStep3ScreenProps extends NativeStackScreenProps<ProjectSummaryFormNavigatorParamList, "ProjectSummaryStep3"> {}
@@ -60,8 +60,6 @@ export const ProjectSummaryStep3Screen: FC<ProjectSummaryStep3ScreenProps> = obs
     : undefined
   const projectSummaryStore = activeAssessment?.projectSummary
 
-  const [docModalVisible, setDocModalVisible] = useState(false)
-
   // Derive renderable documents by combining constants with store map state
   const documents = useMemo(() => (
     DOCUMENTS.map((d) => ({
@@ -87,10 +85,27 @@ export const ProjectSummaryStep3Screen: FC<ProjectSummaryStep3ScreenProps> = obs
     seededRef.current = true
   }, [projectSummaryStore])
 
-  const docsProvidedCount = useMemo(
-    () => documents.reduce((acc, d) => acc + (d.provided ? 1 : 0), 0),
-    [documents],
-  )
+  // Convert documents to ChecklistCard format
+  const checklistDocuments = useMemo(() => (
+    documents.map((d) => ({
+      id: d.type,
+      label: d.label,
+      checked: d.provided,
+      comments: "", // Documentation doesn't use comments
+    }))
+  ), [documents])
+
+  function handleDocToggle(id: string, checked: boolean) {
+    projectSummaryStore?.updateDocumentChecklist(id, checked)
+  }
+
+  function handleDocSelectAll() {
+    DOCUMENTS.forEach((d) => projectSummaryStore?.updateDocumentChecklist(d.id, true))
+  }
+
+  function handleDocClearAll() {
+    DOCUMENTS.forEach((d) => projectSummaryStore?.updateDocumentChecklist(d.id, false))
+  }
 
   function onNext() {
     // slide forward
@@ -110,43 +125,13 @@ export const ProjectSummaryStep3Screen: FC<ProjectSummaryStep3ScreenProps> = obs
         </View>
 
       {/* Documentation Section */}
-      <Card
-        HeadingComponent={
-          <View style={$headerRow}>
-            <View>
-              <Text preset="subheading" text="Documentation" />
-              <Text size="xs" weight="normal" style={$countLight} text={`${docsProvidedCount} of ${documents.length} selected`} />
-            </View>
-            <Button text="Open Checklist" onPress={() => setDocModalVisible(true)} />
-          </View>
-        }
-        ContentComponent={
-          <View style={$sectionContent}>
-            {/* Inline scrollable checklist preview */}
-            <View style={themed($docPreviewContainer)}>
-              <ScrollListWithFadingDot
-                data={documents}
-                keyExtractor={(d: { type: string }) => d.type}
-                ItemSeparatorComponent={() => <View style={{ height: 1, backgroundColor: "#e5e7eb" }} />}
-                contentContainerStyle={$docPreviewContentPadding}
-                renderItem={({ item, index }: { item: { label: string; provided: boolean; type: string }; index: number }) => (
-                  <View style={[$docRow, index % 2 === 1 ? themed($altRow) : undefined]}>
-                    <Text text={item.label} />
-                    <View style={$row}>
-                      <Checkbox
-                        value={item.provided}
-                        onValueChange={(v) => projectSummaryStore?.updateDocumentChecklist(item.type, v)}
-                      />
-                      <View style={$pill(item.provided)}>
-                        <Text text={item.provided ? "Yes" : "No"} />
-                      </View>
-                    </View>
-                  </View>
-                )}
-              />
-            </View>
-          </View>
-        }
+      <ChecklistCard
+        title="Documentation"
+        items={checklistDocuments}
+        showComments={false}
+        onToggle={handleDocToggle}
+        onSelectAll={handleDocSelectAll}
+        onClearAll={handleDocClearAll}
       />
 
       {/* Personnel Interviewed Section */}
@@ -257,114 +242,9 @@ export const ProjectSummaryStep3Screen: FC<ProjectSummaryStep3ScreenProps> = obs
     <View style={$stickyFooter}>
       <StickyFooterNav onBack={() => navigation.goBack()} onNext={onNext} showCamera={true} />
     </View>
-
-    {/* Documentation Modal */}
-      <Modal visible={docModalVisible} animationType="slide" onRequestClose={() => setDocModalVisible(false)}>
-        <Screen preset="fixed" style={{ flex: 1 }} contentContainerStyle={$modalContainer}>
-          <View style={$sectionHeaderRow}>
-            <Text preset="subheading" text="Documentation" />
-            <Button text="Done" onPress={() => setDocModalVisible(false)} />
-          </View>
-          <View style={$rowBetween}>
-            <Text text={`${docsProvidedCount} of ${documents.length} selected`} />
-            <View style={$row}>
-              <Button
-                text="Select All"
-                onPress={() => DOCUMENTS.forEach((d) => projectSummaryStore?.updateDocumentChecklist(d.id, true))}
-              />
-              <Button
-                preset="reversed"
-                text="Clear All"
-                onPress={() => DOCUMENTS.forEach((d) => projectSummaryStore?.updateDocumentChecklist(d.id, false))}
-              />
-            </View>
-          </View>
-          <View style={$flex1}>
-            <ScrollListWithFadingDot
-              data={documents}
-              keyExtractor={(d: { type: string }) => d.type}
-              ItemSeparatorComponent={() => <View style={{ height: 1, backgroundColor: "#e5e7eb" }} />}
-              renderItem={({ item, index }: { item: { label: string; provided: boolean; type: string }; index: number }) => (
-                <TouchableOpacity
-                  onPress={() => projectSummaryStore?.updateDocumentChecklist(item.type, !item.provided)}
-                  style={[$docRow, index % 2 === 1 ? themed($altRow) : undefined]}
-                >
-                  <Text text={item.label} />
-                  <View style={$row}>
-                    <Checkbox
-                      value={item.provided}
-                      onValueChange={(v) => projectSummaryStore?.updateDocumentChecklist(item.type, v)}
-                    />
-                    <View style={$pill(item.provided)}>
-                      <Text text={item.provided ? "Yes" : "No"} />
-                    </View>
-                  </View>
-                </TouchableOpacity>
-              )}
-            />
-          </View>
-        </Screen>
-      </Modal>
     </Screen>
   )
 })
-
-// Lightweight wrapper that hides the scrollbar and shows a floating dot that fades away
-function ListWithFadingDot(props: any) {
-  const { data, renderItem, keyExtractor, ItemSeparatorComponent, style, contentContainerStyle } = props
-  const [listHeight, setListHeight] = useState(1)
-  const [contentHeight, setContentHeight] = useState(1)
-  const scrollY = useRef(new Animated.Value(0)).current
-  const opacity = useRef(new Animated.Value(0)).current
-  const fadeTimeout = useRef<NodeJS.Timeout | null>(null)
-
-  function handleScroll(e: any) {
-    const y = e.nativeEvent.contentOffset.y || 0
-    scrollY.setValue(y)
-    if (fadeTimeout.current) clearTimeout(fadeTimeout.current)
-    Animated.timing(opacity, { toValue: 1, duration: 120, useNativeDriver: true }).start()
-    fadeTimeout.current = setTimeout(() => {
-      Animated.timing(opacity, { toValue: 0, duration: 400, useNativeDriver: true }).start()
-    }, 650)
-  }
-
-  const maxScroll = Math.max(1, contentHeight - listHeight)
-  const travel = Math.max(0, listHeight - 20) // 20 = dot size
-  const translateY = scrollY.interpolate({ inputRange: [0, maxScroll], outputRange: [0, travel], extrapolate: "clamp" })
-
-  return (
-    <View style={[$flex1, { position: "relative" }, style]} onLayout={(e) => setListHeight(e.nativeEvent.layout.height)}>
-      <FlatList
-        data={data}
-        keyExtractor={keyExtractor}
-        renderItem={renderItem}
-        ItemSeparatorComponent={ItemSeparatorComponent}
-        contentContainerStyle={contentContainerStyle}
-        showsVerticalScrollIndicator={false}
-        onScroll={handleScroll}
-        scrollEventThrottle={16}
-        onContentSizeChange={(w, h) => setContentHeight(h)}
-        decelerationRate="fast"
-        style={$flex1}
-      />
-      {contentHeight > listHeight && (
-        <Animated.View
-          pointerEvents="none"
-          style={{
-            position: "absolute",
-            right: 4,
-            width: 6,
-            height: 24,
-            borderRadius: 3,
-            backgroundColor: "rgba(0,0,0,0.35)",
-            opacity,
-            transform: [{ translateY }],
-          }}
-        />
-      )}
-    </View>
-  )
-}
 
 const $root: ViewStyle = {
   flex: 1,
@@ -375,18 +255,7 @@ const $content: ViewStyle = {
   gap: 16,
 }
 
-const $sectionContent: ViewStyle = {
-  gap: 12,
-  marginTop: 16,
-}
-
 const $sectionHeaderRow: ViewStyle = {
-  flexDirection: "row",
-  alignItems: "center",
-  justifyContent: "space-between",
-}
-
-const $headerRow: ViewStyle = {
   flexDirection: "row",
   alignItems: "center",
   justifyContent: "space-between",
@@ -412,24 +281,6 @@ const $alignEnd: ViewStyle = {
   alignSelf: "flex-end",
 }
 
-const $modalContainer: ViewStyle = {
-  padding: 16,
-  gap: 16,
-  flex: 1,
-}
-
-const $docRow: ViewStyle = {
-  flexDirection: "row",
-  alignItems: "center",
-  justifyContent: "space-between",
-  paddingHorizontal: 16,
-  paddingVertical: 12,
-}
-
-const $altRow: ThemedStyle<any> = ({ colors }) => ({
-  backgroundColor: colors.palette.checklistAlternatingBackground,
-})
-
 const $pill = (on: boolean): ViewStyle => ({
   height: 32,
   minWidth: 64,
@@ -440,23 +291,9 @@ const $pill = (on: boolean): ViewStyle => ({
   backgroundColor: on ? "#dbeafe" : "#e5e7eb",
 })
 
-const $docPreviewContainer: ThemedStyle<ViewStyle> = ({ colors }) => ({
-  maxHeight: 240,
-  backgroundColor: colors.palette.checklistBackground,
-  borderRadius: 8,
-  borderWidth: 1,
-  borderColor: colors.palette.gray3,
-})
-
-const $docPreviewContentPadding: ViewStyle = { paddingVertical: 8 }
-
-const $flex1: ViewStyle = { flex: 1 }
-
-const $progressHeaderText: ThemedStyle<any> = ({ colors }) => ({ color: colors.palette.primary2 as any })
 const $screenInner: ViewStyle = { flex: 1 }
 const $stickyHeader: ViewStyle = { position: "absolute", top: 0, left: 0, right: 0, zIndex: 2 }
 const $stickyFooter: ViewStyle = { position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 2 }
 const $scrollArea: ViewStyle = { paddingTop: 72, paddingBottom: 96 }
 const $titleStyle: ThemedStyle<any> = ({ colors }) => ({ color: colors.palette.primary2 as any, fontSize: 24 })
 const $introBlock: ViewStyle = { paddingBottom: 32 }
-const $countLight: ViewStyle = { opacity: 0.7 }
