@@ -17,6 +17,14 @@ export const AssessmentModel = types
     touch() {
       self.updatedAt = new Date()
     },
+    markAsSubmitted() {
+      self.status = "submitted"
+      self.updatedAt = new Date()
+    },
+    markAsSynced() {
+      self.status = "synced"
+      self.updatedAt = new Date()
+    },
   }))
 
 export interface AssessmentInstance extends Instance<typeof AssessmentModel> {}

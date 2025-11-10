@@ -18,7 +18,7 @@ import { useNavigation } from "@react-navigation/native"
 import { useDrawerControl } from "@/context/DrawerContext"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
-import { Controller, useForm } from "react-hook-form"
+import { Controller, useForm, useWatch } from "react-hook-form"
 import type { SiteGroundsFormNavigatorParamList } from "@/navigators/SiteGroundsFormNavigator"
 
 // Static dropdown options for Surface To field
@@ -73,8 +73,8 @@ export const SiteGroundsStep1Screen: FC<SiteGroundsStep1ScreenProps> = observer(
   const defaultValues = useMemo<Step1FormValues>(
     () => ({
       assessment: {
-        condition: (store?.assessment.condition as ConditionT) ?? "good",
-        repairStatus: (store?.assessment.repairStatus as RepairT) ?? "IR",
+        condition: (store?.assessment.condition as ConditionT | undefined) ?? undefined as any,
+        repairStatus: (store?.assessment.repairStatus as RepairT | undefined) ?? undefined as any,
         amountToRepair: store?.assessment.amountToRepair ?? "",
       },
       undergroundToMunicipalStormSystem: store?.undergroundToMunicipalStormSystem ?? false,
@@ -122,7 +122,8 @@ export const SiteGroundsStep1Screen: FC<SiteGroundsStep1ScreenProps> = observer(
   }, [watch, store])
 
   // Transform checklist data for ChecklistCard component
-  const checklistData = watch("checklist")
+  // Use useWatch for real-time reactivity
+  const checklistData = useWatch({ control, name: "checklist" })
   const checklistItems: ChecklistItem[] = CHECKLIST_ITEMS.map((item) => ({
     id: item.id,
     label: item.label,
@@ -131,22 +132,22 @@ export const SiteGroundsStep1Screen: FC<SiteGroundsStep1ScreenProps> = observer(
   }))
 
   const handleChecklistToggle = (id: string, checked: boolean) => {
-    setValue(`checklist.${id}.checked` as any, checked, { shouldDirty: true })
+    setValue(`checklist.${id}.checked` as any, checked, { shouldDirty: true, shouldTouch: true, shouldValidate: true })
   }
 
   const handleChecklistComment = (id: string, text: string) => {
-    setValue(`checklist.${id}.comments` as any, text, { shouldDirty: true })
+    setValue(`checklist.${id}.comments` as any, text, { shouldDirty: true, shouldTouch: true })
   }
 
   const handleSelectAll = () => {
     CHECKLIST_ITEMS.forEach((item) => {
-      setValue(`checklist.${item.id}.checked` as any, true, { shouldDirty: true })
+      setValue(`checklist.${item.id}.checked` as any, true, { shouldDirty: true, shouldTouch: true, shouldValidate: true })
     })
   }
 
   const handleClearAll = () => {
     CHECKLIST_ITEMS.forEach((item) => {
-      setValue(`checklist.${item.id}.checked` as any, false, { shouldDirty: true })
+      setValue(`checklist.${item.id}.checked` as any, false, { shouldDirty: true, shouldTouch: true, shouldValidate: true })
     })
   }
 

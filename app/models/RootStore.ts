@@ -17,9 +17,20 @@ export const RootStore = types
   setActiveAssessment(id: string) {
     if (self.assessments.has(id)) self.activeAssessmentId = id
   },
+  deleteAssessment(id: string) {
+    self.assessments.delete(id)
+    if (self.activeAssessmentId === id) {
+      self.activeAssessmentId = undefined
+    }
+  },
   resetAll() {
     self.assessments.clear()
     self.activeAssessmentId = undefined
+  },
+}))
+.views((self) => ({
+  getAssessmentsList() {
+    return Array.from(self.assessments.values())
   },
 }))
 

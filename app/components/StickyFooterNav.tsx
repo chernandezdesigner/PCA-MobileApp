@@ -10,13 +10,14 @@ export interface StickyFooterNavProps {
   onBack: () => void
   onNext: () => void
   nextDisabled?: boolean
+  nextButtonText?: string
   showCamera?: boolean
   onCamera?: () => void
   safeBottom?: boolean
 }
 
 export const StickyFooterNav = (props: StickyFooterNavProps) => {
-  const { style, onBack, onNext, nextDisabled, showCamera = false, onCamera, safeBottom = true } = props
+  const { style, onBack, onNext, nextDisabled, nextButtonText = "Next", showCamera = false, onCamera, safeBottom = true } = props
   const { themed } = useAppTheme()
   const safe = useSafeAreaInsetsStyle([safeBottom ? "bottom" : (undefined as any)].filter(Boolean) as any)
 
@@ -30,7 +31,7 @@ export const StickyFooterNav = (props: StickyFooterNavProps) => {
         <View style={themed($cameraBtn)} />
       )}
 
-      <Button text="Next" onPress={onNext} disabled={nextDisabled} preset="filled" style={themed($primaryBtn)} />
+      <Button text={nextButtonText} onPress={onNext} disabled={nextDisabled} preset="filled" style={themed($primaryBtn)} />
     </View>
   )
 }

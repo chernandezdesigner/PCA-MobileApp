@@ -61,17 +61,16 @@ export const ProjectSummaryStep4Screen: FC<ProjectSummaryStep4ScreenProps> = obs
   const projectSummaryStore = activeAssessment?.projectSummary
 
   // Derive renderable materials by combining constants with store map state
-  const materials = useMemo(() => (
-    PROBLEMATIC_MATERIALS.map((m) => {
-      const s = projectSummaryStore?.problematicMaterials.get(m.id)
-      return {
-        id: m.id,
-        name: m.label,
-        provided: s?.provided ?? false,
-        comments: s?.comments ?? "",
-      }
-    })
-  ), [rootStore.activeAssessmentId]) // Only recalculate when assessment changes
+  // Remove useMemo to allow observer to handle reactivity
+  const materials = PROBLEMATIC_MATERIALS.map((m) => {
+    const s = projectSummaryStore?.problematicMaterials.get(m.id)
+    return {
+      id: m.id,
+      name: m.label,
+      provided: s?.provided ?? false,
+      comments: s?.comments ?? "",
+    }
+  })
 
   // Handlers for select all / clear all
   function handleMaterialSelectAll() {
@@ -230,8 +229,8 @@ export const ProjectSummaryStep4Screen: FC<ProjectSummaryStep4ScreenProps> = obs
           // @ts-expect-error route params for animation
           navigation.navigate("ProjectSummaryStep3" as never, { transition: "slide_from_left" } as never)
         }}
-        onNext={() => {}}
-        nextDisabled
+        onNext={openDrawer}
+        nextButtonText="Next Form"
         showCamera={true}
       />
     </View>

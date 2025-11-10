@@ -5,7 +5,7 @@ export const ConditionEnum = types.enumeration("ConditionEnum", ["good", "fair",
 export const RepairStatusEnum = types.enumeration("RepairStatusEnum", ["IR", "ST", "RR", "RM", "INV", "NA"])
 
 export const ConditionAssessment = types.model("ConditionAssessment", {
-  condition: types.optional(ConditionEnum, "good"),
-  repairStatus: types.optional(RepairStatusEnum, "IR"),
+  condition: types.maybe(ConditionEnum),
+  repairStatus: types.maybe(RepairStatusEnum),
   amountToRepair: types.optional(types.string, ""),
 })

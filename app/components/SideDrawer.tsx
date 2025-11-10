@@ -17,7 +17,7 @@ import { Text } from "@/components/Text"
 import { Icon } from "@/components/Icon"
 import { TextField } from "@/components/TextField"
 import { Button } from "@/components/Button"
-import { navigate } from "@/navigators/navigationUtilities"
+import { navigate, resetRoot, navigationRef } from "@/navigators/navigationUtilities"
 import { useAuth } from "@/context/AuthContext"
 import { useStores } from "@/models/RootStoreProvider"
 import { AssessmentService } from "@/services/supabase"
@@ -257,22 +257,55 @@ export const SideDrawer = (props: SideDrawerProps) => {
     }
   }
 
-  const handleLogout = () => {
-    Alert.alert(
-      'Sign Out',
-      'Are you sure you want to sign out?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Sign Out',
-          style: 'destructive',
-          onPress: async () => {
-            await signOut()
-            onClose?.()
+  const handleExitToHome = () => {
+    console.log('🏠 Exit to Home clicked')
+    console.log('🔍 Navigation ref ready?', navigationRef.isReady())
+    
+    const performNavigation = () => {
+      console.log('🚀 Attempting navigation to Home')
+      try {
+        if (!navigationRef.isReady()) {
+          console.error('❌ Navigation ref not ready')
+          return
+        }
+        resetRoot({ index: 0, routes: [{ name: "Home" }] })
+        console.log('✅ Navigation command sent')
+      } catch (error) {
+        console.error('❌ Navigation error:', error)
+      }
+    }
+    
+    // Web platform needs different handling
+    if (Platform.OS === 'web') {
+      const confirmed = window.confirm('Return to the home screen? Your progress is automatically saved.')
+      if (!confirmed) {
+        console.log('🚫 User cancelled')
+        return
+      }
+      
+      console.log('👍 User confirmed, closing drawer')
+      onClose?.()
+      // Small delay to let drawer close animation complete
+      setTimeout(performNavigation, 100)
+    } else {
+      // Native platforms
+      Alert.alert(
+        'Exit to Home',
+        'Return to the home screen? Your progress is automatically saved.',
+        [
+          { text: 'Cancel', style: 'cancel', onPress: () => console.log('🚫 User cancelled') },
+          {
+            text: 'Exit to Home',
+            onPress: () => {
+              console.log('👍 User confirmed, closing drawer')
+              onClose?.()
+              // Small delay to let drawer close animation complete
+              setTimeout(performNavigation, 300)
+            },
           },
-        },
-      ]
-    )
+        ]
+      )
+    }
   }
 
   return (
@@ -400,8 +433,8 @@ export const SideDrawer = (props: SideDrawerProps) => {
         />
 
         <Button
-          text="Sign Out"
-          onPress={handleLogout}
+          text="Exit to Home"
+          onPress={handleExitToHome}
           preset="default"
           style={themed($logoutButton)}
         />

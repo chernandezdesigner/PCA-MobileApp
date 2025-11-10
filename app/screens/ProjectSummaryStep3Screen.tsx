@@ -61,13 +61,12 @@ export const ProjectSummaryStep3Screen: FC<ProjectSummaryStep3ScreenProps> = obs
   const projectSummaryStore = activeAssessment?.projectSummary
 
   // Derive renderable documents by combining constants with store map state
-  const documents = useMemo(() => (
-    DOCUMENTS.map((d) => ({
-      type: d.id,
-      label: d.label,
-      provided: projectSummaryStore?.documents.get(d.id) ?? false,
-    }))
-  ), [rootStore.activeAssessmentId]) // Only recalculate when assessment changes
+  // Remove useMemo to allow observer to handle reactivity
+  const documents = DOCUMENTS.map((d) => ({
+    type: d.id,
+    label: d.label,
+    provided: projectSummaryStore?.documents.get(d.id) ?? false,
+  }))
   const personnel = projectSummaryStore?.personnelInterviewed ?? []
   const tenants = projectSummaryStore?.commercialTenants ?? []
 
@@ -86,14 +85,12 @@ export const ProjectSummaryStep3Screen: FC<ProjectSummaryStep3ScreenProps> = obs
   }, [projectSummaryStore])
 
   // Convert documents to ChecklistCard format
-  const checklistDocuments = useMemo(() => (
-    documents.map((d) => ({
-      id: d.type,
-      label: d.label,
-      checked: d.provided,
-      comments: "", // Documentation doesn't use comments
-    }))
-  ), [documents])
+  const checklistDocuments = documents.map((d) => ({
+    id: d.type,
+    label: d.label,
+    checked: d.provided,
+    comments: "", // Documentation doesn't use comments
+  }))
 
   function handleDocToggle(id: string, checked: boolean) {
     projectSummaryStore?.updateDocumentChecklist(id, checked)

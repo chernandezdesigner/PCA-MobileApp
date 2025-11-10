@@ -16,11 +16,6 @@ export const RootStoreProvider: FC<PropsWithChildren<{}>> = ({ children }) => {
     const snapshot = storage.load<RootStoreSnapshot>(STORE_KEY)
     const migrated = migrateSnapshot(snapshot)
     storeRef.current = RootStore.create(migrated ?? {})
-    // Ensure there is always an active assessment
-    if (storeRef.current && !storeRef.current.activeAssessmentId) {
-      const id = `assessment_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`
-      storeRef.current.createAssessment(id)
-    }
 
     const saveThrottled = throttle((snap: RootStoreSnapshot) => storage.save(STORE_KEY, snap), 750, { leading: true, trailing: true })
     const disposer = onSnapshot(storeRef.current, (snap) => {
