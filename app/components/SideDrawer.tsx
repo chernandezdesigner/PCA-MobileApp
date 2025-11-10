@@ -7,6 +7,8 @@ import {
   ScrollView, 
   TouchableOpacity,
   SafeAreaView,
+  Alert,
+  Platform,
 } from "react-native"
 import { useNavigationState } from "@react-navigation/native"
 import { useAppTheme } from "@/theme/context"
@@ -14,7 +16,11 @@ import type { ThemedStyle, ThemedStyleArray } from "@/theme/types"
 import { Text } from "@/components/Text"
 import { Icon } from "@/components/Icon"
 import { TextField } from "@/components/TextField"
+import { Button } from "@/components/Button"
 import { navigate } from "@/navigators/navigationUtilities"
+import { useAuth } from "@/context/AuthContext"
+import { useStores } from "@/models/RootStoreProvider"
+import { AssessmentService } from "@/services/supabase"
 
 export interface SideDrawerProps {
   /**
@@ -82,6 +88,9 @@ const NAVIGATION_STRUCTURE: NavigationItem[] = [
 export const SideDrawer = (props: SideDrawerProps) => {
   const { style, onNavigate, onClose } = props
   const { themed, theme } = useAppTheme()
+  const { user, signOut } = useAuth()
+  const rootStore = useStores()
+  const [isSubmitting, setIsSubmitting] = useState(false)
   
   // Determine the deepest active route inside the Assessment navigator
   const activeChildRoute = useNavigationState((state) => {
@@ -175,6 +184,95 @@ export const SideDrawer = (props: SideDrawerProps) => {
 
   const isActiveRoute = (routeName?: string) => {
     return routeName === activeChildRoute
+  }
+
+  const handleSubmit = async () => {
+    console.log('🔘 Submit button pressed!')
+    console.log('📋 Active Assessment ID:', rootStore.activeAssessmentId)
+    
+    if (!rootStore.activeAssessmentId) {
+      console.log('❌ No active assessment ID')
+      Alert.alert('No Assessment', 'No active assessment to submit')
+      return
+    }
+
+    const assessment = rootStore.assessments.get(rootStore.activeAssessmentId)
+    console.log('📦 Assessment found:', !!assessment)
+    
+    if (!assessment) {
+      console.log('❌ Assessment not found in store')
+      Alert.alert('Error', 'Could not find assessment')
+      return
+    }
+
+    console.log('✅ Showing confirmation dialog')
+    
+    // On web, Alert.alert with multiple buttons doesn't work properly
+    // Use window.confirm as a fallback
+    if (Platform.OS === 'web') {
+      const confirmed = window.confirm('Are you sure you want to submit this assessment to Supabase?')
+      if (!confirmed) {
+        console.log('🚫 User cancelled submission')
+        return
+      }
+      
+      console.log('🚀 Starting submission...')
+      setIsSubmitting(true)
+      const result = await AssessmentService.submitAssessment(assessment)
+      setIsSubmitting(false)
+
+      if (result.success) {
+        console.log('✅ Submission successful!')
+        window.alert('Success! Assessment submitted successfully')
+      } else {
+        console.log('❌ Submission failed:', result.error)
+        window.alert(`Error: ${result.error || 'Failed to submit assessment'}`)
+      }
+    } else {
+      // Native platform - use Alert.alert
+      Alert.alert(
+        'Submit Assessment',
+        'Are you sure you want to submit this assessment to Supabase?',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          {
+            text: 'Submit',
+            onPress: async () => {
+              console.log('🚀 Starting submission...')
+              setIsSubmitting(true)
+              const result = await AssessmentService.submitAssessment(assessment)
+              setIsSubmitting(false)
+
+              if (result.success) {
+                console.log('✅ Submission successful!')
+                Alert.alert('Success!', 'Assessment submitted successfully')
+              } else {
+                console.log('❌ Submission failed:', result.error)
+                Alert.alert('Error', result.error || 'Failed to submit assessment')
+              }
+            },
+          },
+        ]
+      )
+    }
+  }
+
+  const handleLogout = () => {
+    Alert.alert(
+      'Sign Out',
+      'Are you sure you want to sign out?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Sign Out',
+          style: 'destructive',
+          onPress: async () => {
+            await signOut()
+            onClose?.()
+          },
+        },
+      ]
+    )
   }
 
   return (
@@ -283,6 +381,31 @@ export const SideDrawer = (props: SideDrawerProps) => {
           )
         })}
       </ScrollView>
+
+      {/* Action Buttons */}
+      <View style={themed($actionsContainer)}>
+        {user && (
+          <View style={themed($userInfo)}>
+            <Icon icon="settings" size={16} color={theme.colors.textDim} />
+            <Text text={user.email || 'User'} style={themed($userEmail)} size="xs" />
+          </View>
+        )}
+        
+        <Button
+          text={isSubmitting ? "Submitting..." : "Submit Assessment"}
+          onPress={handleSubmit}
+          disabled={isSubmitting}
+          preset="filled"
+          style={themed($submitButton)}
+        />
+
+        <Button
+          text="Sign Out"
+          onPress={handleLogout}
+          preset="default"
+          style={themed($logoutButton)}
+        />
+      </View>
     </SafeAreaView>
   )
 }
@@ -439,5 +562,46 @@ const $activeDot: ThemedStyleArray<ViewStyle> = [
     borderRadius: 4,
     backgroundColor: theme.colors.palette.primary500,
     marginLeft: theme.spacing.sm,
+  }),
+]
+
+const $actionsContainer: ThemedStyleArray<ViewStyle> = [
+  (theme) => ({
+    paddingHorizontal: theme.spacing.md,
+    paddingTop: theme.spacing.md,
+    paddingBottom: theme.spacing.sm,
+    borderTopWidth: 1,
+    borderTopColor: theme.colors.border,
+    backgroundColor: theme.colors.background,
+  }),
+]
+
+const $userInfo: ThemedStyleArray<ViewStyle> = [
+  (theme) => ({
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing.xs,
+    marginBottom: theme.spacing.sm,
+    paddingVertical: theme.spacing.xs,
+  }),
+]
+
+const $userEmail: ThemedStyleArray<TextStyle> = [
+  (theme) => ({
+    color: theme.colors.textDim,
+    flex: 1,
+  }),
+]
+
+const $submitButton: ThemedStyleArray<ViewStyle> = [
+  (theme) => ({
+    marginBottom: theme.spacing.sm,
+    backgroundColor: theme.colors.palette.primary1,
+  }),
+]
+
+const $logoutButton: ThemedStyleArray<ViewStyle> = [
+  (theme) => ({
+    backgroundColor: theme.colors.palette.gray2,
   }),
 ]

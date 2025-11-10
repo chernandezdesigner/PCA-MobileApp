@@ -57,16 +57,17 @@ export const ProjectSummaryStep2Screen: FC<ProjectSummaryStep2ScreenProps> = obs
     yearBuilt: projectSummaryStore?.yearBuilt ?? 0,
     leaseType: projectSummaryStore?.leaseType ?? "",
     recentCapitalImprovements: projectSummaryStore?.recentCapitalImprovements ?? "",
-  }), [projectSummaryStore?.lastModified])
+  }), [rootStore.activeAssessmentId]) // Only recalculate when assessment changes
 
   const { control, handleSubmit, watch, reset } = useForm<Step2FormValues>({
     defaultValues,
     mode: "onChange",
   })
 
+  // Initialize form from store only on mount or when assessment changes
   useEffect(() => {
     reset(defaultValues)
-  }, [defaultValues, reset])
+  }, [rootStore.activeAssessmentId]) // Only reset when switching assessments
 
   const debounceRef = useRef<NodeJS.Timeout | null>(null)
   useEffect(() => {
@@ -109,7 +110,7 @@ export const ProjectSummaryStep2Screen: FC<ProjectSummaryStep2ScreenProps> = obs
             <TextField
               label="Acreage"
               value={String(value ?? "")}
-              onChangeText={onChange}
+              onChangeText={(txt) => onChange(Number(txt) || 0)}
               onBlur={onBlur}
               keyboardType="numeric"
             />
@@ -123,7 +124,7 @@ export const ProjectSummaryStep2Screen: FC<ProjectSummaryStep2ScreenProps> = obs
             <TextField
               label="Number of Sign Downs"
               value={String(value ?? "")}
-              onChangeText={onChange}
+              onChangeText={(txt) => onChange(Number(txt) || 0)}
               onBlur={onBlur}
               keyboardType="numeric"
             />
@@ -137,7 +138,7 @@ export const ProjectSummaryStep2Screen: FC<ProjectSummaryStep2ScreenProps> = obs
             <TextField
               label="Year Renovated"
               value={String(value ?? "")}
-              onChangeText={onChange}
+              onChangeText={(txt) => onChange(Number(txt) || 0)}
               onBlur={onBlur}
               keyboardType="numeric"
             />
@@ -151,7 +152,7 @@ export const ProjectSummaryStep2Screen: FC<ProjectSummaryStep2ScreenProps> = obs
             <TextField
               label="Number of Buildings"
               value={String(value ?? "")}
-              onChangeText={onChange}
+              onChangeText={(txt) => onChange(Number(txt) || 0)}
               onBlur={onBlur}
               keyboardType="numeric"
             />
@@ -165,7 +166,7 @@ export const ProjectSummaryStep2Screen: FC<ProjectSummaryStep2ScreenProps> = obs
             <TextField
               label="Net Square Feet"
               value={String(value ?? "")}
-              onChangeText={onChange}
+              onChangeText={(txt) => onChange(Number(txt) || 0)}
               onBlur={onBlur}
               keyboardType="numeric"
             />
@@ -181,7 +182,7 @@ export const ProjectSummaryStep2Screen: FC<ProjectSummaryStep2ScreenProps> = obs
             <TextField
               label="Number of Units"
               value={String(value ?? "")}
-              onChangeText={onChange}
+              onChangeText={(txt) => onChange(Number(txt) || 0)}
               onBlur={onBlur}
               keyboardType="numeric"
             />
@@ -195,7 +196,7 @@ export const ProjectSummaryStep2Screen: FC<ProjectSummaryStep2ScreenProps> = obs
             <TextField
               label="GSF"
               value={String(value ?? "")}
-              onChangeText={onChange}
+              onChangeText={(txt) => onChange(Number(txt) || 0)}
               onBlur={onBlur}
               keyboardType="numeric"
             />
@@ -209,7 +210,7 @@ export const ProjectSummaryStep2Screen: FC<ProjectSummaryStep2ScreenProps> = obs
             <TextField
               label="Number of Vacant Units"
               value={String(value ?? "")}
-              onChangeText={onChange}
+              onChangeText={(txt) => onChange(Number(txt) || 0)}
               onBlur={onBlur}
               keyboardType="numeric"
             />
@@ -223,7 +224,7 @@ export const ProjectSummaryStep2Screen: FC<ProjectSummaryStep2ScreenProps> = obs
             <TextField
               label="Year Built"
               value={String(value ?? "")}
-              onChangeText={onChange}
+              onChangeText={(txt) => onChange(Number(txt) || 0)}
               onBlur={onBlur}
               keyboardType="numeric"
             />

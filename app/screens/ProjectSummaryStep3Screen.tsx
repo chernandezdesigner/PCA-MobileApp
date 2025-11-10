@@ -67,7 +67,7 @@ export const ProjectSummaryStep3Screen: FC<ProjectSummaryStep3ScreenProps> = obs
       label: d.label,
       provided: projectSummaryStore?.documents.get(d.id) ?? false,
     }))
-  ), [projectSummaryStore?.lastModified])
+  ), [rootStore.activeAssessmentId]) // Only recalculate when assessment changes
   const personnel = projectSummaryStore?.personnelInterviewed ?? []
   const tenants = projectSummaryStore?.commercialTenants ?? []
 

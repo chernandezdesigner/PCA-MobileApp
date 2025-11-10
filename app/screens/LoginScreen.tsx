@@ -17,40 +17,51 @@ interface LoginScreenProps extends AppStackScreenProps<"Login"> {}
 export const LoginScreen: FC<LoginScreenProps> = () => {
   const authPasswordInput = useRef<TextInput>(null)
 
+  const [authEmail, setAuthEmail] = useState("")
   const [authPassword, setAuthPassword] = useState("")
   const [isAuthPasswordHidden, setIsAuthPasswordHidden] = useState(true)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [attemptsCount, setAttemptsCount] = useState(0)
-  const { authEmail, setAuthEmail, setAuthToken, validationError } = useAuth()
+  const [mode, setMode] = useState<"signin" | "signup">("signin")
+  const { signIn, signUp, error: authError, isLoading } = useAuth()
 
   const {
     themed,
     theme: { colors },
   } = useAppTheme()
 
-  useEffect(() => {
-    // Here is where you could fetch credentials from keychain or storage
-    // and pre-fill the form fields.
-    setAuthEmail("ignite@infinite.red")
-    setAuthPassword("ign1teIsAwes0m3")
-  }, [setAuthEmail])
+  const validationError = 
+    !authEmail ? "Email can't be blank" :
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(authEmail) ? "Must be a valid email" :
+    !authPassword ? "Password can't be blank" :
+    authPassword.length < 6 ? "Password must be at least 6 characters" :
+    ""
 
   const error = isSubmitted ? validationError : ""
 
-  function login() {
+  async function handleAuth() {
     setIsSubmitted(true)
     setAttemptsCount(attemptsCount + 1)
 
     if (validationError) return
 
-    // Make a request to your server to get an authentication token.
-    // If successful, reset the fields and set the token.
-    setIsSubmitted(false)
-    setAuthPassword("")
-    setAuthEmail("")
+    const result = mode === "signin" 
+      ? await signIn(authEmail, authPassword)
+      : await signUp(authEmail, authPassword)
 
-    // We'll mock this with a fake token.
-    setAuthToken(String(Date.now()))
+    if (result.error) {
+      // Error is already set in context
+      console.log("Auth error:", result.error)
+    } else {
+      // Success! Auth context will handle navigation
+      setIsSubmitted(false)
+      setAuthPassword("")
+    }
+  }
+
+  function toggleMode() {
+    setMode(mode === "signin" ? "signup" : "signin")
+    setIsSubmitted(false)
   }
 
   const PasswordRightAccessory: ComponentType<TextFieldAccessoryProps> = useMemo(
@@ -75,10 +86,19 @@ export const LoginScreen: FC<LoginScreenProps> = () => {
       contentContainerStyle={themed($screenContentContainer)}
       safeAreaEdges={["top", "bottom"]}
     >
-      <Text testID="login-heading" tx="loginScreen:logIn" preset="heading" style={themed($logIn)} />
-      <Text tx="loginScreen:enterDetails" preset="subheading" style={themed($enterDetails)} />
-      {attemptsCount > 2 && (
-        <Text tx="loginScreen:hint" size="sm" weight="light" style={themed($hint)} />
+      <Text 
+        testID="login-heading" 
+        text={mode === "signin" ? "Sign In" : "Create Account"} 
+        preset="heading" 
+        style={themed($logIn)} 
+      />
+      <Text 
+        text={mode === "signin" ? "Sign in to continue" : "Create your account"} 
+        preset="subheading" 
+        style={themed($enterDetails)} 
+      />
+      {authError && (
+        <Text text={authError} size="sm" style={themed($errorText)} />
       )}
 
       <TextField
@@ -89,8 +109,8 @@ export const LoginScreen: FC<LoginScreenProps> = () => {
         autoComplete="email"
         autoCorrect={false}
         keyboardType="email-address"
-        labelTx="loginScreen:emailFieldLabel"
-        placeholderTx="loginScreen:emailFieldPlaceholder"
+        label="Email"
+        placeholder="Enter your email"
         helper={error}
         status={error ? "error" : undefined}
         onSubmitEditing={() => authPasswordInput.current?.focus()}
@@ -105,18 +125,26 @@ export const LoginScreen: FC<LoginScreenProps> = () => {
         autoComplete="password"
         autoCorrect={false}
         secureTextEntry={isAuthPasswordHidden}
-        labelTx="loginScreen:passwordFieldLabel"
-        placeholderTx="loginScreen:passwordFieldPlaceholder"
-        onSubmitEditing={login}
+        label="Password"
+        placeholder="Enter your password"
+        onSubmitEditing={handleAuth}
         RightAccessory={PasswordRightAccessory}
       />
 
       <Button
         testID="login-button"
-        tx="loginScreen:tapToLogIn"
+        text={mode === "signin" ? "Sign In" : "Sign Up"}
         style={themed($tapButton)}
         preset="reversed"
-        onPress={login}
+        onPress={handleAuth}
+        disabled={isLoading}
+      />
+
+      <Button
+        text={mode === "signin" ? "Need an account? Sign up" : "Already have an account? Sign in"}
+        style={themed($toggleButton)}
+        preset="default"
+        onPress={toggleMode}
       />
     </Screen>
   )
@@ -146,4 +174,13 @@ const $textField: ThemedStyle<ViewStyle> = ({ spacing }) => ({
 
 const $tapButton: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginTop: spacing.xs,
+})
+
+const $toggleButton: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  marginTop: spacing.md,
+})
+
+const $errorText: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
+  color: colors.error,
+  marginBottom: spacing.md,
 })

@@ -233,11 +233,15 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
       },
       comments: store?.comments ?? "",
     }),
-    [store?.lastModified],
+    [rootStore.activeAssessmentId], // Only recalculate when assessment changes
   )
 
   const { control, reset, watch } = useForm<Step3FormValues>({ defaultValues, mode: "onChange" })
-  useEffect(() => { reset(defaultValues) }, [defaultValues, reset])
+  
+  // Initialize form from store only on mount or when assessment changes
+  useEffect(() => { 
+    reset(defaultValues) 
+  }, [rootStore.activeAssessmentId]) // Only reset when switching assessments
 
   const debounceRef = useRef<NodeJS.Timeout | null>(null)
   useEffect(() => {

@@ -71,7 +71,7 @@ export const ProjectSummaryStep4Screen: FC<ProjectSummaryStep4ScreenProps> = obs
         comments: s?.comments ?? "",
       }
     })
-  ), [projectSummaryStore?.lastModified])
+  ), [rootStore.activeAssessmentId]) // Only recalculate when assessment changes
 
   // Handlers for select all / clear all
   function handleMaterialSelectAll() {
@@ -100,10 +100,14 @@ export const ProjectSummaryStep4Screen: FC<ProjectSummaryStep4ScreenProps> = obs
     wellSystem: projectSummaryStore?.wellSystem ?? "",
     septicSystem: projectSummaryStore?.septicSystem ?? "",
     wastewaterTreatmentPlant: projectSummaryStore?.wastewaterTreatmentPlant ?? "",
-  }), [projectSummaryStore?.lastModified])
+  }), [rootStore.activeAssessmentId]) // Only recalculate when assessment changes
 
   const { control, watch, reset } = useForm<UtilitiesFormValues>({ defaultValues, mode: "onChange" })
-  useEffect(() => { reset(defaultValues) }, [defaultValues, reset])
+  
+  // Initialize form from store only on mount or when assessment changes
+  useEffect(() => { 
+    reset(defaultValues) 
+  }, [rootStore.activeAssessmentId]) // Only reset when switching assessments
 
   const debounceRef = useRef<NodeJS.Timeout | null>(null)
   useEffect(() => {

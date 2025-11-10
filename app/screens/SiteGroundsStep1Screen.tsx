@@ -89,7 +89,7 @@ export const SiteGroundsStep1Screen: FC<SiteGroundsStep1ScreenProps> = observer(
       }, {} as Record<string, { checked: boolean; comments: string }>),
       comments: store?.comments ?? "",
     }),
-    [store?.lastModified],
+    [rootStore.activeAssessmentId], // Only recalculate when assessment changes
   )
 
   const { control, watch, reset, setValue } = useForm<Step1FormValues>({
@@ -97,13 +97,13 @@ export const SiteGroundsStep1Screen: FC<SiteGroundsStep1ScreenProps> = observer(
     mode: "onChange",
   })
 
-  // Sync form with store changes
+  // Initialize form from store only on mount or when assessment changes
   useEffect(() => {
     reset(defaultValues)
-  }, [defaultValues, reset])
+  }, [rootStore.activeAssessmentId]) // Only reset when switching assessments
 
   // Autosave with debounce
-  const debounceRef = useRef<NodeJS.Timeout | null>(null)
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   useEffect(() => {
     const subscription = watch((values) => {
       if (debounceRef.current) clearTimeout(debounceRef.current)

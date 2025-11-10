@@ -65,17 +65,17 @@ export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = obs
     inspectorName: projectSummaryStore?.inspectorName ?? "",
     inspectorNumber: projectSummaryStore?.inspectorNumber ?? "",
     surroundingProperties: projectSummaryStore?.surroundingProperties ?? "",
-  }), [projectSummaryStore?.lastModified])
+  }), [rootStore.activeAssessmentId]) // Only recalculate when assessment changes
 
   const { control, handleSubmit, watch, reset } = useForm<Step1FormValues>({
     defaultValues,
     mode: "onChange",
   })
 
-  // Keep form in sync if store changes externally
+  // Initialize form from store only on mount or when assessment changes
   useEffect(() => {
     reset(defaultValues)
-  }, [defaultValues, reset])
+  }, [rootStore.activeAssessmentId]) // Only reset when switching assessments
 
   // Autosave with small debounce
   const debounceRef = useRef<NodeJS.Timeout | null>(null)
