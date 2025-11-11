@@ -118,6 +118,8 @@ export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = obs
               onBlur={onBlur}
               autoCapitalize="words"
               autoCorrect={false}
+              returnKeyType="next"
+              blurOnSubmit={false}
             />
           )}
         />
@@ -133,6 +135,8 @@ export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = obs
               onBlur={onBlur}
               autoCapitalize="characters"
               autoCorrect={false}
+              returnKeyType="next"
+              blurOnSubmit={false}
             />
           )}
         />
@@ -147,6 +151,8 @@ export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = obs
               onChangeText={onChange}
               onBlur={onBlur}
               autoCapitalize="words"
+              returnKeyType="next"
+              blurOnSubmit={false}
             />
           )}
         />
@@ -162,6 +168,8 @@ export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = obs
                 onChangeText={onChange} 
                 onBlur={onBlur}
                 containerStyle={$cityField}
+                returnKeyType="next"
+                blurOnSubmit={false}
               />
             )}
           />
@@ -176,6 +184,8 @@ export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = obs
                 onChangeText={onChange} 
                 onBlur={onBlur}
                 containerStyle={$stateField}
+                returnKeyType="next"
+                blurOnSubmit={false}
               />
             )}
           />
@@ -191,6 +201,8 @@ export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = obs
                 onBlur={onBlur}
                 keyboardType="number-pad"
                 containerStyle={$zipField}
+                returnKeyType="next"
+                blurOnSubmit={false}
               />
             )}
           />
@@ -207,6 +219,8 @@ export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = obs
                 onChangeText={onChange} 
                 onBlur={onBlur}
                 containerStyle={$weatherField}
+                returnKeyType="next"
+                blurOnSubmit={false}
               />
             )}
           />
@@ -222,6 +236,8 @@ export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = obs
                 onBlur={onBlur}
                 keyboardType="numeric"
                 containerStyle={$temperatureField}
+                returnKeyType="next"
+                blurOnSubmit={false}
               />
             )}
           />
@@ -238,6 +254,7 @@ export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = obs
                 onChangeText={() => {}}
                 onBlur={onBlur}
                 showSoftInputOnFocus={false}
+                returnKeyType="next"
                 onFocus={() => setShowDatePicker(true)}
               />
               {showDatePicker && (
@@ -272,6 +289,7 @@ export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = obs
                 onBlur={onBlur}
                 keyboardType="number-pad"
                 showSoftInputOnFocus={false}
+                returnKeyType="next"
                 onFocus={() => setShowTimePicker(true)}
               />
               {showTimePicker && (
@@ -299,7 +317,14 @@ export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = obs
           control={control}
           name="inspectorName"
           render={({ field: { value, onChange, onBlur } }) => (
-            <TextField label="Inspector Name" value={value} onChangeText={onChange} onBlur={onBlur} />
+            <TextField 
+              label="Inspector Name" 
+              value={value} 
+              onChangeText={onChange} 
+              onBlur={onBlur}
+              returnKeyType="next"
+              blurOnSubmit={false}
+            />
           )}
         />
 
@@ -307,7 +332,14 @@ export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = obs
           control={control}
           name="inspectorNumber"
           render={({ field: { value, onChange, onBlur } }) => (
-            <TextField label="Inspector Number" value={value} onChangeText={onChange} onBlur={onBlur} />
+            <TextField 
+              label="Inspector Number" 
+              value={value} 
+              onChangeText={onChange} 
+              onBlur={onBlur}
+              returnKeyType="done"
+              blurOnSubmit={true}
+            />
           )}
         />
 

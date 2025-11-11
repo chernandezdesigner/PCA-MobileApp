@@ -89,6 +89,8 @@ export const ChecklistCard: FC<Props> = (props) => {
                         multiline
                         value={item.comments ?? ""}
                         onChangeText={(t) => onChangeComment?.(item.id, t)}
+                        returnKeyType="done"
+                        blurOnSubmit={true}
                       />
                     </View>
                   )}

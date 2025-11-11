@@ -211,6 +211,8 @@ export const SiteGroundsStep1Screen: FC<SiteGroundsStep1ScreenProps> = observer(
                 onChangeText={onChange}
                 onBlur={onBlur}
                 keyboardType="numeric"
+                returnKeyType="next"
+                blurOnSubmit={false}
               />
             )}
           />
@@ -271,6 +273,8 @@ export const SiteGroundsStep1Screen: FC<SiteGroundsStep1ScreenProps> = observer(
                 onBlur={onBlur}
                 multiline
                 numberOfLines={4}
+                returnKeyType="done"
+                blurOnSubmit={true}
               />
             )}
           />

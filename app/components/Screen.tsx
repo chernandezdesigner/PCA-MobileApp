@@ -281,7 +281,7 @@ export function Screen(props: ScreenProps) {
       />
 
       <KeyboardAvoidingView
-        behavior={isIos ? "padding" : "height"}
+        behavior={isIos ? "padding" : undefined}
         keyboardVerticalOffset={keyboardOffset}
         {...KeyboardAvoidingViewProps}
         style={[$styles.flex1, KeyboardAvoidingViewProps?.style]}

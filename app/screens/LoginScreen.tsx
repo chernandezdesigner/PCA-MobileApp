@@ -82,9 +82,10 @@ export const LoginScreen: FC<LoginScreenProps> = () => {
 
   return (
     <Screen
-      preset="auto"
+      preset="scroll"
       contentContainerStyle={themed($screenContentContainer)}
       safeAreaEdges={["top", "bottom"]}
+      keyboardShouldPersistTaps="handled"
     >
       <Text 
         testID="login-heading" 
@@ -113,7 +114,7 @@ export const LoginScreen: FC<LoginScreenProps> = () => {
         placeholder="Enter your email"
         helper={error}
         status={error ? "error" : undefined}
-        onSubmitEditing={() => authPasswordInput.current?.focus()}
+        returnKeyType="next"
       />
 
       <TextField
@@ -127,7 +128,7 @@ export const LoginScreen: FC<LoginScreenProps> = () => {
         secureTextEntry={isAuthPasswordHidden}
         label="Password"
         placeholder="Enter your password"
-        onSubmitEditing={handleAuth}
+        returnKeyType="done"
         RightAccessory={PasswordRightAccessory}
       />
 
