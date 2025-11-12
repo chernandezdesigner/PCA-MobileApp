@@ -1,12 +1,13 @@
-import React, { ComponentType, useState } from "react"
+import React, { ComponentType, useState, useRef } from "react"
 import {
   StyleProp,
   TextStyle,
   TouchableOpacity,
   View,
   ViewStyle,
-  FlatList,
+  ScrollView,
   Platform,
+  Dimensions,
 } from "react-native"
 import { Text, TextProps } from "./Text"
 import { useAppTheme } from "@/theme/context"
@@ -79,7 +80,8 @@ export function Dropdown(props: DropdownProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [isFocused, setIsFocused] = useState(false)
   const [inputHeight, setInputHeight] = useState<number>(44)
-  const [inputY, setInputY] = useState<number>(0)
+  const [shouldRenderAbove, setShouldRenderAbove] = useState(false)
+  const inputRef = useRef<View>(null)
 
   const {
     themed,
@@ -140,8 +142,43 @@ export function Dropdown(props: DropdownProps) {
 
   function toggleDropdown() {
     if (disabled) return
-    setIsOpen(!isOpen)
-    setIsFocused(!isFocused)
+    
+    // If closing, just close
+    if (isOpen) {
+      setIsOpen(false)
+      setIsFocused(false)
+      return
+    }
+    
+    // If opening, calculate position first, then open
+    if (inputRef.current) {
+      inputRef.current.measure((x, y, width, height, pageX, pageY) => {
+        // Get viewport height
+        const windowHeight = Platform.OS === 'web' 
+          ? window.innerHeight 
+          : Dimensions.get('window').height
+        
+        // pageY is the absolute Y position on screen
+        // Calculate space below the input
+        const spaceBelow = windowHeight - (pageY + height)
+        
+        // Menu max height is 300, plus generous padding for safe spacing
+        const menuHeight = Math.min(options.length * 48, 300) + 32
+        
+        // If not enough space below (with 50px buffer), render above
+        const renderAbove = spaceBelow < (menuHeight + 50)
+        setShouldRenderAbove(renderAbove)
+        setInputHeight(height)
+        
+        // NOW open the dropdown after positioning is calculated
+        setIsOpen(true)
+        setIsFocused(true)
+      })
+    } else {
+      // Fallback if ref is not ready
+      setIsOpen(true)
+      setIsFocused(true)
+    }
   }
 
   function selectOption(option: DropdownOption) {
@@ -157,14 +194,14 @@ export function Dropdown(props: DropdownProps) {
       )}
 
       <TouchableOpacity
+        ref={inputRef}
         activeOpacity={0.8}
         style={themed([$inputWrapperStyles])}
         onPress={toggleDropdown}
         disabled={disabled}
         onLayout={(e) => {
-          const { y, height } = e.nativeEvent.layout
+          const { height } = e.nativeEvent.layout
           setInputHeight(Math.round(height) || 44)
-          setInputY(Math.round(y) || 0)
         }}
       >
         {!!LeftAccessory && (
@@ -202,22 +239,41 @@ export function Dropdown(props: DropdownProps) {
         <View
           style={themed([
             $menuStyles,
-            { top: (inputY || 0) + (inputHeight || 44) + 8 },
+            shouldRenderAbove 
+              ? { 
+                  bottom: inputHeight + 4,
+                  top: undefined,
+                  borderTopLeftRadius: 12,
+                  borderTopRightRadius: 12,
+                  borderBottomLeftRadius: 12,
+                  borderBottomRightRadius: 12,
+                }
+              : { 
+                  top: inputHeight + 4,
+                  bottom: undefined,
+                  borderTopLeftRadius: 12,
+                  borderTopRightRadius: 12,
+                  borderBottomLeftRadius: 12,
+                  borderBottomRightRadius: 12,
+                },
             isFocused && { borderColor: colors.tint },
           ])}
         >
-          <FlatList
-            data={options}
-            keyExtractor={(item) => item.value}
-            renderItem={({ item }) => (
+          <ScrollView 
+            style={{ maxHeight: 300 }} 
+            nestedScrollEnabled={true}
+            showsVerticalScrollIndicator={true}
+          >
+            {options.map((item) => (
               <TouchableOpacity
+                key={item.value}
                 style={themed($optionStyles)}
                 onPress={() => selectOption(item)}
               >
                 <Text text={item.label} style={themed($optionTextStyles)} />
               </TouchableOpacity>
-            )}
-          />
+            ))}
+          </ScrollView>
         </View>
       )}
     </View>
@@ -230,7 +286,8 @@ const $containerStyle: ViewStyle = {
 }
 
 const $containerOpenStyle: ViewStyle = {
-  zIndex: 50,
+  // High z-index to appear above all content including cards, headers, footers
+  zIndex: 9999,
 }
 
 const $labelStyle: ThemedStyle<TextStyle> = ({ spacing, colors }) => ({
@@ -248,8 +305,6 @@ const $inputWrapperStyle: ThemedStyle<ViewStyle> = ({ colors }) => ({
 })
 
 const $inputActiveBorder: ThemedStyle<ViewStyle> = ({ colors }) => ({
-  borderBottomLeftRadius: 0,
-  borderBottomRightRadius: 0,
   borderColor: colors.tint,
 })
 
@@ -296,11 +351,12 @@ const $menuStyle: ThemedStyle<ViewStyle> = ({ colors }) => ({
   borderWidth: 1,
   overflow: "hidden",
   shadowColor: "#000",
-  shadowOpacity: 0.15,
-  shadowRadius: 10,
+  shadowOpacity: 0.2,
+  shadowRadius: 12,
   shadowOffset: { width: 0, height: 4 },
-  elevation: 6,
-  zIndex: 10,
+  // High elevation for Android to appear above all content
+  elevation: 10,
+  zIndex: 10000,
 })
 
 const $optionStyle: ThemedStyle<ViewStyle> = ({ spacing }) => ({

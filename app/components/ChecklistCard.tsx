@@ -1,13 +1,13 @@
 import { FC, useState } from "react"
-import { View, ViewStyle } from "react-native"
+import { View, ViewStyle, TextStyle, ScrollView } from "react-native"
 import { Card } from "@/components/Card"
 import { Text } from "@/components/Text"
 import { Button } from "@/components/Button"
 import { Checkbox } from "@/components/Toggle/Checkbox"
 import { TextField } from "@/components/TextField"
+import { Pill } from "@/components/Pill"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
-import { ListWithFadingDot } from "@/components/ListWithFadingDot"
 import { Icon } from "@/components/Icon"
 
 export type ChecklistItem = { id: string; label: string; checked: boolean; comments?: string }
@@ -38,44 +38,42 @@ export const ChecklistCard: FC<Props> = (props) => {
   return (
     <Card
       HeadingComponent={
-        <View style={$headerRow}>
+        <View style={themed($headerRow)}>
           <View>
             <Text preset="subheading" text={title} />
-            <Text size="xs" weight="normal" style={$countLight} text={`${selectedCount} of ${items.length} selected`} />
+            <Text size="xs" weight="normal" style={themed($countLight)} text={`${selectedCount} of ${items.length} selected`} />
           </View>
           {(onSelectAll || onClearAll) ? (
-            <View style={$row}>
-              {!!onSelectAll && <Button text="Select All" onPress={onSelectAll} />}
-              {!!onClearAll && <Button preset="reversed" text="Clear All" onPress={onClearAll} />}
+            <View style={themed($row)}>
+              {!!onSelectAll && <Button text="Select All" onPress={onSelectAll} style={themed($headerButton)} textStyle={$headerButtonText} />}
+              {!!onClearAll && <Button text="Clear All" onPress={onClearAll} style={themed($headerButton)} textStyle={$headerButtonText} />}
             </View>
           ) : (
-            !!onOpen && <Button text={openButtonText} onPress={onOpen} />
+            !!onOpen && <Button text={openButtonText} onPress={onOpen} style={themed($headerButton)} textStyle={$headerButtonText} />
           )}
         </View>
       }
       ContentComponent={
         <View style={$sectionContent}>
-          <View style={themed($container)}>
-            <ListWithFadingDot
-              data={items}
-              keyExtractor={(it: ChecklistItem) => it.id}
-              ItemSeparatorComponent={() => <View style={{ height: 1, backgroundColor: "#e5e7eb" }} />}
-              contentContainerStyle={$contentPadding}
-              renderItem={({ item, index }: { item: ChecklistItem; index: number }) => (
+          <ScrollView style={themed($container)} contentContainerStyle={$contentPadding} showsVerticalScrollIndicator={true} nestedScrollEnabled={true}>
+            {items.map((item, index) => (
+              <View key={item.id}>
+                {index > 0 && <View style={themed($divider)} />}
                 <View style={[$rowWrapper, index % 2 === 1 ? themed($altRow) : undefined]}>
-                  <View style={$rowBetween}>
-                    <Text text={item.label} />
-                    <View style={$row}>
+                  <View style={themed($rowBetween)}>
+                    <Text text={item.label} size="sm" weight="medium" style={themed($itemLabel)} />
+                    <View style={themed($row)}>
                       <Checkbox value={item.checked} onValueChange={(v) => onToggle(item.id, v)} />
-                      <View style={$pill(item.checked)}>
-                        <Text text={item.checked ? "Yes" : "No"} />
-                      </View>
+                      <Pill 
+                        label={item.checked ? "Yes" : "No"} 
+                        variant={item.checked ? "active" : "default"}
+                      />
                       {showComments && (
                         <Button
                           onPress={() => toggleRow(item.id)}
                           style={themed($commentBtn(!!expanded[item.id]))}
                           LeftAccessory={({ style }) => (
-                            <Icon icon="more" size={16} containerStyle={style} />
+                            <Icon icon="more" size={20} containerStyle={style} />
                           )}
                           accessibilityLabel="Toggle comment"
                         />
@@ -83,7 +81,7 @@ export const ChecklistCard: FC<Props> = (props) => {
                     </View>
                   </View>
                   {showComments && expanded[item.id] && (
-                    <View style={$commentContainer}>
+                    <View style={themed($commentContainer)}>
                       <TextField
                         placeholder="Add comments..."
                         multiline
@@ -95,33 +93,99 @@ export const ChecklistCard: FC<Props> = (props) => {
                     </View>
                   )}
                 </View>
-              )}
-            />
-          </View>
+              </View>
+            ))}
+          </ScrollView>
         </View>
       }
     />
   )
 }
 
-const $row: ViewStyle = { flexDirection: "row", alignItems: "center", gap: 8 }
-const $rowBetween: ViewStyle = { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 16, paddingVertical: 12 }
-const $headerRow: ViewStyle = { flexDirection: "row", alignItems: "center", justifyContent: "space-between" }
-const $sectionContent: ViewStyle = { gap: 12, marginTop: 16 }
-const $countLight: ViewStyle = { opacity: 0.7 }
-const $contentPadding: ViewStyle = { paddingVertical: 8 }
+// Styles using theme system for consistency
+const $row: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  flexDirection: "row",
+  alignItems: "center",
+  gap: spacing.xs, // 8px
+})
+
+const $rowBetween: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  paddingHorizontal: spacing.md, // 16px
+  paddingVertical: spacing.sm, // 12px
+})
+
+const $headerRow: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  flexWrap: "wrap",
+  gap: spacing.xs, // 8px
+})
+
+const $sectionContent: ViewStyle = {
+  marginTop: 16,
+}
+
+const $countLight: ThemedStyle<ViewStyle> = ({ colors }) => ({
+  opacity: 0.7,
+  color: colors.palette.gray5,
+})
+
+const $contentPadding: ViewStyle = {
+  paddingVertical: 8,
+}
+
 const $rowWrapper: ViewStyle = {}
-const $commentContainer: ViewStyle = { paddingHorizontal: 16, paddingBottom: 12 }
-const $pill = (on: boolean): ViewStyle => ({ height: 32, minWidth: 64, paddingHorizontal: 12, borderRadius: 16, alignItems: "center", justifyContent: "center", backgroundColor: on ? "#dbeafe" : "#e5e7eb" })
-const $container: ThemedStyle<ViewStyle> = ({ colors }) => ({ maxHeight: 240, backgroundColor: colors.palette.checklistBackground, borderRadius: 8, borderWidth: 1, borderColor: colors.palette.gray3 })
-const $altRow: ThemedStyle<any> = ({ colors }) => ({ backgroundColor: colors.palette.checklistAlternatingBackground })
-const $commentBtn = (active: boolean): ThemedStyle<ViewStyle> => ({ colors }) => ({
-  minHeight: 32,
-  minWidth: 32,
-  paddingHorizontal: 10,
+
+const $commentContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  paddingHorizontal: spacing.md, // 16px
+  paddingBottom: spacing.sm, // 12px
+})
+
+const $itemLabel: ThemedStyle<ViewStyle> = ({ colors }) => ({
+  color: colors.palette.gray6,
+  flex: 1,
+  marginRight: 8,
+})
+
+// Mobile-optimized button sizes - now meets 44x44 accessibility minimum
+const $headerButton: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  minHeight: 44, // Increased from 36 for accessibility
+  paddingHorizontal: spacing.md, // 16px (up from 12)
+  paddingVertical: spacing.xs, // 8px (up from 6)
+})
+
+const $headerButtonText: TextStyle = {
+  fontSize: 14, // Slightly increased from 13 for better readability
+}
+
+const $container: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+  maxHeight: 240,
+  backgroundColor: colors.palette.checklistBackground,
+  borderRadius: spacing.xs, // 8px from theme
+  borderWidth: 1,
+  borderColor: colors.palette.gray3,
+})
+
+const $altRow: ThemedStyle<ViewStyle> = ({ colors }) => ({
+  backgroundColor: colors.palette.checklistAlternatingBackground,
+})
+
+const $divider: ThemedStyle<ViewStyle> = ({ colors }) => ({
+  height: 1,
+  backgroundColor: colors.palette.gray3, // Use theme color instead of hardcoded
+})
+
+// Meet 44x44 minimum touch target for mobile accessibility
+const $commentBtn = (active: boolean): ThemedStyle<ViewStyle> => ({ colors, spacing }) => ({
+  minHeight: 44,
+  minWidth: 44,
+  paddingHorizontal: spacing.sm, // 12px
   backgroundColor: active ? colors.palette.secondary100 : colors.palette.SecondaryButtonBackground,
   borderWidth: 1,
   borderColor: active ? colors.palette.secondary200 : colors.palette.SecondaryButtonBorder,
 })
-
 

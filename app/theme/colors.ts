@@ -18,15 +18,17 @@ const palette = {
   gray5:"#6B7280",
   gray6:"#18181B",
 
+  black: "#000000",
+
   primary1: "#0EA5E9",
   primary2: "#0B7DB1",
   primary3: "#7DD3FC",
 
   background1: "#F3F4F6",
   headerFooterBackground: "#F9FAFB",
-  accordionBackground: "rgba(219, 229, 239, 0.4)",
-  checklistBackground: "rgba(250, 250, 250, 0.6)",
-  checklistAlternatingBackground: "rgba(229, 231, 235, 0.3)",
+  accordionBackground: "#EBF3F9",
+  checklistBackground: "#FAFAFA",
+  checklistAlternatingBackground: "#F3F4F6",
   
 
   TopBarHeaderText: "#000000",
@@ -37,16 +39,16 @@ const palette = {
   progressBarActive: "#7DD3FC",
 
   FormLabelText: "rgba(0, 0, 0, 0.8)",
-  FormInputPlaceholderText: "rgba(0, 0, 0, 0.6)",
+  FormInputPlaceholderText: "#6B7280",
   FormInputText: "rgba(0, 0, 0, 1)",
   FormInputFill: "#F9FAFB",
 
   accordionHeaderActiveText: "#000000",
   accordionHeaderInactiveText: "rgba(0, 0, 0, 0.8)",
 
-  conditionGoodBackground: "rgba(167, 243, 208, 0.4)",
-  conditionFairBackground: "rgba(250, 204, 21, 0.4)",
-  conditionPoorBackground: "rgba(239, 68, 68, 0.4)",
+  conditionGoodBackground: "#86efac",
+  conditionFairBackground: "#fde047",
+  conditionPoorBackground: "#fca5a5",
 
   conditionGoodBorder: "#34d399",
   conditionFairBorder: "#fbbf24",

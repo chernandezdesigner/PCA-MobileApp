@@ -305,6 +305,7 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
                 render={({ field: { value, onChange, onBlur } }) => (
                   <TextField
                     label="Amount to Repair ($)"
+                    placeholder="5500"
                     keyboardType="numeric"
                     value={value}
                     onChangeText={onChange}
@@ -381,6 +382,7 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
                 render={({ field: { value, onChange, onBlur } }) => (
                   <TextField
                     label="Amount to Repair ($)"
+                    placeholder="5500"
                     keyboardType="numeric"
                     value={value}
                     onChangeText={onChange}
@@ -457,6 +459,7 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
                 render={({ field: { value, onChange, onBlur } }) => (
                   <TextField
                     label="Amount to Repair ($)"
+                    placeholder="5500"
                     keyboardType="numeric"
                     value={value}
                     onChangeText={onChange}
@@ -533,6 +536,7 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
                 render={({ field: { value, onChange, onBlur } }) => (
                   <TextField
                     label="Amount to Repair ($)"
+                    placeholder="5500"
                     keyboardType="numeric"
                     value={value}
                     onChangeText={onChange}
@@ -609,6 +613,7 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
                 render={({ field: { value, onChange, onBlur } }) => (
                   <TextField
                     label="Amount to Repair ($)"
+                    placeholder="5500"
                     keyboardType="numeric"
                     value={value}
                     onChangeText={onChange}
@@ -685,6 +690,7 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
                 render={({ field: { value, onChange, onBlur } }) => (
                   <TextField
                     label="Amount to Repair ($)"
+                    placeholder="5500"
                     keyboardType="numeric"
                     value={value}
                     onChangeText={onChange}
@@ -761,6 +767,7 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
                 render={({ field: { value, onChange, onBlur } }) => (
                   <TextField
                     label="Amount to Repair ($)"
+                    placeholder="5500"
                     keyboardType="numeric"
                     value={value}
                     onChangeText={onChange}
@@ -837,6 +844,7 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
                 render={({ field: { value, onChange, onBlur } }) => (
                   <TextField
                     label="Amount to Repair ($)"
+                    placeholder="5500"
                     keyboardType="numeric"
                     value={value}
                     onChangeText={onChange}
@@ -913,6 +921,7 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
                 render={({ field: { value, onChange, onBlur } }) => (
                   <TextField
                     label="Amount to Repair ($)"
+                    placeholder="5500"
                     keyboardType="numeric"
                     value={value}
                     onChangeText={onChange}
@@ -931,6 +940,7 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
             render={({ field: { value, onChange, onBlur } }) => (
               <TextField
                 label="Comments"
+                placeholder="Note lighting conditions, equipment issues, or other site amenities"
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
@@ -971,12 +981,14 @@ const $root: ViewStyle = {
 }
 
 const $content: ViewStyle = {
+  paddingTop: 88, // Header height (72) + spacing (16)
+  paddingBottom: 96, // Footer height
   gap: 0,
 }
 
 const $sectionBody: ViewStyle = { gap: 16, paddingHorizontal: 16, paddingBottom: 16, paddingTop: 8 }
 
-const $scrollArea: ViewStyle = { flex: 1, paddingTop: 72, paddingBottom: 96 }
+const $scrollArea: ViewStyle = { flex: 1 }
 const $paddedBlock: ViewStyle = { paddingHorizontal: 16, paddingBottom: 16, paddingTop: 16, gap: 8 }
 const $commentsBlock: ViewStyle = { paddingHorizontal: 16, paddingBottom: 16, paddingTop: 24, gap: 16 }
 const $titleStyle: any = ({ colors }: any) => ({ color: colors.palette.primary2 as any, fontSize: 24 })

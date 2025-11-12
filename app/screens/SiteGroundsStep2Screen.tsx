@@ -304,6 +304,7 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
             render={({ field: { value, onChange, onBlur } }) => (
               <TextField
                 label="Amount to Repair ($)"
+                placeholder="Dollar amount"
                 keyboardType="numeric"
                 value={value}
                 onChangeText={onChange}
@@ -352,6 +353,7 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
             render={({ field: { value, onChange, onBlur } }) => (
               <TextField
                 label="Amount to Repair ($)"
+                placeholder="Dollar amount"
                 keyboardType="numeric"
                 value={value}
                 onChangeText={onChange}
@@ -404,9 +406,9 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
           {store?.retainingWalls.retainingWallsType === "Other" && (
             <TextField
               label="Specify Other"
+              placeholder="Specify type"
               value={store?.retainingWalls.otherType ?? ""}
               onChangeText={(t) => store?.updateRetainingWalls({ otherType: t })}
-              placeholder="Enter custom type"
             />
           )}
           {/** Parent-level assessment for retaining walls */}
@@ -426,6 +428,7 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
           </View>
           <TextField
             label="Amount to Repair ($)"
+            placeholder="Dollar amount"
             keyboardType="numeric"
             value={store?.retainingWalls.assessment.amountToRepair}
             onChangeText={(t) => store?.updateRetainingWalls({ assessment: { amountToRepair: t } })}
@@ -482,6 +485,7 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
                 </View>
                 <TextField
                   label="Amount to Repair ($)"
+                  placeholder="Dollar amount"
                   keyboardType="numeric"
                   value={store?.retainingWalls.railingDetails?.assessment.amountToRepair ?? ""}
                   onChangeText={(t) =>
@@ -539,9 +543,9 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
           {store?.screenWalls.screenWallsType === "Other" && (
             <TextField
               label="Specify Other"
+              placeholder="Specify type"
               value={store?.screenWalls.otherType ?? ""}
               onChangeText={(t) => store?.updateScreenWalls({ otherType: t })}
-              placeholder="Enter custom type"
             />
           )}
           {/** Parent-level assessment for screen walls */}
@@ -561,6 +565,7 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
           </View>
           <TextField
             label="Amount to Repair ($)"
+            placeholder="Dollar amount"
             keyboardType="numeric"
             value={store?.screenWalls.assessment.amountToRepair}
             onChangeText={(t) => store?.updateScreenWalls({ assessment: { amountToRepair: t } })}
@@ -617,6 +622,7 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
                 </View>
                 <TextField
                   label="Amount to Repair ($)"
+                  placeholder="Dollar amount"
                   keyboardType="numeric"
                   value={store?.screenWalls.railingDetails?.assessment.amountToRepair ?? ""}
                   onChangeText={(t) =>
@@ -666,7 +672,7 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
             control={control}
             name="waterFeatures.pumpAge"
             render={({ field: { value, onChange, onBlur } }) => (
-              <TextField label="Pump Age" value={value} onChangeText={onChange} onBlur={onBlur} />
+              <TextField label="Pump Age" placeholder="Age in years" value={value} onChangeText={onChange} onBlur={onBlur} />
             )}
           />
           <View style={themed($controlGroup)}>
@@ -685,6 +691,7 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
           </View>
           <TextField
             label="Amount to Repair ($)"
+            placeholder="Dollar amount"
             keyboardType="numeric"
             value={store?.waterFeatures.assessment.amountToRepair}
             onChangeText={(t) => store?.updateWaterFeatures({ assessment: { amountToRepair: t } })}
@@ -699,6 +706,7 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
             render={({ field: { value, onChange, onBlur } }) => (
               <TextField
                 label="Comments"
+                placeholder="Note landscaping conditions, retaining wall issues, or other site features"
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
@@ -734,6 +742,8 @@ const $root: ViewStyle = {
 
 const $content: ViewStyle = {
   // Remove side padding so accordions span full width and touch edges
+  paddingTop: 88, // Header height (72) + spacing (16)
+  paddingBottom: 96, // Footer height
   gap: 0,
 }
 
@@ -781,7 +791,7 @@ const $chipButton: ViewStyle = {
 
 const $chipButtonText: ViewStyle = {}
 
-const $scrollArea: ViewStyle = { flex: 1, paddingTop: 72, paddingBottom: 96 }
+const $scrollArea: ViewStyle = { flex: 1 }
 const $paddedBlock: ViewStyle = { paddingHorizontal: 16, paddingBottom: 16, paddingTop: 16, gap: 8 }
 const $commentsBlock: ViewStyle = { paddingHorizontal: 16, paddingBottom: 16, paddingTop: 24, gap: 8 }
 const $titleStyle: any = ({ colors }: any) => ({ color: colors.palette.primary2 as any, fontSize: 24 })

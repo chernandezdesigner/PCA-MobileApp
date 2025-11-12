@@ -6,10 +6,10 @@ import {
   ViewStyle, 
   ScrollView, 
   TouchableOpacity,
-  SafeAreaView,
   Alert,
   Platform,
 } from "react-native"
+import { SafeAreaView } from "react-native-safe-area-context"
 import { useNavigationState } from "@react-navigation/native"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle, ThemedStyleArray } from "@/theme/types"
@@ -309,7 +309,7 @@ export const SideDrawer = (props: SideDrawerProps) => {
   }
 
   return (
-    <SafeAreaView style={[themed($container), style]}>
+    <SafeAreaView style={[themed($container), style]} edges={["top", "bottom", "left", "right"]}>
       {/* Header */}
       <View style={themed($header)}>
         <TouchableOpacity

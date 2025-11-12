@@ -318,6 +318,7 @@ const $listContainer: ViewStyle = {
 
 const $listContent: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   gap: spacing.md,
+  paddingBottom: spacing.xl, // Add bottom padding for safe area and scrolling comfort
 })
 
 const $sectionTitle: ThemedStyle<TextStyle> = ({ spacing, colors }) => ({

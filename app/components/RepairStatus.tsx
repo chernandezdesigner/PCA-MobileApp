@@ -1,4 +1,4 @@
-import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native"
+import { StyleProp, TextStyle, TouchableOpacity, View, ViewStyle } from "react-native"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle, ThemedStyleArray } from "@/theme/types"
 import { Text } from "@/components/Text"
@@ -39,7 +39,7 @@ export const RepairStatus = (props: RepairStatusProps) => {
           ],
         ])}
       >
-        <Text weight="medium" text={code} style={themed(selected ? $tileTextSelected : $tileText)} />
+        <Text weight={selected ? "bold" : "medium"} text={code} style={themed(selected ? $tileTextSelected : $tileText)} />
       </TouchableOpacity>
     )
   }
@@ -57,35 +57,45 @@ export const RepairStatus = (props: RepairStatusProps) => {
 }
 
 const $grid: ThemedStyleArray<ViewStyle> = [
-  () => ({
+  ({ spacing }) => ({
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-between",
+    gap: spacing.xs, // Consistent spacing between tiles
   }),
 ]
 
 const $tile: ThemedStyleArray<ViewStyle> = [
   (theme) => ({
+    // 32% width allows 3 tiles per row with gap
     width: "32%",
+    // Meets accessibility minimum for touch targets (slightly above 44x44)
     minHeight: 48,
-    borderRadius: theme.spacing.md,
+    borderRadius: theme.spacing.md, // 16px
     borderWidth: 1,
     borderColor: theme.colors.palette.SecondaryButtonBorder,
     backgroundColor: theme.colors.palette.SecondaryButtonBackground,
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: theme.spacing.xs,
-    paddingHorizontal: theme.spacing.md,
-    marginBottom: theme.spacing.sm,
+    paddingVertical: theme.spacing.xs, // 8px
+    paddingHorizontal: theme.spacing.sm, // 12px - better text padding
+    marginBottom: theme.spacing.sm, // 12px gap between rows
   }),
 ]
 
 const $tileSelected: ViewStyle = {
+  // Subtle elevation for selected state
   shadowColor: "#000000",
-  shadowOpacity: 0.06,
-  shadowRadius: 8,
-  elevation: 6,
+  shadowOpacity: 0.08,
+  shadowRadius: 4,
+  shadowOffset: { width: 0, height: 2 },
+  elevation: 2,
 }
 
-const $tileText: ThemedStyle<any> = ({ colors }) => ({ color: colors.palette.gray6 })
-const $tileTextSelected: ThemedStyle<any> = ({ colors }) => ({ color: colors.palette.neutral100 })
+const $tileText: ThemedStyle<TextStyle> = ({ colors }) => ({
+  color: colors.palette.gray6,
+})
+
+const $tileTextSelected: ThemedStyle<TextStyle> = ({ colors }) => ({
+  color: colors.palette.neutral100,
+})

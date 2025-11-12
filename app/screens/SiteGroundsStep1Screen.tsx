@@ -207,6 +207,7 @@ export const SiteGroundsStep1Screen: FC<SiteGroundsStep1ScreenProps> = observer(
             render={({ field: { value, onChange, onBlur } }) => (
               <TextField
                 label="Amount to Repair ($)"
+                placeholder="Dollar amount"
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
@@ -268,6 +269,7 @@ export const SiteGroundsStep1Screen: FC<SiteGroundsStep1ScreenProps> = observer(
             render={({ field: { value, onChange, onBlur } }) => (
               <TextField
                 label="Comments"
+                placeholder="Note any drainage issues, ponding water, or maintenance concerns"
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
@@ -297,13 +299,13 @@ const $screenInner: ViewStyle = {
 
 const $content: ViewStyle = {
   padding: 16,
+  paddingTop: 88, // 72 (header height) + 16 (spacing)
+  paddingBottom: 112, // 96 (footer height) + 16 (spacing)
   gap: 16,
 }
 
 const $scrollArea: ViewStyle = {
   flex: 1,
-  paddingTop: 72,
-  paddingBottom: 96,
 }
 
 const $fieldGroup: ViewStyle = {
@@ -338,6 +340,7 @@ const $stickyFooter: ViewStyle = {
 }
 
 const $introBlock: ViewStyle = {
+  paddingTop: 16,
   paddingBottom: 32,
 }
 

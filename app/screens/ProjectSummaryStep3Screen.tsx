@@ -1,5 +1,5 @@
 import { FC, useEffect, useMemo, useRef } from "react"
-import { FlatList, View, ViewStyle, ScrollView } from "react-native"
+import { View, ViewStyle, ScrollView } from "react-native"
 import { observer } from "mobx-react-lite"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { ProjectSummaryFormNavigatorParamList } from "@/navigators/ProjectSummaryFormNavigator"
@@ -11,6 +11,7 @@ import { ChecklistCard } from "@/components/ChecklistCard"
 import { Button } from "@/components/Button"
 import { TextField } from "@/components/TextField"
 import { Checkbox } from "@/components/Toggle/Checkbox"
+import { Pill } from "@/components/Pill"
 import { useStores } from "@/models/RootStoreProvider"
 import { HeaderBar } from "@/components/HeaderBar"
 import { ProgressBar } from "@/components/ProgressBar"
@@ -136,28 +137,29 @@ export const ProjectSummaryStep3Screen: FC<ProjectSummaryStep3ScreenProps> = obs
         <Text preset="subheading" text="Personnel Interviewed" />
         <Button text="Add Person" onPress={() => projectSummaryStore?.addPersonnel("", "", 0, "")} />
       </View>
-      <FlatList
-        data={personnel.slice()}
-        keyExtractor={(p) => p.id}
-        contentContainerStyle={{ gap: 12 }}
-        renderItem={({ item, index }) => (
+      <View style={$listContainer}>
+        {personnel.slice().map((item, index) => (
           <Card
+            key={item.id}
             HeadingComponent={<Text weight="bold" text={`Person ${index + 1}`} />}
             ContentComponent={
               <View style={$cardFields}>
                 <TextField
                   label="Name"
+                  placeholder="Full name"
                   value={item.name}
                   onChangeText={(val) => projectSummaryStore?.updatePersonnel(item.id, { name: val })}
                 />
                 <TextField
                   label="Title"
+                  placeholder="Job title"
                   value={item.title}
                   onChangeText={(val) => projectSummaryStore?.updatePersonnel(item.id, { title: val })}
                 />
                 <View style={$row}>
                   <TextField
                     label="Years at Property"
+                    placeholder="0"
                     value={String(item.yearsAtProperty ?? 0)}
                     onChangeText={(txt) =>
                       projectSummaryStore?.updatePersonnel(item.id, {
@@ -169,6 +171,7 @@ export const ProjectSummaryStep3Screen: FC<ProjectSummaryStep3ScreenProps> = obs
                   />
                   <TextField
                     label="Phone Number"
+                    placeholder="Phone number"
                     value={item.phoneNumber}
                     onChangeText={(val) => projectSummaryStore?.updatePersonnel(item.id, { phoneNumber: val })}
                     keyboardType="phone-pad"
@@ -185,42 +188,44 @@ export const ProjectSummaryStep3Screen: FC<ProjectSummaryStep3ScreenProps> = obs
               </View>
             }
           />
-        )}
-      />
+        ))}
+      </View>
 
       {/* Commercial Tenants Section */}
       <View style={$sectionHeaderRow}>
         <Text preset="subheading" text="Commercial Tenants" />
         <Button text="Add Tenant" onPress={() => projectSummaryStore?.addCommercialTenant("", "", false)} />
       </View>
-      <FlatList
-        data={tenants.slice()}
-        keyExtractor={(t) => t.id}
-        contentContainerStyle={{ gap: 12 }}
-        renderItem={({ item, index }) => (
+      <View style={$listContainer}>
+        {tenants.slice().map((item, index) => (
           <Card
+            key={item.id}
             HeadingComponent={<Text weight="bold" text={`Tenant ${index + 1}`} />}
             ContentComponent={
               <View style={$cardFields}>
                 <TextField
                   label="Tenant Name"
+                  placeholder="Tenant name"
                   value={item.name}
                   onChangeText={(val) => projectSummaryStore?.updateCommercialTenant(item.id, { name: val })}
                 />
                 <TextField
                   label="Address/Unit Number"
+                  placeholder="Unit number"
                   value={item.addressOrUnit}
                   onChangeText={(val) => projectSummaryStore?.updateCommercialTenant(item.id, { addressOrUnit: val })}
                 />
-                <View style={$rowBetween}>
+                <View style={$checkboxRow}>
                   <Checkbox
                     label="Unit Accessed"
                     value={item.accessed}
                     onValueChange={(v) => projectSummaryStore?.updateCommercialTenant(item.id, { accessed: v })}
+                    containerStyle={$checkboxContainer}
                   />
-                  <View style={$pill(item.accessed)}>
-                    <Text text={item.accessed ? "Yes" : "No"} />
-                  </View>
+                  <Pill 
+                    label={item.accessed ? "Yes" : "No"} 
+                    variant={item.accessed ? "active" : "default"}
+                  />
                 </View>
                 <View style={$alignEnd}>
                   <Button
@@ -232,8 +237,8 @@ export const ProjectSummaryStep3Screen: FC<ProjectSummaryStep3ScreenProps> = obs
               </View>
             }
           />
-        )}
-      />
+        ))}
+      </View>
 
     </ScrollView>
     <View style={$stickyFooter}>
@@ -249,6 +254,8 @@ const $root: ViewStyle = {
 
 const $content: ViewStyle = {
   padding: 16,
+  paddingTop: 88, // 72 (header height) + 16 (spacing)
+  paddingBottom: 112, // 96 (footer height) + 16 (spacing)
   gap: 16,
 }
 
@@ -271,26 +278,31 @@ const $rowBetween: ViewStyle = {
 }
 
 const $cardFields: ViewStyle = {
-  gap: 12,
+  gap: 8, // Reduced from 12 for tighter spacing
+}
+
+const $checkboxRow: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+}
+
+const $checkboxContainer: ViewStyle = {
+  flex: 1,
+  marginRight: 8,
 }
 
 const $alignEnd: ViewStyle = {
   alignSelf: "flex-end",
 }
 
-const $pill = (on: boolean): ViewStyle => ({
-  height: 32,
-  minWidth: 64,
-  paddingHorizontal: 12,
-  borderRadius: 16,
-  alignItems: "center",
-  justifyContent: "center",
-  backgroundColor: on ? "#dbeafe" : "#e5e7eb",
-})
+const $listContainer: ViewStyle = {
+  gap: 12,
+}
 
 const $screenInner: ViewStyle = { flex: 1 }
 const $stickyHeader: ViewStyle = { position: "absolute", top: 0, left: 0, right: 0, zIndex: 2 }
 const $stickyFooter: ViewStyle = { position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 2 }
-const $scrollArea: ViewStyle = { paddingTop: 72, paddingBottom: 96 }
+const $scrollArea: ViewStyle = { flex: 1 }
 const $titleStyle: ThemedStyle<any> = ({ colors }) => ({ color: colors.palette.primary2 as any, fontSize: 24 })
-const $introBlock: ViewStyle = { paddingBottom: 32 }
+const $introBlock: ViewStyle = { paddingTop: 16, paddingBottom: 32 }

@@ -109,6 +109,7 @@ export const ProjectSummaryStep2Screen: FC<ProjectSummaryStep2ScreenProps> = obs
           render={({ field: { value, onChange, onBlur } }) => (
             <TextField
               label="Acreage"
+              placeholder="0.0"
               value={String(value ?? "")}
               onChangeText={(txt) => onChange(Number(txt) || 0)}
               onBlur={onBlur}
@@ -123,6 +124,7 @@ export const ProjectSummaryStep2Screen: FC<ProjectSummaryStep2ScreenProps> = obs
           render={({ field: { value, onChange, onBlur } }) => (
             <TextField
               label="Number of Sign Downs"
+              placeholder="0"
               value={String(value ?? "")}
               onChangeText={(txt) => onChange(Number(txt) || 0)}
               onBlur={onBlur}
@@ -137,6 +139,7 @@ export const ProjectSummaryStep2Screen: FC<ProjectSummaryStep2ScreenProps> = obs
           render={({ field: { value, onChange, onBlur } }) => (
             <TextField
               label="Year Renovated"
+              placeholder="Year"
               value={String(value ?? "")}
               onChangeText={(txt) => onChange(Number(txt) || 0)}
               onBlur={onBlur}
@@ -151,6 +154,7 @@ export const ProjectSummaryStep2Screen: FC<ProjectSummaryStep2ScreenProps> = obs
           render={({ field: { value, onChange, onBlur } }) => (
             <TextField
               label="Number of Buildings"
+              placeholder="0"
               value={String(value ?? "")}
               onChangeText={(txt) => onChange(Number(txt) || 0)}
               onBlur={onBlur}
@@ -165,6 +169,7 @@ export const ProjectSummaryStep2Screen: FC<ProjectSummaryStep2ScreenProps> = obs
           render={({ field: { value, onChange, onBlur } }) => (
             <TextField
               label="Net Square Feet"
+              placeholder="Square feet"
               value={String(value ?? "")}
               onChangeText={(txt) => onChange(Number(txt) || 0)}
               onBlur={onBlur}
@@ -181,6 +186,7 @@ export const ProjectSummaryStep2Screen: FC<ProjectSummaryStep2ScreenProps> = obs
           render={({ field: { value, onChange, onBlur } }) => (
             <TextField
               label="Number of Units"
+              placeholder="0"
               value={String(value ?? "")}
               onChangeText={(txt) => onChange(Number(txt) || 0)}
               onBlur={onBlur}
@@ -195,6 +201,7 @@ export const ProjectSummaryStep2Screen: FC<ProjectSummaryStep2ScreenProps> = obs
           render={({ field: { value, onChange, onBlur } }) => (
             <TextField
               label="GSF"
+              placeholder="Square feet"
               value={String(value ?? "")}
               onChangeText={(txt) => onChange(Number(txt) || 0)}
               onBlur={onBlur}
@@ -209,6 +216,7 @@ export const ProjectSummaryStep2Screen: FC<ProjectSummaryStep2ScreenProps> = obs
           render={({ field: { value, onChange, onBlur } }) => (
             <TextField
               label="Number of Vacant Units"
+              placeholder="0"
               value={String(value ?? "")}
               onChangeText={(txt) => onChange(Number(txt) || 0)}
               onBlur={onBlur}
@@ -223,6 +231,7 @@ export const ProjectSummaryStep2Screen: FC<ProjectSummaryStep2ScreenProps> = obs
           render={({ field: { value, onChange, onBlur } }) => (
             <TextField
               label="Year Built"
+              placeholder="Year"
               value={String(value ?? "")}
               onChangeText={(txt) => onChange(Number(txt) || 0)}
               onBlur={onBlur}
@@ -258,6 +267,7 @@ export const ProjectSummaryStep2Screen: FC<ProjectSummaryStep2ScreenProps> = obs
           render={({ field: { value, onChange, onBlur } }) => (
             <TextField
               label="Recent Capital Improvements"
+              placeholder="Describe recent improvements"
               value={value}
               onChangeText={onChange}
               onBlur={onBlur}
@@ -284,6 +294,8 @@ const $root: ViewStyle = {
 
 const $content: ViewStyle = {
   padding: 16,
+  paddingTop: 88, // 72 (header height) + 16 (spacing)
+  paddingBottom: 112, // 96 (footer height) + 16 (spacing)
   gap: 16,
 }
 
@@ -296,10 +308,10 @@ const $row: ViewStyle = {
   gap: 12,
 }
 
-const $scrollArea: ViewStyle = { flex: 1, paddingTop: 72, paddingBottom: 96 }
+const $scrollArea: ViewStyle = { flex: 1 }
 const $progressHeaderText: ThemedStyle<any> = ({ colors }) => ({ color: colors.palette.primary2 as any })
 const $titleStyle: ThemedStyle<any> = ({ colors }) => ({ color: colors.palette.primary2 as any, fontSize: 24 })
 const $screenInner: ViewStyle = { flex: 1 }
 const $stickyHeader: ViewStyle = { position: "absolute", top: 0, left: 0, right: 0, zIndex: 2 }
 const $stickyFooter: ViewStyle = { position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 2 }
-const $introBlock: ViewStyle = { paddingBottom: 32 }
+const $introBlock: ViewStyle = { paddingTop: 16, paddingBottom: 32 }

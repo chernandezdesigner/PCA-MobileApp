@@ -152,70 +152,70 @@ export const ProjectSummaryStep4Screen: FC<ProjectSummaryStep4ScreenProps> = obs
           control={control}
           name="domesticWater"
           render={({ field: { value, onChange, onBlur } }) => (
-            <TextField label="Domestic Water" value={value} onChangeText={onChange} onBlur={onBlur} />
+            <TextField label="Domestic Water" placeholder="Water source" value={value} onChangeText={onChange} onBlur={onBlur} />
           )}
         />
         <Controller
           control={control}
           name="domesticSewage"
           render={({ field: { value, onChange, onBlur } }) => (
-            <TextField label="Domestic Sewage" value={value} onChangeText={onChange} onBlur={onBlur} />
+            <TextField label="Domestic Sewage" placeholder="Sewage system" value={value} onChangeText={onChange} onBlur={onBlur} />
           )}
         />
         <Controller
           control={control}
           name="stormWaterDrainage"
           render={({ field: { value, onChange, onBlur } }) => (
-            <TextField label="Storm Water Drainage" value={value} onChangeText={onChange} onBlur={onBlur} />
+            <TextField label="Storm Water Drainage" placeholder="Drainage system" value={value} onChangeText={onChange} onBlur={onBlur} />
           )}
         />
         <Controller
           control={control}
           name="electricity"
           render={({ field: { value, onChange, onBlur } }) => (
-            <TextField label="Electricity" value={value} onChangeText={onChange} onBlur={onBlur} />
+            <TextField label="Electricity" placeholder="Provider name" value={value} onChangeText={onChange} onBlur={onBlur} />
           )}
         />
         <Controller
           control={control}
           name="naturalGas"
           render={({ field: { value, onChange, onBlur } }) => (
-            <TextField label="Natural Gas" value={value} onChangeText={onChange} onBlur={onBlur} />
+            <TextField label="Natural Gas" placeholder="Provider name" value={value} onChangeText={onChange} onBlur={onBlur} />
           )}
         />
         <Controller
           control={control}
           name="heatingOil"
           render={({ field: { value, onChange, onBlur } }) => (
-            <TextField label="Heating Oil" value={value} onChangeText={onChange} onBlur={onBlur} />
+            <TextField label="Heating Oil" placeholder="Source or N/A" value={value} onChangeText={onChange} onBlur={onBlur} />
           )}
         />
         <Controller
           control={control}
           name="propane"
           render={({ field: { value, onChange, onBlur } }) => (
-            <TextField label="Propane" value={value} onChangeText={onChange} onBlur={onBlur} />
+            <TextField label="Propane" placeholder="Source or N/A" value={value} onChangeText={onChange} onBlur={onBlur} />
           )}
         />
         <Controller
           control={control}
           name="wellSystem"
           render={({ field: { value, onChange, onBlur } }) => (
-            <TextField label="Well System" value={value} onChangeText={onChange} onBlur={onBlur} />
+            <TextField label="Well System" placeholder="Details or N/A" value={value} onChangeText={onChange} onBlur={onBlur} />
           )}
         />
         <Controller
           control={control}
           name="septicSystem"
           render={({ field: { value, onChange, onBlur } }) => (
-            <TextField label="Septic System" value={value} onChangeText={onChange} onBlur={onBlur} />
+            <TextField label="Septic System" placeholder="Details or N/A" value={value} onChangeText={onChange} onBlur={onBlur} />
           )}
         />
         <Controller
           control={control}
           name="wastewaterTreatmentPlant"
           render={({ field: { value, onChange, onBlur } }) => (
-            <TextField label="Wastewater Treatment Plant" value={value} onChangeText={onChange} onBlur={onBlur} />
+            <TextField label="Wastewater Treatment Plant" placeholder="Details or N/A" value={value} onChangeText={onChange} onBlur={onBlur} />
           )}
         />
       </View>
@@ -244,19 +244,19 @@ const $root: ViewStyle = {
 
 const $content: ViewStyle = {
   padding: 16,
+  paddingTop: 88, // 72 (header height) + 16 (spacing)
+  paddingBottom: 112, // 96 (footer height) + 16 (spacing)
   gap: 16,
 }
 
 const $fieldsGrid: ViewStyle = {
-  flexDirection: "row",
-  flexWrap: "wrap",
-  columnGap: 12,
-  rowGap: 12,
+  gap: 12,
+  // Full-width stacked layout for mobile (consistent with other form screens)
 }
 
 const $screenInner: ViewStyle = { flex: 1 }
 const $stickyHeader: ViewStyle = { position: "absolute", top: 0, left: 0, right: 0, zIndex: 2 }
 const $stickyFooter: ViewStyle = { position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 2 }
-const $scrollArea: ViewStyle = { paddingTop: 72, paddingBottom: 96 }
+const $scrollArea: ViewStyle = { flex: 1 }
 const $titleStyle: ThemedStyle<any> = ({ colors }) => ({ color: colors.palette.primary2, fontSize: 24 })
-const $introBlock: ViewStyle = { paddingBottom: 32 }
+const $introBlock: ViewStyle = { paddingTop: 16, paddingBottom: 32 }

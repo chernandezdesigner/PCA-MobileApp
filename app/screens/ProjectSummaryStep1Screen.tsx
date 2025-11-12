@@ -113,6 +113,7 @@ export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = obs
           render={({ field: { value, onChange, onBlur } }) => (
             <TextField
               label="Project Name"
+              placeholder="Project name"
               value={value}
               onChangeText={onChange}
               onBlur={onBlur}
@@ -130,6 +131,7 @@ export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = obs
           render={({ field: { value, onChange, onBlur } }) => (
             <TextField
               label="Project Number"
+              placeholder="PCA-0000"
               value={value}
               onChangeText={onChange}
               onBlur={onBlur}
@@ -147,6 +149,7 @@ export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = obs
           render={({ field: { value, onChange, onBlur } }) => (
             <TextField
               label="Property Address"
+              placeholder="Street address"
               value={value}
               onChangeText={onChange}
               onBlur={onBlur}
@@ -164,6 +167,7 @@ export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = obs
             render={({ field: { value, onChange, onBlur } }) => (
               <TextField 
                 label="City" 
+                placeholder="City"
                 value={value} 
                 onChangeText={onChange} 
                 onBlur={onBlur}
@@ -180,6 +184,7 @@ export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = obs
             render={({ field: { value, onChange, onBlur } }) => (
               <TextField 
                 label="State" 
+                placeholder="State"
                 value={value} 
                 onChangeText={onChange} 
                 onBlur={onBlur}
@@ -196,6 +201,7 @@ export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = obs
             render={({ field: { value, onChange, onBlur } }) => (
               <TextField
                 label="ZIP Code"
+                placeholder="ZIP"
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
@@ -215,6 +221,7 @@ export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = obs
             render={({ field: { value, onChange, onBlur } }) => (
               <TextField 
                 label="Weather" 
+                placeholder="Weather conditions"
                 value={value} 
                 onChangeText={onChange} 
                 onBlur={onBlur}
@@ -231,6 +238,7 @@ export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = obs
             render={({ field: { value, onChange, onBlur } }) => (
               <TextField
                 label="Temperature (°F)"
+                placeholder="Temperature"
                 value={String(value ?? "")}
                 onChangeText={(txt) => onChange(Number(txt.replace(/[^0-9.-]/g, "")) || 0)}
                 onBlur={onBlur}
@@ -319,6 +327,7 @@ export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = obs
           render={({ field: { value, onChange, onBlur } }) => (
             <TextField 
               label="Inspector Name" 
+              placeholder="Inspector name"
               value={value} 
               onChangeText={onChange} 
               onBlur={onBlur}
@@ -334,6 +343,7 @@ export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = obs
           render={({ field: { value, onChange, onBlur } }) => (
             <TextField 
               label="Inspector Number" 
+              placeholder="Inspector ID"
               value={value} 
               onChangeText={onChange} 
               onBlur={onBlur}
@@ -378,6 +388,8 @@ const $root: ViewStyle = {
 
 const $content: ViewStyle = {
   padding: 16,
+  paddingTop: 88, // 72 (header height) + 16 (spacing)
+  paddingBottom: 112, // 96 (footer height) + 16 (spacing)
   gap: 16,
 }
 
@@ -418,11 +430,11 @@ const $temperatureField: ViewStyle = {
   flex: 1,
 }
 
-const $scrollArea: ViewStyle = { flex: 1, paddingTop: 72, paddingBottom: 96 }
+const $scrollArea: ViewStyle = { flex: 1 }
 const $progressHeaderText: ThemedStyle<any> = ({ colors }) => ({ color: colors.palette.primary2 as any })
 const $titleStyle: ThemedStyle<any> = ({ colors }) => ({ color: colors.palette.primary2 as any, fontSize: 24, fontFamily: undefined })
 const $screenInner: ViewStyle = { flex: 1 }
 
 const $stickyHeader: ViewStyle = { position: "absolute", top: 0, left: 0, right: 0, zIndex: 2 }
 const $stickyFooter: ViewStyle = { position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 2 }
-const $introBlock: ViewStyle = { paddingBottom: 32 }
+const $introBlock: ViewStyle = { paddingTop: 16, paddingBottom: 32 }

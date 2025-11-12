@@ -1,5 +1,5 @@
 import { ReactNode } from "react"
-import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native"
+import { StyleProp, TextStyle, TouchableOpacity, View, ViewStyle } from "react-native"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle, ThemedStyleArray } from "@/theme/types"
 import { Text } from "@/components/Text"
@@ -53,16 +53,16 @@ export const ConditionAssessment = (props: ConditionAssessmentProps) => {
         accessibilityRole="button"
         accessibilityState={{ selected, disabled: !!disabled }}
         onPress={() => onChange?.(id)}
-        style={themed([$tile, selected && [$tileSelected, { borderColor: accentColor, backgroundColor: fillColor }]])}
+        style={[themed($tile), selected && $tileSelected, selected && { borderColor: accentColor, backgroundColor: fillColor }]}
       >
-        <Text size="sm" weight="medium" text={label} style={themed($tileLabel)} />
+        <Text size="sm" weight={selected ? "bold" : "medium"} text={label} style={themed(selected ? $tileLabelSelected : $tileLabel)} />
         {rightAdornment}
       </TouchableOpacity>
     )
   }
 
   return (
-    <View style={themed([$container, style])}>
+    <View style={[themed($container), style]}>
       <Option
         id="good"
         label="Good"
@@ -86,33 +86,44 @@ export const ConditionAssessment = (props: ConditionAssessmentProps) => {
 }
 
 const $container: ThemedStyleArray<ViewStyle> = [
-  () => ({
+  ({ spacing }) => ({
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-between",
+    gap: spacing.xs, // Consistent spacing between tiles
   }),
 ]
 
 const $tile: ThemedStyleArray<ViewStyle> = [
   (theme) => ({
+    // 32% width allows 3 tiles with gap
     width: "32%",
+    // Meets accessibility minimum for touch targets (slightly above 44x44)
     minHeight: 48,
-    borderRadius: theme.spacing.md,
+    borderRadius: theme.spacing.md, // 16px
     borderWidth: 1,
     borderColor: theme.colors.palette.SecondaryButtonBorder,
     backgroundColor: theme.colors.palette.SecondaryButtonBackground,
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: theme.spacing.xs,
-    paddingHorizontal: theme.spacing.md,
+    paddingVertical: theme.spacing.xs, // 8px
+    paddingHorizontal: theme.spacing.sm, // 12px - better text padding
   }),
 ]
 
 const $tileSelected: ViewStyle = {
+  // Subtle elevation for selected state
   shadowColor: "#000000",
-  shadowOpacity: 0.06,
-  shadowRadius: 8,
-  elevation: 6,
+  shadowOpacity: 0.08,
+  shadowRadius: 4,
+  shadowOffset: { width: 0, height: 2 },
+  elevation: 2,
 }
 
-const $tileLabel: ThemedStyle<ViewStyle> = () => ({})
+const $tileLabel: ThemedStyle<TextStyle> = ({ colors }) => ({
+  color: colors.palette.gray6,
+})
+
+const $tileLabelSelected: ThemedStyle<TextStyle> = ({ colors }) => ({
+  color: colors.palette.gray6,
+})

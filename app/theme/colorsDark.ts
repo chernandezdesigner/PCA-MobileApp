@@ -42,8 +42,24 @@ const palette = {
   SecondaryButtonBorder: "#374151",
 
   // Checklist surfaces (dark equivalents)
-  checklistBackground: "rgba(17, 24, 39, 0.6)",
-  checklistAlternatingBackground: "rgba(55, 65, 81, 0.3)",
+  checklistBackground: "#111827",
+  checklistAlternatingBackground: "#1F2937",
+
+  FormLabelText: "#F3F4F6",
+  FormInputPlaceholderText: "#9CA3AF",
+  FormInputText: "#F9FAFB",
+  FormInputFill: "#1F2937",
+
+  // Condition assessment colors (adjusted for dark mode)
+  conditionGoodBackground: "#065f46", // Dark green
+  conditionFairBackground: "#92400e", // Dark amber
+  conditionPoorBackground: "#991b1b", // Dark red
+
+  conditionGoodBorder: "#10b981", // Lighter green border
+  conditionFairBorder: "#fbbf24", // Amber border
+  conditionPoorBorder: "#ef4444", // Red border
+
+  SecondaryButtonActiveBackground: "#F9FAFB",
 
   secondary500: "#DCDDE9",
   secondary400: "#BCC0D6",

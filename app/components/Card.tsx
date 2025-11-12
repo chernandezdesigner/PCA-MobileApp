@@ -257,14 +257,15 @@ export function Card(props: CardProps) {
 
 const $containerBase: ThemedStyle<ViewStyle> = (theme) => ({
   borderRadius: theme.spacing.md,
-  padding: theme.spacing.xs,
+  padding: theme.spacing.sm, // Increased padding for better mobile spacing
   borderWidth: 1,
   shadowColor: theme.colors.palette.neutral800,
-  shadowOffset: { width: 0, height: 12 },
-  shadowOpacity: 0.08,
-  shadowRadius: 12.81,
-  elevation: 16,
-  minHeight: 96,
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.05,
+  shadowRadius: 3,
+  elevation: 2,
+  // Remove fixed minHeight to allow dynamic content sizing
+  // Cards will grow to fit their content naturally
 })
 
 const $alignmentWrapper: ViewStyle = {
