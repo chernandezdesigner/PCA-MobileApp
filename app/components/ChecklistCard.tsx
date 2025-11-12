@@ -62,8 +62,10 @@ export const ChecklistCard: FC<Props> = (props) => {
                 <View style={[$rowWrapper, index % 2 === 1 ? themed($altRow) : undefined]}>
                   <View style={themed($rowBetween)}>
                     <Text text={item.label} size="sm" weight="medium" style={themed($itemLabel)} />
-                    <View style={themed($row)}>
-                      <Checkbox value={item.checked} onValueChange={(v) => onToggle(item.id, v)} />
+                    <View style={themed($controlsRow)}>
+                      <View style={themed($checkboxWrapper)}>
+                        <Checkbox value={item.checked} onValueChange={(v) => onToggle(item.id, v)} />
+                      </View>
                       <Pill 
                         label={item.checked ? "Yes" : "No"} 
                         variant={item.checked ? "active" : "default"}
@@ -114,7 +116,25 @@ const $rowBetween: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   alignItems: "center",
   justifyContent: "space-between",
   paddingHorizontal: spacing.md, // 16px
-  paddingVertical: spacing.sm, // 12px
+  paddingVertical: spacing.sm, // 12px for better spacing
+  minHeight: 60, // Increased to accommodate 44px elements comfortably
+})
+
+const $controlsRow: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  flexDirection: "row",
+  alignItems: "center",
+  gap: spacing.xs, // 8px between controls
+  flexShrink: 0, // Don't shrink controls
+  height: 44, // Fixed height for all controls
+})
+
+const $checkboxWrapper: ThemedStyle<ViewStyle> = () => ({
+  // Wrapper to center checkbox vertically with other 44px elements
+  height: 44, // Fixed height instead of minHeight
+  width: 44, // Fixed width for consistent sizing
+  justifyContent: "center",
+  alignItems: "center",
+  flexShrink: 0,
 })
 
 const $headerRow: ThemedStyle<ViewStyle> = ({ spacing }) => ({
@@ -145,10 +165,14 @@ const $commentContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   paddingBottom: spacing.sm, // 12px
 })
 
-const $itemLabel: ThemedStyle<ViewStyle> = ({ colors }) => ({
+const $itemLabel: ThemedStyle<TextStyle> = ({ colors }) => ({
   color: colors.palette.gray6,
   flex: 1,
-  marginRight: 8,
+  marginRight: 12,
+  // Ensure text aligns with the row height
+  lineHeight: 24, // Match Text component sm size lineHeight
+  // Vertically center text in the row
+  textAlignVertical: "center",
 })
 
 // Mobile-optimized button sizes - now meets 44x44 accessibility minimum
@@ -179,13 +203,23 @@ const $divider: ThemedStyle<ViewStyle> = ({ colors }) => ({
   backgroundColor: colors.palette.gray3, // Use theme color instead of hardcoded
 })
 
-// Meet 44x44 minimum touch target for mobile accessibility
+// Comment button - sized for visual balance with pill
 const $commentBtn = (active: boolean): ThemedStyle<ViewStyle> => ({ colors, spacing }) => ({
-  minHeight: 44,
-  minWidth: 44,
-  paddingHorizontal: spacing.sm, // 12px
+  height: 40, // Slightly smaller for better visual balance with pill
+  minHeight: 40, // Override Button's base minHeight of 56
+  maxHeight: 40, // Ensure it can't grow larger
+  width: 48, // Narrower for better proportion
+  minWidth: 48, // Override Button's base minWidth
+  padding: 0, // Remove all padding
+  paddingVertical: 0, // Override Button's base paddingVertical
+  paddingHorizontal: 0, // Override Button's base paddingHorizontal
+  margin: 0, // Remove any margin
   backgroundColor: active ? colors.palette.secondary100 : colors.palette.SecondaryButtonBackground,
   borderWidth: 1,
   borderColor: active ? colors.palette.secondary200 : colors.palette.SecondaryButtonBorder,
+  borderRadius: spacing.xs, // 8px rounded corners to match pill style
+  justifyContent: "center",
+  alignItems: "center",
+  flexShrink: 0,
 })
 

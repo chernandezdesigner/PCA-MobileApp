@@ -59,16 +59,16 @@ export const RepairStatus = (props: RepairStatusProps) => {
 const $grid: ThemedStyleArray<ViewStyle> = [
   ({ spacing }) => ({
     flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-    gap: spacing.xs, // Consistent spacing between tiles
+    flexWrap: "wrap", // Allow wrapping for 2 rows of 3
+    justifyContent: "space-between", // Space items evenly
+    rowGap: spacing.sm, // 12px gap between rows
   }),
 ]
 
 const $tile: ThemedStyleArray<ViewStyle> = [
   (theme) => ({
-    // 32% width allows 3 tiles per row with gap
-    width: "32%",
+    // 31% width with space-between creates proper gaps for 3 columns
+    width: "31%",
     // Meets accessibility minimum for touch targets (slightly above 44x44)
     minHeight: 48,
     borderRadius: theme.spacing.md, // 16px
@@ -79,7 +79,7 @@ const $tile: ThemedStyleArray<ViewStyle> = [
     justifyContent: "center",
     paddingVertical: theme.spacing.xs, // 8px
     paddingHorizontal: theme.spacing.sm, // 12px - better text padding
-    marginBottom: theme.spacing.sm, // 12px gap between rows
+    flexShrink: 0, // Prevent shrinking
   }),
 ]
 

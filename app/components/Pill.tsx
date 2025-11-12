@@ -88,15 +88,16 @@ export const Pill: FC<PillProps> = ({
 
 // Base styles using existing theme system
 const $container: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  // Minimum 44x44 for accessibility (iOS/Android guidelines)
-  minHeight: 44,
+  // Fixed 44px height for perfect alignment (iOS/Android guidelines)
+  height: 44,
   minWidth: 68,
   paddingHorizontal: spacing.md, // 16px
-  paddingVertical: spacing.xs, // 8px
-  borderRadius: 22, // Half of minHeight for pill shape
+  paddingVertical: 0, // Remove to maintain fixed height
+  borderRadius: 22, // Half of height for pill shape
   alignItems: "center",
   justifyContent: "center",
   alignSelf: "flex-start",
+  flexShrink: 0, // Prevent shrinking
 })
 
 const $text: ThemedStyle<TextStyle> = () => ({
