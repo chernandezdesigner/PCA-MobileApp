@@ -1,9 +1,9 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 
-import { SiteGroundsStep1Screen } from "@/screens/SiteGroundsStep1Screen"
-import { SiteGroundsStep2Screen } from "@/screens/SiteGroundsStep2Screen"
-import { SiteGroundsStep3Screen } from "@/screens/SiteGroundsStep3Screen"
-import { SiteGroundsStep4Screen } from "@/screens/SiteGroundsStep4Screen"
+import { SiteGroundsStep1Screen } from "@/screens/SiteGroundsForm/SiteGroundsStep1Screen"
+import { SiteGroundsStep2Screen } from "@/screens/SiteGroundsForm/SiteGroundsStep2Screen"
+import { SiteGroundsStep3Screen } from "@/screens/SiteGroundsForm/SiteGroundsStep3Screen"
+import { SiteGroundsStep4Screen } from "@/screens/SiteGroundsForm/SiteGroundsStep4Screen"
 
 
 export type SiteGroundsFormNavigatorParamList = {

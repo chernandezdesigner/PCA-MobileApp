@@ -1,8 +1,8 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
-import { ProjectSummaryStep1Screen } from "@/screens/ProjectSummaryStep1Screen"
-import { ProjectSummaryStep2Screen } from "@/screens/ProjectSummaryStep2Screen"
-import { ProjectSummaryStep3Screen } from "@/screens/ProjectSummaryStep3Screen"
-import { ProjectSummaryStep4Screen } from "@/screens/ProjectSummaryStep4Screen"
+import { ProjectSummaryStep1Screen } from "@/screens/ProjectSummaryForm/ProjectSummaryStep1Screen"
+import { ProjectSummaryStep2Screen } from "@/screens/ProjectSummaryForm/ProjectSummaryStep2Screen"
+import { ProjectSummaryStep3Screen } from "@/screens/ProjectSummaryForm/ProjectSummaryStep3Screen"
+import { ProjectSummaryStep4Screen } from "@/screens/ProjectSummaryForm/ProjectSummaryStep4Screen"
 
 export type ProjectSummaryFormNavigatorParamList = {
   ProjectSummaryStep1: undefined

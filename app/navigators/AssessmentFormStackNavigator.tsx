@@ -1,12 +1,12 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
-import { ProjectSummaryStep1Screen } from "@/screens/ProjectSummaryStep1Screen"
-import { ProjectSummaryStep2Screen } from "@/screens/ProjectSummaryStep2Screen"
-import { ProjectSummaryStep3Screen } from "@/screens/ProjectSummaryStep3Screen"
-import { ProjectSummaryStep4Screen } from "@/screens/ProjectSummaryStep4Screen"
-import { SiteGroundsStep1Screen } from "@/screens/SiteGroundsStep1Screen"
-import { SiteGroundsStep2Screen } from "@/screens/SiteGroundsStep2Screen"
-import { SiteGroundsStep3Screen } from "@/screens/SiteGroundsStep3Screen"
-import { SiteGroundsStep4Screen } from "@/screens/SiteGroundsStep4Screen"
+import { ProjectSummaryStep1Screen } from "@/screens/ProjectSummaryForm/ProjectSummaryStep1Screen"
+import { ProjectSummaryStep2Screen } from "@/screens/ProjectSummaryForm/ProjectSummaryStep2Screen"
+import { ProjectSummaryStep3Screen } from "@/screens/ProjectSummaryForm/ProjectSummaryStep3Screen"
+import { ProjectSummaryStep4Screen } from "@/screens/ProjectSummaryForm/ProjectSummaryStep4Screen"
+import { SiteGroundsStep1Screen } from "@/screens/SiteGroundsForm/SiteGroundsStep1Screen"
+import { SiteGroundsStep2Screen } from "@/screens/SiteGroundsForm/SiteGroundsStep2Screen"
+import { SiteGroundsStep3Screen } from "@/screens/SiteGroundsForm/SiteGroundsStep3Screen"
+import { SiteGroundsStep4Screen } from "@/screens/SiteGroundsForm/SiteGroundsStep4Screen"
 
 export type AssessmentFormStackParamList = {
   // Project Summary

@@ -9,3 +9,8 @@ export const ConditionAssessment = types.model("ConditionAssessment", {
   repairStatus: types.maybe(RepairStatusEnum),
   amountToRepair: types.optional(types.string, ""),
 })
+
+export const RepairAssessment = types.model("RepairAssessment", {
+  repairStatus: types.maybe(RepairStatusEnum),
+  amountToRepair: types.optional(types.string, ""),
+})
