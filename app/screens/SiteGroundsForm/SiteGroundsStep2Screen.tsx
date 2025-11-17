@@ -91,32 +91,32 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
       topographySlope: {
         topographySlopes: store?.topographySlope.topographySlopes.slice() ?? [],
         assessment: {
-          condition: (store?.topographySlope.assessment.condition as ConditionT) ?? "good",
-          repairStatus: (store?.topographySlope.assessment.repairStatus as RepairT) ?? "IR",
+          condition: (store?.topographySlope.assessment.condition as ConditionT) ?? undefined as any,
+          repairStatus: (store?.topographySlope.assessment.repairStatus as RepairT) ?? undefined as any,
           amountToRepair: store?.topographySlope.assessment.amountToRepair ?? "",
         },
       },
       landscaping: {
         landscaping: store?.landscaping.landscaping.slice() ?? [],
         assessment: {
-          condition: (store?.landscaping.assessment.condition as ConditionT) ?? "good",
-          repairStatus: (store?.landscaping.assessment.repairStatus as RepairT) ?? "IR",
+          condition: (store?.landscaping.assessment.condition as ConditionT) ?? undefined as any,
+          repairStatus: (store?.landscaping.assessment.repairStatus as RepairT) ?? undefined as any,
           amountToRepair: store?.landscaping.assessment.amountToRepair ?? "",
         },
       },
       retainingWalls: {
         retainingWallMaterials: store?.retainingWalls.retainingWallMaterials.slice() ?? [],
         assessment: {
-          condition: (store?.retainingWalls.assessment.condition as ConditionT) ?? "good",
-          repairStatus: (store?.retainingWalls.assessment.repairStatus as RepairT) ?? "IR",
+          condition: (store?.retainingWalls.assessment.condition as ConditionT) ?? undefined as any,
+          repairStatus: (store?.retainingWalls.assessment.repairStatus as RepairT) ?? undefined as any,
           amountToRepair: store?.retainingWalls.assessment.amountToRepair ?? "",
         },
         railing: (store?.retainingWalls.railing as YesNo) ?? "no",
         railingDetails: {
           railingMaterials: store?.retainingWalls.railingDetails?.railingMaterials.slice() ?? [],
           assessment: {
-            condition: (store?.retainingWalls.railingDetails?.assessment.condition as ConditionT) ?? "good",
-            repairStatus: (store?.retainingWalls.railingDetails?.assessment.repairStatus as RepairT) ?? "IR",
+            condition: (store?.retainingWalls.railingDetails?.assessment.condition as ConditionT) ?? undefined as any,
+            repairStatus: (store?.retainingWalls.railingDetails?.assessment.repairStatus as RepairT) ?? undefined as any,
             amountToRepair: store?.retainingWalls.railingDetails?.assessment.amountToRepair ?? "",
           },
         },
@@ -124,16 +124,16 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
       screenWalls: {
         screenWallMaterials: store?.screenWalls.screenWallMaterials.slice() ?? [],
         assessment: {
-          condition: (store?.screenWalls.assessment.condition as ConditionT) ?? "good",
-          repairStatus: (store?.screenWalls.assessment.repairStatus as RepairT) ?? "IR",
+          condition: (store?.screenWalls.assessment.condition as ConditionT) ?? undefined as any,
+          repairStatus: (store?.screenWalls.assessment.repairStatus as RepairT) ?? undefined as any,
           amountToRepair: store?.screenWalls.assessment.amountToRepair ?? "",
         },
         railing: (store?.screenWalls.railing as YesNo) ?? "no",
         railingDetails: {
           railingMaterials: store?.screenWalls.railingDetails?.railingMaterials.slice() ?? [],
           assessment: {
-            condition: (store?.screenWalls.railingDetails?.assessment.condition as ConditionT) ?? "good",
-            repairStatus: (store?.screenWalls.railingDetails?.assessment.repairStatus as RepairT) ?? "IR",
+            condition: (store?.screenWalls.railingDetails?.assessment.condition as ConditionT) ?? undefined as any,
+            repairStatus: (store?.screenWalls.railingDetails?.assessment.repairStatus as RepairT) ?? undefined as any,
             amountToRepair: store?.screenWalls.railingDetails?.assessment.amountToRepair ?? "",
           },
         },
@@ -143,8 +143,8 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
         pumpLocations: store?.waterFeatures.pumpLocations.slice() ?? [],
         pumpAge: store?.waterFeatures.pumpAge ?? "",
         assessment: {
-          condition: (store?.waterFeatures.assessment.condition as ConditionT) ?? "good",
-          repairStatus: (store?.waterFeatures.assessment.repairStatus as RepairT) ?? "IR",
+          condition: (store?.waterFeatures.assessment.condition as ConditionT) ?? undefined as any,
+          repairStatus: (store?.waterFeatures.assessment.repairStatus as RepairT) ?? undefined as any,
           amountToRepair: store?.waterFeatures.assessment.amountToRepair ?? "",
         },
       },
@@ -165,28 +165,77 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
     const subscription = watch((values) => {
       if (debounceRef.current) clearTimeout(debounceRef.current)
       debounceRef.current = setTimeout(() => {
-        const v = values as Required<Step2FormValues>
-        store?.updateTopographySlope({ topographySlopes: v.topographySlope.topographySlopes, assessment: v.topographySlope.assessment as any })
-        store?.updateLandscaping({ landscaping: v.landscaping.landscaping, assessment: v.landscaping.assessment as any })
-        store?.updateRetainingWalls({
-          retainingWallMaterials: v.retainingWalls.retainingWallMaterials,
-          assessment: v.retainingWalls.assessment as any,
-          railing: v.retainingWalls.railing,
-          railingDetails: v.retainingWalls.railing === "yes" ? (v.retainingWalls.railingDetails as any) : undefined,
-        })
-        store?.updateScreenWalls({
-          screenWallMaterials: v.screenWalls.screenWallMaterials,
-          assessment: v.screenWalls.assessment as any,
-          railing: v.screenWalls.railing,
-          railingDetails: v.screenWalls.railing === "yes" ? (v.screenWalls.railingDetails as any) : undefined,
-        })
-        store?.updateWaterFeatures({
-          waterFeatures: v.waterFeatures.waterFeatures,
-          pumpLocations: v.waterFeatures.pumpLocations,
-          pumpAge: v.waterFeatures.pumpAge,
-          assessment: v.waterFeatures.assessment as any,
-        })
-        store?.updateComments(v.comments)
+        const v = values as Step2FormValues
+        
+        // Helper to filter out undefined values from assessment
+        const filterAssessment = (assessment: any) => {
+          const filtered: any = {}
+          if (assessment?.condition !== undefined) filtered.condition = assessment.condition
+          if (assessment?.repairStatus !== undefined) filtered.repairStatus = assessment.repairStatus
+          if (assessment?.amountToRepair !== undefined) filtered.amountToRepair = assessment.amountToRepair
+          return Object.keys(filtered).length > 0 ? filtered : undefined
+        }
+        
+        if (v.topographySlope) {
+          const assessment = filterAssessment(v.topographySlope.assessment)
+          store?.updateTopographySlope({ 
+            topographySlopes: v.topographySlope.topographySlopes, 
+            ...(assessment && { assessment })
+          })
+        }
+        if (v.landscaping) {
+          const assessment = filterAssessment(v.landscaping.assessment)
+          store?.updateLandscaping({ 
+            landscaping: v.landscaping.landscaping, 
+            ...(assessment && { assessment })
+          })
+        }
+        if (v.retainingWalls) {
+          const assessment = filterAssessment(v.retainingWalls.assessment)
+          const railingAssessment = v.retainingWalls.railing === "yes" && v.retainingWalls.railingDetails 
+            ? filterAssessment(v.retainingWalls.railingDetails.assessment)
+            : undefined
+          store?.updateRetainingWalls({
+            retainingWallMaterials: v.retainingWalls.retainingWallMaterials,
+            ...(assessment && { assessment }),
+            railing: v.retainingWalls.railing,
+            ...(v.retainingWalls.railing === "yes" && v.retainingWalls.railingDetails && {
+              railingDetails: {
+                railingMaterials: v.retainingWalls.railingDetails.railingMaterials,
+                ...(railingAssessment && { assessment: railingAssessment })
+              }
+            }),
+          })
+        }
+        if (v.screenWalls) {
+          const assessment = filterAssessment(v.screenWalls.assessment)
+          const railingAssessment = v.screenWalls.railing === "yes" && v.screenWalls.railingDetails 
+            ? filterAssessment(v.screenWalls.railingDetails.assessment)
+            : undefined
+          store?.updateScreenWalls({
+            screenWallMaterials: v.screenWalls.screenWallMaterials,
+            ...(assessment && { assessment }),
+            railing: v.screenWalls.railing,
+            ...(v.screenWalls.railing === "yes" && v.screenWalls.railingDetails && {
+              railingDetails: {
+                railingMaterials: v.screenWalls.railingDetails.railingMaterials,
+                ...(railingAssessment && { assessment: railingAssessment })
+              }
+            }),
+          })
+        }
+        if (v.waterFeatures) {
+          const assessment = filterAssessment(v.waterFeatures.assessment)
+          store?.updateWaterFeatures({
+            waterFeatures: v.waterFeatures.waterFeatures,
+            pumpLocations: v.waterFeatures.pumpLocations,
+            pumpAge: v.waterFeatures.pumpAge,
+            ...(assessment && { assessment }),
+          })
+        }
+        if (v.comments !== undefined) {
+          store?.updateComments(v.comments)
+        }
       }, 300)
     })
     return () => subscription.unsubscribe()

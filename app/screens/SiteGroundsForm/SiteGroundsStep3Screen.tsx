@@ -100,32 +100,32 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
       signage: {
         signageTypes: store?.signage.signageTypes.slice() ?? [],
         assessment: {
-          condition: (store?.signage.assessment.condition as ConditionT) ?? "good",
-          repairStatus: (store?.signage.assessment.repairStatus as RepairT) ?? "IR",
+          condition: (store?.signage.assessment.condition as ConditionT) ?? undefined as any,
+          repairStatus: (store?.signage.assessment.repairStatus as RepairT) ?? undefined as any,
           amountToRepair: store?.signage.assessment.amountToRepair ?? "",
         },
       },
       lotLighting: {
         lotLightingTypes: store?.lotLighting.lotLightingTypes.slice() ?? [],
         assessment: {
-          condition: (store?.lotLighting.assessment.condition as ConditionT) ?? "good",
-          repairStatus: (store?.lotLighting.assessment.repairStatus as RepairT) ?? "IR",
+          condition: (store?.lotLighting.assessment.condition as ConditionT) ?? undefined as any,
+          repairStatus: (store?.lotLighting.assessment.repairStatus as RepairT) ?? undefined as any,
           amountToRepair: store?.lotLighting.assessment.amountToRepair ?? "",
         },
       },
       bldgLighting: {
         bldgLightingTypes: store?.bldgLighting.bldgLightingTypes.slice() ?? [],
         assessment: {
-          condition: (store?.bldgLighting.assessment.condition as ConditionT) ?? "good",
-          repairStatus: (store?.bldgLighting.assessment.repairStatus as RepairT) ?? "IR",
+          condition: (store?.bldgLighting.assessment.condition as ConditionT) ?? undefined as any,
+          repairStatus: (store?.bldgLighting.assessment.repairStatus as RepairT) ?? undefined as any,
           amountToRepair: store?.bldgLighting.assessment.amountToRepair ?? "",
         },
       },
       siteFencing: {
         siteFencingMaterials: store?.siteFencing.siteFencingMaterials.slice() ?? [],
         assessment: {
-          condition: (store?.siteFencing.assessment.condition as ConditionT) ?? "good",
-          repairStatus: (store?.siteFencing.assessment.repairStatus as RepairT) ?? "IR",
+          condition: (store?.siteFencing.assessment.condition as ConditionT) ?? undefined as any,
+          repairStatus: (store?.siteFencing.assessment.repairStatus as RepairT) ?? undefined as any,
           amountToRepair: store?.siteFencing.assessment.amountToRepair ?? "",
         },
       },
@@ -135,8 +135,8 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
         otherType: store?.dumpster.otherType ?? "",
         location: store?.dumpster.location ?? "",
         assessment: {
-          condition: (store?.dumpster.assessment.condition as ConditionT) ?? "good",
-          repairStatus: (store?.dumpster.assessment.repairStatus as RepairT) ?? "IR",
+          condition: (store?.dumpster.assessment.condition as ConditionT) ?? undefined as any,
+          repairStatus: (store?.dumpster.assessment.repairStatus as RepairT) ?? undefined as any,
           amountToRepair: store?.dumpster.assessment.amountToRepair ?? "",
         },
       },
@@ -144,8 +144,8 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
         recreationalFacilities: store?.recreationalFacilities.recreationalFacilities.slice() ?? [],
         otherType: store?.recreationalFacilities.otherType ?? "",
         assessment: {
-          condition: (store?.recreationalFacilities.assessment.condition as ConditionT) ?? "good",
-          repairStatus: (store?.recreationalFacilities.assessment.repairStatus as RepairT) ?? "IR",
+          condition: (store?.recreationalFacilities.assessment.condition as ConditionT) ?? undefined as any,
+          repairStatus: (store?.recreationalFacilities.assessment.repairStatus as RepairT) ?? undefined as any,
           amountToRepair: store?.recreationalFacilities.assessment.amountToRepair ?? "",
         },
       },
@@ -153,24 +153,24 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
         tenantOwned: (store?.compactors.tenantOwned as YesNo) ?? "no",
         location: store?.compactors.location ?? "",
         assessment: {
-          condition: (store?.compactors.assessment.condition as ConditionT) ?? "good",
-          repairStatus: (store?.compactors.assessment.repairStatus as RepairT) ?? "IR",
+          condition: (store?.compactors.assessment.condition as ConditionT) ?? undefined as any,
+          repairStatus: (store?.compactors.assessment.repairStatus as RepairT) ?? undefined as any,
           amountToRepair: store?.compactors.assessment.amountToRepair ?? "",
         },
       },
       bridges: {
         bridgeMaterials: store?.bridges.bridgeMaterials.slice() ?? [],
         assessment: {
-          condition: (store?.bridges.assessment.condition as ConditionT) ?? "good",
-          repairStatus: (store?.bridges.assessment.repairStatus as RepairT) ?? "IR",
+          condition: (store?.bridges.assessment.condition as ConditionT) ?? undefined as any,
+          repairStatus: (store?.bridges.assessment.repairStatus as RepairT) ?? undefined as any,
           amountToRepair: store?.bridges.assessment.amountToRepair ?? "",
         },
         railing: (store?.bridges.railing as YesNo) ?? "no",
         railingDetails: {
           railingMaterials: store?.bridges.railingDetails?.railingMaterials.slice() ?? [],
           assessment: {
-            condition: (store?.bridges.railingDetails?.assessment.condition as ConditionT) ?? "good",
-            repairStatus: (store?.bridges.railingDetails?.assessment.repairStatus as RepairT) ?? "IR",
+            condition: (store?.bridges.railingDetails?.assessment.condition as ConditionT) ?? undefined as any,
+            repairStatus: (store?.bridges.railingDetails?.assessment.repairStatus as RepairT) ?? undefined as any,
             amountToRepair: store?.bridges.railingDetails?.assessment.amountToRepair ?? "",
           },
         },
@@ -192,35 +192,79 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
     const subscription = watch((values) => {
       if (debounceRef.current) clearTimeout(debounceRef.current)
       debounceRef.current = setTimeout(() => {
-        const v = values as Required<Step3FormValues>
-        store?.updateSignage({ signageTypes: v.signage.signageTypes, assessment: v.signage.assessment as any })
-        store?.updateLotLighting({ lotLightingTypes: v.lotLighting.lotLightingTypes, assessment: v.lotLighting.assessment as any })
-        store?.updateBldgLighting({ bldgLightingTypes: v.bldgLighting.bldgLightingTypes, assessment: v.bldgLighting.assessment as any })
-        store?.updateSiteFencing({ siteFencingMaterials: v.siteFencing.siteFencingMaterials, assessment: v.siteFencing.assessment as any })
-        store?.updateDumpster({
-          enclosureMaterials: v.dumpster.enclosureMaterials,
-          gateMaterials: v.dumpster.gateMaterials,
-          otherType: v.dumpster.otherType,
-          location: v.dumpster.location,
-          assessment: v.dumpster.assessment as any,
-        })
-        store?.updateRecreationalFacilities({
-          recreationalFacilities: v.recreationalFacilities.recreationalFacilities,
-          otherType: v.recreationalFacilities.otherType,
-          assessment: v.recreationalFacilities.assessment as any,
-        })
-        store?.updateCompactors({
-          tenantOwned: v.compactors.tenantOwned,
-          location: v.compactors.location,
-          assessment: v.compactors.assessment as any,
-        })
-        store?.updateBridges({
-          bridgeMaterials: v.bridges.bridgeMaterials,
-          assessment: v.bridges.assessment as any,
-          railing: v.bridges.railing,
-          railingDetails: v.bridges.railing === "yes" ? (v.bridges.railingDetails as any) : undefined,
-        })
-        store?.updateComments(v.comments)
+        const v = values as Step3FormValues
+        
+        // Helper to filter out undefined values from assessment
+        const filterAssessment = (assessment: any) => {
+          const filtered: any = {}
+          if (assessment?.condition !== undefined) filtered.condition = assessment.condition
+          if (assessment?.repairStatus !== undefined) filtered.repairStatus = assessment.repairStatus
+          if (assessment?.amountToRepair !== undefined) filtered.amountToRepair = assessment.amountToRepair
+          return Object.keys(filtered).length > 0 ? filtered : undefined
+        }
+        
+        if (v.signage) {
+          const assessment = filterAssessment(v.signage.assessment)
+          store?.updateSignage({ signageTypes: v.signage.signageTypes, ...(assessment && { assessment }) })
+        }
+        if (v.lotLighting) {
+          const assessment = filterAssessment(v.lotLighting.assessment)
+          store?.updateLotLighting({ lotLightingTypes: v.lotLighting.lotLightingTypes, ...(assessment && { assessment }) })
+        }
+        if (v.bldgLighting) {
+          const assessment = filterAssessment(v.bldgLighting.assessment)
+          store?.updateBldgLighting({ bldgLightingTypes: v.bldgLighting.bldgLightingTypes, ...(assessment && { assessment }) })
+        }
+        if (v.siteFencing) {
+          const assessment = filterAssessment(v.siteFencing.assessment)
+          store?.updateSiteFencing({ siteFencingMaterials: v.siteFencing.siteFencingMaterials, ...(assessment && { assessment }) })
+        }
+        if (v.dumpster) {
+          const assessment = filterAssessment(v.dumpster.assessment)
+          store?.updateDumpster({
+            enclosureMaterials: v.dumpster.enclosureMaterials,
+            gateMaterials: v.dumpster.gateMaterials,
+            otherType: v.dumpster.otherType,
+            location: v.dumpster.location,
+            ...(assessment && { assessment }),
+          })
+        }
+        if (v.recreationalFacilities) {
+          const assessment = filterAssessment(v.recreationalFacilities.assessment)
+          store?.updateRecreationalFacilities({
+            recreationalFacilities: v.recreationalFacilities.recreationalFacilities,
+            otherType: v.recreationalFacilities.otherType,
+            ...(assessment && { assessment }),
+          })
+        }
+        if (v.compactors) {
+          const assessment = filterAssessment(v.compactors.assessment)
+          store?.updateCompactors({
+            tenantOwned: v.compactors.tenantOwned,
+            location: v.compactors.location,
+            ...(assessment && { assessment }),
+          })
+        }
+        if (v.bridges) {
+          const assessment = filterAssessment(v.bridges.assessment)
+          const railingAssessment = v.bridges.railing === "yes" && v.bridges.railingDetails 
+            ? filterAssessment(v.bridges.railingDetails.assessment)
+            : undefined
+          store?.updateBridges({
+            bridgeMaterials: v.bridges.bridgeMaterials,
+            ...(assessment && { assessment }),
+            railing: v.bridges.railing,
+            ...(v.bridges.railing === "yes" && v.bridges.railingDetails && {
+              railingDetails: {
+                railingMaterials: v.bridges.railingDetails.railingMaterials,
+                ...(railingAssessment && { assessment: railingAssessment })
+              }
+            }),
+          })
+        }
+        if (v.comments !== undefined) {
+          store?.updateComments(v.comments)
+        }
       }, 300)
     })
     return () => subscription.unsubscribe()

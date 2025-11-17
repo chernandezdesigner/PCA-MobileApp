@@ -73,8 +73,8 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         GeneralConstruction: store?.carports.GeneralConstruction.slice() ?? [],
         RoofType: store?.carports.RoofType ?? "",
         assessment: {
-          condition: (store?.carports.assessment.condition as ConditionT) ?? "good",
-          repairStatus: (store?.carports.assessment.repairStatus as RepairT) ?? "IR",
+          condition: (store?.carports.assessment.condition as ConditionT) ?? undefined as any,
+          repairStatus: (store?.carports.assessment.repairStatus as RepairT) ?? undefined as any,
           amountToRepair: store?.carports.assessment.amountToRepair ?? "",
         },
       },
@@ -82,8 +82,8 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         GeneralConstruction: store?.maintenanceBldg.GeneralConstruction.slice() ?? [],
         RoofType: store?.maintenanceBldg.RoofType ?? "",
         assessment: {
-          condition: (store?.maintenanceBldg.assessment.condition as ConditionT) ?? "good",
-          repairStatus: (store?.maintenanceBldg.assessment.repairStatus as RepairT) ?? "IR",
+          condition: (store?.maintenanceBldg.assessment.condition as ConditionT) ?? undefined as any,
+          repairStatus: (store?.maintenanceBldg.assessment.repairStatus as RepairT) ?? undefined as any,
           amountToRepair: store?.maintenanceBldg.assessment.amountToRepair ?? "",
         },
       },
@@ -91,8 +91,8 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         GeneralConstruction: store?.firePumpBldg.GeneralConstruction.slice() ?? [],
         RoofType: store?.firePumpBldg.RoofType ?? "",
         assessment: {
-          condition: (store?.firePumpBldg.assessment.condition as ConditionT) ?? "good",
-          repairStatus: (store?.firePumpBldg.assessment.repairStatus as RepairT) ?? "IR",
+          condition: (store?.firePumpBldg.assessment.condition as ConditionT) ?? undefined as any,
+          repairStatus: (store?.firePumpBldg.assessment.repairStatus as RepairT) ?? undefined as any,
           amountToRepair: store?.firePumpBldg.assessment.amountToRepair ?? "",
         },
       },
@@ -100,8 +100,8 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         GeneralConstruction: store?.residentialGarages.GeneralConstruction.slice() ?? [],
         RoofType: store?.residentialGarages.RoofType ?? "",
         assessment: {
-          condition: (store?.residentialGarages.assessment.condition as ConditionT) ?? "good",
-          repairStatus: (store?.residentialGarages.assessment.repairStatus as RepairT) ?? "IR",
+          condition: (store?.residentialGarages.assessment.condition as ConditionT) ?? undefined as any,
+          repairStatus: (store?.residentialGarages.assessment.repairStatus as RepairT) ?? undefined as any,
           amountToRepair: store?.residentialGarages.assessment.amountToRepair ?? "",
         },
       },
@@ -109,8 +109,8 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         GeneralConstruction: store?.gazeboPavilion.GeneralConstruction.slice() ?? [],
         RoofType: store?.gazeboPavilion.RoofType ?? "",
         assessment: {
-          condition: (store?.gazeboPavilion.assessment.condition as ConditionT) ?? "good",
-          repairStatus: (store?.gazeboPavilion.assessment.repairStatus as RepairT) ?? "IR",
+          condition: (store?.gazeboPavilion.assessment.condition as ConditionT) ?? undefined as any,
+          repairStatus: (store?.gazeboPavilion.assessment.repairStatus as RepairT) ?? undefined as any,
           amountToRepair: store?.gazeboPavilion.assessment.amountToRepair ?? "",
         },
       },
@@ -118,8 +118,8 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         GeneralConstruction: store?.greenhouses.GeneralConstruction.slice() ?? [],
         RoofType: store?.greenhouses.RoofType ?? "",
         assessment: {
-          condition: (store?.greenhouses.assessment.condition as ConditionT) ?? "good",
-          repairStatus: (store?.greenhouses.assessment.repairStatus as RepairT) ?? "IR",
+          condition: (store?.greenhouses.assessment.condition as ConditionT) ?? undefined as any,
+          repairStatus: (store?.greenhouses.assessment.repairStatus as RepairT) ?? undefined as any,
           amountToRepair: store?.greenhouses.assessment.amountToRepair ?? "",
         },
       },
@@ -127,8 +127,8 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         GeneralConstruction: store?.laundryBldg.GeneralConstruction.slice() ?? [],
         RoofType: store?.laundryBldg.RoofType ?? "",
         assessment: {
-          condition: (store?.laundryBldg.assessment.condition as ConditionT) ?? "good",
-          repairStatus: (store?.laundryBldg.assessment.repairStatus as RepairT) ?? "IR",
+          condition: (store?.laundryBldg.assessment.condition as ConditionT) ?? undefined as any,
+          repairStatus: (store?.laundryBldg.assessment.repairStatus as RepairT) ?? undefined as any,
           amountToRepair: store?.laundryBldg.assessment.amountToRepair ?? "",
         },
       },
@@ -136,8 +136,8 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         GeneralConstruction: store?.wellPumpHouse.GeneralConstruction.slice() ?? [],
         RoofType: store?.wellPumpHouse.RoofType ?? "",
         assessment: {
-          condition: (store?.wellPumpHouse.assessment.condition as ConditionT) ?? "good",
-          repairStatus: (store?.wellPumpHouse.assessment.repairStatus as RepairT) ?? "IR",
+          condition: (store?.wellPumpHouse.assessment.condition as ConditionT) ?? undefined as any,
+          repairStatus: (store?.wellPumpHouse.assessment.repairStatus as RepairT) ?? undefined as any,
           amountToRepair: store?.wellPumpHouse.assessment.amountToRepair ?? "",
         },
       },
@@ -145,8 +145,8 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         GeneralConstruction: store?.sewerPumpHouse.GeneralConstruction.slice() ?? [],
         RoofType: store?.sewerPumpHouse.RoofType ?? "",
         assessment: {
-          condition: (store?.sewerPumpHouse.assessment.condition as ConditionT) ?? "good",
-          repairStatus: (store?.sewerPumpHouse.assessment.repairStatus as RepairT) ?? "IR",
+          condition: (store?.sewerPumpHouse.assessment.condition as ConditionT) ?? undefined as any,
+          repairStatus: (store?.sewerPumpHouse.assessment.repairStatus as RepairT) ?? undefined as any,
           amountToRepair: store?.sewerPumpHouse.assessment.amountToRepair ?? "",
         },
       },
@@ -167,17 +167,56 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
     const subscription = watch((values) => {
       if (debounceRef.current) clearTimeout(debounceRef.current)
       debounceRef.current = setTimeout(() => {
-        const v = values as Required<Step4FormValues>
-        store?.updateCarports({ GeneralConstruction: v.carports.GeneralConstruction, RoofType: v.carports.RoofType, assessment: v.carports.assessment as any })
-        store?.updateMaintenanceBldg({ GeneralConstruction: v.maintenanceBldg.GeneralConstruction, RoofType: v.maintenanceBldg.RoofType, assessment: v.maintenanceBldg.assessment as any })
-        store?.updateFirePumpBldg({ GeneralConstruction: v.firePumpBldg.GeneralConstruction, RoofType: v.firePumpBldg.RoofType, assessment: v.firePumpBldg.assessment as any })
-        store?.updateResidentialGarages({ GeneralConstruction: v.residentialGarages.GeneralConstruction, RoofType: v.residentialGarages.RoofType, assessment: v.residentialGarages.assessment as any })
-        store?.updateGazeboPavilion({ GeneralConstruction: v.gazeboPavilion.GeneralConstruction, RoofType: v.gazeboPavilion.RoofType, assessment: v.gazeboPavilion.assessment as any })
-        store?.updateGreenhouses({ GeneralConstruction: v.greenhouses.GeneralConstruction, RoofType: v.greenhouses.RoofType, assessment: v.greenhouses.assessment as any })
-        store?.updateLaundryBldg({ GeneralConstruction: v.laundryBldg.GeneralConstruction, RoofType: v.laundryBldg.RoofType, assessment: v.laundryBldg.assessment as any })
-        store?.updateWellPumpHouse({ GeneralConstruction: v.wellPumpHouse.GeneralConstruction, RoofType: v.wellPumpHouse.RoofType, assessment: v.wellPumpHouse.assessment as any })
-        store?.updateSewerPumpHouse({ GeneralConstruction: v.sewerPumpHouse.GeneralConstruction, RoofType: v.sewerPumpHouse.RoofType, assessment: v.sewerPumpHouse.assessment as any })
-        store?.updateComments(v.comments)
+        const v = values as Step4FormValues
+        
+        // Helper to filter out undefined values from assessment
+        const filterAssessment = (assessment: any) => {
+          const filtered: any = {}
+          if (assessment?.condition !== undefined) filtered.condition = assessment.condition
+          if (assessment?.repairStatus !== undefined) filtered.repairStatus = assessment.repairStatus
+          if (assessment?.amountToRepair !== undefined) filtered.amountToRepair = assessment.amountToRepair
+          return Object.keys(filtered).length > 0 ? filtered : undefined
+        }
+        
+        if (v.carports) {
+          const assessment = filterAssessment(v.carports.assessment)
+          store?.updateCarports({ GeneralConstruction: v.carports.GeneralConstruction, RoofType: v.carports.RoofType, ...(assessment && { assessment }) })
+        }
+        if (v.maintenanceBldg) {
+          const assessment = filterAssessment(v.maintenanceBldg.assessment)
+          store?.updateMaintenanceBldg({ GeneralConstruction: v.maintenanceBldg.GeneralConstruction, RoofType: v.maintenanceBldg.RoofType, ...(assessment && { assessment }) })
+        }
+        if (v.firePumpBldg) {
+          const assessment = filterAssessment(v.firePumpBldg.assessment)
+          store?.updateFirePumpBldg({ GeneralConstruction: v.firePumpBldg.GeneralConstruction, RoofType: v.firePumpBldg.RoofType, ...(assessment && { assessment }) })
+        }
+        if (v.residentialGarages) {
+          const assessment = filterAssessment(v.residentialGarages.assessment)
+          store?.updateResidentialGarages({ GeneralConstruction: v.residentialGarages.GeneralConstruction, RoofType: v.residentialGarages.RoofType, ...(assessment && { assessment }) })
+        }
+        if (v.gazeboPavilion) {
+          const assessment = filterAssessment(v.gazeboPavilion.assessment)
+          store?.updateGazeboPavilion({ GeneralConstruction: v.gazeboPavilion.GeneralConstruction, RoofType: v.gazeboPavilion.RoofType, ...(assessment && { assessment }) })
+        }
+        if (v.greenhouses) {
+          const assessment = filterAssessment(v.greenhouses.assessment)
+          store?.updateGreenhouses({ GeneralConstruction: v.greenhouses.GeneralConstruction, RoofType: v.greenhouses.RoofType, ...(assessment && { assessment }) })
+        }
+        if (v.laundryBldg) {
+          const assessment = filterAssessment(v.laundryBldg.assessment)
+          store?.updateLaundryBldg({ GeneralConstruction: v.laundryBldg.GeneralConstruction, RoofType: v.laundryBldg.RoofType, ...(assessment && { assessment }) })
+        }
+        if (v.wellPumpHouse) {
+          const assessment = filterAssessment(v.wellPumpHouse.assessment)
+          store?.updateWellPumpHouse({ GeneralConstruction: v.wellPumpHouse.GeneralConstruction, RoofType: v.wellPumpHouse.RoofType, ...(assessment && { assessment }) })
+        }
+        if (v.sewerPumpHouse) {
+          const assessment = filterAssessment(v.sewerPumpHouse.assessment)
+          store?.updateSewerPumpHouse({ GeneralConstruction: v.sewerPumpHouse.GeneralConstruction, RoofType: v.sewerPumpHouse.RoofType, ...(assessment && { assessment }) })
+        }
+        if (v.comments !== undefined) {
+          store?.updateComments(v.comments)
+        }
       }, 300)
     })
     return () => subscription.unsubscribe()
