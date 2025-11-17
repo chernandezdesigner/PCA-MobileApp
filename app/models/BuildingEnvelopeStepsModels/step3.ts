@@ -1,7 +1,13 @@
-//roofing accordion model 2 roofs setup
+// Building Envelope Step 3 & Step 3B: Primary and Secondary Roofing
+// Both steps share the same accordion models and structure
+// Step 3B includes a NotApplicable flag at the step level
 
 import { types } from "mobx-state-tree"
 import { ConditionAssessment, RepairAssessment } from "../SharedModels"
+
+// ============================================
+// SHARED ACCORDION MODELS (Used by both roofs)
+// ============================================
 
 export const MaterialAccordionModel = types.model("MaterialAccordionModel", {
     materialType: types.optional(types.string, ""),
@@ -93,7 +99,9 @@ export const RoofStructuresAccordionModel = types.model("RoofStructuresAccordion
     },
 }))
 
-// attic model setup
+//todo: add models for attics
+
+
 
 export const MechScreenAccordionModel = types.model("MechScreenAccordionModel", {
     NotApplicable: types.optional(types.boolean, false),
@@ -128,7 +136,18 @@ export const InsulationAccordionModel = types.model("InsulationAccordionModel", 
     },
 }))
 
-export const BuildingEnvelopeStep3 = types.model("BuildingEnvelopeStep3", {
+// ============================================
+// SHARED PROPERTIES OBJECT
+// Common fields used by both Primary and Secondary Roof steps
+// ============================================
+
+const RoofingSharedProperties = {
+    warranty: types.optional(types.boolean, false),
+    materialLabor: types.optional(types.boolean, false),
+    remainingYears: types.optional(types.number, 0),
+    roofType: types.optional(types.string, ""),
+    otherType: types.optional(types.string, ""),
+    
     material: types.optional(MaterialAccordionModel, {}),
     shingles: types.optional(ShinglesAccordionModel, {}),
     secondaryRoof: types.optional(SecondaryRoofAccordionModel, {}),
@@ -140,11 +159,38 @@ export const BuildingEnvelopeStep3 = types.model("BuildingEnvelopeStep3", {
     mechScreen: types.optional(MechScreenAccordionModel, {}),
     drainage: types.optional(DrainageAccordionModel, {}),
     insulation: types.optional(InsulationAccordionModel, {}),
+    
     comments: types.optional(types.string, ""),
     lastModified: types.optional(types.Date, () => new Date()),
-})
-.actions((self) => ({
+}
+
+// ============================================
+// SHARED ACTIONS FACTORY
+// Returns common actions for roofing steps
+// ============================================
+
+const createRoofingActions = (self: any) => ({
     touch() {
+        self.lastModified = new Date()
+    },
+    updateWarranty(value: boolean) {
+        self.warranty = value
+        self.lastModified = new Date()
+    },
+    updateMaterialLabor(value: boolean) {
+        self.materialLabor = value
+        self.lastModified = new Date()
+    },
+    updateRemainingYears(value: number) {
+        self.remainingYears = value
+        self.lastModified = new Date()
+    },
+    updateRoofType(value: string) {
+        self.roofType = value
+        self.lastModified = new Date()
+    },
+    updateOtherType(value: string) {
+        self.otherType = value
         self.lastModified = new Date()
     },
     updateMaterial(data: Parameters<typeof self.material.update>[0]) {
@@ -195,4 +241,30 @@ export const BuildingEnvelopeStep3 = types.model("BuildingEnvelopeStep3", {
         self.comments = data
         self.lastModified = new Date()
     },
-}))
+})
+
+// ============================================
+// STEP 3: PRIMARY ROOF
+// ============================================
+
+export const BuildingEnvelopeStep3 = types
+    .model("BuildingEnvelopeStep3", RoofingSharedProperties)
+    .actions(createRoofingActions)
+
+// ============================================
+// STEP 3B: SECONDARY ROOF
+// Includes NotApplicable flag at step level
+// ============================================
+
+export const BuildingEnvelopeStep3B = types
+    .model("BuildingEnvelopeStep3B", {
+        stepNotApplicable: types.optional(types.boolean, false),
+        ...RoofingSharedProperties,
+    })
+    .actions((self) => ({
+        ...createRoofingActions(self),
+        updateStepNotApplicable(value: boolean) {
+            self.stepNotApplicable = value
+            self.lastModified = new Date()
+        },
+    }))

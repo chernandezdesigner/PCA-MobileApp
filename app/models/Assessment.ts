@@ -1,6 +1,7 @@
 import { Instance, SnapshotIn, SnapshotOut, types } from "mobx-state-tree"
 import { ProjectSummaryStore } from "./ProjectSummaryStore"
 import { SiteGroundsStore } from "./SiteGroundsStore"
+import { BuildingEnvelopeStore } from "./BuildingEnvelopeStore"
 
 export const AssessmentModel = types
   .model("Assessment", {
@@ -12,6 +13,7 @@ export const AssessmentModel = types
     // Forms
     projectSummary: types.optional(ProjectSummaryStore, {}),
     siteGrounds: types.optional(SiteGroundsStore, {}),
+    buildingEnvelope: types.optional(BuildingEnvelopeStore, {}),
   })
   .actions((self) => ({
     touch() {

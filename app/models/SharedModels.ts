@@ -14,3 +14,10 @@ export const RepairAssessment = types.model("RepairAssessment", {
   repairStatus: types.maybe(RepairStatusEnum),
   amountToRepair: types.optional(types.string, ""),
 })
+
+export const ConditionAssessmentwithEffAge = types.model("ConditionAssessmentwithEffAge", {
+  condition: types.maybe(ConditionEnum),
+  repairStatus: types.maybe(RepairStatusEnum),
+  amountToRepair: types.optional(types.string, ""),
+  effectiveAge: types.optional(types.number, 0),
+})

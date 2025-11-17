@@ -58,7 +58,7 @@ export const SheathingAccordionModel = types.model("SheathingAccordionModel", {
     },
 }))
 
-BuildingEnvelopeStep2 = types.model("BuildingEnvelopeStep2", {
+export const BuildingEnvelopeStep2 = types.model("BuildingEnvelopeStep2", {
     wallsLateral: types.optional(WallsLateralAccordionModel, {}),
     groundFloorDecking: types.optional(GroundFloorDeckingAccordionModel, {}),
     upperFloorDecking: types.optional(UpperFloorDeckingAccordionModel, {}),
