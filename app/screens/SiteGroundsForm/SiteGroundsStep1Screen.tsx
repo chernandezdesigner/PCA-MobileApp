@@ -7,7 +7,6 @@ import { TextField } from "@/components/TextField"
 import { ConditionAssessment } from "@/components/ConditionAssessment"
 import { RepairStatus } from "@/components/RepairStatus"
 import { Checkbox } from "@/components/Toggle/Checkbox"
-import { Dropdown } from "@/components/Dropdown"
 import { ChecklistCard, ChecklistItem } from "@/components/ChecklistCard"
 import { HeaderBar } from "@/components/HeaderBar"
 import { ProgressBar } from "@/components/ProgressBar"
@@ -20,24 +19,7 @@ import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
 import { Controller, useForm, useWatch } from "react-hook-form"
 import type { SiteGroundsFormNavigatorParamList } from "@/navigators/SiteGroundsFormNavigator"
-
-// Static dropdown options for Surface To field
-const SURFACE_TO_OPTIONS = [
-  { label: "Ditch", value: "Ditch" },
-  { label: "Stream", value: "Stream" },
-  { label: "Retention pond", value: "Retention pond" },
-  { label: "Detention pond", value: "Detention pond" },
-  { label: "Parking Garage Sump", value: "Parking Garage Sump" },
-  { label: "Drywell", value: "Drywell" },
-]
-
-// Checklist item IDs
-const CHECKLIST_ITEMS = [
-  { id: "concreteSwales", label: "Concrete swales" },
-  { id: "surfaceDrains", label: "Surface drains" },
-  { id: "curbInlets", label: "Curb inlets" },
-  { id: "adjacentProperty", label: "Adjacent property" },
-]
+import { SURFACE_TO_OPTIONS, DRAINAGE_FEATURES_OPTIONS } from "@/constants/siteGroundsOptions"
 
 interface SiteGroundsStep1ScreenProps extends NativeStackScreenProps<SiteGroundsFormNavigatorParamList, "SiteGroundsStep1"> {}
 
@@ -64,8 +46,8 @@ export const SiteGroundsStep1Screen: FC<SiteGroundsStep1ScreenProps> = observer(
   type Step1FormValues = {
     assessment: AssessmentVals
     undergroundToMunicipalStormSystem: boolean
-    surfaceTo: string
-    checklist: Record<string, { checked: boolean; comments: string }>
+    surfaceTo: string[]
+    drainageFeatures: string[]
     comments: string
   }
 
@@ -78,15 +60,8 @@ export const SiteGroundsStep1Screen: FC<SiteGroundsStep1ScreenProps> = observer(
         amountToRepair: store?.assessment.amountToRepair ?? "",
       },
       undergroundToMunicipalStormSystem: store?.undergroundToMunicipalStormSystem ?? false,
-      surfaceTo: store?.surfaceTo ?? "",
-      checklist: CHECKLIST_ITEMS.reduce((acc, item) => {
-        const storeItem = store?.checklist.get(item.id)
-        acc[item.id] = {
-          checked: storeItem?.checked ?? false,
-          comments: storeItem?.comments ?? "",
-        }
-        return acc
-      }, {} as Record<string, { checked: boolean; comments: string }>),
+      surfaceTo: store?.surfaceTo.slice() ?? [],
+      drainageFeatures: store?.drainageFeatures.slice() ?? [],
       comments: store?.comments ?? "",
     }),
     [rootStore.activeAssessmentId], // Only recalculate when assessment changes
@@ -113,7 +88,7 @@ export const SiteGroundsStep1Screen: FC<SiteGroundsStep1ScreenProps> = observer(
           assessment: v.assessment as any,
           undergroundToMunicipalStormSystem: v.undergroundToMunicipalStormSystem,
           surfaceTo: v.surfaceTo,
-          checklist: v.checklist,
+          drainageFeatures: v.drainageFeatures,
           comments: v.comments,
         })
       }, 300)
@@ -121,34 +96,39 @@ export const SiteGroundsStep1Screen: FC<SiteGroundsStep1ScreenProps> = observer(
     return () => subscription.unsubscribe()
   }, [watch, store])
 
-  // Transform checklist data for ChecklistCard component
+  // Transform checklist data for ChecklistCard components
   // Use useWatch for real-time reactivity
-  const checklistData = useWatch({ control, name: "checklist" })
-  const checklistItems: ChecklistItem[] = CHECKLIST_ITEMS.map((item) => ({
+  const surfaceToData = useWatch({ control, name: "surfaceTo" })
+  const drainageFeaturesData = useWatch({ control, name: "drainageFeatures" })
+
+  const surfaceToItems: ChecklistItem[] = SURFACE_TO_OPTIONS.map((item) => ({
     id: item.id,
     label: item.label,
-    checked: checklistData?.[item.id]?.checked ?? false,
-    comments: checklistData?.[item.id]?.comments ?? "",
+    checked: surfaceToData?.includes(item.id) ?? false,
   }))
 
-  const handleChecklistToggle = (id: string, checked: boolean) => {
-    setValue(`checklist.${id}.checked` as any, checked, { shouldDirty: true, shouldTouch: true, shouldValidate: true })
+  const drainageFeatureItems: ChecklistItem[] = DRAINAGE_FEATURES_OPTIONS.map((item) => ({
+    id: item.id,
+    label: item.label,
+    checked: drainageFeaturesData?.includes(item.id) ?? false,
+  }))
+
+  const handleSurfaceToToggle = (id: string, checked: boolean) => {
+    const current = surfaceToData ?? []
+    if (checked) {
+      setValue("surfaceTo", [...current, id], { shouldDirty: true, shouldTouch: true })
+    } else {
+      setValue("surfaceTo", current.filter((item) => item !== id), { shouldDirty: true, shouldTouch: true })
+    }
   }
 
-  const handleChecklistComment = (id: string, text: string) => {
-    setValue(`checklist.${id}.comments` as any, text, { shouldDirty: true, shouldTouch: true })
-  }
-
-  const handleSelectAll = () => {
-    CHECKLIST_ITEMS.forEach((item) => {
-      setValue(`checklist.${item.id}.checked` as any, true, { shouldDirty: true, shouldTouch: true, shouldValidate: true })
-    })
-  }
-
-  const handleClearAll = () => {
-    CHECKLIST_ITEMS.forEach((item) => {
-      setValue(`checklist.${item.id}.checked` as any, false, { shouldDirty: true, shouldTouch: true, shouldValidate: true })
-    })
+  const handleDrainageFeatureToggle = (id: string, checked: boolean) => {
+    const current = drainageFeaturesData ?? []
+    if (checked) {
+      setValue("drainageFeatures", [...current, id], { shouldDirty: true, shouldTouch: true })
+    } else {
+      setValue("drainageFeatures", current.filter((item) => item !== id), { shouldDirty: true, shouldTouch: true })
+    }
   }
 
   const onNext = () => {
@@ -232,33 +212,23 @@ export const SiteGroundsStep1Screen: FC<SiteGroundsStep1ScreenProps> = observer(
             </View>
           </View>
 
-          {/* Surface To Dropdown */}
-          <Controller
-            control={control}
-            name="surfaceTo"
-            render={({ field: { value, onChange, onBlur } }) => (
-              <Dropdown
-                label="Surface to:"
-                value={value}
-                onValueChange={(newValue) => {
-                  onChange(newValue)
-                  onBlur()
-                }}
-                options={SURFACE_TO_OPTIONS}
-              />
-            )}
-          />
+          {/* Surface To Checklist */}
+          <View style={$section}>
+            <ChecklistCard
+              title="Surface to:"
+              items={surfaceToItems}
+              showComments={false}
+              onToggle={handleSurfaceToToggle}
+            />
+          </View>
 
-          {/* Checklist */}
+          {/* Drainage Features Checklist */}
           <View style={$section}>
             <ChecklistCard
               title="Drainage Features"
-              items={checklistItems}
-              showComments={true}
-              onToggle={handleChecklistToggle}
-              onChangeComment={handleChecklistComment}
-              onSelectAll={handleSelectAll}
-              onClearAll={handleClearAll}
+              items={drainageFeatureItems}
+              showComments={false}
+              onToggle={handleDrainageFeatureToggle}
             />
           </View>
 

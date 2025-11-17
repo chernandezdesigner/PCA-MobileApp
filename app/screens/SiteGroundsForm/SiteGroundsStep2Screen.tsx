@@ -12,84 +12,23 @@ import { observer } from "mobx-react-lite"
 import { useAppTheme } from "@/theme/context"
 import type { SiteGroundsFormNavigatorParamList } from "@/navigators/SiteGroundsFormNavigator"
 import type { ThemedStyle } from "@/theme/types"
-import { Controller, useForm } from "react-hook-form"
+import { Controller, useForm, useWatch } from "react-hook-form"
 import { Checkbox } from "@/components/Toggle/Checkbox"
-import { Dropdown } from "@/components/Dropdown"
+import { ChecklistCard, ChecklistItem } from "@/components/ChecklistCard"
 import { HeaderBar } from "@/components/HeaderBar"
 import { ProgressBar } from "@/components/ProgressBar"
 import { StickyFooterNav } from "@/components/StickyFooterNav"
 import { useNavigation } from "@react-navigation/native"
 import { useDrawerControl } from "@/context/DrawerContext"
-
-// Static dropdown options for step 2 inputs
-const SLOPE_TYPE_OPTIONS = [
-  { label: "Flat", value: "Flat" },
-  { label: "Gentle Slope", value: "Gentle Slope" },
-  { label: "Moderate Slope", value: "Moderate Slope" },
-  { label: "Significant Slope", value: "Significant Slope" },
-  { label: "Highly Variable", value: "Highly Variable" },
-  { label: "Erosion", value: "Erosion" },
-]
-
-const LANDSCAPING_TYPE_OPTIONS = [
-  { label: "Typical", value: "Typical" },
-  { label: "Grass", value: "Grass" },
-  { label: "Shrubs", value: "Shrubs" },
-  { label: "Flowerbeds", value: "Flowerbeds" },
-  { label: "Drought tolerant", value: "Drought tolerant" },
-  { label: "Trees", value: "Trees" },
-  { label: "Sprinkler", value: "Sprinkler" },
-  { label: "Drip Irrig.", value: "Drip Irrig." },
-  { label: "Stone/Rocks/Mulch", value: "Stone/Rocks/Mulch" },
-]
-
-const RETAINING_WALLS_TYPE_OPTIONS = [
-  { label: "N/A", value: "N/A" },
-  { label: "Timber", value: "Timber" },
-  { label: "Stone", value: "Stone" },
-  { label: "CMU Block", value: "CMU Block" },
-  { label: "Concrete", value: "Concrete" },
-  { label: "Brick", value: "Brick" },
-  { label: "Railroad Ties", value: "Railroad Ties" },
-  { label: "Lumber", value: "Lumber" },
-  { label: "Other", value: "Other" },
-]
-
-const SCREEN_WALLS_TYPE_OPTIONS = [
-  { label: "N/A", value: "N/A" },
-  { label: "Timber", value: "Timber" },
-  { label: "Stone", value: "Stone" },
-  { label: "CMU Block", value: "CMU Block" },
-  { label: "Concrete", value: "Concrete" },
-  { label: "Brick", value: "Brick" },
-  { label: "Railroad Ties", value: "Railroad Ties" },
-  { label: "Lumber", value: "Lumber" },
-  { label: "Other", value: "Other" },
-]
-
-const WATER_FEATURES_TYPE_OPTIONS = [
-  { label: "N/A", value: "N/A" },
-  { label: "Decorative Fountain", value: "Decorative Fountain" },
-  { label: "Artifical Pond", value: "Artifical Pond" },
-  { label: "Creek", value: "Creek" },
-  { label: "Reg. Pond", value: "Reg. Pond" },
-  { label: "Lake", value: "Lake" },
-  { label: "Ocean Shoreline", value: "Ocean Shoreline" },
-]
-
-const PUMP_LOCATION_OPTIONS = [
-  { label: "Vault", value: "Vault" },
-  { label: "Water", value: "Water" },
-  { label: "Enclosure", value: "Enclosure" },
-]
-
-const RAILING_TYPE_OPTIONS = [
-  { label: "N/A", value: "N/A" },
-  { label: "Metal", value: "Metal" },
-  { label: "Wood", value: "Wood" },
-  { label: "Vinyl", value: "Vinyl" },
-  { label: "Chainlink", value: "Chainlink" },
-]
+import {
+  TOPOGRAPHY_SLOPE_OPTIONS,
+  LANDSCAPING_OPTIONS,
+  RETAINING_WALL_MATERIALS,
+  SCREEN_WALL_MATERIALS,
+  RAILING_MATERIALS,
+  WATER_FEATURE_OPTIONS,
+  PUMP_LOCATION_OPTIONS,
+} from "@/constants/siteGroundsOptions"
 
 interface SiteGroundsStep2ScreenProps
   extends NativeStackScreenProps<SiteGroundsFormNavigatorParamList, "SiteGroundsStep2"> {}
@@ -119,28 +58,28 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
   }
 
   type RailingDetailsVals = {
-    railingType: string
+    railingMaterials: string[]
     assessment: AssessmentVals
   }
 
   type Step2FormValues = {
-    topographySlope: { slopeType: string; assessment: AssessmentVals }
-    landscaping: { landscapingType: string; assessment: AssessmentVals }
+    topographySlope: { topographySlopes: string[]; assessment: AssessmentVals }
+    landscaping: { landscaping: string[]; assessment: AssessmentVals }
     retainingWalls: {
-      retainingWallsType: string
+      retainingWallMaterials: string[]
       assessment: AssessmentVals
       railing: YesNo
       railingDetails: RailingDetailsVals
     }
     screenWalls: {
-      screenWallsType: string
+      screenWallMaterials: string[]
       assessment: AssessmentVals
       railing: YesNo
       railingDetails: RailingDetailsVals
     }
     waterFeatures: {
-      waterFeaturesType: string
-      pumpLocation: string
+      waterFeatures: string[]
+      pumpLocations: string[]
       pumpAge: string
       assessment: AssessmentVals
     }
@@ -150,7 +89,7 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
   const defaultValues = useMemo<Step2FormValues>(
     () => ({
       topographySlope: {
-        slopeType: store?.topographySlope.slopeType ?? "",
+        topographySlopes: store?.topographySlope.topographySlopes.slice() ?? [],
         assessment: {
           condition: (store?.topographySlope.assessment.condition as ConditionT) ?? "good",
           repairStatus: (store?.topographySlope.assessment.repairStatus as RepairT) ?? "IR",
@@ -158,7 +97,7 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
         },
       },
       landscaping: {
-        landscapingType: store?.landscaping.landscapingType ?? "",
+        landscaping: store?.landscaping.landscaping.slice() ?? [],
         assessment: {
           condition: (store?.landscaping.assessment.condition as ConditionT) ?? "good",
           repairStatus: (store?.landscaping.assessment.repairStatus as RepairT) ?? "IR",
@@ -166,7 +105,7 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
         },
       },
       retainingWalls: {
-        retainingWallsType: store?.retainingWalls.retainingWallsType ?? "",
+        retainingWallMaterials: store?.retainingWalls.retainingWallMaterials.slice() ?? [],
         assessment: {
           condition: (store?.retainingWalls.assessment.condition as ConditionT) ?? "good",
           repairStatus: (store?.retainingWalls.assessment.repairStatus as RepairT) ?? "IR",
@@ -174,7 +113,7 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
         },
         railing: (store?.retainingWalls.railing as YesNo) ?? "no",
         railingDetails: {
-          railingType: store?.retainingWalls.railingDetails?.railingType ?? "",
+          railingMaterials: store?.retainingWalls.railingDetails?.railingMaterials.slice() ?? [],
           assessment: {
             condition: (store?.retainingWalls.railingDetails?.assessment.condition as ConditionT) ?? "good",
             repairStatus: (store?.retainingWalls.railingDetails?.assessment.repairStatus as RepairT) ?? "IR",
@@ -183,7 +122,7 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
         },
       },
       screenWalls: {
-        screenWallsType: store?.screenWalls.screenWallsType ?? "",
+        screenWallMaterials: store?.screenWalls.screenWallMaterials.slice() ?? [],
         assessment: {
           condition: (store?.screenWalls.assessment.condition as ConditionT) ?? "good",
           repairStatus: (store?.screenWalls.assessment.repairStatus as RepairT) ?? "IR",
@@ -191,7 +130,7 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
         },
         railing: (store?.screenWalls.railing as YesNo) ?? "no",
         railingDetails: {
-          railingType: store?.screenWalls.railingDetails?.railingType ?? "",
+          railingMaterials: store?.screenWalls.railingDetails?.railingMaterials.slice() ?? [],
           assessment: {
             condition: (store?.screenWalls.railingDetails?.assessment.condition as ConditionT) ?? "good",
             repairStatus: (store?.screenWalls.railingDetails?.assessment.repairStatus as RepairT) ?? "IR",
@@ -200,8 +139,8 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
         },
       },
       waterFeatures: {
-        waterFeaturesType: store?.waterFeatures.waterFeaturesType ?? "",
-        pumpLocation: store?.waterFeatures.pumpLocation ?? "",
+        waterFeatures: store?.waterFeatures.waterFeatures.slice() ?? [],
+        pumpLocations: store?.waterFeatures.pumpLocations.slice() ?? [],
         pumpAge: store?.waterFeatures.pumpAge ?? "",
         assessment: {
           condition: (store?.waterFeatures.assessment.condition as ConditionT) ?? "good",
@@ -227,23 +166,23 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
       if (debounceRef.current) clearTimeout(debounceRef.current)
       debounceRef.current = setTimeout(() => {
         const v = values as Required<Step2FormValues>
-        store?.updateTopographySlope({ slopeType: v.topographySlope.slopeType, assessment: v.topographySlope.assessment as any })
-        store?.updateLandscaping({ landscapingType: v.landscaping.landscapingType, assessment: v.landscaping.assessment as any })
+        store?.updateTopographySlope({ topographySlopes: v.topographySlope.topographySlopes, assessment: v.topographySlope.assessment as any })
+        store?.updateLandscaping({ landscaping: v.landscaping.landscaping, assessment: v.landscaping.assessment as any })
         store?.updateRetainingWalls({
-          retainingWallsType: v.retainingWalls.retainingWallsType,
+          retainingWallMaterials: v.retainingWalls.retainingWallMaterials,
           assessment: v.retainingWalls.assessment as any,
           railing: v.retainingWalls.railing,
           railingDetails: v.retainingWalls.railing === "yes" ? (v.retainingWalls.railingDetails as any) : undefined,
         })
         store?.updateScreenWalls({
-          screenWallsType: v.screenWalls.screenWallsType,
+          screenWallMaterials: v.screenWalls.screenWallMaterials,
           assessment: v.screenWalls.assessment as any,
           railing: v.screenWalls.railing,
           railingDetails: v.screenWalls.railing === "yes" ? (v.screenWalls.railingDetails as any) : undefined,
         })
         store?.updateWaterFeatures({
-          waterFeaturesType: v.waterFeatures.waterFeaturesType,
-          pumpLocation: v.waterFeatures.pumpLocation,
+          waterFeatures: v.waterFeatures.waterFeatures,
+          pumpLocations: v.waterFeatures.pumpLocations,
           pumpAge: v.waterFeatures.pumpAge,
           assessment: v.waterFeatures.assessment as any,
         })
@@ -252,6 +191,73 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
     })
     return () => subscription.unsubscribe()
   }, [watch, store])
+
+  // Transform data for checklist cards
+  const topographySlopesData = useWatch({ control, name: "topographySlope.topographySlopes" })
+  const landscapingData = useWatch({ control, name: "landscaping.landscaping" })
+  const retainingWallMaterialsData = useWatch({ control, name: "retainingWalls.retainingWallMaterials" })
+  const retainingWallRailingMaterialsData = useWatch({ control, name: "retainingWalls.railingDetails.railingMaterials" })
+  const screenWallMaterialsData = useWatch({ control, name: "screenWalls.screenWallMaterials" })
+  const screenWallRailingMaterialsData = useWatch({ control, name: "screenWalls.railingDetails.railingMaterials" })
+  const waterFeaturesData = useWatch({ control, name: "waterFeatures.waterFeatures" })
+  const pumpLocationsData = useWatch({ control, name: "waterFeatures.pumpLocations" })
+
+  const topographySlopeItems: ChecklistItem[] = TOPOGRAPHY_SLOPE_OPTIONS.map(opt => ({
+    id: opt.id,
+    label: opt.label,
+    checked: topographySlopesData?.includes(opt.id) ?? false,
+  }))
+
+  const landscapingItems: ChecklistItem[] = LANDSCAPING_OPTIONS.map(opt => ({
+    id: opt.id,
+    label: opt.label,
+    checked: landscapingData?.includes(opt.id) ?? false,
+  }))
+
+  const retainingWallMaterialItems: ChecklistItem[] = RETAINING_WALL_MATERIALS.map(opt => ({
+    id: opt.id,
+    label: opt.label,
+    checked: retainingWallMaterialsData?.includes(opt.id) ?? false,
+  }))
+
+  const retainingWallRailingItems: ChecklistItem[] = RAILING_MATERIALS.map(opt => ({
+    id: opt.id,
+    label: opt.label,
+    checked: retainingWallRailingMaterialsData?.includes(opt.id) ?? false,
+  }))
+
+  const screenWallMaterialItems: ChecklistItem[] = SCREEN_WALL_MATERIALS.map(opt => ({
+    id: opt.id,
+    label: opt.label,
+    checked: screenWallMaterialsData?.includes(opt.id) ?? false,
+  }))
+
+  const screenWallRailingItems: ChecklistItem[] = RAILING_MATERIALS.map(opt => ({
+    id: opt.id,
+    label: opt.label,
+    checked: screenWallRailingMaterialsData?.includes(opt.id) ?? false,
+  }))
+
+  const waterFeatureItems: ChecklistItem[] = WATER_FEATURE_OPTIONS.map(opt => ({
+    id: opt.id,
+    label: opt.label,
+    checked: waterFeaturesData?.includes(opt.id) ?? false,
+  }))
+
+  const pumpLocationItems: ChecklistItem[] = PUMP_LOCATION_OPTIONS.map(opt => ({
+    id: opt.id,
+    label: opt.label,
+    checked: pumpLocationsData?.includes(opt.id) ?? false,
+  }))
+
+  // Helper to toggle array values using Controller's setValue
+  const createArrayToggleHandler = (fieldPath: any, currentArray: string[] | undefined) => {
+    return (id: string, checked: boolean) => {
+      const arr = currentArray ?? []
+      const newArray = checked ? [...arr, id] : arr.filter(item => item !== id)
+      ;(control as any).setValue(fieldPath, newArray, { shouldDirty: true, shouldTouch: true })
+    }
+  }
 
   return (
     <Screen style={$root} preset="fixed" contentContainerStyle={$screenInner}>
@@ -270,18 +276,12 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
           onToggle={(n) => setOpenKey(n ? "topography" : null)}
         >
           <View style={themed($sectionBody)}>
-          <Controller
-            control={control}
-            name="topographySlope.slopeType"
-            render={({ field: { value, onChange } }) => (
-              <Dropdown
-                label="Slope Type"
-                value={value}
-                onValueChange={onChange}
-                options={SLOPE_TYPE_OPTIONS}
-              />
-            )}
-          />
+            <ChecklistCard
+              title="Slope Type"
+              items={topographySlopeItems}
+              showComments={false}
+              onToggle={createArrayToggleHandler("topographySlope.topographySlopes", topographySlopesData)}
+            />
 
             <View style={themed($controlGroup)}>
               <Text preset="formLabel" text="Condition" />
@@ -321,18 +321,12 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
           onToggle={(n) => setOpenKey(n ? "landscaping" : null)}
         >
           <View style={themed($sectionBody)}>
-          <Controller
-            control={control}
-            name="landscaping.landscapingType"
-            render={({ field: { value, onChange } }) => (
-              <Dropdown
-                label="Landscaping Type"
-                value={value}
-                onValueChange={onChange}
-                options={LANDSCAPING_TYPE_OPTIONS}
-              />
-            )}
-          />
+            <ChecklistCard
+              title="Landscaping Type"
+              items={landscapingItems}
+              showComments={false}
+              onToggle={createArrayToggleHandler("landscaping.landscaping", landscapingData)}
+            />
           <View style={themed($controlGroup)}>
             <Text preset="formLabel" text="Condition" />
             <ConditionAssessment
@@ -391,19 +385,13 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
         >
           {!store?.retainingWalls.NotApplicable && (
             <View style={themed($sectionBody)}>
-          <Controller
-            control={control}
-            name="retainingWalls.retainingWallsType"
-            render={({ field: { value, onChange } }) => (
-              <Dropdown
-                label="Retaining Walls Type"
-                value={value}
-                onValueChange={onChange}
-                options={RETAINING_WALLS_TYPE_OPTIONS}
-              />
-            )}
-          />
-          {store?.retainingWalls.retainingWallsType === "Other" && (
+            <ChecklistCard
+              title="Retaining Walls Materials"
+              items={retainingWallMaterialItems}
+              showComments={false}
+              onToggle={createArrayToggleHandler("retainingWalls.retainingWallMaterials", retainingWallMaterialsData)}
+            />
+          {retainingWallMaterialsData?.includes("other") && (
             <TextField
               label="Specify Other"
               placeholder="Specify type"
@@ -449,17 +437,11 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
             <View style={themed($nestedList)}>
               <Text preset="subheading" text="Railing" />
               <View style={themed($nestedCard)}>
-                <Dropdown
-                  label="Railing Type"
-                  value={store?.retainingWalls.railingDetails?.railingType ?? ""}
-                  onValueChange={(t) => {
-                    if (store?.retainingWalls.railingDetails) {
-                      store?.retainingWalls.railingDetails.update({ railingType: t })
-                    } else {
-                      store?.updateRetainingWalls({ railingDetails: { railingType: t } as any })
-                    }
-                  }}
-                  options={RAILING_TYPE_OPTIONS}
+                <ChecklistCard
+                  title="Railing Materials"
+                  items={retainingWallRailingItems}
+                  showComments={false}
+                  onToggle={createArrayToggleHandler("retainingWalls.railingDetails.railingMaterials", retainingWallRailingMaterialsData)}
                 />
                 <View style={themed($controlGroup)}>
                   <Text preset="formLabel" text="Condition" />
@@ -528,19 +510,13 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
         >
           {!store?.screenWalls.NotApplicable && (
             <View style={themed($sectionBody)}>
-          <Controller
-            control={control}
-            name="screenWalls.screenWallsType"
-            render={({ field: { value, onChange } }) => (
-              <Dropdown
-                label="Screen Walls Type"
-                value={value}
-                onValueChange={onChange}
-                options={SCREEN_WALLS_TYPE_OPTIONS}
-              />
-            )}
-          />
-          {store?.screenWalls.screenWallsType === "Other" && (
+            <ChecklistCard
+              title="Screen Walls Materials"
+              items={screenWallMaterialItems}
+              showComments={false}
+              onToggle={createArrayToggleHandler("screenWalls.screenWallMaterials", screenWallMaterialsData)}
+            />
+          {screenWallMaterialsData?.includes("other") && (
             <TextField
               label="Specify Other"
               placeholder="Specify type"
@@ -586,17 +562,11 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
             <View style={themed($nestedList)}>
               <Text preset="subheading" text="Railing" />
               <View style={themed($nestedCard)}>
-                <Dropdown
-                  label="Railing Type"
-                  value={store?.screenWalls.railingDetails?.railingType ?? ""}
-                  onValueChange={(t) => {
-                    if (store?.screenWalls.railingDetails) {
-                      store?.screenWalls.railingDetails.update({ railingType: t })
-                    } else {
-                      store?.updateScreenWalls({ railingDetails: { railingType: t } as any })
-                    }
-                  }}
-                  options={RAILING_TYPE_OPTIONS}
+                <ChecklistCard
+                  title="Railing Materials"
+                  items={screenWallRailingItems}
+                  showComments={false}
+                  onToggle={createArrayToggleHandler("screenWalls.railingDetails.railingMaterials", screenWallRailingMaterialsData)}
                 />
                 <View style={themed($controlGroup)}>
                   <Text preset="formLabel" text="Condition" />
@@ -644,30 +614,18 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
           onToggle={(n) => setOpenKey(n ? "waterFeatures" : null)}
         >
           <View style={themed($sectionBody)}>
-          <Controller
-            control={control}
-            name="waterFeatures.waterFeaturesType"
-            render={({ field: { value, onChange } }) => (
-              <Dropdown
-                label="Water Features Type"
-                value={value}
-                onValueChange={onChange}
-                options={WATER_FEATURES_TYPE_OPTIONS}
-              />
-            )}
-          />
-          <Controller
-            control={control}
-            name="waterFeatures.pumpLocation"
-            render={({ field: { value, onChange } }) => (
-              <Dropdown
-                label="Pump Location"
-                value={value}
-                onValueChange={onChange}
-                options={PUMP_LOCATION_OPTIONS}
-              />
-            )}
-          />
+            <ChecklistCard
+              title="Water Features Type"
+              items={waterFeatureItems}
+              showComments={false}
+              onToggle={createArrayToggleHandler("waterFeatures.waterFeatures", waterFeaturesData)}
+            />
+            <ChecklistCard
+              title="Pump Location"
+              items={pumpLocationItems}
+              showComments={false}
+              onToggle={createArrayToggleHandler("waterFeatures.pumpLocations", pumpLocationsData)}
+            />
           <Controller
             control={control}
             name="waterFeatures.pumpAge"

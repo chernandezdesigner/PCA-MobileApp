@@ -14,14 +14,11 @@ export const DrainageErosionStep1Model = types.model("DrainageErosionStep1Model"
     // Underground to municipal storm system (yes/no)
     undergroundToMunicipalStormSystem: types.optional(types.boolean, false),
     
-    // Surface drainage destination
-    surfaceTo: types.optional(types.string, ""),
+    // Surface drainage destinations (multi-select)
+    surfaceTo: types.optional(types.array(types.string), []),
     
-    // Checklist items: Concrete swales, Surface drains, Curb inlets, Adjacent property
-    checklist: types.optional(
-        types.map(ChecklistItemModel),
-        {},
-    ),
+    // Drainage features (multi-select without comments)
+    drainageFeatures: types.optional(types.array(types.string), []),
     
     // Overall comments
     comments: types.optional(types.string, ""),
@@ -42,20 +39,20 @@ export const DrainageErosionStep1Model = types.model("DrainageErosionStep1Model"
         self.lastModified = new Date()
     },
     
-    updateSurfaceTo(value: string) {
-        self.surfaceTo = value
+    toggleSurfaceTo(id: string) {
+        if (self.surfaceTo.includes(id)) {
+            self.surfaceTo.remove(id)
+        } else {
+            self.surfaceTo.push(id)
+        }
         self.lastModified = new Date()
     },
     
-    updateChecklistItem(id: string, checked: boolean, comments?: string) {
-        const existing = self.checklist.get(id)
-        if (existing) {
-            self.checklist.set(id, { 
-                checked, 
-                comments: comments !== undefined ? comments : existing.comments 
-            })
+    toggleDrainageFeature(id: string) {
+        if (self.drainageFeatures.includes(id)) {
+            self.drainageFeatures.remove(id)
         } else {
-            self.checklist.set(id, { checked, comments: comments ?? "" })
+            self.drainageFeatures.push(id)
         }
         self.lastModified = new Date()
     },
@@ -69,8 +66,8 @@ export const DrainageErosionStep1Model = types.model("DrainageErosionStep1Model"
     update(data: {
         assessment?: Record<string, any>
         undergroundToMunicipalStormSystem?: boolean
-        surfaceTo?: string
-        checklist?: Record<string, { checked: boolean; comments?: string }>
+        surfaceTo?: string[]
+        drainageFeatures?: string[]
         comments?: string
     }) {
         if (data.assessment) {
@@ -80,12 +77,10 @@ export const DrainageErosionStep1Model = types.model("DrainageErosionStep1Model"
             self.undergroundToMunicipalStormSystem = data.undergroundToMunicipalStormSystem
         }
         if (data.surfaceTo !== undefined) {
-            self.surfaceTo = data.surfaceTo
+            self.surfaceTo.replace(data.surfaceTo)
         }
-        if (data.checklist) {
-            Object.entries(data.checklist).forEach(([key, value]) => {
-                self.checklist.set(key, value as any)
-            })
+        if (data.drainageFeatures !== undefined) {
+            self.drainageFeatures.replace(data.drainageFeatures)
         }
         if (data.comments !== undefined) {
             self.comments = data.comments

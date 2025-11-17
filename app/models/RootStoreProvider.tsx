@@ -68,6 +68,72 @@ function migrateSnapshot(snapshot?: RootStoreSnapshot | null): RootStoreSnapshot
         })
         ps.problematicMaterials = mapObj
       }
+      
+      // Migrate Site Grounds Step 1: surfaceTo string -> array
+      const sg1 = a?.siteGrounds?.step1
+      if (sg1) {
+        // Convert surfaceTo from string to array
+        if (typeof sg1.surfaceTo === "string") {
+          sg1.surfaceTo = sg1.surfaceTo ? [sg1.surfaceTo] : []
+        }
+        // Convert old checklist map to drainageFeatures array
+        if (sg1.checklist && typeof sg1.checklist === "object") {
+          const features: string[] = []
+          Object.entries(sg1.checklist).forEach(([key, value]: [string, any]) => {
+            if (value?.checked) {
+              features.push(key)
+            }
+          })
+          sg1.drainageFeatures = features
+          delete sg1.checklist
+        }
+      }
+      
+      // Migrate Site Grounds Step 2: string fields -> arrays
+      const sg2 = a?.siteGrounds?.step2
+      if (sg2) {
+        // Topography Slope
+        if (sg2.topographySlope && typeof sg2.topographySlope.slopeType === "string") {
+          sg2.topographySlope.topographySlopes = sg2.topographySlope.slopeType ? [sg2.topographySlope.slopeType] : []
+          delete sg2.topographySlope.slopeType
+        }
+        
+        // Landscaping
+        if (sg2.landscaping && typeof sg2.landscaping.landscapingType === "string") {
+          sg2.landscaping.landscaping = sg2.landscaping.landscapingType ? [sg2.landscaping.landscapingType] : []
+          delete sg2.landscaping.landscapingType
+        }
+        
+        // Retaining Walls
+        if (sg2.retainingWalls && typeof sg2.retainingWalls.retainingWallsType === "string") {
+          sg2.retainingWalls.retainingWallMaterials = sg2.retainingWalls.retainingWallsType ? [sg2.retainingWalls.retainingWallsType] : []
+          delete sg2.retainingWalls.retainingWallsType
+        }
+        if (sg2.retainingWalls?.railingDetails && typeof sg2.retainingWalls.railingDetails.railingType === "string") {
+          sg2.retainingWalls.railingDetails.railingMaterials = sg2.retainingWalls.railingDetails.railingType ? [sg2.retainingWalls.railingDetails.railingType] : []
+          delete sg2.retainingWalls.railingDetails.railingType
+        }
+        
+        // Screen Walls
+        if (sg2.screenWalls && typeof sg2.screenWalls.screenWallsType === "string") {
+          sg2.screenWalls.screenWallMaterials = sg2.screenWalls.screenWallsType ? [sg2.screenWalls.screenWallsType] : []
+          delete sg2.screenWalls.screenWallsType
+        }
+        if (sg2.screenWalls?.railingDetails && typeof sg2.screenWalls.railingDetails.railingType === "string") {
+          sg2.screenWalls.railingDetails.railingMaterials = sg2.screenWalls.railingDetails.railingType ? [sg2.screenWalls.railingDetails.railingType] : []
+          delete sg2.screenWalls.railingDetails.railingType
+        }
+        
+        // Water Features
+        if (sg2.waterFeatures && typeof sg2.waterFeatures.waterFeaturesType === "string") {
+          sg2.waterFeatures.waterFeatures = sg2.waterFeatures.waterFeaturesType ? [sg2.waterFeatures.waterFeaturesType] : []
+          delete sg2.waterFeatures.waterFeaturesType
+        }
+        if (sg2.waterFeatures && typeof sg2.waterFeatures.pumpLocation === "string") {
+          sg2.waterFeatures.pumpLocations = sg2.waterFeatures.pumpLocation ? [sg2.waterFeatures.pumpLocation] : []
+          delete sg2.waterFeatures.pumpLocation
+        }
+      }
     })
   }
   return copy as RootStoreSnapshot
