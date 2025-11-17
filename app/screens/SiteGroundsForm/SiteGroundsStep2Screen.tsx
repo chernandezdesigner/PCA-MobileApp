@@ -153,14 +153,14 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
     [rootStore.activeAssessmentId], // Only recalculate when assessment changes
   )
 
-  const { control, reset, watch } = useForm<Step2FormValues>({ defaultValues, mode: "onChange" })
+  const { control, reset, watch, setValue } = useForm<Step2FormValues>({ defaultValues, mode: "onChange" })
   
   // Initialize form from store only on mount or when assessment changes
   useEffect(() => { 
     reset(defaultValues) 
   }, [rootStore.activeAssessmentId]) // Only reset when switching assessments
 
-  const debounceRef = useRef<NodeJS.Timeout | null>(null)
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   useEffect(() => {
     const subscription = watch((values) => {
       if (debounceRef.current) clearTimeout(debounceRef.current)
@@ -250,12 +250,12 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
     checked: pumpLocationsData?.includes(opt.id) ?? false,
   }))
 
-  // Helper to toggle array values using Controller's setValue
+  // Helper to toggle array values using setValue
   const createArrayToggleHandler = (fieldPath: any, currentArray: string[] | undefined) => {
     return (id: string, checked: boolean) => {
       const arr = currentArray ?? []
       const newArray = checked ? [...arr, id] : arr.filter(item => item !== id)
-      ;(control as any).setValue(fieldPath, newArray, { shouldDirty: true, shouldTouch: true })
+      setValue(fieldPath, newArray, { shouldDirty: true, shouldTouch: true })
     }
   }
 

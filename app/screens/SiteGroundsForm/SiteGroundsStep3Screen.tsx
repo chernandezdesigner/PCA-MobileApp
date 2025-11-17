@@ -12,81 +12,25 @@ import { observer } from "mobx-react-lite"
 import { useAppTheme } from "@/theme/context"
 import type { SiteGroundsFormNavigatorParamList } from "@/navigators/SiteGroundsFormNavigator"
 import type { ThemedStyle } from "@/theme/types"
-import { Controller, useForm } from "react-hook-form"
+import { Controller, useForm, useWatch } from "react-hook-form"
 import { Checkbox } from "@/components/Toggle/Checkbox"
-import { Dropdown } from "@/components/Dropdown"
+import { ChecklistCard, ChecklistItem } from "@/components/ChecklistCard"
 import { useDrawerControl } from "@/context/DrawerContext"
 import { HeaderBar } from "@/components/HeaderBar"
 import { ProgressBar } from "@/components/ProgressBar"
 import { StickyFooterNav } from "@/components/StickyFooterNav"
 import { useNavigation } from "@react-navigation/native"
-
-// Static dropdown options for step 3 inputs
-const SIGNAGE_TYPE_OPTIONS = [
-  { label: "Monument", value: "Monument" },
-  { label: "Wood Post", value: "Wood Post" },
-  { label: "Pylon", value: "Pylon" },
-  { label: "Bldg. Mounted", value: "Bldg. Mounted" },
-]
-
-const LOT_LIGHTING_TYPE_OPTIONS = [
-  { label: "Metal Pole", value: "Metal Pole" },
-  { label: "Wood Pole", value: "Wood Pole" },
-]
-
-const BLDG_LIGHTING_TYPE_OPTIONS = [
-  { label: "Surface", value: "Surface" },
-  { label: "Recessed in Soffits", value: "Recessed in Soffits" },
-]
-
-const SITE_FENCING_TYPE_OPTIONS = [
-  { label: "Chain Link", value: "Chain Link" },
-  { label: "Wood", value: "Wood" },
-  { label: "CMU", value: "CMU" },
-  { label: "Brick", value: "Brick" },
-  { label: "Vinyl", value: "Vinyl" },
-  { label: "Other", value: "Other" },
-]
-
-const ENCLOSURE_TYPE_OPTIONS = [
-  { label: "Chain Link", value: "Chain Link" },
-  { label: "Wood", value: "Wood" },
-  { label: "CMU", value: "CMU" },
-  { label: "Brick", value: "Brick" },
-  { label: "Vinyl", value: "Vinyl" },
-  { label: "Other", value: "Other" },
-]
-
-const GATE_TYPE_OPTIONS = [
-  { label: "Chain Link", value: "Chain Link" },
-  { label: "Wood", value: "Wood" },
-  { label: "Metal (Solid)", value: "Metal (Solid)" },
-  { label: "Metal (Tubular)", value: "Metal (Tubular)" },
-]
-
-const RECREATIONAL_FACILITIES_TYPE_OPTIONS = [
-  { label: "BBQ Area", value: "BBQ Area" },
-  { label: "Playground", value: "Playground" },
-  { label: "Basketball Court", value: "Basketball Court" },
-  { label: "Tennis Court", value: "Tennis Court" },
-  { label: "Volleyball Court", value: "Volleyball Court" },
-  { label: "Golf Course", value: "Golf Course" },
-  { label: "Leisure Area", value: "Leisure Area" },
-  { label: "Other", value: "Other" },
-]
-
-const BRIDGES_TYPE_OPTIONS = [
-  { label: "Concrete", value: "Concrete" },
-  { label: "Wood", value: "Wood" },
-  { label: "Granite", value: "Granite" },
-  { label: "Steel", value: "Steel" },
-]
-
-const RAILING_TYPE_OPTIONS = [
-  { label: "Metal", value: "Metal" },
-  { label: "Wood", value: "Wood" },
-  { label: "Vinyl", value: "Vinyl" },
-]
+import {
+  SIGNAGE_OPTIONS,
+  LOT_LIGHTING_OPTIONS,
+  BLDG_LIGHTING_OPTIONS,
+  SITE_FENCING_MATERIALS,
+  DUMPSTER_ENCLOSURE_MATERIALS,
+  DUMPSTER_GATE_MATERIALS,
+  RECREATIONAL_FACILITY_OPTIONS,
+  BRIDGE_MATERIALS,
+  BRIDGE_RAILING_MATERIALS,
+} from "@/constants/siteGroundsOptions"
 
 interface SiteGroundsStep3ScreenProps
   extends NativeStackScreenProps<SiteGroundsFormNavigatorParamList, "SiteGroundsStep3"> {}
@@ -116,24 +60,24 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
   }
 
   type RailingDetailsVals = {
-    railingType: string
+    railingMaterials: string[]
     assessment: AssessmentVals
   }
 
   type Step3FormValues = {
-    signage: { signageType: string; assessment: AssessmentVals }
-    lotLighting: { lotLightingType: string; assessment: AssessmentVals }
-    bldgLighting: { bldgLightingType: string; assessment: AssessmentVals }
-    siteFencing: { siteFencingType: string; assessment: AssessmentVals }
+    signage: { signageTypes: string[]; assessment: AssessmentVals }
+    lotLighting: { lotLightingTypes: string[]; assessment: AssessmentVals }
+    bldgLighting: { bldgLightingTypes: string[]; assessment: AssessmentVals }
+    siteFencing: { siteFencingMaterials: string[]; assessment: AssessmentVals }
     dumpster: {
-      enclosureType: string
-      gateType: string
+      enclosureMaterials: string[]
+      gateMaterials: string[]
       otherType: string
       location: string
       assessment: AssessmentVals
     }
     recreationalFacilities: {
-      recreationalFacilitiesType: string
+      recreationalFacilities: string[]
       otherType: string
       assessment: AssessmentVals
     }
@@ -143,7 +87,7 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
       assessment: AssessmentVals
     }
     bridges: {
-      bridgesType: string
+      bridgeMaterials: string[]
       assessment: AssessmentVals
       railing: YesNo
       railingDetails: RailingDetailsVals
@@ -154,7 +98,7 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
   const defaultValues = useMemo<Step3FormValues>(
     () => ({
       signage: {
-        signageType: store?.signage.signageType ?? "",
+        signageTypes: store?.signage.signageTypes.slice() ?? [],
         assessment: {
           condition: (store?.signage.assessment.condition as ConditionT) ?? "good",
           repairStatus: (store?.signage.assessment.repairStatus as RepairT) ?? "IR",
@@ -162,7 +106,7 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
         },
       },
       lotLighting: {
-        lotLightingType: store?.lotLighting.lotLightingType ?? "",
+        lotLightingTypes: store?.lotLighting.lotLightingTypes.slice() ?? [],
         assessment: {
           condition: (store?.lotLighting.assessment.condition as ConditionT) ?? "good",
           repairStatus: (store?.lotLighting.assessment.repairStatus as RepairT) ?? "IR",
@@ -170,7 +114,7 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
         },
       },
       bldgLighting: {
-        bldgLightingType: store?.bldgLighting.bldgLightingType ?? "",
+        bldgLightingTypes: store?.bldgLighting.bldgLightingTypes.slice() ?? [],
         assessment: {
           condition: (store?.bldgLighting.assessment.condition as ConditionT) ?? "good",
           repairStatus: (store?.bldgLighting.assessment.repairStatus as RepairT) ?? "IR",
@@ -178,7 +122,7 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
         },
       },
       siteFencing: {
-        siteFencingType: store?.siteFencing.siteFencingType ?? "",
+        siteFencingMaterials: store?.siteFencing.siteFencingMaterials.slice() ?? [],
         assessment: {
           condition: (store?.siteFencing.assessment.condition as ConditionT) ?? "good",
           repairStatus: (store?.siteFencing.assessment.repairStatus as RepairT) ?? "IR",
@@ -186,8 +130,8 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
         },
       },
       dumpster: {
-        enclosureType: store?.dumpster.enclosureType ?? "",
-        gateType: store?.dumpster.gateType ?? "",
+        enclosureMaterials: store?.dumpster.enclosureMaterials.slice() ?? [],
+        gateMaterials: store?.dumpster.gateMaterials.slice() ?? [],
         otherType: store?.dumpster.otherType ?? "",
         location: store?.dumpster.location ?? "",
         assessment: {
@@ -197,7 +141,7 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
         },
       },
       recreationalFacilities: {
-        recreationalFacilitiesType: store?.recreationalFacilities.recreationalFacilitiesType ?? "",
+        recreationalFacilities: store?.recreationalFacilities.recreationalFacilities.slice() ?? [],
         otherType: store?.recreationalFacilities.otherType ?? "",
         assessment: {
           condition: (store?.recreationalFacilities.assessment.condition as ConditionT) ?? "good",
@@ -215,7 +159,7 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
         },
       },
       bridges: {
-        bridgesType: store?.bridges.bridgesType ?? "",
+        bridgeMaterials: store?.bridges.bridgeMaterials.slice() ?? [],
         assessment: {
           condition: (store?.bridges.assessment.condition as ConditionT) ?? "good",
           repairStatus: (store?.bridges.assessment.repairStatus as RepairT) ?? "IR",
@@ -223,7 +167,7 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
         },
         railing: (store?.bridges.railing as YesNo) ?? "no",
         railingDetails: {
-          railingType: store?.bridges.railingDetails?.railingType ?? "",
+          railingMaterials: store?.bridges.railingDetails?.railingMaterials.slice() ?? [],
           assessment: {
             condition: (store?.bridges.railingDetails?.assessment.condition as ConditionT) ?? "good",
             repairStatus: (store?.bridges.railingDetails?.assessment.repairStatus as RepairT) ?? "IR",
@@ -236,32 +180,32 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
     [rootStore.activeAssessmentId], // Only recalculate when assessment changes
   )
 
-  const { control, reset, watch } = useForm<Step3FormValues>({ defaultValues, mode: "onChange" })
+  const { control, reset, watch, setValue } = useForm<Step3FormValues>({ defaultValues, mode: "onChange" })
   
   // Initialize form from store only on mount or when assessment changes
   useEffect(() => { 
     reset(defaultValues) 
   }, [rootStore.activeAssessmentId]) // Only reset when switching assessments
 
-  const debounceRef = useRef<NodeJS.Timeout | null>(null)
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   useEffect(() => {
     const subscription = watch((values) => {
       if (debounceRef.current) clearTimeout(debounceRef.current)
       debounceRef.current = setTimeout(() => {
         const v = values as Required<Step3FormValues>
-        store?.updateSignage({ signageType: v.signage.signageType, assessment: v.signage.assessment as any })
-        store?.updateLotLighting({ lotLightingType: v.lotLighting.lotLightingType, assessment: v.lotLighting.assessment as any })
-        store?.updateBldgLighting({ bldgLightingType: v.bldgLighting.bldgLightingType, assessment: v.bldgLighting.assessment as any })
-        store?.updateSiteFencing({ siteFencingType: v.siteFencing.siteFencingType, assessment: v.siteFencing.assessment as any })
+        store?.updateSignage({ signageTypes: v.signage.signageTypes, assessment: v.signage.assessment as any })
+        store?.updateLotLighting({ lotLightingTypes: v.lotLighting.lotLightingTypes, assessment: v.lotLighting.assessment as any })
+        store?.updateBldgLighting({ bldgLightingTypes: v.bldgLighting.bldgLightingTypes, assessment: v.bldgLighting.assessment as any })
+        store?.updateSiteFencing({ siteFencingMaterials: v.siteFencing.siteFencingMaterials, assessment: v.siteFencing.assessment as any })
         store?.updateDumpster({
-          enclosureType: v.dumpster.enclosureType,
-          gateType: v.dumpster.gateType,
+          enclosureMaterials: v.dumpster.enclosureMaterials,
+          gateMaterials: v.dumpster.gateMaterials,
           otherType: v.dumpster.otherType,
           location: v.dumpster.location,
           assessment: v.dumpster.assessment as any,
         })
         store?.updateRecreationalFacilities({
-          recreationalFacilitiesType: v.recreationalFacilities.recreationalFacilitiesType,
+          recreationalFacilities: v.recreationalFacilities.recreationalFacilities,
           otherType: v.recreationalFacilities.otherType,
           assessment: v.recreationalFacilities.assessment as any,
         })
@@ -271,7 +215,7 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
           assessment: v.compactors.assessment as any,
         })
         store?.updateBridges({
-          bridgesType: v.bridges.bridgesType,
+          bridgeMaterials: v.bridges.bridgeMaterials,
           assessment: v.bridges.assessment as any,
           railing: v.bridges.railing,
           railingDetails: v.bridges.railing === "yes" ? (v.bridges.railingDetails as any) : undefined,
@@ -281,6 +225,80 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
     })
     return () => subscription.unsubscribe()
   }, [watch, store])
+
+  // Transform data for checklist cards
+  const signageTypesData = useWatch({ control, name: "signage.signageTypes" })
+  const lotLightingTypesData = useWatch({ control, name: "lotLighting.lotLightingTypes" })
+  const bldgLightingTypesData = useWatch({ control, name: "bldgLighting.bldgLightingTypes" })
+  const siteFencingMaterialsData = useWatch({ control, name: "siteFencing.siteFencingMaterials" })
+  const dumpsterEnclosureMaterialsData = useWatch({ control, name: "dumpster.enclosureMaterials" })
+  const dumpsterGateMaterialsData = useWatch({ control, name: "dumpster.gateMaterials" })
+  const recreationalFacilitiesData = useWatch({ control, name: "recreationalFacilities.recreationalFacilities" })
+  const bridgeMaterialsData = useWatch({ control, name: "bridges.bridgeMaterials" })
+  const bridgeRailingMaterialsData = useWatch({ control, name: "bridges.railingDetails.railingMaterials" })
+
+  const signageItems: ChecklistItem[] = SIGNAGE_OPTIONS.map(opt => ({
+    id: opt.id,
+    label: opt.label,
+    checked: signageTypesData?.includes(opt.id) ?? false,
+  }))
+
+  const lotLightingItems: ChecklistItem[] = LOT_LIGHTING_OPTIONS.map(opt => ({
+    id: opt.id,
+    label: opt.label,
+    checked: lotLightingTypesData?.includes(opt.id) ?? false,
+  }))
+
+  const bldgLightingItems: ChecklistItem[] = BLDG_LIGHTING_OPTIONS.map(opt => ({
+    id: opt.id,
+    label: opt.label,
+    checked: bldgLightingTypesData?.includes(opt.id) ?? false,
+  }))
+
+  const siteFencingItems: ChecklistItem[] = SITE_FENCING_MATERIALS.map(opt => ({
+    id: opt.id,
+    label: opt.label,
+    checked: siteFencingMaterialsData?.includes(opt.id) ?? false,
+  }))
+
+  const dumpsterEnclosureItems: ChecklistItem[] = DUMPSTER_ENCLOSURE_MATERIALS.map(opt => ({
+    id: opt.id,
+    label: opt.label,
+    checked: dumpsterEnclosureMaterialsData?.includes(opt.id) ?? false,
+  }))
+
+  const dumpsterGateItems: ChecklistItem[] = DUMPSTER_GATE_MATERIALS.map(opt => ({
+    id: opt.id,
+    label: opt.label,
+    checked: dumpsterGateMaterialsData?.includes(opt.id) ?? false,
+  }))
+
+  const recreationalFacilityItems: ChecklistItem[] = RECREATIONAL_FACILITY_OPTIONS.map(opt => ({
+    id: opt.id,
+    label: opt.label,
+    checked: recreationalFacilitiesData?.includes(opt.id) ?? false,
+  }))
+
+  const bridgeMaterialItems: ChecklistItem[] = BRIDGE_MATERIALS.map(opt => ({
+    id: opt.id,
+    label: opt.label,
+    checked: bridgeMaterialsData?.includes(opt.id) ?? false,
+  }))
+
+  const bridgeRailingItems: ChecklistItem[] = BRIDGE_RAILING_MATERIALS.map(opt => ({
+    id: opt.id,
+    label: opt.label,
+    checked: bridgeRailingMaterialsData?.includes(opt.id) ?? false,
+  }))
+
+  // Helper to toggle array values using setValue
+  const createArrayToggleHandler = (fieldPath: any, currentArray: string[] | undefined) => {
+    return (id: string, checked: boolean) => {
+      const arr = currentArray ?? []
+      const newArray = checked ? [...arr, id] : arr.filter(item => item !== id)
+      setValue(fieldPath, newArray, { shouldDirty: true, shouldTouch: true })
+    }
+  }
 
   return (
     <Screen style={$root} preset="fixed" contentContainerStyle={$screenInner}>
@@ -320,17 +338,11 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
         >
           {!store?.signage.NotApplicable && (
             <View style={themed($sectionBody)}>
-              <Controller
-                control={control}
-                name="signage.signageType"
-                render={({ field: { value, onChange } }) => (
-                  <Dropdown
-                    label="Signage Type"
-                    value={value}
-                    onValueChange={onChange}
-                    options={SIGNAGE_TYPE_OPTIONS}
-                  />
-                )}
+              <ChecklistCard
+                title="Signage Type"
+                items={signageItems}
+                showComments={false}
+                onToggle={createArrayToggleHandler("signage.signageTypes", signageTypesData)}
               />
               <View style={themed($controlGroup)}>
                 <Text preset="formLabel" text="Condition" />
@@ -391,17 +403,11 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
         >
           {!store?.lotLighting.NotApplicable && (
             <View style={themed($sectionBody)}>
-              <Controller
-                control={control}
-                name="lotLighting.lotLightingType"
-                render={({ field: { value, onChange } }) => (
-                  <Dropdown
-                    label="Lot Lighting Type"
-                    value={value}
-                    onValueChange={onChange}
-                    options={LOT_LIGHTING_TYPE_OPTIONS}
-                  />
-                )}
+              <ChecklistCard
+                title="Lot Lighting Type"
+                items={lotLightingItems}
+                showComments={false}
+                onToggle={createArrayToggleHandler("lotLighting.lotLightingTypes", lotLightingTypesData)}
               />
               <View style={themed($controlGroup)}>
                 <Text preset="formLabel" text="Condition" />
@@ -462,17 +468,11 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
         >
           {!store?.bldgLighting.NotApplicable && (
             <View style={themed($sectionBody)}>
-              <Controller
-                control={control}
-                name="bldgLighting.bldgLightingType"
-                render={({ field: { value, onChange } }) => (
-                  <Dropdown
-                    label="Building Lighting Type"
-                    value={value}
-                    onValueChange={onChange}
-                    options={BLDG_LIGHTING_TYPE_OPTIONS}
-                  />
-                )}
+              <ChecklistCard
+                title="Building Lighting Type"
+                items={bldgLightingItems}
+                showComments={false}
+                onToggle={createArrayToggleHandler("bldgLighting.bldgLightingTypes", bldgLightingTypesData)}
               />
               <View style={themed($controlGroup)}>
                 <Text preset="formLabel" text="Condition" />
@@ -533,19 +533,13 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
         >
           {!store?.siteFencing.NotApplicable && (
             <View style={themed($sectionBody)}>
-              <Controller
-                control={control}
-                name="siteFencing.siteFencingType"
-                render={({ field: { value, onChange } }) => (
-                  <Dropdown
-                    label="Site Fencing Type"
-                    value={value}
-                    onValueChange={onChange}
-                    options={SITE_FENCING_TYPE_OPTIONS}
-                  />
-                )}
+              <ChecklistCard
+                title="Site Fencing Materials"
+                items={siteFencingItems}
+                showComments={false}
+                onToggle={createArrayToggleHandler("siteFencing.siteFencingMaterials", siteFencingMaterialsData)}
               />
-              {store?.siteFencing.siteFencingType === "Other" && (
+              {siteFencingMaterialsData?.includes("other") && (
                 <TextField
                   label="Specify Other"
                   value={store?.siteFencing.otherType ?? ""}
@@ -612,19 +606,13 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
         >
           {!store?.dumpster.NotApplicable && (
             <View style={themed($sectionBody)}>
-              <Controller
-                control={control}
-                name="dumpster.enclosureType"
-                render={({ field: { value, onChange } }) => (
-                  <Dropdown
-                    label="Enclosure Type"
-                    value={value}
-                    onValueChange={onChange}
-                    options={ENCLOSURE_TYPE_OPTIONS}
-                  />
-                )}
+              <ChecklistCard
+                title="Enclosure Materials"
+                items={dumpsterEnclosureItems}
+                showComments={false}
+                onToggle={createArrayToggleHandler("dumpster.enclosureMaterials", dumpsterEnclosureMaterialsData)}
               />
-              {store?.dumpster.enclosureType === "Other" && (
+              {dumpsterEnclosureMaterialsData?.includes("other") && (
                 <Controller
                   control={control}
                   name="dumpster.otherType"
@@ -639,17 +627,11 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
                   )}
                 />
               )}
-              <Controller
-                control={control}
-                name="dumpster.gateType"
-                render={({ field: { value, onChange } }) => (
-                  <Dropdown
-                    label="Gate Type"
-                    value={value}
-                    onValueChange={onChange}
-                    options={GATE_TYPE_OPTIONS}
-                  />
-                )}
+              <ChecklistCard
+                title="Gate Materials"
+                items={dumpsterGateItems}
+                showComments={false}
+                onToggle={createArrayToggleHandler("dumpster.gateMaterials", dumpsterGateMaterialsData)}
               />
               <Controller
                 control={control}
@@ -722,19 +704,13 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
         >
           {!store?.recreationalFacilities.NotApplicable && (
             <View style={themed($sectionBody)}>
-              <Controller
-                control={control}
-                name="recreationalFacilities.recreationalFacilitiesType"
-                render={({ field: { value, onChange } }) => (
-                  <Dropdown
-                    label="Facility Type"
-                    value={value}
-                    onValueChange={onChange}
-                    options={RECREATIONAL_FACILITIES_TYPE_OPTIONS}
-                  />
-                )}
+              <ChecklistCard
+                title="Facility Type"
+                items={recreationalFacilityItems}
+                showComments={false}
+                onToggle={createArrayToggleHandler("recreationalFacilities.recreationalFacilities", recreationalFacilitiesData)}
               />
-              {store?.recreationalFacilities.recreationalFacilitiesType === "Other" && (
+              {recreationalFacilitiesData?.includes("other") && (
                 <Controller
                   control={control}
                   name="recreationalFacilities.otherType"
@@ -891,17 +867,11 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
         >
           {!store?.bridges.NotApplicable && (
             <View style={themed($sectionBody)}>
-              <Controller
-                control={control}
-                name="bridges.bridgesType"
-                render={({ field: { value, onChange } }) => (
-                  <Dropdown
-                    label="Bridge Type"
-                    value={value}
-                    onValueChange={onChange}
-                    options={BRIDGES_TYPE_OPTIONS}
-                  />
-                )}
+              <ChecklistCard
+                title="Bridge Materials"
+                items={bridgeMaterialItems}
+                showComments={false}
+                onToggle={createArrayToggleHandler("bridges.bridgeMaterials", bridgeMaterialsData)}
               />
               <View style={themed($controlGroup)}>
                 <Text preset="formLabel" text="Condition" />
@@ -947,17 +917,11 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
                 <View style={themed($nestedList)}>
                   <Text preset="subheading" text="Railing" />
                   <View style={themed($nestedCard)}>
-                    <Dropdown
-                      label="Railing Type"
-                      value={store?.bridges.railingDetails?.railingType ?? ""}
-                      onValueChange={(t) => {
-                        if (store?.bridges.railingDetails) {
-                          store?.bridges.railingDetails.update({ railingType: t })
-                        } else {
-                          store?.updateBridges({ railingDetails: { railingType: t } as any })
-                        }
-                      }}
-                      options={RAILING_TYPE_OPTIONS}
+                    <ChecklistCard
+                      title="Railing Materials"
+                      items={bridgeRailingItems}
+                      showComments={false}
+                      onToggle={createArrayToggleHandler("bridges.railingDetails.railingMaterials", bridgeRailingMaterialsData)}
                     />
                     <View style={themed($controlGroup)}>
                       <Text preset="formLabel" text="Condition" />

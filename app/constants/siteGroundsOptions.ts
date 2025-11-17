@@ -83,6 +83,83 @@ export const PUMP_LOCATION_OPTIONS = [
   { id: "enclosure", label: "Enclosure" },
 ] as const
 
+// Site & Grounds - Step 3: Site Elements Options
+
+export const SIGNAGE_OPTIONS = [
+  { id: "monument", label: "Monument" },
+  { id: "woodPost", label: "Wood Post" },
+  { id: "pylon", label: "Pylon" },
+  { id: "bldgMounted", label: "Bldg. Mounted" },
+] as const
+
+export const LOT_LIGHTING_OPTIONS = [
+  { id: "metalPole", label: "Metal Pole" },
+  { id: "woodPole", label: "Wood Pole" },
+] as const
+
+export const BLDG_LIGHTING_OPTIONS = [
+  { id: "surface", label: "Surface" },
+  { id: "recessedInSoffits", label: "Recessed in Soffits" },
+] as const
+
+export const SITE_FENCING_MATERIALS = [
+  { id: "chainLink", label: "Chain Link" },
+  { id: "wood", label: "Wood" },
+  { id: "cmu", label: "CMU" },
+  { id: "brick", label: "Brick" },
+  { id: "vinyl", label: "Vinyl" },
+  { id: "other", label: "Other" },
+] as const
+
+export const DUMPSTER_ENCLOSURE_MATERIALS = [
+  { id: "chainLink", label: "Chain Link" },
+  { id: "wood", label: "Wood" },
+  { id: "cmu", label: "CMU" },
+  { id: "brick", label: "Brick" },
+  { id: "vinyl", label: "Vinyl" },
+  { id: "other", label: "Other" },
+] as const
+
+export const DUMPSTER_GATE_MATERIALS = [
+  { id: "chainLink", label: "Chain Link" },
+  { id: "wood", label: "Wood" },
+  { id: "metalSolid", label: "Metal (Solid)" },
+  { id: "metalTubular", label: "Metal (Tubular)" },
+] as const
+
+export const RECREATIONAL_FACILITY_OPTIONS = [
+  { id: "bbqArea", label: "BBQ Area" },
+  { id: "playground", label: "Playground" },
+  { id: "basketballCourt", label: "Basketball Court" },
+  { id: "tennisCourt", label: "Tennis Court" },
+  { id: "volleyballCourt", label: "Volleyball Court" },
+  { id: "golfCourse", label: "Golf Course" },
+  { id: "leisureArea", label: "Leisure Area" },
+  { id: "other", label: "Other" },
+] as const
+
+export const BRIDGE_MATERIALS = [
+  { id: "concrete", label: "Concrete" },
+  { id: "wood", label: "Wood" },
+  { id: "granite", label: "Granite" },
+  { id: "steel", label: "Steel" },
+] as const
+
+export const BRIDGE_RAILING_MATERIALS = [
+  { id: "metal", label: "Metal" },
+  { id: "wood", label: "Wood" },
+  { id: "vinyl", label: "Vinyl" },
+] as const
+
+// Site & Grounds - Step 4: Miscellaneous Structures Options
+
+export const GENERAL_CONSTRUCTION_OPTIONS = [
+  { id: "cmu", label: "CMU" },
+  { id: "tiltUp", label: "Tilt-up" },
+  { id: "lightGaugeSteel", label: "Light-Gauge Steel" },
+  { id: "wood", label: "Wood" },
+] as const
+
 // Type helpers
 export type SurfaceToId = typeof SURFACE_TO_OPTIONS[number]["id"]
 export type DrainageFeatureId = typeof DRAINAGE_FEATURES_OPTIONS[number]["id"]
@@ -93,4 +170,14 @@ export type ScreenWallMaterialId = typeof SCREEN_WALL_MATERIALS[number]["id"]
 export type RailingMaterialId = typeof RAILING_MATERIALS[number]["id"]
 export type WaterFeatureId = typeof WATER_FEATURE_OPTIONS[number]["id"]
 export type PumpLocationId = typeof PUMP_LOCATION_OPTIONS[number]["id"]
+export type SignageId = typeof SIGNAGE_OPTIONS[number]["id"]
+export type LotLightingId = typeof LOT_LIGHTING_OPTIONS[number]["id"]
+export type BldgLightingId = typeof BLDG_LIGHTING_OPTIONS[number]["id"]
+export type SiteFencingMaterialId = typeof SITE_FENCING_MATERIALS[number]["id"]
+export type DumpsterEnclosureMaterialId = typeof DUMPSTER_ENCLOSURE_MATERIALS[number]["id"]
+export type DumpsterGateMaterialId = typeof DUMPSTER_GATE_MATERIALS[number]["id"]
+export type RecreationalFacilityId = typeof RECREATIONAL_FACILITY_OPTIONS[number]["id"]
+export type BridgeMaterialId = typeof BRIDGE_MATERIALS[number]["id"]
+export type BridgeRailingMaterialId = typeof BRIDGE_RAILING_MATERIALS[number]["id"]
+export type GeneralConstructionId = typeof GENERAL_CONSTRUCTION_OPTIONS[number]["id"]
 

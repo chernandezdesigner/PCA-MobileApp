@@ -13,21 +13,14 @@ import { observer } from "mobx-react-lite"
 import { useAppTheme } from "@/theme/context"
 import type { SiteGroundsFormNavigatorParamList } from "@/navigators/SiteGroundsFormNavigator"
 import type { ThemedStyle } from "@/theme/types"
-import { Controller, useForm } from "react-hook-form"
-import { Dropdown } from "@/components/Dropdown"
+import { Controller, useForm, useWatch } from "react-hook-form"
+import { ChecklistCard, ChecklistItem } from "@/components/ChecklistCard"
 import { HeaderBar } from "@/components/HeaderBar"
 import { useDrawerControl } from "@/context/DrawerContext"
 import { ProgressBar } from "@/components/ProgressBar"
 import { StickyFooterNav } from "@/components/StickyFooterNav"
 import { useNavigation } from "@react-navigation/native"
-
-// Static dropdown options for step 4 inputs
-const GENERAL_CONSTRUCTION_OPTIONS = [
-  { label: "CMU", value: "CMU" },
-  { label: "Tilt-up", value: "Tilt-up" },
-  { label: "Light-Gauge Steel", value: "Light-Gauge Steel" },
-  { label: "Wood", value: "Wood" },
-]
+import { GENERAL_CONSTRUCTION_OPTIONS } from "@/constants/siteGroundsOptions"
 
 interface SiteGroundsStep4ScreenProps
   extends NativeStackScreenProps<SiteGroundsFormNavigatorParamList, "SiteGroundsStep4"> {}
@@ -56,7 +49,7 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
   }
 
   type StructureVals = {
-    GeneralConstruction: string
+    GeneralConstruction: string[]
     RoofType: string
     assessment: AssessmentVals
   }
@@ -77,7 +70,7 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
   const defaultValues = useMemo<Step4FormValues>(
     () => ({
       carports: {
-        GeneralConstruction: store?.carports.GeneralConstruction ?? "",
+        GeneralConstruction: store?.carports.GeneralConstruction.slice() ?? [],
         RoofType: store?.carports.RoofType ?? "",
         assessment: {
           condition: (store?.carports.assessment.condition as ConditionT) ?? "good",
@@ -86,7 +79,7 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         },
       },
       maintenanceBldg: {
-        GeneralConstruction: store?.maintenanceBldg.GeneralConstruction ?? "",
+        GeneralConstruction: store?.maintenanceBldg.GeneralConstruction.slice() ?? [],
         RoofType: store?.maintenanceBldg.RoofType ?? "",
         assessment: {
           condition: (store?.maintenanceBldg.assessment.condition as ConditionT) ?? "good",
@@ -95,7 +88,7 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         },
       },
       firePumpBldg: {
-        GeneralConstruction: store?.firePumpBldg.GeneralConstruction ?? "",
+        GeneralConstruction: store?.firePumpBldg.GeneralConstruction.slice() ?? [],
         RoofType: store?.firePumpBldg.RoofType ?? "",
         assessment: {
           condition: (store?.firePumpBldg.assessment.condition as ConditionT) ?? "good",
@@ -104,7 +97,7 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         },
       },
       residentialGarages: {
-        GeneralConstruction: store?.residentialGarages.GeneralConstruction ?? "",
+        GeneralConstruction: store?.residentialGarages.GeneralConstruction.slice() ?? [],
         RoofType: store?.residentialGarages.RoofType ?? "",
         assessment: {
           condition: (store?.residentialGarages.assessment.condition as ConditionT) ?? "good",
@@ -113,7 +106,7 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         },
       },
       gazeboPavilion: {
-        GeneralConstruction: store?.gazeboPavilion.GeneralConstruction ?? "",
+        GeneralConstruction: store?.gazeboPavilion.GeneralConstruction.slice() ?? [],
         RoofType: store?.gazeboPavilion.RoofType ?? "",
         assessment: {
           condition: (store?.gazeboPavilion.assessment.condition as ConditionT) ?? "good",
@@ -122,7 +115,7 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         },
       },
       greenhouses: {
-        GeneralConstruction: store?.greenhouses.GeneralConstruction ?? "",
+        GeneralConstruction: store?.greenhouses.GeneralConstruction.slice() ?? [],
         RoofType: store?.greenhouses.RoofType ?? "",
         assessment: {
           condition: (store?.greenhouses.assessment.condition as ConditionT) ?? "good",
@@ -131,7 +124,7 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         },
       },
       laundryBldg: {
-        GeneralConstruction: store?.laundryBldg.GeneralConstruction ?? "",
+        GeneralConstruction: store?.laundryBldg.GeneralConstruction.slice() ?? [],
         RoofType: store?.laundryBldg.RoofType ?? "",
         assessment: {
           condition: (store?.laundryBldg.assessment.condition as ConditionT) ?? "good",
@@ -140,7 +133,7 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         },
       },
       wellPumpHouse: {
-        GeneralConstruction: store?.wellPumpHouse.GeneralConstruction ?? "",
+        GeneralConstruction: store?.wellPumpHouse.GeneralConstruction.slice() ?? [],
         RoofType: store?.wellPumpHouse.RoofType ?? "",
         assessment: {
           condition: (store?.wellPumpHouse.assessment.condition as ConditionT) ?? "good",
@@ -149,7 +142,7 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         },
       },
       sewerPumpHouse: {
-        GeneralConstruction: store?.sewerPumpHouse.GeneralConstruction ?? "",
+        GeneralConstruction: store?.sewerPumpHouse.GeneralConstruction.slice() ?? [],
         RoofType: store?.sewerPumpHouse.RoofType ?? "",
         assessment: {
           condition: (store?.sewerPumpHouse.assessment.condition as ConditionT) ?? "good",
@@ -162,14 +155,14 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
     [rootStore.activeAssessmentId], // Only recalculate when assessment changes
   )
 
-  const { control, reset, watch } = useForm<Step4FormValues>({ defaultValues, mode: "onChange" })
+  const { control, reset, watch, setValue } = useForm<Step4FormValues>({ defaultValues, mode: "onChange" })
   
   // Initialize form from store only on mount or when assessment changes
   useEffect(() => { 
     reset(defaultValues) 
   }, [rootStore.activeAssessmentId]) // Only reset when switching assessments
 
-  const debounceRef = useRef<NodeJS.Timeout | null>(null)
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   useEffect(() => {
     const subscription = watch((values) => {
       if (debounceRef.current) clearTimeout(debounceRef.current)
@@ -189,6 +182,80 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
     })
     return () => subscription.unsubscribe()
   }, [watch, store])
+
+  // Transform data for checklist cards
+  const carportsConstructionData = useWatch({ control, name: "carports.GeneralConstruction" })
+  const maintenanceBldgConstructionData = useWatch({ control, name: "maintenanceBldg.GeneralConstruction" })
+  const firePumpBldgConstructionData = useWatch({ control, name: "firePumpBldg.GeneralConstruction" })
+  const residentialGaragesConstructionData = useWatch({ control, name: "residentialGarages.GeneralConstruction" })
+  const gazeboPavilionConstructionData = useWatch({ control, name: "gazeboPavilion.GeneralConstruction" })
+  const greenhousesConstructionData = useWatch({ control, name: "greenhouses.GeneralConstruction" })
+  const laundryBldgConstructionData = useWatch({ control, name: "laundryBldg.GeneralConstruction" })
+  const wellPumpHouseConstructionData = useWatch({ control, name: "wellPumpHouse.GeneralConstruction" })
+  const sewerPumpHouseConstructionData = useWatch({ control, name: "sewerPumpHouse.GeneralConstruction" })
+
+  const carportsConstructionItems: ChecklistItem[] = GENERAL_CONSTRUCTION_OPTIONS.map(opt => ({
+    id: opt.id,
+    label: opt.label,
+    checked: carportsConstructionData?.includes(opt.id) ?? false,
+  }))
+
+  const maintenanceBldgConstructionItems: ChecklistItem[] = GENERAL_CONSTRUCTION_OPTIONS.map(opt => ({
+    id: opt.id,
+    label: opt.label,
+    checked: maintenanceBldgConstructionData?.includes(opt.id) ?? false,
+  }))
+
+  const firePumpBldgConstructionItems: ChecklistItem[] = GENERAL_CONSTRUCTION_OPTIONS.map(opt => ({
+    id: opt.id,
+    label: opt.label,
+    checked: firePumpBldgConstructionData?.includes(opt.id) ?? false,
+  }))
+
+  const residentialGaragesConstructionItems: ChecklistItem[] = GENERAL_CONSTRUCTION_OPTIONS.map(opt => ({
+    id: opt.id,
+    label: opt.label,
+    checked: residentialGaragesConstructionData?.includes(opt.id) ?? false,
+  }))
+
+  const gazeboPavilionConstructionItems: ChecklistItem[] = GENERAL_CONSTRUCTION_OPTIONS.map(opt => ({
+    id: opt.id,
+    label: opt.label,
+    checked: gazeboPavilionConstructionData?.includes(opt.id) ?? false,
+  }))
+
+  const greenhousesConstructionItems: ChecklistItem[] = GENERAL_CONSTRUCTION_OPTIONS.map(opt => ({
+    id: opt.id,
+    label: opt.label,
+    checked: greenhousesConstructionData?.includes(opt.id) ?? false,
+  }))
+
+  const laundryBldgConstructionItems: ChecklistItem[] = GENERAL_CONSTRUCTION_OPTIONS.map(opt => ({
+    id: opt.id,
+    label: opt.label,
+    checked: laundryBldgConstructionData?.includes(opt.id) ?? false,
+  }))
+
+  const wellPumpHouseConstructionItems: ChecklistItem[] = GENERAL_CONSTRUCTION_OPTIONS.map(opt => ({
+    id: opt.id,
+    label: opt.label,
+    checked: wellPumpHouseConstructionData?.includes(opt.id) ?? false,
+  }))
+
+  const sewerPumpHouseConstructionItems: ChecklistItem[] = GENERAL_CONSTRUCTION_OPTIONS.map(opt => ({
+    id: opt.id,
+    label: opt.label,
+    checked: sewerPumpHouseConstructionData?.includes(opt.id) ?? false,
+  }))
+
+  // Helper to toggle array values using setValue
+  const createArrayToggleHandler = (fieldPath: any, currentArray: string[] | undefined) => {
+    return (id: string, checked: boolean) => {
+      const arr = currentArray ?? []
+      const newArray = checked ? [...arr, id] : arr.filter(item => item !== id)
+      setValue(fieldPath, newArray, { shouldDirty: true, shouldTouch: true })
+    }
+  }
 
   // Check if all sections are marked as N/A
   const allMarkedAsNA = useMemo(() => {
@@ -261,17 +328,11 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         >
           {!store?.carports.NotApplicable && (
             <View style={themed($sectionBody)}>
-              <Controller
-                control={control}
-                name="carports.GeneralConstruction"
-                render={({ field: { value, onChange } }) => (
-                  <Dropdown
-                    label="General Construction"
-                    value={value}
-                    onValueChange={onChange}
-                    options={GENERAL_CONSTRUCTION_OPTIONS}
-                  />
-                )}
+              <ChecklistCard
+                title="General Construction"
+                items={carportsConstructionItems}
+                showComments={false}
+                onToggle={createArrayToggleHandler("carports.GeneralConstruction", carportsConstructionData)}
               />
               <Controller
                 control={control}
@@ -338,17 +399,11 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         >
           {!store?.maintenanceBldg.NotApplicable && (
             <View style={themed($sectionBody)}>
-              <Controller
-                control={control}
-                name="maintenanceBldg.GeneralConstruction"
-                render={({ field: { value, onChange } }) => (
-                  <Dropdown
-                    label="General Construction"
-                    value={value}
-                    onValueChange={onChange}
-                    options={GENERAL_CONSTRUCTION_OPTIONS}
-                  />
-                )}
+              <ChecklistCard
+                title="General Construction"
+                items={maintenanceBldgConstructionItems}
+                showComments={false}
+                onToggle={createArrayToggleHandler("maintenanceBldg.GeneralConstruction", maintenanceBldgConstructionData)}
               />
               <Controller
                 control={control}
@@ -415,17 +470,11 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         >
           {!store?.firePumpBldg.NotApplicable && (
             <View style={themed($sectionBody)}>
-              <Controller
-                control={control}
-                name="firePumpBldg.GeneralConstruction"
-                render={({ field: { value, onChange } }) => (
-                  <Dropdown
-                    label="General Construction"
-                    value={value}
-                    onValueChange={onChange}
-                    options={GENERAL_CONSTRUCTION_OPTIONS}
-                  />
-                )}
+              <ChecklistCard
+                title="General Construction"
+                items={firePumpBldgConstructionItems}
+                showComments={false}
+                onToggle={createArrayToggleHandler("firePumpBldg.GeneralConstruction", firePumpBldgConstructionData)}
               />
               <Controller
                 control={control}
@@ -492,17 +541,11 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         >
           {!store?.residentialGarages.NotApplicable && (
             <View style={themed($sectionBody)}>
-              <Controller
-                control={control}
-                name="residentialGarages.GeneralConstruction"
-                render={({ field: { value, onChange } }) => (
-                  <Dropdown
-                    label="General Construction"
-                    value={value}
-                    onValueChange={onChange}
-                    options={GENERAL_CONSTRUCTION_OPTIONS}
-                  />
-                )}
+              <ChecklistCard
+                title="General Construction"
+                items={residentialGaragesConstructionItems}
+                showComments={false}
+                onToggle={createArrayToggleHandler("residentialGarages.GeneralConstruction", residentialGaragesConstructionData)}
               />
               <Controller
                 control={control}
@@ -569,17 +612,11 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         >
           {!store?.gazeboPavilion.NotApplicable && (
             <View style={themed($sectionBody)}>
-              <Controller
-                control={control}
-                name="gazeboPavilion.GeneralConstruction"
-                render={({ field: { value, onChange } }) => (
-                  <Dropdown
-                    label="General Construction"
-                    value={value}
-                    onValueChange={onChange}
-                    options={GENERAL_CONSTRUCTION_OPTIONS}
-                  />
-                )}
+              <ChecklistCard
+                title="General Construction"
+                items={gazeboPavilionConstructionItems}
+                showComments={false}
+                onToggle={createArrayToggleHandler("gazeboPavilion.GeneralConstruction", gazeboPavilionConstructionData)}
               />
               <Controller
                 control={control}
@@ -646,17 +683,11 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         >
           {!store?.greenhouses.NotApplicable && (
             <View style={themed($sectionBody)}>
-              <Controller
-                control={control}
-                name="greenhouses.GeneralConstruction"
-                render={({ field: { value, onChange } }) => (
-                  <Dropdown
-                    label="General Construction"
-                    value={value}
-                    onValueChange={onChange}
-                    options={GENERAL_CONSTRUCTION_OPTIONS}
-                  />
-                )}
+              <ChecklistCard
+                title="General Construction"
+                items={greenhousesConstructionItems}
+                showComments={false}
+                onToggle={createArrayToggleHandler("greenhouses.GeneralConstruction", greenhousesConstructionData)}
               />
               <Controller
                 control={control}
@@ -723,17 +754,11 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         >
           {!store?.laundryBldg.NotApplicable && (
             <View style={themed($sectionBody)}>
-              <Controller
-                control={control}
-                name="laundryBldg.GeneralConstruction"
-                render={({ field: { value, onChange } }) => (
-                  <Dropdown
-                    label="General Construction"
-                    value={value}
-                    onValueChange={onChange}
-                    options={GENERAL_CONSTRUCTION_OPTIONS}
-                  />
-                )}
+              <ChecklistCard
+                title="General Construction"
+                items={laundryBldgConstructionItems}
+                showComments={false}
+                onToggle={createArrayToggleHandler("laundryBldg.GeneralConstruction", laundryBldgConstructionData)}
               />
               <Controller
                 control={control}
@@ -800,17 +825,11 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         >
           {!store?.wellPumpHouse.NotApplicable && (
             <View style={themed($sectionBody)}>
-              <Controller
-                control={control}
-                name="wellPumpHouse.GeneralConstruction"
-                render={({ field: { value, onChange } }) => (
-                  <Dropdown
-                    label="General Construction"
-                    value={value}
-                    onValueChange={onChange}
-                    options={GENERAL_CONSTRUCTION_OPTIONS}
-                  />
-                )}
+              <ChecklistCard
+                title="General Construction"
+                items={wellPumpHouseConstructionItems}
+                showComments={false}
+                onToggle={createArrayToggleHandler("wellPumpHouse.GeneralConstruction", wellPumpHouseConstructionData)}
               />
               <Controller
                 control={control}
@@ -877,17 +896,11 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         >
           {!store?.sewerPumpHouse.NotApplicable && (
             <View style={themed($sectionBody)}>
-              <Controller
-                control={control}
-                name="sewerPumpHouse.GeneralConstruction"
-                render={({ field: { value, onChange } }) => (
-                  <Dropdown
-                    label="General Construction"
-                    value={value}
-                    onValueChange={onChange}
-                    options={GENERAL_CONSTRUCTION_OPTIONS}
-                  />
-                )}
+              <ChecklistCard
+                title="General Construction"
+                items={sewerPumpHouseConstructionItems}
+                showComments={false}
+                onToggle={createArrayToggleHandler("sewerPumpHouse.GeneralConstruction", sewerPumpHouseConstructionData)}
               />
               <Controller
                 control={control}

@@ -134,6 +134,79 @@ function migrateSnapshot(snapshot?: RootStoreSnapshot | null): RootStoreSnapshot
           delete sg2.waterFeatures.pumpLocation
         }
       }
+      
+      // Migrate Site Grounds Step 3: string fields -> arrays
+      const sg3 = a?.siteGrounds?.step3
+      if (sg3) {
+        // Signage
+        if (sg3.signage && typeof sg3.signage.signageType === "string") {
+          sg3.signage.signageTypes = sg3.signage.signageType ? [sg3.signage.signageType] : []
+          delete sg3.signage.signageType
+        }
+        
+        // Lot Lighting
+        if (sg3.lotLighting && typeof sg3.lotLighting.lotLightingType === "string") {
+          sg3.lotLighting.lotLightingTypes = sg3.lotLighting.lotLightingType ? [sg3.lotLighting.lotLightingType] : []
+          delete sg3.lotLighting.lotLightingType
+        }
+        
+        // Building Lighting
+        if (sg3.bldgLighting && typeof sg3.bldgLighting.bldgLightingType === "string") {
+          sg3.bldgLighting.bldgLightingTypes = sg3.bldgLighting.bldgLightingType ? [sg3.bldgLighting.bldgLightingType] : []
+          delete sg3.bldgLighting.bldgLightingType
+        }
+        
+        // Site Fencing
+        if (sg3.siteFencing && typeof sg3.siteFencing.siteFencingType === "string") {
+          sg3.siteFencing.siteFencingMaterials = sg3.siteFencing.siteFencingType ? [sg3.siteFencing.siteFencingType] : []
+          delete sg3.siteFencing.siteFencingType
+        }
+        
+        // Dumpster
+        if (sg3.dumpster && typeof sg3.dumpster.enclosureType === "string") {
+          sg3.dumpster.enclosureMaterials = sg3.dumpster.enclosureType ? [sg3.dumpster.enclosureType] : []
+          delete sg3.dumpster.enclosureType
+        }
+        if (sg3.dumpster && typeof sg3.dumpster.gateType === "string") {
+          sg3.dumpster.gateMaterials = sg3.dumpster.gateType ? [sg3.dumpster.gateType] : []
+          delete sg3.dumpster.gateType
+        }
+        
+        // Recreational Facilities
+        if (sg3.recreationalFacilities && typeof sg3.recreationalFacilities.recreationalFacilitiesType === "string") {
+          sg3.recreationalFacilities.recreationalFacilities = sg3.recreationalFacilities.recreationalFacilitiesType ? [sg3.recreationalFacilities.recreationalFacilitiesType] : []
+          delete sg3.recreationalFacilities.recreationalFacilitiesType
+        }
+        
+        // Bridges
+        if (sg3.bridges && typeof sg3.bridges.bridgesType === "string") {
+          sg3.bridges.bridgeMaterials = sg3.bridges.bridgesType ? [sg3.bridges.bridgesType] : []
+          delete sg3.bridges.bridgesType
+        }
+        if (sg3.bridges?.railingDetails && typeof sg3.bridges.railingDetails.railingType === "string") {
+          sg3.bridges.railingDetails.railingMaterials = sg3.bridges.railingDetails.railingType ? [sg3.bridges.railingDetails.railingType] : []
+          delete sg3.bridges.railingDetails.railingType
+        }
+      }
+      
+      // Migrate Site Grounds Step 4: GeneralConstruction string -> array for all structures
+      const sg4 = a?.siteGrounds?.step4
+      if (sg4) {
+        const structures = [
+          'carports', 'maintenanceBldg', 'firePumpBldg', 'residentialGarages',
+          'gazeboPavilion', 'greenhouses', 'laundryBldg', 'wellPumpHouse', 'sewerPumpHouse'
+        ]
+        structures.forEach(key => {
+          const structure = sg4[key]
+          if (structure && typeof structure.GeneralConstruction === "string") {
+            structure.GeneralConstruction = structure.GeneralConstruction ? [structure.GeneralConstruction] : []
+          }
+        })
+        // Also handle otherStructure if it exists
+        if (sg4.otherStructure && typeof sg4.otherStructure.GeneralConstruction === "string") {
+          sg4.otherStructure.GeneralConstruction = sg4.otherStructure.GeneralConstruction ? [sg4.otherStructure.GeneralConstruction] : []
+        }
+      }
     })
   }
   return copy as RootStoreSnapshot
