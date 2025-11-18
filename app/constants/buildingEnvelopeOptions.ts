@@ -2,3 +2,250 @@
 
 export const FOUNDATION_SUBSTRUCTURE_OPTIONS = [
     { id: "piersconcrete", label: "Piers: Concrete" },
+    { id: "spreadfootings", label: "Spread Footings" },
+    { id: "basementscrawlspace", label: "Basements/Crawlspace" },
+    { id: "wood", label: "Wood" },
+    { id: "slabongrade", label: "Slab on Grade" },
+    { id: "foundationwalls", label: "Foundation Walls" },
+    { id: "subterraneangarage", label: "Subterranean Garage" },
+] as const
+
+export type FoundationSubstructureId = typeof FOUNDATION_SUBSTRUCTURE_OPTIONS[number]["id"]
+
+export const BASMENT_OPTIONS = [
+    { id: "concretewallsandfloor", label: "Concrete Walls and Floor" },
+    { id:"CMUwallsandconcretefloor", label: "CMU Walls and Concrete Floor" },
+    { id:"stonewallsandconcretefloor", label: "Stone Walls and Concrete Floor" },
+    { id:"brickmasonrywallsandconcretefloor", label: "Brick Masonry Walls and Concrete Floor" },
+] as const
+
+export type BasementId = typeof BASMENT_OPTIONS[number]["id"]
+
+//step 2: SuperStructure Options
+
+export const lateralWallsOptions = [
+    { id: "concretetiltup", label: "Concrete Tilt-up" },
+    { id:"structuralsteel", label: "Structural Steel" },
+    { id:"woodframed", label: "Wood Framed" },
+    { id:"brickmasonry", label: "Brick Masonry" },
+    { id:"CMU", label: "CMU" },
+    { id:"other", label: "Other" },
+] as const
+
+export type LateralWallsId = typeof lateralWallsOptions[number]["id"]
+
+export const groundFloorDeckingOptions = [
+    { id: "concretecastinplace", label: "Concrete (Cast-in-place)" },
+    { id: "concreteslabongrade", label: "Concrete (Slab on-grade)" },
+    { id: "concprecast", label: "Concrete (Pre-cast)" },
+    { id: "plywoodtoppedwlightweightconcrete", label: "Plywood topped w/ light weight concrete" },
+    { id: "steeltoppedwlightweightconcrete", label: "Steel topped w/ light weight concrete" },
+] as const
+
+export type GroundFloorDeckingId = typeof groundFloorDeckingOptions[number]["id"]
+
+export const upperFloorDeckingOptions = [
+    { id: "concretecastinplace", label: "Concrete (Cast-in-place)" },
+    { id: "concreteslabongrade", label: "Concrete (Slab on-grade)" },
+    { id: "concprecast", label: "Concrete (Pre-cast)" },
+    { id: "plywoodtoppedwlightweightconcrete", label: "Plywood topped w/ light weight concrete" },
+    { id: "steeltoppedwlightweightconcrete", label: "Steel topped w/ light weight concrete" },
+] as const
+
+export type UpperFloorDeckingId = typeof upperFloorDeckingOptions[number]["id"]
+
+export const mezzanineOptions = [
+    { id: "concretecastinplace", label: "Concrete (Cast-in-place)" },
+    { id: "plywood", label: "Plywood" },
+    { id: "concprecast", label: "Concrete (Pre-cast)" },
+    { id: "plywoodtoppedwlightweightconcrete", label: "Plywood topped w/ light weight concrete" },
+    { id: "steeltoppedwlightweightconcrete", label: "Steel topped w/ light weight concrete" },
+    { id: "steeltoppedwplywood", label: "Steel topped w/ plywood" },
+] as const
+
+export type MezzanineId = typeof mezzanineOptions[number]["id"]
+
+export const roofframingwoodOptions = [
+    { id: "rafters", label: "Rafters" },
+    { id: "glulams", label: "Glu-lams" },
+    { id: "purlins", label: "Purlins" },
+    { id: "trusstrussjoints", label: "Truss/Truss Joints" },
+    { id: "openwebsteelbarjoists", label: "Open-web steel bar joists" },
+] as const
+
+export type RoofFramingWoodId = typeof roofframingwoodOptions[number]["id"]
+
+export const roofframingsteelOptions = [
+    { id: "decking", label: "Decking" },
+    { id: "columns", label: "Columns" },
+    { id: "beams", label: "Beams" },
+    { id: "openwebsteeltrusses", label: "Open-web steel trusses" },
+    { id: "concreteframecolumnsandbeams", label: "Concrete frame (columns and beams)" },
+] as const
+
+export type RoofFramingSteelId = typeof roofframingsteelOptions[number]["id"]
+
+export const sheathingOptions = [
+    { id: "plywood", label: "Plywood" },
+    { id: "osb", label: "OSB" },
+    { id: "toppedwlightweightconcrete", label: "Topped w/ light weight concrete" },
+] as const
+
+export type SheathingId = typeof sheathingOptions[number]["id"]
+
+
+
+//step 3: Roofing Options
+
+export const ROOFING_MATERIAL_OPTIONS = [
+  { id: "bur", label: "BUR" },
+  { id: "standingSeamMetal", label: "Standing Seam metal" },
+  { id: "corrugatedFiberglass", label: "Corrugated Fiberglass" },
+  { id: "singlePlyEPDM", label: "Single-ply EPDM" },
+  { id: "modifiedAsphaltBituminous", label: "Modified Asphalt Bituminous" },
+  { id: "tpo", label: "TPO" },
+  { id: "clayVinylTile", label: "Clay / Vinyl Tile" },
+  { id: "silveryCoating", label: "Silvery coating" },
+] as const
+
+export const ROOFING_SHINGLE_OPTIONS = [
+  { id: "asphaltConcrete", label: "Asphalt Concrete" },
+  { id: "woodShake", label: "Wood Shake" },
+  { id: "concreteTiles", label: "Concrete Tiles" },
+  { id:"coatingtype", label: "Coating Type:" },
+  { id: "other", label: "Other" },
+] as const
+
+
+export const SECONDARY_ROOF_OPTIONS = [
+  { id: "awnings", label: "Awnings" },
+  { id: "mansardAspShingles", label: "Mansard (Asp Shingles)" },
+  { id: "mansardConcreteTiles", label: "Mansard (Concrete Tiles)" },
+  { id: "mansardMetalPanels", label: "Mansard (Metal Panels)" },
+  { id: "architecturalTowers", label: "Architectural Towers" },
+  { id: "porteCochere", label: "Porte Cochere" },
+] as const
+
+export const FLASHING_OPTIONS = [
+  { id: "metal", label: "Metal" },
+  { id: "concrete", label: "Concrete" },
+  { id: "tileAndType", label: "Tile & Type" },
+] as const
+
+export const CURB_MOUNTED_OPTIONS = [
+  { id: "skylights", label: "Skylights" },
+  { id: "smokeVents", label: "Smoke vents" },
+  { id: "hvacEquip", label: "HVAC Equip." },
+  { id: "antennaSatelliteDish", label: "Antenna / Satellite Dish" },
+] as const
+
+export const ROOF_STRUCTURE_OPTIONS = [
+  { id: "penthouse", label: "Penthouse" },
+  { id: "gazebo", label: "Gazebo" },
+  { id: "roofStairwayEnclosure", label: "Roof Stairway Enclosure" },
+  { id: "other", label: "Other" },
+] as const
+
+export const ATTIC_OPTIONS = [
+  { id: "scuttleHole", label: "Scuttle Hole" },
+  { id: "draftStops", label: "Draft Stops" },
+] as const
+
+export const ATTIC_VENT_OPTIONS = [
+  { id: "turbine", label: "Turbine" },
+  { id: "soffit", label: "Soffit" },
+  { id: "eaveRidge", label: "Eave Ridge" },
+  { id: "dormer", label: "Dormer" },
+] as const
+
+export const DRAINAGE_OPTIONS = [
+  { id: "internal", label: "Internal" },
+  { id: "gutter", label: "Gutter" },
+  { id: "scuppers", label: "Scuppers" },
+  { id: "surfaceUnderground", label: "Surface / Underground" },
+] as const
+
+export const INSULATION_OPTIONS = [
+  { id: "looseFill", label: "Loose-Fill" },
+  { id: "rigid", label: "Rigid" },
+  { id: "batt", label: "Batt" },
+] as const
+
+// Type helpers
+export type RoofingMaterialId = typeof ROOFING_MATERIAL_OPTIONS[number]["id"]
+export type RoofingShingleId = typeof ROOFING_SHINGLE_OPTIONS[number]["id"]
+export type SecondaryRoofId = typeof SECONDARY_ROOF_OPTIONS[number]["id"]
+export type FlashingId = typeof FLASHING_OPTIONS[number]["id"]
+export type CurbMountedId = typeof CURB_MOUNTED_OPTIONS[number]["id"]
+export type RoofStructureId = typeof ROOF_STRUCTURE_OPTIONS[number]["id"]
+export type AtticId = typeof ATTIC_OPTIONS[number]["id"]
+export type AtticVentId = typeof ATTIC_VENT_OPTIONS[number]["id"]
+export type DrainageId = typeof DRAINAGE_OPTIONS[number]["id"]
+export type InsulationId = typeof INSULATION_OPTIONS[number]["id"]
+
+//step 4: exterior walls options
+
+export const EXTERIOR_WALL_MATERIAL_OPTIONS = [
+  { id: "curtainWall", label: "Curtain Wall" },
+  { id: "eifs", label: "EIFS" },
+  { id: "stucco", label: "Stucco" },
+  { id: "concretePanels", label: "Concrete Panels" },
+  { id: "brickStoneVeneer", label: "Brick | Stone Veneer" },
+  { id: "cmu", label: "CMU" },
+  { id: "tiltUp", label: "Tilt-up" },
+  { id: "other", label: "Other" },
+] as const
+
+export const SIDING_OPTIONS = [
+  { id: "woodPanels", label: "Wood Panels" },
+  { id: "vinyl", label: "Vinyl" },
+  { id: "cementitious", label: "Cementitious" },
+  { id: "composite", label: "Composite" },
+  { id: "woodShake", label: "Wood Shake" },
+  { id: "aluminum", label: "Aluminum" },
+  { id: "transite", label: "Transite" },
+  { id: "fiberboard", label: "Fiberboard" },
+] as const
+
+export const SOFFIT_OPTIONS = [
+  { id: "exposed", label: "Exposed" },
+  { id: "concealedWood", label: "Concealed by: Wood" },
+  { id: "concealedVinyl", label: "Concealed by: Vinyl" },
+  { id: "concealedMetal", label: "Concealed by: Metal" },
+  { id: "other", label: "Other" },
+] as const
+
+export const SEALANT_OPTIONS = [
+  { id: "typicalCaulking", label: "Typical Caulking" },
+  { id: "tiltUpWallSealant", label: "Tilt-up Wall Sealant" },
+  { id: "curtainWallSealant", label: "Curtain Wall Sealant" },
+] as const
+
+// Curtain Wall subsections (separate lists as requested)
+export const CURTAIN_WALL_GLAZING_OPTIONS = [
+  { id: "tinted", label: "Tinted" },
+  { id: "clear", label: "Clear" },
+  { id: "singlePane", label: "Single-pane" },
+  { id: "doublePane", label: "Double-pane" },
+] as const
+
+export const CURTAIN_WALL_SPANDREL_OPTIONS = [
+  { id: "metal", label: "Metal" },
+  { id: "graniteVeneer", label: "Granite Veneer" },
+  { id: "opaqueGlass", label: "Opaque glass" },
+] as const
+
+export const CURTAIN_WALL_MULLION_OPTIONS = [
+  { id: "aluminum", label: "Aluminum" },
+  { id: "bronze", label: "Bronze" },
+  { id: "unknown", label: "Unknown" },
+] as const
+
+// Type helpers
+export type ExteriorWallMaterialId = typeof EXTERIOR_WALL_MATERIAL_OPTIONS[number]["id"]
+export type SidingId = typeof SIDING_OPTIONS[number]["id"]
+export type SoffitId = typeof SOFFIT_OPTIONS[number]["id"]
+export type SealantId = typeof SEALANT_OPTIONS[number]["id"]
+export type CurtainWallGlazingId = typeof CURTAIN_WALL_GLAZING_OPTIONS[number]["id"]
+export type CurtainWallSpandrelId = typeof CURTAIN_WALL_SPANDREL_OPTIONS[number]["id"]
+export type CurtainWallMullionId = typeof CURTAIN_WALL_MULLION_OPTIONS[number]["id"]
