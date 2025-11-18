@@ -249,3 +249,64 @@ export type SealantId = typeof SEALANT_OPTIONS[number]["id"]
 export type CurtainWallGlazingId = typeof CURTAIN_WALL_GLAZING_OPTIONS[number]["id"]
 export type CurtainWallSpandrelId = typeof CURTAIN_WALL_SPANDREL_OPTIONS[number]["id"]
 export type CurtainWallMullionId = typeof CURTAIN_WALL_MULLION_OPTIONS[number]["id"]
+
+//step 5 parking paving sidewalks options
+
+export const PAVEMENT_OPTIONS = [
+  { id: "gravel", label: "Gravel" },
+  { id: "brickPaver", label: "Brick Paver" },
+  { id: "asphalt", label: "Asphalt" },
+  { id: "concrete", label: "Concrete" },
+  { id: "asphaltSealCoatStriping", label: "Asphalt Seal Coat/striping" },
+  { id: "concreteStriping", label: "Concrete striping" },
+] as const
+
+export const ENTRANCE_APRON_OPTIONS = [
+
+  { id: "asphalt", label: "Asphalt" },
+  { id: "concrete", label: "Concrete" },
+  { id: "brickPaver", label: "Brick Paver" },
+  { id: "gravel", label: "Gravel" },
+] as const
+
+export const CURBING_OPTIONS = [
+  { id: "asphalt", label: "Asphalt" },
+  { id: "concrete", label: "Concrete" },
+  { id: "stone", label: "Stone" },
+] as const
+
+export const SIDEWALK_WALKWAY_OPTIONS = [
+  { id: "asphalt", label: "Asphalt" },
+  { id: "concrete", label: "Concrete" },
+  { id: "brickPaver", label: "Brick Paver" },
+  { id: "stonePaver", label: "Stone Paver" },
+  { id: "concPaver", label: "Conc. Paver" },
+] as const
+
+export const SIDEWALK_RAILING_OPTIONS = [
+  { id: "metal", label: "Metal" },
+  { id: "wood", label: "Wood" },
+  { id: "vinyl", label: "Vinyl" },
+] as const
+
+export const STEPS_STAIRS_OPTIONS = [
+  { id: "concrete", label: "Concrete" },
+  { id: "wood", label: "Wood" },
+  { id: "metal", label: "Metal" },
+  { id: "steel", label: "Steel" },
+] as const
+
+export const STEPS_STAIRS_RAILING_OPTIONS = [
+  { id: "metal", label: "Metal" },
+  { id: "wood", label: "Wood" },
+  { id: "vinyl", label: "Vinyl" },
+] as const
+
+// Type helpers
+export type PavementId = typeof PAVEMENT_OPTIONS[number]["id"]
+export type EntranceApronId = typeof ENTRANCE_APRON_OPTIONS[number]["id"]
+export type CurbingId = typeof CURBING_OPTIONS[number]["id"]
+export type SidewalkWalkwayId = typeof SIDEWALK_WALKWAY_OPTIONS[number]["id"]
+export type SidewalkRailingId = typeof SIDEWALK_RAILING_OPTIONS[number]["id"]
+export type StepsStairsId = typeof STEPS_STAIRS_OPTIONS[number]["id"]
+export type StepsStairsRailingId = typeof STEPS_STAIRS_RAILING_OPTIONS[number]["id"]
