@@ -2,23 +2,23 @@ import { types } from "mobx-state-tree"
 import { ConditionAssessment } from "../SharedModels"
 
 export const FoundationSubstructureAccordionModel = types.model("FoundationSubstructureAccordionModel", {
-    foundationType: types.optional(types.string, ""),
+    foundationTypes: types.optional(types.array(types.string), []),
     assessment: types.optional(ConditionAssessment, {}),
 })
 .actions((self) => ({
-    update(data: { foundationType?: string; assessment?: Record<string, any> }) {
-        if (data.foundationType !== undefined) self.foundationType = data.foundationType
+    update(data: { foundationTypes?: string[]; assessment?: Record<string, any> }) {
+        if (data.foundationTypes !== undefined) self.foundationTypes.replace(data.foundationTypes)
         if (data.assessment !== undefined) Object.assign(self.assessment as any, data.assessment)
     },
 }))
 
 export const BasementAccordionModel = types.model("BasementAccordionModel", {
-    basementType: types.optional(types.string, ""),
+    basementTypes: types.optional(types.array(types.string), []),
     assessment: types.optional(ConditionAssessment, {}),
 })
 .actions((self) => ({
-    update(data: { basementType?: string; assessment?: Record<string, any> }) {
-        if (data.basementType !== undefined) self.basementType = data.basementType
+    update(data: { basementTypes?: string[]; assessment?: Record<string, any> }) {
+        if (data.basementTypes !== undefined) self.basementTypes.replace(data.basementTypes)
         if (data.assessment !== undefined) Object.assign(self.assessment as any, data.assessment)
     },
 }))

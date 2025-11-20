@@ -2,62 +2,62 @@ import { types } from "mobx-state-tree"
 import { ConditionAssessment } from "../SharedModels"
 
 export const MaterialAccordionModel = types.model("MaterialAccordionModel", {
-    materialType: types.optional(types.string, ""),
+    materials: types.optional(types.array(types.string), []),
     assessment: types.optional(ConditionAssessment, {}),
 })
 .actions((self) => ({
-    update(data: { materialType?: string; assessment?: Record<string, any> }) {
-        if (data.materialType !== undefined) self.materialType = data.materialType
+    update(data: { materials?: string[]; assessment?: Record<string, any> }) {
+        if (data.materials !== undefined) self.materials.replace(data.materials)
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
     },
 }))
 
 export const SidingAccordionModel = types.model("SidingAccordionModel", {
-    sidingType: types.optional(types.string, ""),
+    siding: types.optional(types.array(types.string), []),
     assessment: types.optional(ConditionAssessment, {}),
 })
 .actions((self) => ({
-    update(data: { sidingType?: string; assessment?: Record<string, any> }) {
-        if (data.sidingType !== undefined) self.sidingType = data.sidingType
+    update(data: { siding?: string[]; assessment?: Record<string, any> }) {
+        if (data.siding !== undefined) self.siding.replace(data.siding)
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
     },
 }))
 
 export const SoffitAccordionModel = types.model("SoffitAccordionModel", {
-    soffitType: types.optional(types.string, ""),
+    soffit: types.optional(types.array(types.string), []),
     assessment: types.optional(ConditionAssessment, {}),
 })
 .actions((self) => ({
-    update(data: { soffitType?: string; assessment?: Record<string, any> }) {
-        if (data.soffitType !== undefined) self.soffitType = data.soffitType
+    update(data: { soffit?: string[]; assessment?: Record<string, any> }) {
+        if (data.soffit !== undefined) self.soffit.replace(data.soffit)
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
     },
 }))
 
 export const SealantAccordionModel = types.model("SealantAccordionModel", {
-    sealantType: types.optional(types.string, ""),
+    sealant: types.optional(types.array(types.string), []),
     assessment: types.optional(ConditionAssessment, {}),
 })
 .actions((self) => ({
-    update(data: { sealantType?: string; assessment?: Record<string, any> }) {
-        if (data.sealantType !== undefined) self.sealantType = data.sealantType
+    update(data: { sealant?: string[]; assessment?: Record<string, any> }) {
+        if (data.sealant !== undefined) self.sealant.replace(data.sealant)
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
     },
 }))
 
 export const CurtainWallAccordionModel = types.model("CurtainWallAccordionModel", {
     NotApplicable: types.optional(types.boolean, false),
-    GlazingType: types.optional(types.string, ""),
-    SpandrelsType: types.optional(types.string, ""),
-    MullionsType: types.optional(types.string, ""),
+    glazing: types.optional(types.array(types.string), []),
+    spandrels: types.optional(types.array(types.string), []),
+    mullions: types.optional(types.array(types.string), []),
     assessment: types.optional(ConditionAssessment, {}),
 })
 .actions((self) => ({
-    update(data: { NotApplicable?: boolean; GlazingType?: string; SpandrelsType?: string; MullionsType?: string; assessment?: Record<string, any> }) {
+    update(data: { NotApplicable?: boolean; glazing?: string[]; spandrels?: string[]; mullions?: string[]; assessment?: Record<string, any> }) {
         if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
-        if (data.GlazingType !== undefined) self.GlazingType = data.GlazingType
-        if (data.SpandrelsType !== undefined) self.SpandrelsType = data.SpandrelsType
-        if (data.MullionsType !== undefined) self.MullionsType = data.MullionsType
+        if (data.glazing !== undefined) self.glazing.replace(data.glazing)
+        if (data.spandrels !== undefined) self.spandrels.replace(data.spandrels)
+        if (data.mullions !== undefined) self.mullions.replace(data.mullions)
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
     },
 }))

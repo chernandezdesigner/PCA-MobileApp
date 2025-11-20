@@ -10,36 +10,36 @@ import { ConditionAssessment, RepairAssessment } from "../SharedModels"
 // ============================================
 
 export const MaterialAccordionModel = types.model("MaterialAccordionModel", {
-    materialType: types.optional(types.string, ""),
+    materials: types.optional(types.array(types.string), []),
     assessment: types.optional(ConditionAssessment, {}),
 })
 .actions((self) => ({
-    update(data: { materialType?: string; assessment?: Record<string, any> }) {
-        if (data.materialType !== undefined) self.materialType = data.materialType
+    update(data: { materials?: string[]; assessment?: Record<string, any> }) {
+        if (data.materials !== undefined) self.materials.replace(data.materials)
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
     },
 }))
 
 export const ShinglesAccordionModel = types.model("ShinglesAccordionModel", {
-    shinglesType: types.optional(types.string, ""),
+    shingles: types.optional(types.array(types.string), []),
     assessment: types.optional(ConditionAssessment, {}),
 })
 .actions((self) => ({
-    update(data: { shinglesType?: string; assessment?: Record<string, any> }) {
-        if (data.shinglesType !== undefined) self.shinglesType = data.shinglesType
+    update(data: { shingles?: string[]; assessment?: Record<string, any> }) {
+        if (data.shingles !== undefined) self.shingles.replace(data.shingles)
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
     },
 }))
 
 export const SecondaryRoofAccordionModel = types.model("SecondaryRoofAccordionModel", {
     NotApplicable: types.optional(types.boolean, false),
-    secondaryRoofType: types.optional(types.string, ""),
+    secondaryRoof: types.optional(types.array(types.string), []),
     assessment: types.optional(ConditionAssessment, {}),
 })
 .actions((self) => ({
-    update(data: { NotApplicable?: boolean; secondaryRoofType?: string; assessment?: Record<string, any> }) {
+    update(data: { NotApplicable?: boolean; secondaryRoof?: string[]; assessment?: Record<string, any> }) {
         if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
-        if (data.secondaryRoofType !== undefined) self.secondaryRoofType = data.secondaryRoofType
+        if (data.secondaryRoof !== undefined) self.secondaryRoof.replace(data.secondaryRoof)
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
     },
 }))
@@ -67,34 +67,34 @@ export const RoofLeaksAccordionModel = types.model("RoofLeaksAccordionModel", {
 }))
 
 export const FlashingAccordionModel = types.model("FlashingAccordionModel", {
-    flashingType: types.optional(types.string, ""),
+    flashing: types.optional(types.array(types.string), []),
     assessment: types.optional(ConditionAssessment, {}),
 })
 .actions((self) => ({
-    update(data: { flashingType?: string; assessment?: Record<string, any> }) {
-        if (data.flashingType !== undefined) self.flashingType = data.flashingType
+    update(data: { flashing?: string[]; assessment?: Record<string, any> }) {
+        if (data.flashing !== undefined) self.flashing.replace(data.flashing)
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
     },
 }))
 
 export const CurbMountedAccordionModel = types.model("CurbMountedAccordionModel", {
-    curbMountedType: types.optional(types.string, ""),
+    curbMounted: types.optional(types.array(types.string), []),
     assessment: types.optional(ConditionAssessment, {}),
 })
 .actions((self) => ({
-    update(data: { curbMountedType?: string; assessment?: Record<string, any> }) {
-        if (data.curbMountedType !== undefined) self.curbMountedType = data.curbMountedType
+    update(data: { curbMounted?: string[]; assessment?: Record<string, any> }) {
+        if (data.curbMounted !== undefined) self.curbMounted.replace(data.curbMounted)
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
     },
 }))
 
 export const RoofStructuresAccordionModel = types.model("RoofStructuresAccordionModel", {
-    roofStructuresType: types.optional(types.string, ""),
+    roofStructures: types.optional(types.array(types.string), []),
     assessment: types.optional(ConditionAssessment, {}),
 })
 .actions((self) => ({
-    update(data: { roofStructuresType?: string; assessment?: Record<string, any> }) {
-        if (data.roofStructuresType !== undefined) self.roofStructuresType = data.roofStructuresType
+    update(data: { roofStructures?: string[]; assessment?: Record<string, any> }) {
+        if (data.roofStructures !== undefined) self.roofStructures.replace(data.roofStructures)
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
     },
 }))
@@ -115,23 +115,23 @@ export const MechScreenAccordionModel = types.model("MechScreenAccordionModel", 
 }))
 
 export const DrainageAccordionModel = types.model("DrainageAccordionModel", {
-    drainageType: types.optional(types.string, ""),
+    drainage: types.optional(types.array(types.string), []),
     assessment: types.optional(ConditionAssessment, {}),
 })
 .actions((self) => ({
-    update(data: { drainageType?: string; assessment?: Record<string, any> }) {
-        if (data.drainageType !== undefined) self.drainageType = data.drainageType
+    update(data: { drainage?: string[]; assessment?: Record<string, any> }) {
+        if (data.drainage !== undefined) self.drainage.replace(data.drainage)
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
     },
 }))
 
 export const InsulationAccordionModel = types.model("InsulationAccordionModel", {
-    insulationType: types.optional(types.string, ""),
+    insulation: types.optional(types.array(types.string), []),
     assessment: types.optional(ConditionAssessment, {}),
 })
 .actions((self) => ({
-    update(data: { insulationType?: string; assessment?: Record<string, any> }) {
-        if (data.insulationType !== undefined) self.insulationType = data.insulationType
+    update(data: { insulation?: string[]; assessment?: Record<string, any> }) {
+        if (data.insulation !== undefined) self.insulation.replace(data.insulation)
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
     },
 }))

@@ -158,12 +158,12 @@ export const CurbingAccordionModel = types.model("CurbingAccordionModel", {
 // ============================================
 
 export const railingForSidewalksModel = types.model("railingForSidewalksModel", {
-    railingType: types.optional(types.string, ""),
+    railingTypes: types.optional(types.array(types.string), []),
     assessment: types.optional(ConditionAssessment, {}),
 })
 .actions((self) => ({
-    update(data: { railingType?: string; assessment?: Record<string, any> }) {
-        if (data.railingType !== undefined) self.railingType = data.railingType
+    update(data: { railingTypes?: string[]; assessment?: Record<string, any> }) {
+        if (data.railingTypes !== undefined) self.railingTypes.replace(data.railingTypes)
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
     },
 }))
@@ -226,12 +226,12 @@ export const SidewalksWalkwaysAccordionModel = types.model("SidewalksWalkwaysAcc
 // ============================================
 
 export const railingForStepsStairsModel = types.model("railingForStepsStairsModel", {
-    railingType: types.optional(types.string, ""),
+    railingTypes: types.optional(types.array(types.string), []),
     assessment: types.optional(ConditionAssessment, {}),
 })
 .actions((self) => ({
-    update(data: { railingType?: string; assessment?: Record<string, any> }) {
-        if (data.railingType !== undefined) self.railingType = data.railingType
+    update(data: { railingTypes?: string[]; assessment?: Record<string, any> }) {
+        if (data.railingTypes !== undefined) self.railingTypes.replace(data.railingTypes)
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
     },
 }))

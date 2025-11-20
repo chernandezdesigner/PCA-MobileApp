@@ -2,45 +2,45 @@ import { types } from "mobx-state-tree"
 import { ConditionAssessment } from "../SharedModels"
 
 export const WallsLateralAccordionModel = types.model("WallsLateralAccordionModel", {
-    wallsLateralType: types.optional(types.string, ""),
+    lateralWalls: types.optional(types.array(types.string), []),
     assessment: types.optional(ConditionAssessment, {}),
 })
 .actions((self) => ({
-    update(data: { wallsLateralType?: string; assessment?: Record<string, any> }) {
-        if (data.wallsLateralType !== undefined) self.wallsLateralType = data.wallsLateralType
+    update(data: { lateralWalls?: string[]; assessment?: Record<string, any> }) {
+        if (data.lateralWalls !== undefined) self.lateralWalls.replace(data.lateralWalls)
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
     },
 }))
 
 export const GroundFloorDeckingAccordionModel = types.model("GroundFloorDeckingAccordionModel", {
-    groundFloorDeckingType: types.optional(types.string, ""),
+    groundFloorDecking: types.optional(types.array(types.string), []),
     assessment: types.optional(ConditionAssessment, {}),
 })
 .actions((self) => ({
-    update(data: { groundFloorDeckingType?: string; assessment?: Record<string, any> }) {
-        if (data.groundFloorDeckingType !== undefined) self.groundFloorDeckingType = data.groundFloorDeckingType
+    update(data: { groundFloorDecking?: string[]; assessment?: Record<string, any> }) {
+        if (data.groundFloorDecking !== undefined) self.groundFloorDecking.replace(data.groundFloorDecking)
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
     },
 }))
 
 export const UpperFloorDeckingAccordionModel = types.model("UpperFloorDeckingAccordionModel", {
-    upperFloorDeckingType: types.optional(types.string, ""),
+    upperFloorDecking: types.optional(types.array(types.string), []),
     assessment: types.optional(ConditionAssessment, {}),
 })
 .actions((self) => ({
-    update(data: { upperFloorDeckingType?: string; assessment?: Record<string, any> }) {
-        if (data.upperFloorDeckingType !== undefined) self.upperFloorDeckingType = data.upperFloorDeckingType
+    update(data: { upperFloorDecking?: string[]; assessment?: Record<string, any> }) {
+        if (data.upperFloorDecking !== undefined) self.upperFloorDecking.replace(data.upperFloorDecking)
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
     },
 }))
 
 export const MezzanineAccordionModel = types.model("MezzanineAccordionModel", {
-    mezzanineType: types.optional(types.string, ""),
+    mezzanine: types.optional(types.array(types.string), []),
     assessment: types.optional(ConditionAssessment, {}),
 })
 .actions((self) => ({
-    update(data: { mezzanineType?: string; assessment?: Record<string, any> }) {
-        if (data.mezzanineType !== undefined) self.mezzanineType = data.mezzanineType
+    update(data: { mezzanine?: string[]; assessment?: Record<string, any> }) {
+        if (data.mezzanine !== undefined) self.mezzanine.replace(data.mezzanine)
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
     },
 }))
@@ -48,12 +48,12 @@ export const MezzanineAccordionModel = types.model("MezzanineAccordionModel", {
 // ask about roof framing types setup
 
 export const SheathingAccordionModel = types.model("SheathingAccordionModel", {
-    sheathingType: types.optional(types.string, ""),
+    sheathing: types.optional(types.array(types.string), []),
     assessment: types.optional(ConditionAssessment, {}),
 })
 .actions((self) => ({
-    update(data: { sheathingType?: string; assessment?: Record<string, any> }) {
-        if (data.sheathingType !== undefined) self.sheathingType = data.sheathingType
+    update(data: { sheathing?: string[]; assessment?: Record<string, any> }) {
+        if (data.sheathing !== undefined) self.sheathing.replace(data.sheathing)
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
     },
 }))
