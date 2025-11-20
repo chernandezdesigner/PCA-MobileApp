@@ -10,17 +10,17 @@ import { ConditionAssessment } from "../SharedModels"
 // ============================================
 
 export const RailingDetailsModel = types.model("RailingDetailsModel", {
-    railingType: types.optional(types.string, ""),
+    railingTypes: types.optional(types.array(types.string), []),
     balusterSpacing: types.optional(types.string, ""),
     assessment: types.optional(ConditionAssessment, {}),
 })
 .actions((self) => ({
     update(data: { 
-        railingType?: string; 
+        railingTypes?: string[]; 
         balusterSpacing?: string; 
         assessment?: Record<string, any> 
     }) {
-        if (data.railingType !== undefined) self.railingType = data.railingType
+        if (data.railingTypes !== undefined) self.railingTypes.replace(data.railingTypes)
         if (data.balusterSpacing !== undefined) self.balusterSpacing = data.balusterSpacing
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
     },
@@ -33,7 +33,7 @@ export const RailingDetailsModel = types.model("RailingDetailsModel", {
 
 export const StairsExteriorAccordionModel = types.model("StairsExteriorAccordionModel", {
     NotApplicable: types.optional(types.boolean, false),
-    materialType: types.optional(types.string, ""),
+    materials: types.optional(types.array(types.string), []),
     assessment: types.optional(ConditionAssessment, {}),
     // Railing option
     railing: types.optional(types.enumeration("railing", ["yes", "no"]), "no"),
@@ -41,9 +41,9 @@ export const StairsExteriorAccordionModel = types.model("StairsExteriorAccordion
     railingDetails: types.maybe(types.late(() => RailingDetailsModel)),
 })
 .actions((self) => ({
-    update(data: { NotApplicable?: boolean; materialType?: string; assessment?: Record<string, any>; railing?: "yes" | "no"; railingDetails?: any }) {
+    update(data: { NotApplicable?: boolean; materials?: string[]; assessment?: Record<string, any>; railing?: "yes" | "no"; railingDetails?: any }) {
         if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
-        if (data.materialType !== undefined) self.materialType = data.materialType
+        if (data.materials !== undefined) self.materials.replace(data.materials)
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
         if (data.railing !== undefined) self.railing = data.railing
         if (data.railingDetails !== undefined) (self as any).railingDetails = data.railingDetails as any
@@ -57,15 +57,15 @@ export const StairsExteriorAccordionModel = types.model("StairsExteriorAccordion
 
 export const StairsInteriorAccordionModel = types.model("StairsInteriorAccordionModel", {
     NotApplicable: types.optional(types.boolean, false),
-    materialType: types.optional(types.string, ""),
+    materials: types.optional(types.array(types.string), []),
     assessment: types.optional(ConditionAssessment, {}),
     railing: types.optional(types.enumeration("railing", ["yes", "no"]), "no"),
     railingDetails: types.maybe(types.late(() => RailingDetailsModel)),
 })
 .actions((self) => ({
-    update(data: { NotApplicable?: boolean; materialType?: string; assessment?: Record<string, any>; railing?: "yes" | "no"; railingDetails?: any }) {
+    update(data: { NotApplicable?: boolean; materials?: string[]; assessment?: Record<string, any>; railing?: "yes" | "no"; railingDetails?: any }) {
         if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
-        if (data.materialType !== undefined) self.materialType = data.materialType
+        if (data.materials !== undefined) self.materials.replace(data.materials)
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
         if (data.railing !== undefined) self.railing = data.railing
         if (data.railingDetails !== undefined) (self as any).railingDetails = data.railingDetails as any
@@ -73,17 +73,17 @@ export const StairsInteriorAccordionModel = types.model("StairsInteriorAccordion
 }))
 
 // ============================================
-// OPTIONAL ASSESSMENT ITEMS FOR BALCONIES
-// Cantilever, Integral, Ext, Coating each have their own assessment
+// BALCONY BALUSTER SPACING ACCORDION
+// For balcony-specific baluster spacing options
 // ============================================
 
-export const OptionalAssessmentItemModel = types.model("OptionalAssessmentItemModel", {
-    applicable: types.optional(types.boolean, false),
+export const BalconyBalusterSpacingAccordionModel = types.model("BalconyBalusterSpacingAccordionModel", {
+    balusterSpacing: types.optional(types.array(types.string), []),
     assessment: types.optional(ConditionAssessment, {}),
 })
 .actions((self) => ({
-    update(data: { applicable?: boolean; assessment?: Record<string, any> }) {
-        if (data.applicable !== undefined) self.applicable = data.applicable
+    update(data: { balusterSpacing?: string[]; assessment?: Record<string, any> }) {
+        if (data.balusterSpacing !== undefined) self.balusterSpacing.replace(data.balusterSpacing)
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
     },
 }))
@@ -99,11 +99,8 @@ export const BalconiesAccordionModel = types.model("BalconiesAccordionModel", {
     materials: types.map(ConditionAssessment),
     railing: types.optional(types.enumeration("railing", ["yes", "no"]), "no"),
     railingDetails: types.maybe(types.late(() => RailingDetailsModel)),
-    // Additional assessment items
-    cantilever: types.optional(OptionalAssessmentItemModel, {}),
-    integral: types.optional(OptionalAssessmentItemModel, {}),
-    ext: types.optional(OptionalAssessmentItemModel, {}),
-    coating: types.optional(OptionalAssessmentItemModel, {}),
+    // Balcony-specific baluster spacing with nested assessment
+    balconyBalusterSpacing: types.optional(BalconyBalusterSpacingAccordionModel, {}),
 })
 .actions((self) => ({
     updateNotApplicable(value: boolean) {
@@ -134,17 +131,8 @@ export const BalconiesAccordionModel = types.model("BalconiesAccordionModel", {
             self.railingDetails.update(data)
         }
     },
-    updateCantilever(data: Parameters<typeof self.cantilever.update>[0]) {
-        self.cantilever.update(data)
-    },
-    updateIntegral(data: Parameters<typeof self.integral.update>[0]) {
-        self.integral.update(data)
-    },
-    updateExt(data: Parameters<typeof self.ext.update>[0]) {
-        self.ext.update(data)
-    },
-    updateCoating(data: Parameters<typeof self.coating.update>[0]) {
-        self.coating.update(data)
+    updateBalconyBalusterSpacing(data: Parameters<typeof self.balconyBalusterSpacing.update>[0]) {
+        self.balconyBalusterSpacing.update(data)
     },
 }))
 
