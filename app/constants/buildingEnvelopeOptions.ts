@@ -310,3 +310,91 @@ export type SidewalkWalkwayId = typeof SIDEWALK_WALKWAY_OPTIONS[number]["id"]
 export type SidewalkRailingId = typeof SIDEWALK_RAILING_OPTIONS[number]["id"]
 export type StepsStairsId = typeof STEPS_STAIRS_OPTIONS[number]["id"]
 export type StepsStairsRailingId = typeof STEPS_STAIRS_RAILING_OPTIONS[number]["id"]
+
+//step 6: parking garage structure options
+
+export const PARKING_GARAGE_STRUCTURE_OPTIONS = [
+  { id: "concreteCastInPlace", label: "Concrete (cast in-place)" },
+  { id: "concretePreCast", label: "Concrete (Pre-cast)" },
+  { id: "steel", label: "Steel" },
+  { id: "other", label: "Other" },
+] as const
+
+export const PARKING_GARAGE_DECKING_OPTIONS = [
+  { id: "concreteCastInPlace", label: "Concrete (cast in-place)" },
+  { id: "concretePreCast", label: "Concrete (Pre-cast)" },
+  { id: "steelToppedWithConcrete", label: "Steel topped with Concrete" },
+  { id: "other", label: "Other" },
+] as const
+
+export const PARKING_GARAGE_PERIMETER_WALL_OPTIONS = [
+  { id: "concreteCMU", label: "Concrete (CMU)" },
+  { id: "concreteCastInPlace", label: "Concrete (cast in-place)" },
+  { id: "other", label: "Other" },
+] as const
+
+export const PARKING_GARAGE_TRAFFIC_COATING_OPTIONS = [
+  { id: "topDeckOnly", label: "Top deck only" },
+  { id: "topDeckAndEntrance", label: "Top deck and entrance" },
+  { id: "allLevels", label: "All levels" },
+] as const
+
+// Type helpers
+export type ParkingGarageStructureId = typeof PARKING_GARAGE_STRUCTURE_OPTIONS[number]["id"]
+export type ParkingGarageDeckingId = typeof PARKING_GARAGE_DECKING_OPTIONS[number]["id"]
+export type ParkingGaragePerimeterWallId = typeof PARKING_GARAGE_PERIMETER_WALL_OPTIONS[number]["id"]
+export type ParkingGarageTrafficCoatingId = typeof PARKING_GARAGE_TRAFFIC_COATING_OPTIONS[number]["id"]
+
+//step 7 building stairs, balconies & patios options
+
+export const STAIRS_EXTERIOR_OPTIONS = [
+  { id: "concreteCastInPlace", label: "Concrete (cast in-place)" },
+  { id: "wood", label: "Wood" },
+  { id: "steel", label: "Steel" },
+  { id: "preCastConcreteTreads", label: "Pre-cast concrete treads" },
+  { id: "metalPansWithConcreteFill", label: "Metal pans w/ concrete fill" },
+] as const
+
+export const STAIRS_INTERIOR_OPTIONS = [
+  { id: "concreteCastInPlace", label: "Concrete (cast in-place)" },
+  { id: "wood", label: "Wood" },
+  { id: "steel", label: "Steel" },
+  { id: "preCastConcreteTreads", label: "Pre-cast concrete treads" },
+  { id: "metalPansWithConcreteFill", label: "Metal pans w/ concrete fill" },
+] as const
+
+export const BALCONY_OPTIONS = [
+  { id: "concreteCastInPlace", label: "Concrete (cast in-place)" },
+  { id: "concretePreCast", label: "Concrete (pre-cast)" },
+  { id: "steel", label: "Steel" },
+  { id: "wood", label: "Wood" },
+] as const
+
+export const PATIO_PLAZA_OPTIONS = [
+  { id: "concretePavers", label: "Concrete (pavers)" },
+  { id: "concreteCastInPlace", label: "Concrete (cast in-place)" },
+  { id: "brickPavers", label: "Brick pavers" },
+  { id: "wood", label: "Wood" },
+] as const
+
+// Railings (identical for all 4 sections: stairs exterior, stairs interior, balconies, patios)
+export const BUILDING_STAIRS_BALCONIES_RAILING_OPTIONS = [
+  { id: "steel", label: "Steel" },
+  { id: "wood", label: "Wood" },
+] as const
+
+// Balcony baluster spacing options (separate list as requested)
+export const BALCONY_BALUSTER_SPACING_OPTIONS = [
+  { id: "cantilever", label: "Cantilever" },
+  { id: "integral", label: "Integral" },
+  { id: "exit", label: "Exit" },
+  { id: "coating", label: "Coating" },
+] as const
+
+// Type helpers
+export type StairsExteriorId = typeof STAIRS_EXTERIOR_OPTIONS[number]["id"]
+export type StairsInteriorId = typeof STAIRS_INTERIOR_OPTIONS[number]["id"]
+export type BalconyId = typeof BALCONY_OPTIONS[number]["id"]
+export type PatioPlazaId = typeof PATIO_PLAZA_OPTIONS[number]["id"]
+export type BuildingStairsBalconiesRailingId = typeof BUILDING_STAIRS_BALCONIES_RAILING_OPTIONS[number]["id"]
+export type BalconyBalusterSpacingId = typeof BALCONY_BALUSTER_SPACING_OPTIONS[number]["id"]
