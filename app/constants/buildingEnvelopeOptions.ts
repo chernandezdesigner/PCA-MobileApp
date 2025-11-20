@@ -522,3 +522,33 @@ export type OverheadDoorMaterialId = typeof OVERHEAD_DOOR_MATERIAL_OPTIONS[numbe
 export type OverheadDoorStyleId = typeof OVERHEAD_DOOR_STYLE_OPTIONS[number]["id"]
 export type OverheadDoorOperationId = typeof OVERHEAD_DOOR_OPERATION_OPTIONS[number]["id"]
 export type DockEquipmentId = typeof DOCK_EQUIPMENT_OPTIONS[number]["id"]
+
+//step 10 swimming pool & spa options
+
+// Construction Type (shared for both Pools and Spa)
+export const POOL_SPA_CONSTRUCTION_TYPE_OPTIONS = [
+  { id: "concrete", label: "Concrete" },
+  { id: "fiberglass", label: "Fiberglass" },
+  { id: "steel", label: "Steel" },
+  { id: "ceramicTiles", label: "Ceramic Tiles" },
+] as const
+
+// Pool Heater (shared for both Pools and Spa)
+export const POOL_SPA_HEATER_OPTIONS = [
+  { id: "naturalGas", label: "Natural Gas" },
+  { id: "propane", label: "Propane" },
+  { id: "electric", label: "Electric" },
+] as const
+
+// Deck options (for Pools)
+export const POOL_DECK_OPTIONS = [
+  { id: "concrete", label: "Concrete" },
+  { id: "tile", label: "Tile" },
+  { id: "rubber", label: "Rubber" },
+  { id: "pavers", label: "Pavers" },
+] as const
+
+// Type helpers
+export type PoolSpaConstructionTypeId = typeof POOL_SPA_CONSTRUCTION_TYPE_OPTIONS[number]["id"]
+export type PoolSpaHeaterId = typeof POOL_SPA_HEATER_OPTIONS[number]["id"]
+export type PoolDeckId = typeof POOL_DECK_OPTIONS[number]["id"]
