@@ -4,36 +4,36 @@ import { ConditionAssessment } from "../SharedModels";
 
 export const SwimmingPoolAccordionModel = types.model("SwimmingPoolAccordionModel", {
     NotApplicable: types.optional(types.boolean, false),
-    ConstructionType: types.optional(types.string, ""),
-    PoolHeaterType: types.optional(types.string, ""),
+    constructionTypes: types.optional(types.array(types.string), []),
+    heaterTypes: types.optional(types.array(types.string), []),
     location: types.optional(types.string, ""),
     virginiaGraemeBakerCompliance: types.optional(types.boolean, false),
     repairedreplaced: types.optional(types.boolean, false),
     repairedreplacedyear: types.optional(types.number, 0),
     assessment: types.optional(ConditionAssessment, {}),
 
-    DeckType: types.optional(types.string, ""),
-    DeckAssessment: types.optional(ConditionAssessment, {}),
+    deckTypes: types.optional(types.array(types.string), []),
+    deckAssessment: types.optional(ConditionAssessment, {}),
 })
 .actions((self) => ({
-    update(data: { NotApplicable?: boolean; ConstructionType?: string; PoolHeaterType?: string; location?: string; virginiaGraemeBakerCompliance?: boolean; repairedreplaced?: boolean; repairedreplacedyear?: number; assessment?: Record<string, any>; DeckType?: string; DeckAssessment?: ConditionAssessment }) {
+    update(data: { NotApplicable?: boolean; constructionTypes?: string[]; heaterTypes?: string[]; location?: string; virginiaGraemeBakerCompliance?: boolean; repairedreplaced?: boolean; repairedreplacedyear?: number; assessment?: Record<string, any>; deckTypes?: string[]; deckAssessment?: Record<string, any> }) {
         if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
-        if (data.ConstructionType !== undefined) self.ConstructionType = data.ConstructionType
-        if (data.PoolHeaterType !== undefined) self.PoolHeaterType = data.PoolHeaterType
+        if (data.constructionTypes !== undefined) self.constructionTypes.replace(data.constructionTypes)
+        if (data.heaterTypes !== undefined) self.heaterTypes.replace(data.heaterTypes)
         if (data.location !== undefined) self.location = data.location
         if (data.virginiaGraemeBakerCompliance !== undefined) self.virginiaGraemeBakerCompliance = data.virginiaGraemeBakerCompliance
         if (data.repairedreplaced !== undefined) self.repairedreplaced = data.repairedreplaced
         if (data.repairedreplacedyear !== undefined) self.repairedreplacedyear = data.repairedreplacedyear
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
-        if (data.DeckType !== undefined) self.DeckType = data.DeckType
-        if (data.DeckAssessment !== undefined) self.DeckAssessment = data.DeckAssessment
+        if (data.deckTypes !== undefined) self.deckTypes.replace(data.deckTypes)
+        if (data.deckAssessment) Object.assign(self.deckAssessment as any, data.deckAssessment)
     },
 }))
 
 export const SpaAccordionModel = types.model("SpaAccordionModel", {
     NotApplicable: types.optional(types.boolean, false),
-    ConstructionType: types.optional(types.string, ""),
-    SpaHeaterType: types.optional(types.string, ""),
+    constructionTypes: types.optional(types.array(types.string), []),
+    heaterTypes: types.optional(types.array(types.string), []),
     location: types.optional(types.string, ""),
     virginiaGraemeBakerCompliance: types.optional(types.boolean, false),
     repairedreplaced: types.optional(types.boolean, false),
@@ -41,10 +41,10 @@ export const SpaAccordionModel = types.model("SpaAccordionModel", {
     assessment: types.optional(ConditionAssessment, {}),
 })
 .actions((self) => ({
-    update(data: { NotApplicable?: boolean; ConstructionType?: string; SpaHeaterType?: string; location?: string; virginiaGraemeBakerCompliance?: boolean; repairedreplaced?: boolean; repairedreplacedyear?: number; assessment?: Record<string, any> }) {
+    update(data: { NotApplicable?: boolean; constructionTypes?: string[]; heaterTypes?: string[]; location?: string; virginiaGraemeBakerCompliance?: boolean; repairedreplaced?: boolean; repairedreplacedyear?: number; assessment?: Record<string, any> }) {
         if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
-        if (data.ConstructionType !== undefined) self.ConstructionType = data.ConstructionType
-        if (data.SpaHeaterType !== undefined) self.SpaHeaterType = data.SpaHeaterType
+        if (data.constructionTypes !== undefined) self.constructionTypes.replace(data.constructionTypes)
+        if (data.heaterTypes !== undefined) self.heaterTypes.replace(data.heaterTypes)
         if (data.location !== undefined) self.location = data.location
         if (data.virginiaGraemeBakerCompliance !== undefined) self.virginiaGraemeBakerCompliance = data.virginiaGraemeBakerCompliance
         if (data.repairedreplaced !== undefined) self.repairedreplaced = data.repairedreplaced
