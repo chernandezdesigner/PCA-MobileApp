@@ -398,3 +398,127 @@ export type BalconyId = typeof BALCONY_OPTIONS[number]["id"]
 export type PatioPlazaId = typeof PATIO_PLAZA_OPTIONS[number]["id"]
 export type BuildingStairsBalconiesRailingId = typeof BUILDING_STAIRS_BALCONIES_RAILING_OPTIONS[number]["id"]
 export type BalconyBalusterSpacingId = typeof BALCONY_BALUSTER_SPACING_OPTIONS[number]["id"]
+
+// step 8 windows options
+
+export const WINDOW_TYPE_OPTIONS = [
+  { id: "storefrontSystem", label: "Storefront System" },
+  { id: "sliding", label: "Sliding" },
+  { id: "casement", label: "Casement" },
+  { id: "hopper", label: "Hopper" },
+  { id: "singleHung", label: "Single Hung" },
+  { id: "storm", label: "Storm" },
+  { id: "fixed", label: "Fixed" },
+  { id: "doubleHung", label: "Double Hung" },
+  { id: "operable", label: "Operable" },
+  { id: "awning", label: "Awning" },
+  { id: "ironBars", label: "Iron Bars" },
+  { id: "exteriorScreens", label: "Exterior Screens" },
+] as const
+
+export const WINDOW_GLAZING_TYPE_OPTIONS = [
+  { id: "tinted", label: "Tinted" },
+  { id: "opaque", label: "Opaque" },
+] as const
+
+export const WINDOW_PANE_OPTIONS = [
+  { id: "singlePane", label: "Single-pane" },
+  { id: "doublePane", label: "Double-pane" },
+] as const
+
+export const WINDOW_FRAME_OPTIONS = [
+  { id: "metal", label: "Metal" },
+  { id: "vinyl", label: "Vinyl" },
+] as const
+
+// Type helpers
+export type WindowTypeId = typeof WINDOW_TYPE_OPTIONS[number]["id"]
+export type WindowGlazingTypeId = typeof WINDOW_GLAZING_TYPE_OPTIONS[number]["id"]
+export type WindowPaneId = typeof WINDOW_PANE_OPTIONS[number]["id"]
+export type WindowFrameId = typeof WINDOW_FRAME_OPTIONS[number]["id"]
+
+//step 9 Doors options
+
+// Doors & Service Doors - Type subcategory
+export const DOOR_TYPE_OPTIONS = [
+  { id: "wood", label: "Wood" },
+  { id: "metal", label: "Metal" },
+  { id: "painted", label: "Painted" },
+  { id: "stained", label: "Stained" },
+  { id: "other", label: "Other" },
+] as const
+
+
+
+// Doors & Service Doors - Hardware subcategory
+export const DOOR_HARDWARE_HANDLE_OPTIONS = [
+  { id: "lever", label: "Lever" },
+  { id: "knob", label: "Knob" },
+] as const
+
+export const DOOR_HARDWARE_OPERATION_OPTIONS = [
+  { id: "pushPull", label: "Push/Pull" },
+  { id: "panic", label: "Panic" },
+] as const
+
+// Doors & Service Doors - Frame subcategory
+export const DOOR_FRAME_OPTIONS = [
+  { id: "wood", label: "Wood" },
+  { id: "metal", label: "Metal" },
+] as const
+
+// Hardware Type (separate section)
+export const DOOR_HARDWARE_TYPE_OPTIONS = [
+  { id: "commercialGrade", label: "Commercial Grade" },
+  { id: "residentialGrade", label: "Residential Grade" },
+] as const
+
+// Balconies/Patios doors
+export const BALCONY_PATIO_DOOR_TYPE_OPTIONS = [
+  { id: "alSlidingDoors", label: "AL sliding doors" },
+  { id: "french", label: "French" },
+] as const
+
+export const BALCONY_PATIO_DOOR_GLAZING_OPTIONS = [
+  { id: "single", label: "Single" },
+  { id: "doublePane", label: "Double Pane" },
+] as const
+
+// Overhead Doors
+export const OVERHEAD_DOOR_MATERIAL_OPTIONS = [
+  { id: "wood", label: "Wood" },
+  { id: "metal", label: "Metal" },
+] as const
+
+export const OVERHEAD_DOOR_STYLE_OPTIONS = [
+  { id: "swing", label: "Swing" },
+  { id: "flush", label: "Flush" },
+  { id: "rollUp", label: "Roll-up" },
+] as const
+
+export const OVERHEAD_DOOR_OPERATION_OPTIONS = [
+  { id: "automaticOpeners", label: "Automatic Openers" },
+  { id: "manual", label: "Manual" },
+] as const
+
+// Dock Equipment
+export const DOCK_EQUIPMENT_OPTIONS = [
+  { id: "bumpers", label: "Bumpers" },
+  { id: "weatherSeals", label: "Weather Seals" },
+  { id: "covers", label: "Covers" },
+  { id: "levelersHydraulic", label: "Levelers (Hydraulic)" },
+  { id: "levelersMechanical", label: "Levelers (Mechanical)" },
+] as const
+
+// Type helpers
+export type DoorTypeId = typeof DOOR_TYPE_OPTIONS[number]["id"]
+export type DoorHardwareHandleId = typeof DOOR_HARDWARE_HANDLE_OPTIONS[number]["id"]
+export type DoorHardwareOperationId = typeof DOOR_HARDWARE_OPERATION_OPTIONS[number]["id"]
+export type DoorFrameId = typeof DOOR_FRAME_OPTIONS[number]["id"]
+export type DoorHardwareTypeId = typeof DOOR_HARDWARE_TYPE_OPTIONS[number]["id"]
+export type BalconyPatioDoorTypeId = typeof BALCONY_PATIO_DOOR_TYPE_OPTIONS[number]["id"]
+export type BalconyPatioDoorGlazingId = typeof BALCONY_PATIO_DOOR_GLAZING_OPTIONS[number]["id"]
+export type OverheadDoorMaterialId = typeof OVERHEAD_DOOR_MATERIAL_OPTIONS[number]["id"]
+export type OverheadDoorStyleId = typeof OVERHEAD_DOOR_STYLE_OPTIONS[number]["id"]
+export type OverheadDoorOperationId = typeof OVERHEAD_DOOR_OPERATION_OPTIONS[number]["id"]
+export type DockEquipmentId = typeof DOCK_EQUIPMENT_OPTIONS[number]["id"]
