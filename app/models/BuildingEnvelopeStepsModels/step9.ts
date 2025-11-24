@@ -48,3 +48,31 @@ export const HardWareTypeAccordionModel = types.model("HardWareTypeAccordionMode
     },
 }))
 
+export const BuildingEnvelopeStep9 = types.model("BuildingEnvelopeStep9", {
+    doors: types.optional(DoorsAccordionModel, {}),
+    serviceDoors: types.optional(ServiceDoorsAccordionModel, {}),
+    hardwareType: types.optional(HardWareTypeAccordionModel, {}),
+    comments: types.optional(types.string, ""),
+    lastModified: types.optional(types.Date, () => new Date()),
+})
+.actions((self) => ({
+    touch() {
+        self.lastModified = new Date()
+    },
+    updateDoors(data: Parameters<typeof self.doors.update>[0]) {
+        self.doors.update(data)
+        self.lastModified = new Date()
+    },
+    updateServiceDoors(data: Parameters<typeof self.serviceDoors.update>[0]) {
+        self.serviceDoors.update(data)
+        self.lastModified = new Date()
+    },
+    updateHardwareType(data: Parameters<typeof self.hardwareType.update>[0]) {
+        self.hardwareType.update(data)
+        self.lastModified = new Date()
+    },
+    updateComments(data: string) {
+        self.comments = data
+        self.lastModified = new Date()
+    },
+}))

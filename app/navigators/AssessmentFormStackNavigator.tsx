@@ -7,6 +7,9 @@ import { SiteGroundsStep1Screen } from "@/screens/SiteGroundsForm/SiteGroundsSte
 import { SiteGroundsStep2Screen } from "@/screens/SiteGroundsForm/SiteGroundsStep2Screen"
 import { SiteGroundsStep3Screen } from "@/screens/SiteGroundsForm/SiteGroundsStep3Screen"
 import { SiteGroundsStep4Screen } from "@/screens/SiteGroundsForm/SiteGroundsStep4Screen"
+import { BuildingEnvelopeStep1Screen } from "@/screens/BuildingEnvelopeForm/BuildingEnvelopeStep1Screen"
+import { BuildingEnvelopeStep2Screen } from "@/screens/BuildingEnvelopeForm/BuildingEnvelopeStep2Screen"
+import { BuildingEnvelopeStep3Screen } from "@/screens/BuildingEnvelopeForm/BuildingEnvelopeStep3Screen"
 
 export type AssessmentFormStackParamList = {
   // Project Summary
@@ -19,6 +22,10 @@ export type AssessmentFormStackParamList = {
   SiteGroundsStep2: undefined
   SiteGroundsStep3: undefined
   SiteGroundsStep4: undefined
+  // Building Envelope
+  BuildingEnvelopeStep1: undefined
+  BuildingEnvelopeStep2: undefined
+  BuildingEnvelopeStep3: undefined
 }
 
 const Stack = createNativeStackNavigator<AssessmentFormStackParamList>()
@@ -45,6 +52,11 @@ export const AssessmentFormStackNavigator = () => {
       <Stack.Screen name="SiteGroundsStep2" component={SiteGroundsStep2Screen} />
       <Stack.Screen name="SiteGroundsStep3" component={SiteGroundsStep3Screen} />
       <Stack.Screen name="SiteGroundsStep4" component={SiteGroundsStep4Screen} />
+      
+      {/* Building Envelope */}
+      <Stack.Screen name="BuildingEnvelopeStep1" component={BuildingEnvelopeStep1Screen} />
+      <Stack.Screen name="BuildingEnvelopeStep2" component={BuildingEnvelopeStep2Screen} />
+      <Stack.Screen name="BuildingEnvelopeStep3" component={BuildingEnvelopeStep3Screen} />
     </Stack.Navigator>
   )
 }

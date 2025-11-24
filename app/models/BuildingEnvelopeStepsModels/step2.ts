@@ -45,7 +45,20 @@ export const MezzanineAccordionModel = types.model("MezzanineAccordionModel", {
     },
 }))
 
-// ask about roof framing types setup
+export const RoofFramingAccordionModel = types.model("RoofFramingAccordionModel", {
+    roofFramingwood: types.optional(types.array(types.string), []),
+    roofFramingsteel: types.optional(types.array(types.string), []),
+    concreteframecolumnsandbeams: types.optional(types.boolean, false),
+    assessment: types.optional(ConditionAssessment, {}),
+})
+.actions((self) => ({
+    update(data: { roofFramingwood?: string[]; roofFramingsteel?: string[]; concreteframecolumnsandbeams?: boolean; assessment?: Record<string, any> }) {
+        if (data.roofFramingwood !== undefined) self.roofFramingwood.replace(data.roofFramingwood)
+        if (data.roofFramingsteel !== undefined) self.roofFramingsteel.replace(data.roofFramingsteel)
+        if (data.concreteframecolumnsandbeams !== undefined) self.concreteframecolumnsandbeams = data.concreteframecolumnsandbeams
+        if (data.assessment) Object.assign(self.assessment as any, data.assessment)
+    },
+}))
 
 export const SheathingAccordionModel = types.model("SheathingAccordionModel", {
     sheathing: types.optional(types.array(types.string), []),
@@ -63,6 +76,7 @@ export const BuildingEnvelopeStep2 = types.model("BuildingEnvelopeStep2", {
     groundFloorDecking: types.optional(GroundFloorDeckingAccordionModel, {}),
     upperFloorDecking: types.optional(UpperFloorDeckingAccordionModel, {}),
     mezzanine: types.optional(MezzanineAccordionModel, {}),
+    roofFraming: types.optional(RoofFramingAccordionModel, {}),
     sheathing: types.optional(SheathingAccordionModel, {}),
     comments: types.optional(types.string, ""),
     lastModified: types.optional(types.Date, () => new Date()),
@@ -85,6 +99,10 @@ export const BuildingEnvelopeStep2 = types.model("BuildingEnvelopeStep2", {
     },
     updateMezzanine(data: Parameters<typeof self.mezzanine.update>[0]) {
         self.mezzanine.update(data)
+        self.lastModified = new Date()
+    },
+    updateRoofFraming(data: Parameters<typeof self.roofFraming.update>[0]) {
+        self.roofFraming.update(data)
         self.lastModified = new Date()
     },
     updateSheathing(data: Parameters<typeof self.sheathing.update>[0]) {

@@ -68,7 +68,11 @@ const NAVIGATION_STRUCTURE: NavigationItem[] = [
   {
     id: "building-envelope",
     label: "Building Envelope",
-    children: [],
+    children: [
+      { id: "be-step1", label: "Foundation & Substructure", route: "BuildingEnvelopeStep1" },
+      { id: "be-step2", label: "Superstructure", route: "BuildingEnvelopeStep2" },
+      { id: "be-step3", label: "Primary & Secondary Roofing", route: "BuildingEnvelopeStep3" },
+    ],
   },
   {
     id: "mechanical-systems",

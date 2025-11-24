@@ -80,7 +80,6 @@ export const roofframingsteelOptions = [
     { id: "columns", label: "Columns" },
     { id: "beams", label: "Beams" },
     { id: "openwebsteeltrusses", label: "Open-web steel trusses" },
-    { id: "concreteframecolumnsandbeams", label: "Concrete frame (columns and beams)" },
 ] as const
 
 export type RoofFramingSteelId = typeof roofframingsteelOptions[number]["id"]

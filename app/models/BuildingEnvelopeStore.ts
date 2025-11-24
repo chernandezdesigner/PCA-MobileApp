@@ -7,6 +7,7 @@ import { BuildingEnvelopeStep5 } from "./BuildingEnvelopeStepsModels/step5"
 import { BuildingEnvelopeStep6 } from "./BuildingEnvelopeStepsModels/step6"
 import { BuildingEnvelopeStep7 } from "./BuildingEnvelopeStepsModels/step7"
 import { BuildingEnvelopeStep8 } from "./BuildingEnvelopeStepsModels/step8"
+import { BuildingEnvelopeStep9 } from "./BuildingEnvelopeStepsModels/step9"
 import { BuildingEnvelopeStep10 } from "./BuildingEnvelopeStepsModels/step10"
 
 export const BuildingEnvelopeStore = types
@@ -21,7 +22,7 @@ export const BuildingEnvelopeStore = types
     step6: types.optional(BuildingEnvelopeStep6, {}),
     step7: types.optional(BuildingEnvelopeStep7, {}),
     step8: types.optional(BuildingEnvelopeStep8, {}),
-    // TODO: Add step9 when implemented
+    step9: types.optional(BuildingEnvelopeStep9, {}),
     step10: types.optional(BuildingEnvelopeStep10, {}),
     currentStep: types.optional(types.string, "step1"),
     lastModified: types.optional(types.Date, () => new Date()),

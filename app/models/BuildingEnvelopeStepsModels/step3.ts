@@ -45,12 +45,12 @@ export const SecondaryRoofAccordionModel = types.model("SecondaryRoofAccordionMo
 }))
 
 export const ParapetsAccordionModel = types.model("ParapetsAccordionModel", {
-    parapetsType: types.optional(types.string, ""),
+    NotApplicable: types.optional(types.boolean, false),
     assessment: types.optional(ConditionAssessment, {}),
 })
 .actions((self) => ({
-    update(data: { parapetsType?: string; assessment?: Record<string, any> }) {
-        if (data.parapetsType !== undefined) self.parapetsType = data.parapetsType
+    update(data: { NotApplicable?: boolean; assessment?: Record<string, any> }) {
+        if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
     },
 }))
