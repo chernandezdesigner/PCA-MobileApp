@@ -35,11 +35,13 @@ export const SoffitAccordionModel = types.model("SoffitAccordionModel", {
 }))
 
 export const SealantAccordionModel = types.model("SealantAccordionModel", {
+    NotApplicable: types.optional(types.boolean, false),
     sealant: types.optional(types.array(types.string), []),
     assessment: types.optional(ConditionAssessment, {}),
 })
 .actions((self) => ({
-    update(data: { sealant?: string[]; assessment?: Record<string, any> }) {
+    update(data: { NotApplicable?: boolean; sealant?: string[]; assessment?: Record<string, any> }) {
+        if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
         if (data.sealant !== undefined) self.sealant.replace(data.sealant)
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
     },

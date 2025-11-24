@@ -213,10 +213,17 @@ export const SidewalksWalkwaysAccordionModel = types.model("SidewalksWalkwaysAcc
     },
     updateRailing(value: "yes" | "no") {
         self.railing = value
+        // Initialize railingDetails when set to "yes"
+        if (value === "yes" && !self.railingDetails) {
+            self.railingDetails = railingForSidewalksModel.create({})
+        }
     },
     updateRailingDetails(data: any) {
         if (self.railingDetails) {
             self.railingDetails.update(data)
+        } else if (self.railing === "yes") {
+            // Auto-initialize if not present
+            self.railingDetails = railingForSidewalksModel.create(data)
         }
     },
 }))
@@ -269,10 +276,17 @@ export const StepsStairsAccordionModel = types.model("StepsStairsAccordionModel"
     },
     updateRailing(value: "yes" | "no") {
         self.railing = value
+        // Initialize railingDetails when set to "yes"
+        if (value === "yes" && !self.railingDetails) {
+            self.railingDetails = railingForStepsStairsModel.create({})
+        }
     },
     updateRailingDetails(data: any) {
         if (self.railingDetails) {
             self.railingDetails.update(data)
+        } else if (self.railing === "yes") {
+            // Auto-initialize if not present
+            self.railingDetails = railingForStepsStairsModel.create(data)
         }
     },
 }))

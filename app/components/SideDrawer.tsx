@@ -72,6 +72,13 @@ const NAVIGATION_STRUCTURE: NavigationItem[] = [
       { id: "be-step1", label: "Foundation & Substructure", route: "BuildingEnvelopeStep1" },
       { id: "be-step2", label: "Superstructure", route: "BuildingEnvelopeStep2" },
       { id: "be-step3", label: "Primary & Secondary Roofing", route: "BuildingEnvelopeStep3" },
+      { id: "be-step4", label: "Exterior Walls", route: "BuildingEnvelopeStep4" },
+      { id: "be-step5", label: "Parking, Paving, Sidewalks", route: "BuildingEnvelopeStep5" },
+      { id: "be-step6", label: "Balconies, Patios", route: "BuildingEnvelopeStep6" },
+      { id: "be-step7", label: "Stairs, Balconies, Patios", route: "BuildingEnvelopeStep7" },
+      { id: "be-step8", label: "Windows", route: "BuildingEnvelopeStep8" },
+      { id: "be-step9", label: "Doors", route: "BuildingEnvelopeStep9" },
+      { id: "be-step10", label: "Pool, Spa", route: "BuildingEnvelopeStep10" },
     ],
   },
   {
