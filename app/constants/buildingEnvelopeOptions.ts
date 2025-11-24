@@ -426,6 +426,7 @@ export const WINDOW_PANE_OPTIONS = [
 ] as const
 
 export const WINDOW_FRAME_OPTIONS = [
+  { id: "wood", label: "Wood" },
   { id: "metal", label: "Metal" },
   { id: "vinyl", label: "Vinyl" },
 ] as const
