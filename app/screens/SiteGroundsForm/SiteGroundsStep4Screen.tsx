@@ -14,7 +14,8 @@ import { useAppTheme } from "@/theme/context"
 import type { SiteGroundsFormNavigatorParamList } from "@/navigators/SiteGroundsFormNavigator"
 import type { ThemedStyle } from "@/theme/types"
 import { Controller, useForm, useWatch } from "react-hook-form"
-import { ChecklistCard, ChecklistItem } from "@/components/ChecklistCard"
+import type { ChecklistItem } from "@/components/ChecklistCard"
+import { ChecklistField } from "@/components/ChecklistField"
 import { HeaderBar } from "@/components/HeaderBar"
 import { useDrawerControl } from "@/context/DrawerContext"
 import { ProgressBar } from "@/components/ProgressBar"
@@ -367,10 +368,9 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         >
           {!store?.carports.NotApplicable && (
             <View style={themed($sectionBody)}>
-              <ChecklistCard
-                title="General Construction"
+              <ChecklistField
+                label="General Construction"
                 items={carportsConstructionItems}
-                showComments={false}
                 onToggle={createArrayToggleHandler("carports.GeneralConstruction", carportsConstructionData)}
               />
               <Controller
@@ -438,10 +438,9 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         >
           {!store?.maintenanceBldg.NotApplicable && (
             <View style={themed($sectionBody)}>
-              <ChecklistCard
-                title="General Construction"
+              <ChecklistField
+                label="General Construction"
                 items={maintenanceBldgConstructionItems}
-                showComments={false}
                 onToggle={createArrayToggleHandler("maintenanceBldg.GeneralConstruction", maintenanceBldgConstructionData)}
               />
               <Controller
@@ -509,10 +508,9 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         >
           {!store?.firePumpBldg.NotApplicable && (
             <View style={themed($sectionBody)}>
-              <ChecklistCard
-                title="General Construction"
+              <ChecklistField
+                label="General Construction"
                 items={firePumpBldgConstructionItems}
-                showComments={false}
                 onToggle={createArrayToggleHandler("firePumpBldg.GeneralConstruction", firePumpBldgConstructionData)}
               />
               <Controller
@@ -580,10 +578,9 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         >
           {!store?.residentialGarages.NotApplicable && (
             <View style={themed($sectionBody)}>
-              <ChecklistCard
-                title="General Construction"
+              <ChecklistField
+                label="General Construction"
                 items={residentialGaragesConstructionItems}
-                showComments={false}
                 onToggle={createArrayToggleHandler("residentialGarages.GeneralConstruction", residentialGaragesConstructionData)}
               />
               <Controller
@@ -651,10 +648,9 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         >
           {!store?.gazeboPavilion.NotApplicable && (
             <View style={themed($sectionBody)}>
-              <ChecklistCard
-                title="General Construction"
+              <ChecklistField
+                label="General Construction"
                 items={gazeboPavilionConstructionItems}
-                showComments={false}
                 onToggle={createArrayToggleHandler("gazeboPavilion.GeneralConstruction", gazeboPavilionConstructionData)}
               />
               <Controller
@@ -722,10 +718,9 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         >
           {!store?.greenhouses.NotApplicable && (
             <View style={themed($sectionBody)}>
-              <ChecklistCard
-                title="General Construction"
+              <ChecklistField
+                label="General Construction"
                 items={greenhousesConstructionItems}
-                showComments={false}
                 onToggle={createArrayToggleHandler("greenhouses.GeneralConstruction", greenhousesConstructionData)}
               />
               <Controller
@@ -793,10 +788,9 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         >
           {!store?.laundryBldg.NotApplicable && (
             <View style={themed($sectionBody)}>
-              <ChecklistCard
-                title="General Construction"
+              <ChecklistField
+                label="General Construction"
                 items={laundryBldgConstructionItems}
-                showComments={false}
                 onToggle={createArrayToggleHandler("laundryBldg.GeneralConstruction", laundryBldgConstructionData)}
               />
               <Controller
@@ -864,10 +858,9 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         >
           {!store?.wellPumpHouse.NotApplicable && (
             <View style={themed($sectionBody)}>
-              <ChecklistCard
-                title="General Construction"
+              <ChecklistField
+                label="General Construction"
                 items={wellPumpHouseConstructionItems}
-                showComments={false}
                 onToggle={createArrayToggleHandler("wellPumpHouse.GeneralConstruction", wellPumpHouseConstructionData)}
               />
               <Controller
@@ -935,10 +928,9 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         >
           {!store?.sewerPumpHouse.NotApplicable && (
             <View style={themed($sectionBody)}>
-              <ChecklistCard
-                title="General Construction"
+              <ChecklistField
+                label="General Construction"
                 items={sewerPumpHouseConstructionItems}
-                showComments={false}
                 onToggle={createArrayToggleHandler("sewerPumpHouse.GeneralConstruction", sewerPumpHouseConstructionData)}
               />
               <Controller
@@ -1038,7 +1030,7 @@ const $content: ViewStyle = {
   gap: 0,
 }
 
-const $sectionBody: ViewStyle = { gap: 16, paddingHorizontal: 16, paddingBottom: 16, paddingTop: 8 }
+const $sectionBody: ViewStyle = { gap: 16, paddingBottom: 16, paddingTop: 8 }
 
 const $scrollArea: ViewStyle = { flex: 1 }
 const $paddedBlock: ViewStyle = { paddingHorizontal: 16, paddingBottom: 16, paddingTop: 16, gap: 8 }

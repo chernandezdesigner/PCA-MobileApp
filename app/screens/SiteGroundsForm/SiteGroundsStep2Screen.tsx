@@ -14,7 +14,8 @@ import type { SiteGroundsFormNavigatorParamList } from "@/navigators/SiteGrounds
 import type { ThemedStyle } from "@/theme/types"
 import { Controller, useForm, useWatch } from "react-hook-form"
 import { Checkbox } from "@/components/Toggle/Checkbox"
-import { ChecklistCard, ChecklistItem } from "@/components/ChecklistCard"
+import type { ChecklistItem } from "@/components/ChecklistCard"
+import { ChecklistField } from "@/components/ChecklistField"
 import { HeaderBar } from "@/components/HeaderBar"
 import { ProgressBar } from "@/components/ProgressBar"
 import { StickyFooterNav } from "@/components/StickyFooterNav"
@@ -325,10 +326,9 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
           onToggle={(n) => setOpenKey(n ? "topography" : null)}
         >
           <View style={themed($sectionBody)}>
-            <ChecklistCard
-              title="Slope Type"
+            <ChecklistField
+              label="Slope Type"
               items={topographySlopeItems}
-              showComments={false}
               onToggle={createArrayToggleHandler("topographySlope.topographySlopes", topographySlopesData)}
             />
 
@@ -370,10 +370,9 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
           onToggle={(n) => setOpenKey(n ? "landscaping" : null)}
         >
           <View style={themed($sectionBody)}>
-            <ChecklistCard
-              title="Landscaping Type"
+            <ChecklistField
+              label="Landscaping Type"
               items={landscapingItems}
-              showComments={false}
               onToggle={createArrayToggleHandler("landscaping.landscaping", landscapingData)}
             />
           <View style={themed($controlGroup)}>
@@ -434,10 +433,9 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
         >
           {!store?.retainingWalls.NotApplicable && (
             <View style={themed($sectionBody)}>
-            <ChecklistCard
-              title="Retaining Walls Materials"
+            <ChecklistField
+              label="Retaining Walls Materials"
               items={retainingWallMaterialItems}
-              showComments={false}
               onToggle={createArrayToggleHandler("retainingWalls.retainingWallMaterials", retainingWallMaterialsData)}
             />
           {retainingWallMaterialsData?.includes("other") && (
@@ -486,10 +484,9 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
             <View style={themed($nestedList)}>
               <Text preset="subheading" text="Railing" />
               <View style={themed($nestedCard)}>
-                <ChecklistCard
-                  title="Railing Materials"
+                <ChecklistField
+                  label="Railing Materials"
                   items={retainingWallRailingItems}
-                  showComments={false}
                   onToggle={createArrayToggleHandler("retainingWalls.railingDetails.railingMaterials", retainingWallRailingMaterialsData)}
                 />
                 <View style={themed($controlGroup)}>
@@ -559,10 +556,9 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
         >
           {!store?.screenWalls.NotApplicable && (
             <View style={themed($sectionBody)}>
-            <ChecklistCard
-              title="Screen Walls Materials"
+            <ChecklistField
+              label="Screen Walls Materials"
               items={screenWallMaterialItems}
-              showComments={false}
               onToggle={createArrayToggleHandler("screenWalls.screenWallMaterials", screenWallMaterialsData)}
             />
           {screenWallMaterialsData?.includes("other") && (
@@ -611,10 +607,9 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
             <View style={themed($nestedList)}>
               <Text preset="subheading" text="Railing" />
               <View style={themed($nestedCard)}>
-                <ChecklistCard
-                  title="Railing Materials"
+                <ChecklistField
+                  label="Railing Materials"
                   items={screenWallRailingItems}
-                  showComments={false}
                   onToggle={createArrayToggleHandler("screenWalls.railingDetails.railingMaterials", screenWallRailingMaterialsData)}
                 />
                 <View style={themed($controlGroup)}>
@@ -663,16 +658,14 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
           onToggle={(n) => setOpenKey(n ? "waterFeatures" : null)}
         >
           <View style={themed($sectionBody)}>
-            <ChecklistCard
-              title="Water Features Type"
+            <ChecklistField
+              label="Water Features Type"
               items={waterFeatureItems}
-              showComments={false}
               onToggle={createArrayToggleHandler("waterFeatures.waterFeatures", waterFeaturesData)}
             />
-            <ChecklistCard
-              title="Pump Location"
+            <ChecklistField
+              label="Pump Location"
               items={pumpLocationItems}
-              showComments={false}
               onToggle={createArrayToggleHandler("waterFeatures.pumpLocations", pumpLocationsData)}
             />
           <Controller
@@ -754,7 +747,7 @@ const $content: ViewStyle = {
   gap: 0,
 }
 
-const $sectionBody: ViewStyle = { gap: 16, paddingHorizontal: 16, paddingBottom: 16, paddingTop: 8 }
+const $sectionBody: ViewStyle = { gap: 16, paddingBottom: 16, paddingTop: 8 }
 
 const $row: ViewStyle = {
   flexDirection: "row",

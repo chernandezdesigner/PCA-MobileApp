@@ -14,7 +14,8 @@ import type { SiteGroundsFormNavigatorParamList } from "@/navigators/SiteGrounds
 import type { ThemedStyle } from "@/theme/types"
 import { Controller, useForm, useWatch } from "react-hook-form"
 import { Checkbox } from "@/components/Toggle/Checkbox"
-import { ChecklistCard, ChecklistItem } from "@/components/ChecklistCard"
+import type { ChecklistItem } from "@/components/ChecklistCard"
+import { ChecklistField } from "@/components/ChecklistField"
 import { useDrawerControl } from "@/context/DrawerContext"
 import { HeaderBar } from "@/components/HeaderBar"
 import { ProgressBar } from "@/components/ProgressBar"
@@ -382,10 +383,9 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
         >
           {!store?.signage.NotApplicable && (
             <View style={themed($sectionBody)}>
-              <ChecklistCard
-                title="Signage Type"
+              <ChecklistField
+                label="Signage Type"
                 items={signageItems}
-                showComments={false}
                 onToggle={createArrayToggleHandler("signage.signageTypes", signageTypesData)}
               />
               <View style={themed($controlGroup)}>
@@ -447,10 +447,9 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
         >
           {!store?.lotLighting.NotApplicable && (
             <View style={themed($sectionBody)}>
-              <ChecklistCard
-                title="Lot Lighting Type"
+              <ChecklistField
+                label="Lot Lighting Type"
                 items={lotLightingItems}
-                showComments={false}
                 onToggle={createArrayToggleHandler("lotLighting.lotLightingTypes", lotLightingTypesData)}
               />
               <View style={themed($controlGroup)}>
@@ -512,10 +511,9 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
         >
           {!store?.bldgLighting.NotApplicable && (
             <View style={themed($sectionBody)}>
-              <ChecklistCard
-                title="Building Lighting Type"
+              <ChecklistField
+                label="Building Lighting Type"
                 items={bldgLightingItems}
-                showComments={false}
                 onToggle={createArrayToggleHandler("bldgLighting.bldgLightingTypes", bldgLightingTypesData)}
               />
               <View style={themed($controlGroup)}>
@@ -577,10 +575,9 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
         >
           {!store?.siteFencing.NotApplicable && (
             <View style={themed($sectionBody)}>
-              <ChecklistCard
-                title="Site Fencing Materials"
+              <ChecklistField
+                label="Site Fencing Materials"
                 items={siteFencingItems}
-                showComments={false}
                 onToggle={createArrayToggleHandler("siteFencing.siteFencingMaterials", siteFencingMaterialsData)}
               />
               {siteFencingMaterialsData?.includes("other") && (
@@ -650,10 +647,9 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
         >
           {!store?.dumpster.NotApplicable && (
             <View style={themed($sectionBody)}>
-              <ChecklistCard
-                title="Enclosure Materials"
+              <ChecklistField
+                label="Enclosure Materials"
                 items={dumpsterEnclosureItems}
-                showComments={false}
                 onToggle={createArrayToggleHandler("dumpster.enclosureMaterials", dumpsterEnclosureMaterialsData)}
               />
               {dumpsterEnclosureMaterialsData?.includes("other") && (
@@ -671,10 +667,9 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
                   )}
                 />
               )}
-              <ChecklistCard
-                title="Gate Materials"
+              <ChecklistField
+                label="Gate Materials"
                 items={dumpsterGateItems}
-                showComments={false}
                 onToggle={createArrayToggleHandler("dumpster.gateMaterials", dumpsterGateMaterialsData)}
               />
               <Controller
@@ -748,10 +743,9 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
         >
           {!store?.recreationalFacilities.NotApplicable && (
             <View style={themed($sectionBody)}>
-              <ChecklistCard
-                title="Facility Type"
+              <ChecklistField
+                label="Facility Type"
                 items={recreationalFacilityItems}
-                showComments={false}
                 onToggle={createArrayToggleHandler("recreationalFacilities.recreationalFacilities", recreationalFacilitiesData)}
               />
               {recreationalFacilitiesData?.includes("other") && (
@@ -911,10 +905,9 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
         >
           {!store?.bridges.NotApplicable && (
             <View style={themed($sectionBody)}>
-              <ChecklistCard
-                title="Bridge Materials"
+              <ChecklistField
+                label="Bridge Materials"
                 items={bridgeMaterialItems}
-                showComments={false}
                 onToggle={createArrayToggleHandler("bridges.bridgeMaterials", bridgeMaterialsData)}
               />
               <View style={themed($controlGroup)}>
@@ -961,10 +954,9 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
                 <View style={themed($nestedList)}>
                   <Text preset="subheading" text="Railing" />
                   <View style={themed($nestedCard)}>
-                    <ChecklistCard
-                      title="Railing Materials"
+                    <ChecklistField
+                      label="Railing Materials"
                       items={bridgeRailingItems}
-                      showComments={false}
                       onToggle={createArrayToggleHandler("bridges.railingDetails.railingMaterials", bridgeRailingMaterialsData)}
                     />
                     <View style={themed($controlGroup)}>
@@ -1055,7 +1047,7 @@ const $content: ViewStyle = {
   gap: 0,
 }
 
-const $sectionBody: ViewStyle = { gap: 16, paddingHorizontal: 16, paddingBottom: 16, paddingTop: 8 }
+const $sectionBody: ViewStyle = { gap: 16, paddingBottom: 16, paddingTop: 8 }
 
 const $radioRow: ViewStyle = {
   flexDirection: "row",
