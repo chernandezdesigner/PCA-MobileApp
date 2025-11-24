@@ -4,6 +4,8 @@ import { ConditionAssessment } from "../SharedModels";
 
 export const SwimmingPoolAccordionModel = types.model("SwimmingPoolAccordionModel", {
     NotApplicable: types.optional(types.boolean, false),
+    quantity: types.optional(types.number, 0),
+    adaLift: types.optional(types.boolean, false),
     constructionTypes: types.optional(types.array(types.string), []),
     heaterTypes: types.optional(types.array(types.string), []),
     location: types.optional(types.string, ""),
@@ -16,8 +18,10 @@ export const SwimmingPoolAccordionModel = types.model("SwimmingPoolAccordionMode
     deckAssessment: types.optional(ConditionAssessment, {}),
 })
 .actions((self) => ({
-    update(data: { NotApplicable?: boolean; constructionTypes?: string[]; heaterTypes?: string[]; location?: string; virginiaGraemeBakerCompliance?: boolean; repairedreplaced?: boolean; repairedreplacedyear?: number; assessment?: Record<string, any>; deckTypes?: string[]; deckAssessment?: Record<string, any> }) {
+    update(data: { NotApplicable?: boolean; quantity?: number; adaLift?: boolean; constructionTypes?: string[]; heaterTypes?: string[]; location?: string; virginiaGraemeBakerCompliance?: boolean; repairedreplaced?: boolean; repairedreplacedyear?: number; assessment?: Record<string, any>; deckTypes?: string[]; deckAssessment?: Record<string, any> }) {
         if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
+        if (data.quantity !== undefined) self.quantity = data.quantity
+        if (data.adaLift !== undefined) self.adaLift = data.adaLift
         if (data.constructionTypes !== undefined) self.constructionTypes.replace(data.constructionTypes)
         if (data.heaterTypes !== undefined) self.heaterTypes.replace(data.heaterTypes)
         if (data.location !== undefined) self.location = data.location
@@ -32,6 +36,8 @@ export const SwimmingPoolAccordionModel = types.model("SwimmingPoolAccordionMode
 
 export const SpaAccordionModel = types.model("SpaAccordionModel", {
     NotApplicable: types.optional(types.boolean, false),
+    quantity: types.optional(types.number, 0),
+    adaLift: types.optional(types.boolean, false),
     constructionTypes: types.optional(types.array(types.string), []),
     heaterTypes: types.optional(types.array(types.string), []),
     location: types.optional(types.string, ""),
@@ -41,8 +47,10 @@ export const SpaAccordionModel = types.model("SpaAccordionModel", {
     assessment: types.optional(ConditionAssessment, {}),
 })
 .actions((self) => ({
-    update(data: { NotApplicable?: boolean; constructionTypes?: string[]; heaterTypes?: string[]; location?: string; virginiaGraemeBakerCompliance?: boolean; repairedreplaced?: boolean; repairedreplacedyear?: number; assessment?: Record<string, any> }) {
+    update(data: { NotApplicable?: boolean; quantity?: number; adaLift?: boolean; constructionTypes?: string[]; heaterTypes?: string[]; location?: string; virginiaGraemeBakerCompliance?: boolean; repairedreplaced?: boolean; repairedreplacedyear?: number; assessment?: Record<string, any> }) {
         if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
+        if (data.quantity !== undefined) self.quantity = data.quantity
+        if (data.adaLift !== undefined) self.adaLift = data.adaLift
         if (data.constructionTypes !== undefined) self.constructionTypes.replace(data.constructionTypes)
         if (data.heaterTypes !== undefined) self.heaterTypes.replace(data.heaterTypes)
         if (data.location !== undefined) self.location = data.location
