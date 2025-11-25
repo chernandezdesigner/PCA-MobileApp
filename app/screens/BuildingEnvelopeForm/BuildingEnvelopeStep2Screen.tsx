@@ -301,6 +301,17 @@ export const BuildingEnvelopeStep2Screen: FC<BuildingEnvelopeStep2ScreenProps> =
               onToggle={createArrayToggleHandler("wallsLateral.lateralWalls", lateralWallsData)}
             />
 
+            {lateralWallsData?.includes("other") && (
+              <TextField
+                label="Specify Other Lateral Wall Type"
+                placeholder="Describe the wall type..."
+                value={store?.wallsLateral.otherSpecification ?? ""}
+                onChangeText={(txt) => store?.updateWallsLateral({ otherSpecification: txt })}
+                multiline
+                numberOfLines={2}
+              />
+            )}
+
             <View style={themed($controlGroup)}>
               <Text preset="formLabel" text="Condition" />
               <ConditionAssessment

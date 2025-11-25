@@ -132,6 +132,20 @@ export const ProjectSummaryStep3Screen: FC<ProjectSummaryStep3ScreenProps> = obs
         onClearAll={handleDocClearAll}
       />
 
+      {/* Other Documentation Specification */}
+      {(projectSummaryStore?.documents.get("Other") ?? false) && (
+        <View style={themed($otherFieldContainer)}>
+          <TextField
+            label="Specify Other Documentation"
+            placeholder="Describe the other documentation type..."
+            value={projectSummaryStore?.otherDocumentationSpecification ?? ""}
+            onChangeText={(txt) => projectSummaryStore?.updateOtherDocumentationSpecification(txt)}
+            multiline
+            numberOfLines={2}
+          />
+        </View>
+      )}
+
       {/* Personnel Interviewed Section */}
       <View style={$sectionHeaderRow}>
         <Text preset="subheading" text="Personnel Interviewed" />
@@ -306,3 +320,8 @@ const $stickyFooter: ViewStyle = { position: "absolute", bottom: 0, left: 0, rig
 const $scrollArea: ViewStyle = { flex: 1 }
 const $titleStyle: ThemedStyle<any> = ({ colors }) => ({ color: colors.palette.primary2 as any, fontSize: 24 })
 const $introBlock: ViewStyle = { paddingTop: 16, paddingBottom: 32 }
+const $otherFieldContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  marginTop: spacing.md,
+  marginBottom: spacing.md,
+  paddingHorizontal: spacing.md,
+})

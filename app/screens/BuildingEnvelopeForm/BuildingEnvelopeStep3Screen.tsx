@@ -456,6 +456,17 @@ const RoofAccordions: FC<{
         <View style={themed($sectionBody)}>
           <ChecklistField label="Shingle Types" items={shinglesItems} onToggle={toggleShingles} />
 
+          {shinglesData?.includes("other") && (
+            <TextField
+              label="Specify Other Shingle Type"
+              placeholder="Describe the shingle type..."
+              value={store?.shingles.otherSpecification ?? ""}
+              onChangeText={(txt) => store?.updateShingles({ otherSpecification: txt })}
+              multiline
+              numberOfLines={2}
+            />
+          )}
+
           <View style={themed($controlGroup)}>
             <Text preset="formLabel" text="Condition" />
             <ConditionAssessment
@@ -701,6 +712,17 @@ const RoofAccordions: FC<{
       >
         <View style={themed($sectionBody)}>
           <ChecklistField label="Structure Types" items={roofStructuresItems} onToggle={toggleRoofStructures} />
+
+          {roofStructuresData?.includes("other") && (
+            <TextField
+              label="Specify Other Structure Type"
+              placeholder="Describe the structure type..."
+              value={store?.roofStructures.otherSpecification ?? ""}
+              onChangeText={(txt) => store?.updateRoofStructures({ otherSpecification: txt })}
+              multiline
+              numberOfLines={2}
+            />
+          )}
 
           <View style={themed($controlGroup)}>
             <Text preset="formLabel" text="Condition" />

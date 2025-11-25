@@ -183,6 +183,17 @@ export const BuildingEnvelopeStep4Screen: FC<BuildingEnvelopeStep4ScreenProps> =
           <View style={themed($sectionBody)}>
             <ChecklistField label="Wall Materials" items={materialItems} onToggle={toggleMaterial} />
 
+            {materialData?.includes("other") && (
+              <TextField
+                label="Specify Other Wall Material"
+                placeholder="Describe the wall material..."
+                value={store?.material.otherSpecification ?? ""}
+                onChangeText={(txt) => store?.updateMaterial({ otherSpecification: txt })}
+                multiline
+                numberOfLines={2}
+              />
+            )}
+
             <View style={themed($controlGroup)}>
               <Text preset="formLabel" text="Condition" />
               <ConditionAssessment
@@ -250,6 +261,17 @@ export const BuildingEnvelopeStep4Screen: FC<BuildingEnvelopeStep4ScreenProps> =
         >
           <View style={themed($sectionBody)}>
             <ChecklistField label="Soffit Types" items={soffitItems} onToggle={toggleSoffit} />
+
+            {soffitData?.includes("other") && (
+              <TextField
+                label="Specify Other Soffit Type"
+                placeholder="Describe the soffit type..."
+                value={store?.soffit.otherSpecification ?? ""}
+                onChangeText={(txt) => store?.updateSoffit({ otherSpecification: txt })}
+                multiline
+                numberOfLines={2}
+              />
+            )}
 
             <View style={themed($controlGroup)}>
               <Text preset="formLabel" text="Condition" />

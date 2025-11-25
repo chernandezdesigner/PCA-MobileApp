@@ -58,6 +58,7 @@ export const ProjectSummaryStore = types
     //step 3
     // Persist only user selection state: document id -> provided
     documents: types.optional(types.map(types.boolean), {}),
+    otherDocumentationSpecification: types.optional(types.string, ""),
     personnelInterviewed: types.optional(types.array(PersonnelInterviewedModel), []),
     commercialTenants: types.optional(types.array(CommercialTenantModel), []),
     
@@ -88,6 +89,11 @@ export const ProjectSummaryStore = types
     return ({
         updateDocumentChecklist: (id: string, provided: boolean) => {
             self.documents.set(id, provided)
+            self.lastModified = new Date()
+        },
+
+        updateOtherDocumentationSpecification: (value: string) => {
+            self.otherDocumentationSpecification = value
             self.lastModified = new Date()
         },
 
@@ -191,6 +197,7 @@ export const ProjectSummaryStore = types
             self.recentCapitalImprovements = ""
 
             self.documents.clear()
+            self.otherDocumentationSpecification = ""
             self.personnelInterviewed.clear()
             self.commercialTenants.clear()
             self.problematicMaterials.clear()

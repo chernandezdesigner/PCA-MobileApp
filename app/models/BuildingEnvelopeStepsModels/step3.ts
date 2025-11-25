@@ -22,11 +22,13 @@ export const MaterialAccordionModel = types.model("MaterialAccordionModel", {
 
 export const ShinglesAccordionModel = types.model("ShinglesAccordionModel", {
     shingles: types.optional(types.array(types.string), []),
+    otherSpecification: types.optional(types.string, ""),
     assessment: types.optional(ConditionAssessment, {}),
 })
 .actions((self) => ({
-    update(data: { shingles?: string[]; assessment?: Record<string, any> }) {
+    update(data: { shingles?: string[]; otherSpecification?: string; assessment?: Record<string, any> }) {
         if (data.shingles !== undefined) self.shingles.replace(data.shingles)
+        if (data.otherSpecification !== undefined) self.otherSpecification = data.otherSpecification
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
     },
 }))
@@ -90,11 +92,13 @@ export const CurbMountedAccordionModel = types.model("CurbMountedAccordionModel"
 
 export const RoofStructuresAccordionModel = types.model("RoofStructuresAccordionModel", {
     roofStructures: types.optional(types.array(types.string), []),
+    otherSpecification: types.optional(types.string, ""),
     assessment: types.optional(ConditionAssessment, {}),
 })
 .actions((self) => ({
-    update(data: { roofStructures?: string[]; assessment?: Record<string, any> }) {
+    update(data: { roofStructures?: string[]; otherSpecification?: string; assessment?: Record<string, any> }) {
         if (data.roofStructures !== undefined) self.roofStructures.replace(data.roofStructures)
+        if (data.otherSpecification !== undefined) self.otherSpecification = data.otherSpecification
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
     },
 }))

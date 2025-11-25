@@ -3,11 +3,13 @@ import { ConditionAssessment } from "../SharedModels"
 
 export const MaterialAccordionModel = types.model("MaterialAccordionModel", {
     materials: types.optional(types.array(types.string), []),
+    otherSpecification: types.optional(types.string, ""),
     assessment: types.optional(ConditionAssessment, {}),
 })
 .actions((self) => ({
-    update(data: { materials?: string[]; assessment?: Record<string, any> }) {
+    update(data: { materials?: string[]; otherSpecification?: string; assessment?: Record<string, any> }) {
         if (data.materials !== undefined) self.materials.replace(data.materials)
+        if (data.otherSpecification !== undefined) self.otherSpecification = data.otherSpecification
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
     },
 }))
@@ -25,11 +27,13 @@ export const SidingAccordionModel = types.model("SidingAccordionModel", {
 
 export const SoffitAccordionModel = types.model("SoffitAccordionModel", {
     soffit: types.optional(types.array(types.string), []),
+    otherSpecification: types.optional(types.string, ""),
     assessment: types.optional(ConditionAssessment, {}),
 })
 .actions((self) => ({
-    update(data: { soffit?: string[]; assessment?: Record<string, any> }) {
+    update(data: { soffit?: string[]; otherSpecification?: string; assessment?: Record<string, any> }) {
         if (data.soffit !== undefined) self.soffit.replace(data.soffit)
+        if (data.otherSpecification !== undefined) self.otherSpecification = data.otherSpecification
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
     },
 }))

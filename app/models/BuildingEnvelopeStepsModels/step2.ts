@@ -3,11 +3,13 @@ import { ConditionAssessment } from "../SharedModels"
 
 export const WallsLateralAccordionModel = types.model("WallsLateralAccordionModel", {
     lateralWalls: types.optional(types.array(types.string), []),
+    otherSpecification: types.optional(types.string, ""),
     assessment: types.optional(ConditionAssessment, {}),
 })
 .actions((self) => ({
-    update(data: { lateralWalls?: string[]; assessment?: Record<string, any> }) {
+    update(data: { lateralWalls?: string[]; otherSpecification?: string; assessment?: Record<string, any> }) {
         if (data.lateralWalls !== undefined) self.lateralWalls.replace(data.lateralWalls)
+        if (data.otherSpecification !== undefined) self.otherSpecification = data.otherSpecification
         if (data.assessment) Object.assign(self.assessment as any, data.assessment)
     },
 }))
