@@ -21,3 +21,67 @@ export const ConditionAssessmentwithEffAge = types.model("ConditionAssessmentwit
   amountToRepair: types.optional(types.string, ""),
   effectiveAge: types.optional(types.number, 0),
 })
+
+// ============================================
+// FORM 4: HVAC Individual Units - Shared Models
+// ============================================
+
+/**
+ * Base model for MOST HVAC systems
+ * Used by: Packaged Units, Split Systems (Condenser & Heat Pump)
+ * Has: Refrigerant, Capacity, Age brackets, Heat source, Responsibilities
+ */
+export const HVACUnitBaseModel = types.model("HVACUnitBase", {
+  // Basic Info
+  quantity: types.optional(types.number, 0),
+  capacityRangeTons: types.optional(types.string, ""), // e.g., "3-5"
+  totalCapacityTons: types.optional(types.number, 0),
+  
+  // Age Brackets - Tonnage per bracket (0-10, 11-20, 21+)
+  age0to10Tons: types.optional(types.number, 0),
+  age11to20Tons: types.optional(types.number, 0),
+  age21PlusTons: types.optional(types.number, 0),
+  
+  // Heat Source per age bracket (Natural Gas or Electric)
+  age11to20HeatSource: types.optional(types.string, ""), // "naturalGas" | "electric" | ""
+  age21PlusHeatSource: types.optional(types.string, ""),
+  
+  // Refrigerant Type
+  refrigerantType: types.optional(types.string, ""), // "r22" | "r410" | "other"
+  refrigerantOtherSpec: types.optional(types.string, ""), // When "other" selected
+  
+  // Responsibilities (Maintenance & Replacement)
+  maintenanceResponsibility: types.optional(types.string, ""), // "unk" | "owner" | "tenant" | "varies"
+  replacementResponsibility: types.optional(types.string, ""),
+
+  assessment: types.optional(ConditionAssessment, {}),
+  
+
+})
+.actions((self) => ({
+    update(data: { assessment?: Record<string, any> }) {
+        if (data.assessment) Object.assign(self.assessment as any, data.assessment)
+    },
+}))
+
+/**
+ * Furnace-specific model
+ * Different from HVACUnitBase: has Location field instead of Refrigerant
+ * Simpler structure - no age brackets with tonnage
+ */
+export const FurnaceBaseModel = types.model("FurnaceBase", {
+  // Basic Info
+  quantity: types.optional(types.number, 0),
+  
+  // Location (where in building: attic, basement, etc.)
+  location: types.optional(types.string, ""), // "attic" | "basement" | "closet" | etc
+
+  
+  // Heat Source (Natural Gas or Electric)
+  heatSource: types.optional(types.string, ""), // "naturalGas" | "electric"
+  
+  // Responsibilities
+  maintenanceResponsibility: types.optional(types.string, ""),
+  replacementResponsibility: types.optional(types.string, ""),
+})
+
