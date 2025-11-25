@@ -54,7 +54,10 @@ export const AIR_HANDLER_MOUNTING_LOCATION_OPTIONS = [
     { id: "wall", label: "Wall" },
 ] as const
 
-
+export const EXHAUST_LOCATION_OPTIONS = [
+    { id: "roofmounted", label: "Roof-mounted" },
+    { id: "wallmounted", label: "Wall-mounted" },
+] as const
 
 // Type exports for TypeScript
 export type RefrigerantTypeId = typeof REFRIGERANT_TYPE_OPTIONS[number]["id"]
@@ -62,3 +65,6 @@ export type HeatSourceId = typeof HEAT_SOURCE_OPTIONS[number]["id"]
 export type ResponsibilityId = typeof RESPONSIBILITY_OPTIONS[number]["id"]
 export type MountingLocationId = typeof MOUNTING_LOCATION_OPTIONS[number]["id"]
 export type MiscUnitsHeatSourceId = typeof MISC_UNITS_HEAT_SOURCE_OPTIONS[number]["id"]
+export type MiscUnitsMountingLocationId = typeof MISC_UNITS_MOUNTING_LOCATION_OPTIONS[number]["id"]
+export type AirHandlerMountingLocationId = typeof AIR_HANDLER_MOUNTING_LOCATION_OPTIONS[number]["id"]
+export type ExhaustLocationId = typeof EXHAUST_LOCATION_OPTIONS[number]["id"]
