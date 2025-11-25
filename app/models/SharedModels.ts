@@ -64,6 +64,52 @@ export const HVACUnitBaseModel = types.model("HVACUnitBase", {
     },
 }))
 
+//hvac unit base model without the refrigerant type and other specific
+export const HVACUnitBaseModelWithoutRefrigerantAndOtherSpec = types.model("HVACUnitBaseWithoutRefrigerantAndOtherSpec", {
+  // Basic Info
+  quantity: types.optional(types.number, 0),
+  capacityRangeTons: types.optional(types.string, ""), // e.g., "3-5"
+  totalCapacityTons: types.optional(types.number, 0),
+  
+  // Age Brackets - Tonnage per bracket (0-10, 11-20, 21+)
+  age0to10Tons: types.optional(types.number, 0),
+  age11to20Tons: types.optional(types.number, 0),
+  age21PlusTons: types.optional(types.number, 0),
+
+  assessment: types.optional(ConditionAssessment, {}),
+  
+
+})
+.actions((self) => ({
+    update(data: { assessment?: Record<string, any> }) {
+        if (data.assessment) Object.assign(self.assessment as any, data.assessment)
+    },
+}))
+
+//unit manufacturer and specifics dynamic list
+
+export const UnitManufacturerAndSpecificsModel = types.model("UnitManufacturerAndSpecificsModel", {
+  manufacturer: types.optional(types.string, ""),
+  quantity: types.optional(types.number, 0),
+  tenantSpace: types.optional(types.string, ""),
+  approxTonnage: types.optional(types.number, 0),
+  approxAge: types.optional(types.number, 0),
+  type: types.optional(types.string, ""),
+
+})
+.actions((self) => ({
+    update(data: { manufacturer?: string; quantity?: number; tenantSpace?: string; approxTonnage?: number; approxAge?: number; type?: string }) {
+        if (data.manufacturer !== undefined) self.manufacturer = data.manufacturer
+        if (data.quantity !== undefined) self.quantity = data.quantity
+        if (data.tenantSpace !== undefined) self.tenantSpace = data.tenantSpace
+        if (data.approxTonnage !== undefined) self.approxTonnage = data.approxTonnage
+        if (data.approxAge !== undefined) self.approxAge = data.approxAge
+        if (data.type !== undefined) self.type = data.type
+    },
+}))
+
+
+
 /**
  * Furnace-specific model
  * Different from HVACUnitBase: has Location field instead of Refrigerant
