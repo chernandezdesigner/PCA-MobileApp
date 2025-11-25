@@ -1,5 +1,10 @@
-import { types } from "mobx-state-tree"
-import { HVACUnitBaseModel, FurnaceBaseModel } from "../SharedModels"
+import { types, destroy } from "mobx-state-tree"
+import { 
+  HVACUnitBaseModel, 
+  FurnaceBaseModel, 
+  HVACUnitBaseModelWithoutRefrigerantAndOtherSpec,
+  UnitManufacturerAndSpecificsModel,
+} from "../SharedModels"
 
 // ============================================
 // HVAC Individual Units - Step 1
@@ -48,6 +53,33 @@ const createHVACUnitModel = (modelName: string) =>
         if (data.maintenanceResponsibility !== undefined) self.maintenanceResponsibility = data.maintenanceResponsibility
         if (data.replacementResponsibility !== undefined) self.replacementResponsibility = data.replacementResponsibility
         // Assessment uses inherited update() action from base model
+        if (data.assessment) self.update({ assessment: data.assessment })
+      },
+    }))
+
+/**
+ * HVAC Unit Model Factory (Without Refrigerant)
+ * Used by: Air Handler, PTACs, Window Units
+ * Simpler - no refrigerant or heat source fields
+ */
+const createHVACUnitModelWithoutRefrigerant = (modelName: string) => 
+  HVACUnitBaseModelWithoutRefrigerantAndOtherSpec.named(modelName)
+    .actions((self) => ({
+      updateUnit(data: {
+        quantity?: number
+        capacityRangeTons?: string
+        totalCapacityTons?: number
+        age0to10Tons?: number
+        age11to20Tons?: number
+        age21PlusTons?: number
+        assessment?: Record<string, any>
+      }) {
+        if (data.quantity !== undefined) self.quantity = data.quantity
+        if (data.capacityRangeTons !== undefined) self.capacityRangeTons = data.capacityRangeTons
+        if (data.totalCapacityTons !== undefined) self.totalCapacityTons = data.totalCapacityTons
+        if (data.age0to10Tons !== undefined) self.age0to10Tons = data.age0to10Tons
+        if (data.age11to20Tons !== undefined) self.age11to20Tons = data.age11to20Tons
+        if (data.age21PlusTons !== undefined) self.age21PlusTons = data.age21PlusTons
         if (data.assessment) self.update({ assessment: data.assessment })
       },
     }))
@@ -159,6 +191,96 @@ export const SplitSystemHeatPumpAccordionModel = types.model("SplitSystemHeatPum
     },
   }))
 
+/**
+ * Air Handler Accordion
+ * Single entry - no refrigerant
+ */
+export const AirHandlerAccordionModel = types.model("AirHandlerAccordion", {
+  NotApplicable: types.optional(types.boolean, false),
+  airHandler: types.optional(createHVACUnitModelWithoutRefrigerant("AirHandler"), {}),
+})
+  .actions((self) => ({
+    update(data: { 
+      NotApplicable?: boolean
+      airHandler?: Record<string, any>
+    }) {
+      if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
+      if (data.airHandler) self.airHandler.updateUnit(data.airHandler)
+    },
+  }))
+
+/**
+ * Owner PTACs Accordion
+ * Single entry - no refrigerant
+ */
+export const OwnerPTACsAccordionModel = types.model("OwnerPTACsAccordion", {
+  NotApplicable: types.optional(types.boolean, false),
+  ownerPTACs: types.optional(createHVACUnitModelWithoutRefrigerant("OwnerPTACs"), {}),
+})
+  .actions((self) => ({
+    update(data: { 
+      NotApplicable?: boolean
+      ownerPTACs?: Record<string, any>
+    }) {
+      if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
+      if (data.ownerPTACs) self.ownerPTACs.updateUnit(data.ownerPTACs)
+    },
+  }))
+
+/**
+ * Tenant PTACs Accordion
+ * Single entry - no refrigerant
+ */
+export const TenantPTACsAccordionModel = types.model("TenantPTACsAccordion", {
+  NotApplicable: types.optional(types.boolean, false),
+  tenantPTACs: types.optional(createHVACUnitModelWithoutRefrigerant("TenantPTACs"), {}),
+})
+  .actions((self) => ({
+    update(data: { 
+      NotApplicable?: boolean
+      tenantPTACs?: Record<string, any>
+    }) {
+      if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
+      if (data.tenantPTACs) self.tenantPTACs.updateUnit(data.tenantPTACs)
+    },
+  }))
+
+/**
+ * Window Units (Owner) Accordion
+ * Single entry - no refrigerant
+ */
+export const WindowUnitsOwnerAccordionModel = types.model("WindowUnitsOwnerAccordion", {
+  NotApplicable: types.optional(types.boolean, false),
+  windowUnitsOwner: types.optional(createHVACUnitModelWithoutRefrigerant("WindowUnitsOwner"), {}),
+})
+  .actions((self) => ({
+    update(data: { 
+      NotApplicable?: boolean
+      windowUnitsOwner?: Record<string, any>
+    }) {
+      if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
+      if (data.windowUnitsOwner) self.windowUnitsOwner.updateUnit(data.windowUnitsOwner)
+    },
+  }))
+
+/**
+ * Window Units (Tenant) Accordion
+ * Single entry - no refrigerant
+ */
+export const WindowUnitsTenantAccordionModel = types.model("WindowUnitsTenantAccordion", {
+  NotApplicable: types.optional(types.boolean, false),
+  windowUnitsTenant: types.optional(createHVACUnitModelWithoutRefrigerant("WindowUnitsTenant"), {}),
+})
+  .actions((self) => ({
+    update(data: { 
+      NotApplicable?: boolean
+      windowUnitsTenant?: Record<string, any>
+    }) {
+      if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
+      if (data.windowUnitsTenant) self.windowUnitsTenant.updateUnit(data.windowUnitsTenant)
+    },
+  }))
+
 // ============================================
 // MAIN STEP MODEL
 // Combines all accordion models
@@ -169,6 +291,15 @@ export const MechanicalSystemsStep1 = types.model("MechanicalSystemsStep1", {
   splitSystemCondenser: types.optional(SplitSystemCondenserAccordionModel, {}),
   furnace: types.optional(FurnaceAccordionModel, {}),
   splitSystemHeatPump: types.optional(SplitSystemHeatPumpAccordionModel, {}),
+  airHandler: types.optional(AirHandlerAccordionModel, {}),
+  ownerPTACs: types.optional(OwnerPTACsAccordionModel, {}),
+  tenantPTACs: types.optional(TenantPTACsAccordionModel, {}),
+  windowUnitsOwner: types.optional(WindowUnitsOwnerAccordionModel, {}),
+  windowUnitsTenant: types.optional(WindowUnitsTenantAccordionModel, {}),
+  
+  // Dynamic list for Unit Manufacturer & Specifics (like Personnel Interviewed pattern)
+  unitManufacturerSpecifics: types.optional(types.array(UnitManufacturerAndSpecificsModel), []),
+  
   comments: types.optional(types.string, ""),
   lastModified: types.optional(types.Date, () => new Date()),
 })
@@ -192,6 +323,74 @@ export const MechanicalSystemsStep1 = types.model("MechanicalSystemsStep1", {
       self.splitSystemHeatPump.update(data)
       self.lastModified = new Date()
     },
+    updateAirHandler(data: Parameters<typeof self.airHandler.update>[0]) {
+      self.airHandler.update(data)
+      self.lastModified = new Date()
+    },
+    updateOwnerPTACs(data: Parameters<typeof self.ownerPTACs.update>[0]) {
+      self.ownerPTACs.update(data)
+      self.lastModified = new Date()
+    },
+    updateTenantPTACs(data: Parameters<typeof self.tenantPTACs.update>[0]) {
+      self.tenantPTACs.update(data)
+      self.lastModified = new Date()
+    },
+    updateWindowUnitsOwner(data: Parameters<typeof self.windowUnitsOwner.update>[0]) {
+      self.windowUnitsOwner.update(data)
+      self.lastModified = new Date()
+    },
+    updateWindowUnitsTenant(data: Parameters<typeof self.windowUnitsTenant.update>[0]) {
+      self.windowUnitsTenant.update(data)
+      self.lastModified = new Date()
+    },
+    
+    // Dynamic Unit Manufacturer & Specifics actions (like Personnel Interviewed)
+    addUnitManufacturerSpecific(
+      manufacturer: string,
+      quantity: number,
+      tenantSpace: string,
+      approxTonnage: number,
+      approxAge: number,
+      type: string,
+    ) {
+      const id = `unit_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+      self.unitManufacturerSpecifics.push({
+        id,
+        manufacturer,
+        quantity,
+        tenantSpace,
+        approxTonnage,
+        approxAge,
+        type,
+      } as any)
+      self.lastModified = new Date()
+      return id
+    },
+    removeUnitManufacturerSpecific(id: string) {
+      const unit = self.unitManufacturerSpecifics.find((u) => (u as any).id === id)
+      if (unit) {
+        destroy(unit)
+        self.lastModified = new Date()
+      }
+    },
+    updateUnitManufacturerSpecific(
+      id: string,
+      data: Partial<{
+        manufacturer: string
+        quantity: number
+        tenantSpace: string
+        approxTonnage: number
+        approxAge: number
+        type: string
+      }>,
+    ) {
+      const unit = self.unitManufacturerSpecifics.find((u) => (u as any).id === id)
+      if (unit) {
+        unit.update(data)
+        self.lastModified = new Date()
+      }
+    },
+    
     updateComments(value: string) {
       self.comments = value
       self.lastModified = new Date()

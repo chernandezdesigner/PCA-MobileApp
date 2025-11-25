@@ -89,13 +89,13 @@ export const HVACUnitBaseModelWithoutRefrigerantAndOtherSpec = types.model("HVAC
 //unit manufacturer and specifics dynamic list
 
 export const UnitManufacturerAndSpecificsModel = types.model("UnitManufacturerAndSpecificsModel", {
+  id: types.identifier,
   manufacturer: types.optional(types.string, ""),
   quantity: types.optional(types.number, 0),
   tenantSpace: types.optional(types.string, ""),
   approxTonnage: types.optional(types.number, 0),
   approxAge: types.optional(types.number, 0),
   type: types.optional(types.string, ""),
-
 })
 .actions((self) => ({
     update(data: { manufacturer?: string; quantity?: number; tenantSpace?: string; approxTonnage?: number; approxAge?: number; type?: string }) {
