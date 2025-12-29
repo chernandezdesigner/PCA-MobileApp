@@ -32,6 +32,14 @@ export const MOUNTING_LOCATION_OPTIONS = [
   { id: "padMounted", label: "Pad-mounted" },
 ] as const
 
+// Unit Manufacturer & Specifics - Type dropdown (for dynamic table in Step 1)
+export const HVAC_UNIT_TYPE_OPTIONS = [
+  { id: "packagedRTU", label: "Packaged - RTU" },
+  { id: "packagedPad", label: "Packaged - Pad" },
+  { id: "splitSystemRTU", label: "Split System - RTU" },
+  { id: "splitSystemPad", label: "Split System - Pad" },
+] as const
+
 //step 2 Misc Units Specific options
 
 export const MISC_UNITS_HEAT_SOURCE_OPTIONS = [
@@ -250,6 +258,7 @@ export type RefrigerantTypeId = typeof REFRIGERANT_TYPE_OPTIONS[number]["id"]
 export type HeatSourceId = typeof HEAT_SOURCE_OPTIONS[number]["id"]
 export type ResponsibilityId = typeof RESPONSIBILITY_OPTIONS[number]["id"]
 export type MountingLocationId = typeof MOUNTING_LOCATION_OPTIONS[number]["id"]
+export type HVACUnitTypeId = typeof HVAC_UNIT_TYPE_OPTIONS[number]["id"]
 export type MiscUnitsHeatSourceId = typeof MISC_UNITS_HEAT_SOURCE_OPTIONS[number]["id"]
 export type MiscUnitsMountingLocationId = typeof MISC_UNITS_MOUNTING_LOCATION_OPTIONS[number]["id"]
 export type AirHandlerMountingLocationId = typeof AIR_HANDLER_MOUNTING_LOCATION_OPTIONS[number]["id"]

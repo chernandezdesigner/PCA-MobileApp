@@ -353,6 +353,12 @@ export const MechanicalSystemsStep1 = types.model("MechanicalSystemsStep1", {
       approxAge: number,
       type: string,
     ) {
+      // Max limit: 30 units
+      if (self.unitManufacturerSpecifics.length >= 30) {
+        console.warn("Cannot add more than 30 HVAC unit specifications")
+        return null
+      }
+      
       const id = `unit_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
       self.unitManufacturerSpecifics.push({
         id,
