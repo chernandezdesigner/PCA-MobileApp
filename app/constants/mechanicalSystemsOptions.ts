@@ -111,7 +111,7 @@ export const COOLING_TOWER_TYPE_OPTIONS = [
     { id: "closedloop", label: "Closed-loop (fluid coolers)" },
 ] as const
 
-//Step 4 Boilers - heat options 
+//Step 4 Boilers - heat options & boilers plumbing water options
 
 export const BOILER_HEAT_TYPE_OPTIONS = [
     { id: "steam", label: "Steam" },
