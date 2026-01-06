@@ -142,7 +142,7 @@ export const WATERMETERS_OPTIONS = [
     { id: "vault", label: "Vault" },
 ] as const
 
-export const WATERPIPING_MATERIAL_OPTIONS = [
+export const WASTEPIPING_MATERIAL_OPTIONS = [
     { id: "pvc", label: "PVC" },
     { id: "castiron", label: "Cast Iron" },
     { id: "abs", label: "ABS" },
