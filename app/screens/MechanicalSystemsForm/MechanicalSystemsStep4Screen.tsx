@@ -533,7 +533,7 @@ export const MechanicalSystemsStep4Screen: FC<MechanicalSystemsStep4ScreenProps>
 
       <View style={$stickyFooter}>
         <StickyFooterNav onBack={onBack} onNext={onNext} showCamera={true} />
-      </View>
+    </View>
     </Screen>
   )
 })
