@@ -80,7 +80,21 @@ export const BoilerModel = types.model("Boiler", {
  */
 export const HeatBoilersAccordionModel = types.model("HeatBoilersAccordion", {
   NotApplicable: types.optional(types.boolean, false),
-  units: types.optional(types.array(BoilerModel), []),
+  units: types.optional(types.array(BoilerModel), () => [
+    BoilerModel.create({
+      id: `heatboiler_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      quantity: 0,
+      capacityBTU: 0,
+      yearInstall: 0,
+      yearRebuild: 0,
+      manufacturerIdLocation: "",
+      boilerType: [],
+      fuelType: [],
+      waterPumpsManufacturerIdLocation: "",
+      observations: "",
+      areasServed: "",
+    }),
+  ]),
 })
   .actions((self) => ({
     update(data: {
@@ -149,7 +163,21 @@ export const HeatBoilersAccordionModel = types.model("HeatBoilersAccordion", {
  */
 export const PlumbingWaterBoilersAccordionModel = types.model("PlumbingWaterBoilersAccordion", {
   NotApplicable: types.optional(types.boolean, false),
-  units: types.optional(types.array(BoilerModel), []),
+  units: types.optional(types.array(BoilerModel), () => [
+    BoilerModel.create({
+      id: `plumbingboiler_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      quantity: 0,
+      capacityBTU: 0,
+      yearInstall: 0,
+      yearRebuild: 0,
+      manufacturerIdLocation: "",
+      boilerType: [],
+      fuelType: [],
+      waterPumpsManufacturerIdLocation: "",
+      observations: "",
+      areasServed: "",
+    }),
+  ]),
 })
   .actions((self) => ({
     update(data: {
