@@ -1,19 +1,30 @@
 import React from "react"
-import { View, Text, StyleSheet } from "react-native"
 import { observer } from "mobx-react-lite"
+import { Screen } from "@/components/Screen"
+import { Text } from "@/components/Text"
+import { StickyFooterNav } from "@/components/StickyFooterNav"
+import { useNavigation } from "@react-navigation/native"
+import { useDrawerControl } from "@/context/DrawerContext"
 
 export const MechanicalSystemsStep9Screen = observer(function MechanicalSystemsStep9Screen() {
+  const navigation = useNavigation()
+  const { openDrawer } = useDrawerControl()
+  
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Mechanical Systems - Step 9</Text>
-      <Text style={styles.subtitle}>Fire Protection</Text>
-    </View>
+    <Screen style={{ flex: 1, justifyContent: "center", alignItems: "center" }} preset="fixed">
+      <Text preset="heading" text="MechanicalSystemsStep9Screen" />
+      <Text preset="subheading" text="Fire Protection - To Be Built" />
+      
+      <StickyFooterNav
+        onBack={() => {
+          // @ts-expect-error route params for animation
+          navigation.navigate("MechanicalSystemsStep8" as never, { transition: "slide_from_left" } as never)
+        }}
+        onNext={openDrawer}
+        nextButtonText="Next Form"
+        showCamera={true}
+      />
+    </Screen>
   )
-})
-
-const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", alignItems: "center", padding: 20 },
-  title: { fontSize: 24, fontWeight: "bold", marginBottom: 10 },
-  subtitle: { fontSize: 18, color: "#666" },
 })
 

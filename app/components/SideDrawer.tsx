@@ -84,7 +84,17 @@ const NAVIGATION_STRUCTURE: NavigationItem[] = [
   {
     id: "mechanical-systems",
     label: "Mechanical Systems",
-    children: [],
+    children: [
+      { id: "ms-step1", label: "HVAC Individual Units", route: "MechanicalSystemsStep1" },
+      { id: "ms-step2", label: "Misc Units", route: "MechanicalSystemsStep2" },
+      { id: "ms-step3", label: "Chillers & Cooling Towers", route: "MechanicalSystemsStep3" },
+      { id: "ms-step4", label: "Boilers", route: "MechanicalSystemsStep4" },
+      { id: "ms-step5", label: "Plumbing Systems", route: "MechanicalSystemsStep5" },
+      { id: "ms-step6", label: "Water Heaters", route: "MechanicalSystemsStep6" },
+      { id: "ms-step7", label: "Electrical", route: "MechanicalSystemsStep7" },
+      { id: "ms-step8", label: "Elevators & Conveying Systems", route: "MechanicalSystemsStep8" },
+      { id: "ms-step9", label: "Fire Protection", route: "MechanicalSystemsStep9" },
+    ],
   },
   {
     id: "interior-conditions",

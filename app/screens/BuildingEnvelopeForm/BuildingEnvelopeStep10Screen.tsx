@@ -512,10 +512,8 @@ export const BuildingEnvelopeStep10Screen: FC<BuildingEnvelopeStep10ScreenProps>
             // @ts-expect-error route params for animation
             navigation.navigate("BuildingEnvelopeStep9" as never, { transition: "slide_from_left" } as never)
           }}
-          onNext={() => {
-            // Navigate to next form or summary
-            navigation.navigate("AssessmentSummary" as never)
-          }}
+          onNext={openDrawer}
+          nextButtonText="Next Form"
           showCamera={true}
         />
       </View>

@@ -26,10 +26,14 @@ export const RESPONSIBILITY_OPTIONS = [
 ] as const
 
 
-export const MOUNTING_LOCATION_OPTIONS = [
+export const PACKAGED_UNIT_MOUNTING_LOCATION_OPTIONS = [
   { id: "gradeMounted", label: "Grade-mounted" },
   { id: "rooftop", label: "Rooftop" },
+] as const
+
+export const SPLIT_SYSTEM_MOUNTING_LOCATION_OPTIONS = [
   { id: "padMounted", label: "Pad-mounted" },
+  { id: "rooftop", label: "Rooftop" },
 ] as const
 
 // Unit Manufacturer & Specifics - Type dropdown (for dynamic table in Step 1)
@@ -263,7 +267,8 @@ export const NEAREST_FIRE_HYDRANT_OPTIONS = [
 export type RefrigerantTypeId = typeof REFRIGERANT_TYPE_OPTIONS[number]["id"]
 export type HeatSourceId = typeof HEAT_SOURCE_OPTIONS[number]["id"]
 export type ResponsibilityId = typeof RESPONSIBILITY_OPTIONS[number]["id"]
-export type MountingLocationId = typeof MOUNTING_LOCATION_OPTIONS[number]["id"]
+export type PackagedUnitMountingLocationId = typeof PACKAGED_UNIT_MOUNTING_LOCATION_OPTIONS[number]["id"]
+export type SplitSystemMountingLocationId = typeof SPLIT_SYSTEM_MOUNTING_LOCATION_OPTIONS[number]["id"]
 export type HVACUnitTypeId = typeof HVAC_UNIT_TYPE_OPTIONS[number]["id"]
 export type UnitHeaterTypeId = typeof UNIT_HEATER_TYPE_OPTIONS[number]["id"]
 export type MiscUnitsHeatSourceId = typeof MISC_UNITS_HEAT_SOURCE_OPTIONS[number]["id"]

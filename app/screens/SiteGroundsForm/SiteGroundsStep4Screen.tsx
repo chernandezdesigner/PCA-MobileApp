@@ -1009,10 +1009,8 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
             // @ts-expect-error route params for animation
             navigation.navigate("SiteGroundsStep3" as never, { transition: "slide_from_left" } as never)
           }}
-          onNext={() => {
-            // Navigate to next section or finish
-            navigation.goBack()
-          }}
+          onNext={openDrawer}
+          nextButtonText="Next Form"
           showCamera={true}
         />
       </View>

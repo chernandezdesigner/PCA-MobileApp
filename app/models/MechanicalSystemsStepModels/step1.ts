@@ -32,10 +32,9 @@ const createHVACUnitModel = (modelName: string) =>
         age0to10Tons?: number
         age11to20Tons?: number
         age21PlusTons?: number
-        age11to20HeatSource?: string
-        age21PlusHeatSource?: string
         refrigerantType?: string
         refrigerantOtherSpec?: string
+        heatSource?: string
         maintenanceResponsibility?: string
         replacementResponsibility?: string
         assessment?: Record<string, any>
@@ -46,10 +45,9 @@ const createHVACUnitModel = (modelName: string) =>
         if (data.age0to10Tons !== undefined) self.age0to10Tons = data.age0to10Tons
         if (data.age11to20Tons !== undefined) self.age11to20Tons = data.age11to20Tons
         if (data.age21PlusTons !== undefined) self.age21PlusTons = data.age21PlusTons
-        if (data.age11to20HeatSource !== undefined) self.age11to20HeatSource = data.age11to20HeatSource
-        if (data.age21PlusHeatSource !== undefined) self.age21PlusHeatSource = data.age21PlusHeatSource
         if (data.refrigerantType !== undefined) self.refrigerantType = data.refrigerantType
         if (data.refrigerantOtherSpec !== undefined) self.refrigerantOtherSpec = data.refrigerantOtherSpec
+        if (data.heatSource !== undefined) self.heatSource = data.heatSource
         if (data.maintenanceResponsibility !== undefined) self.maintenanceResponsibility = data.maintenanceResponsibility
         if (data.replacementResponsibility !== undefined) self.replacementResponsibility = data.replacementResponsibility
         // Assessment uses inherited update() action from base model
@@ -72,6 +70,7 @@ const createHVACUnitModelWithoutRefrigerant = (modelName: string) =>
         age0to10Tons?: number
         age11to20Tons?: number
         age21PlusTons?: number
+        heatSource?: string
         assessment?: Record<string, any>
       }) {
         if (data.quantity !== undefined) self.quantity = data.quantity
@@ -298,7 +297,16 @@ export const MechanicalSystemsStep1 = types.model("MechanicalSystemsStep1", {
   windowUnitsTenant: types.optional(WindowUnitsTenantAccordionModel, {}),
   
   // Dynamic list for Unit Manufacturer & Specifics (like Personnel Interviewed pattern)
-  unitManufacturerSpecifics: types.optional(types.array(UnitManufacturerAndSpecificsModel), []),
+  // Initialize with 1 empty entry by default
+  unitManufacturerSpecifics: types.optional(types.array(UnitManufacturerAndSpecificsModel), () => [{
+    id: `unit_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+    manufacturer: "",
+    quantity: 0,
+    tenantSpace: "",
+    approxTonnage: 0,
+    approxAge: 0,
+    type: "",
+  }]),
   
   comments: types.optional(types.string, ""),
   lastModified: types.optional(types.Date, () => new Date()),

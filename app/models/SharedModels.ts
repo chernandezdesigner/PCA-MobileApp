@@ -42,9 +42,8 @@ export const HVACUnitBaseModel = types.model("HVACUnitBase", {
   age11to20Tons: types.optional(types.number, 0),
   age21PlusTons: types.optional(types.number, 0),
   
-  // Heat Source per age bracket (Natural Gas or Electric)
-  age11to20HeatSource: types.optional(types.string, ""), // "naturalGas" | "electric" | ""
-  age21PlusHeatSource: types.optional(types.string, ""),
+  // Heat Source (Natural Gas or Electric)
+  heatSource: types.optional(types.string, ""), // "naturalGas" | "electric" | ""
   
   // Refrigerant Type
   refrigerantType: types.optional(types.string, ""), // "r22" | "r410" | "other"
