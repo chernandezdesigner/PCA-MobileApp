@@ -15,23 +15,41 @@ import { ConditionAssessment } from "../SharedModels"
  * Chiller Model (Individual Unit)
  * Contains: All technical specs + assessment + observations/areas served per unit
  */
-export const ChillerModel = types.model("Chiller", {
-  id: types.identifier,
-  quantity: types.optional(types.number, 0),
-  capacityTons: types.optional(types.number, 0),
-  yearInstall: types.optional(types.number, 0),
-  yearRebuild: types.optional(types.number, 0),
-  manufacturerIdLocation: types.optional(types.string, ""),
-  chillerType: types.optional(types.array(types.string), []), // Reciprocating, Centrifugal, Scroll, Rotary
-  coolingMethod: types.optional(types.array(types.string), []), // Single-effect, Double-effect, Air-cooled, Water-cooled
-  chillerH2oPumps: types.optional(types.string, ""), // Pump details
-  refrigerant: types.optional(types.array(types.string), []), // R-14, R-22, R-125, R-134A, etc.
-  assessment: types.optional(ConditionAssessment, {}),
-  
-  // Per-unit fields (not shared at accordion level)
-  observations: types.optional(types.string, ""),
-  areasServed: types.optional(types.string, ""),
-})
+export const ChillerModel = types
+  .model("Chiller", {
+    id: types.identifier,
+    quantity: types.optional(types.number, 0),
+    capacityTons: types.optional(types.number, 0),
+    yearInstall: types.optional(types.number, 0),
+    yearRebuild: types.optional(types.number, 0),
+    manufacturerIdLocation: types.optional(types.string, ""),
+    chillerType: types.optional(types.string, ""), // Reciprocating, Centrifugal, Scroll, Rotary (single-select dropdown)
+    coolingMethod: types.optional(types.array(types.string), []), // Single-effect, Double-effect, Air-cooled, Water-cooled
+    chillerH2oPumps: types.optional(types.string, ""), // Pump details
+    chillerH2oPumpsAssessment: types.optional(ConditionAssessment, {}), // Pump assessment
+    refrigerant: types.optional(types.string, ""), // R-14, R-22, R-125, R-134A, etc. (single-select dropdown)
+    assessment: types.optional(ConditionAssessment, {}),
+    
+    // Per-unit fields (not shared at accordion level)
+    observations: types.optional(types.string, ""),
+    areasServed: types.optional(types.string, ""),
+  })
+  .preProcessSnapshot((snapshot: any) => {
+    // Migration: Convert old array format to new string format
+    const processed = { ...snapshot }
+    
+    // Handle chillerType migration from array to string
+    if (Array.isArray(processed.chillerType)) {
+      processed.chillerType = processed.chillerType.length > 0 ? processed.chillerType[0] : ""
+    }
+    
+    // Handle refrigerant migration from array to string
+    if (Array.isArray(processed.refrigerant)) {
+      processed.refrigerant = processed.refrigerant.length > 0 ? processed.refrigerant[0] : ""
+    }
+    
+    return processed
+  })
   .actions((self) => ({
     update(data: {
       quantity?: number
@@ -39,10 +57,11 @@ export const ChillerModel = types.model("Chiller", {
       yearInstall?: number
       yearRebuild?: number
       manufacturerIdLocation?: string
-      chillerType?: string[]
+      chillerType?: string
       coolingMethod?: string[]
       chillerH2oPumps?: string
-      refrigerant?: string[]
+      chillerH2oPumpsAssessment?: Record<string, any>
+      refrigerant?: string
       assessment?: Record<string, any>
       observations?: string
       areasServed?: string
@@ -52,10 +71,11 @@ export const ChillerModel = types.model("Chiller", {
       if (data.yearInstall !== undefined) self.yearInstall = data.yearInstall
       if (data.yearRebuild !== undefined) self.yearRebuild = data.yearRebuild
       if (data.manufacturerIdLocation !== undefined) self.manufacturerIdLocation = data.manufacturerIdLocation
-      if (data.chillerType !== undefined) self.chillerType.replace(data.chillerType)
+      if (data.chillerType !== undefined) self.chillerType = data.chillerType
       if (data.coolingMethod !== undefined) self.coolingMethod.replace(data.coolingMethod)
       if (data.chillerH2oPumps !== undefined) self.chillerH2oPumps = data.chillerH2oPumps
-      if (data.refrigerant !== undefined) self.refrigerant.replace(data.refrigerant)
+      if (data.chillerH2oPumpsAssessment) Object.assign(self.chillerH2oPumpsAssessment as any, data.chillerH2oPumpsAssessment)
+      if (data.refrigerant !== undefined) self.refrigerant = data.refrigerant
       if (data.assessment) Object.assign(self.assessment as any, data.assessment)
       if (data.observations !== undefined) self.observations = data.observations
       if (data.areasServed !== undefined) self.areasServed = data.areasServed
@@ -66,22 +86,40 @@ export const ChillerModel = types.model("Chiller", {
  * Cooling Tower Model (Individual Unit)
  * Contains: All technical specs + assessment + observations/areas served per unit
  */
-export const CoolingTowerModel = types.model("CoolingTower", {
-  id: types.identifier,
-  quantity: types.optional(types.number, 0),
-  capacityTons: types.optional(types.number, 0),
-  yearInstall: types.optional(types.number, 0),
-  yearRebuild: types.optional(types.number, 0),
-  manufacturerIdLocation: types.optional(types.string, ""),
-  towerType: types.optional(types.array(types.string), []), // Open-loop (wet), Closed-loop (fluid coolers)
-  condensedH2oPumps: types.optional(types.string, ""), // Pump details
-  refrigerant: types.optional(types.array(types.string), []), // R-14, R-22, R-125, R-134A, etc.
-  assessment: types.optional(ConditionAssessment, {}),
-  
-  // Per-unit fields (not shared at accordion level)
-  observations: types.optional(types.string, ""),
-  areasServed: types.optional(types.string, ""),
-})
+export const CoolingTowerModel = types
+  .model("CoolingTower", {
+    id: types.identifier,
+    quantity: types.optional(types.number, 0),
+    capacityTons: types.optional(types.number, 0),
+    yearInstall: types.optional(types.number, 0),
+    yearRebuild: types.optional(types.number, 0),
+    manufacturerIdLocation: types.optional(types.string, ""),
+    towerType: types.optional(types.string, ""), // Open-loop (wet), Closed-loop (fluid coolers) (single-select dropdown)
+    condensedH2oPumps: types.optional(types.string, ""), // Pump details
+    condensedH2oPumpsAssessment: types.optional(ConditionAssessment, {}), // Pump assessment
+    refrigerant: types.optional(types.string, ""), // R-14, R-22, R-125, R-134A, etc. (single-select dropdown)
+    assessment: types.optional(ConditionAssessment, {}),
+    
+    // Per-unit fields (not shared at accordion level)
+    observations: types.optional(types.string, ""),
+    areasServed: types.optional(types.string, ""),
+  })
+  .preProcessSnapshot((snapshot: any) => {
+    // Migration: Convert old array format to new string format
+    const processed = { ...snapshot }
+    
+    // Handle towerType migration from array to string
+    if (Array.isArray(processed.towerType)) {
+      processed.towerType = processed.towerType.length > 0 ? processed.towerType[0] : ""
+    }
+    
+    // Handle refrigerant migration from array to string
+    if (Array.isArray(processed.refrigerant)) {
+      processed.refrigerant = processed.refrigerant.length > 0 ? processed.refrigerant[0] : ""
+    }
+    
+    return processed
+  })
   .actions((self) => ({
     update(data: {
       quantity?: number
@@ -89,9 +127,10 @@ export const CoolingTowerModel = types.model("CoolingTower", {
       yearInstall?: number
       yearRebuild?: number
       manufacturerIdLocation?: string
-      towerType?: string[]
+      towerType?: string
       condensedH2oPumps?: string
-      refrigerant?: string[]
+      condensedH2oPumpsAssessment?: Record<string, any>
+      refrigerant?: string
       assessment?: Record<string, any>
       observations?: string
       areasServed?: string
@@ -101,9 +140,10 @@ export const CoolingTowerModel = types.model("CoolingTower", {
       if (data.yearInstall !== undefined) self.yearInstall = data.yearInstall
       if (data.yearRebuild !== undefined) self.yearRebuild = data.yearRebuild
       if (data.manufacturerIdLocation !== undefined) self.manufacturerIdLocation = data.manufacturerIdLocation
-      if (data.towerType !== undefined) self.towerType.replace(data.towerType)
+      if (data.towerType !== undefined) self.towerType = data.towerType
       if (data.condensedH2oPumps !== undefined) self.condensedH2oPumps = data.condensedH2oPumps
-      if (data.refrigerant !== undefined) self.refrigerant.replace(data.refrigerant)
+      if (data.condensedH2oPumpsAssessment) Object.assign(self.condensedH2oPumpsAssessment as any, data.condensedH2oPumpsAssessment)
+      if (data.refrigerant !== undefined) self.refrigerant = data.refrigerant
       if (data.assessment) Object.assign(self.assessment as any, data.assessment)
       if (data.observations !== undefined) self.observations = data.observations
       if (data.areasServed !== undefined) self.areasServed = data.areasServed
@@ -124,7 +164,22 @@ export const CoolingTowerModel = types.model("CoolingTower", {
  */
 export const ChillersAccordionModel = types.model("ChillersAccordion", {
   NotApplicable: types.optional(types.boolean, false),
-  units: types.optional(types.array(ChillerModel), []),
+  units: types.optional(types.array(ChillerModel), () => [
+    ChillerModel.create({
+      id: `chiller_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      quantity: 0,
+      capacityTons: 0,
+      yearInstall: 0,
+      yearRebuild: 0,
+      manufacturerIdLocation: "",
+      chillerType: "",
+      coolingMethod: [],
+      chillerH2oPumps: "",
+      refrigerant: "",
+      observations: "",
+      areasServed: "",
+    }),
+  ]),
 })
   .actions((self) => ({
     update(data: {
@@ -139,10 +194,10 @@ export const ChillersAccordionModel = types.model("ChillersAccordion", {
       yearInstall: number,
       yearRebuild: number,
       manufacturerIdLocation: string,
-      chillerType: string[],
+      chillerType: string,
       coolingMethod: string[],
       chillerH2oPumps: string,
-      refrigerant: string[],
+      refrigerant: string,
     ) {
       if (self.units.length >= 3) {
         console.warn("Cannot add more than 3 Chillers")
@@ -176,10 +231,11 @@ export const ChillersAccordionModel = types.model("ChillersAccordion", {
       yearInstall?: number
       yearRebuild?: number
       manufacturerIdLocation?: string
-      chillerType?: string[]
+      chillerType?: string
       coolingMethod?: string[]
       chillerH2oPumps?: string
-      refrigerant?: string[]
+      chillerH2oPumpsAssessment?: Record<string, any>
+      refrigerant?: string
       assessment?: Record<string, any>
       observations?: string
       areasServed?: string
@@ -195,7 +251,21 @@ export const ChillersAccordionModel = types.model("ChillersAccordion", {
  */
 export const CoolingTowersAccordionModel = types.model("CoolingTowersAccordion", {
   NotApplicable: types.optional(types.boolean, false),
-  units: types.optional(types.array(CoolingTowerModel), []),
+  units: types.optional(types.array(CoolingTowerModel), () => [
+    CoolingTowerModel.create({
+      id: `coolingtower_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      quantity: 0,
+      capacityTons: 0,
+      yearInstall: 0,
+      yearRebuild: 0,
+      manufacturerIdLocation: "",
+      towerType: "",
+      condensedH2oPumps: "",
+      refrigerant: "",
+      observations: "",
+      areasServed: "",
+    }),
+  ]),
 })
   .actions((self) => ({
     update(data: {
@@ -210,9 +280,9 @@ export const CoolingTowersAccordionModel = types.model("CoolingTowersAccordion",
       yearInstall: number,
       yearRebuild: number,
       manufacturerIdLocation: string,
-      towerType: string[],
+      towerType: string,
       condensedH2oPumps: string,
-      refrigerant: string[],
+      refrigerant: string,
     ) {
       if (self.units.length >= 3) {
         console.warn("Cannot add more than 3 Cooling Towers")
@@ -245,9 +315,10 @@ export const CoolingTowersAccordionModel = types.model("CoolingTowersAccordion",
       yearInstall?: number
       yearRebuild?: number
       manufacturerIdLocation?: string
-      towerType?: string[]
+      towerType?: string
       condensedH2oPumps?: string
-      refrigerant?: string[]
+      condensedH2oPumpsAssessment?: Record<string, any>
+      refrigerant?: string
       assessment?: Record<string, any>
       observations?: string
       areasServed?: string
@@ -291,10 +362,10 @@ export const MechanicalSystemsStep3 = types.model("MechanicalSystemsStep3", {
       yearInstall: number,
       yearRebuild: number,
       manufacturerIdLocation: string,
-      chillerType: string[],
+      chillerType: string,
       coolingMethod: string[],
       chillerH2oPumps: string,
-      refrigerant: string[],
+      refrigerant: string,
     ) {
       const id = self.chillers.addUnit(
         quantity,
@@ -322,10 +393,11 @@ export const MechanicalSystemsStep3 = types.model("MechanicalSystemsStep3", {
       yearInstall?: number
       yearRebuild?: number
       manufacturerIdLocation?: string
-      chillerType?: string[]
+      chillerType?: string
       coolingMethod?: string[]
       chillerH2oPumps?: string
-      refrigerant?: string[]
+      chillerH2oPumpsAssessment?: Record<string, any>
+      refrigerant?: string
       assessment?: Record<string, any>
       observations?: string
       areasServed?: string
@@ -341,9 +413,9 @@ export const MechanicalSystemsStep3 = types.model("MechanicalSystemsStep3", {
       yearInstall: number,
       yearRebuild: number,
       manufacturerIdLocation: string,
-      towerType: string[],
+      towerType: string,
       condensedH2oPumps: string,
-      refrigerant: string[],
+      refrigerant: string,
     ) {
       const id = self.coolingTowers.addUnit(
         quantity,
@@ -370,9 +442,10 @@ export const MechanicalSystemsStep3 = types.model("MechanicalSystemsStep3", {
       yearInstall?: number
       yearRebuild?: number
       manufacturerIdLocation?: string
-      towerType?: string[]
+      towerType?: string
       condensedH2oPumps?: string
-      refrigerant?: string[]
+      condensedH2oPumpsAssessment?: Record<string, any>
+      refrigerant?: string
       assessment?: Record<string, any>
       observations?: string
       areasServed?: string
