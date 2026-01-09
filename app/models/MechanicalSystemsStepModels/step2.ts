@@ -103,7 +103,16 @@ export const ExhaustFanModel = types.model("ExhaustFan", {
  */
 export const UnitHeatersAccordionModel = types.model("UnitHeatersAccordion", {
   NotApplicable: types.optional(types.boolean, false),
-  units: types.optional(types.array(UnitHeaterModel), []),
+  units: types.optional(types.array(UnitHeaterModel), () => [
+    UnitHeaterModel.create({
+      id: `unitheat_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      type: "",
+      quantity: 0,
+      capacityRange: "",
+      heatSource: [],
+      mounted: [],
+    }),
+  ]),
   
   // Shared fields at accordion level
   observationsIssues: types.optional(types.string, ""),
@@ -174,7 +183,15 @@ export const UnitHeatersAccordionModel = types.model("UnitHeatersAccordion", {
  */
 export const AirHandlingUnitsAccordionModel = types.model("AirHandlingUnitsAccordion", {
   NotApplicable: types.optional(types.boolean, false),
-  units: types.optional(types.array(AirHandlingUnitModel), []),
+  units: types.optional(types.array(AirHandlingUnitModel), () => [
+    AirHandlingUnitModel.create({
+      id: `airhandler_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      quantity: 0,
+      cfm: 0,
+      heatSource: [],
+      mounted: [],
+    }),
+  ]),
   
   // Shared fields at accordion level
   observationsIssues: types.optional(types.string, ""),
@@ -242,7 +259,13 @@ export const AirHandlingUnitsAccordionModel = types.model("AirHandlingUnitsAccor
  */
 export const ExhaustFansAccordionModel = types.model("ExhaustFansAccordion", {
   NotApplicable: types.optional(types.boolean, false),
-  units: types.optional(types.array(ExhaustFanModel), []),
+  units: types.optional(types.array(ExhaustFanModel), () => [
+    ExhaustFanModel.create({
+      id: `exhaust_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      quantity: 0,
+      location: [],
+    }),
+  ]),
   
   // Shared fields at accordion level
   observationsIssues: types.optional(types.string, ""),
