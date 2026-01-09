@@ -2,6 +2,7 @@ import { Instance, SnapshotIn, SnapshotOut, types } from "mobx-state-tree"
 import { ProjectSummaryStore } from "./ProjectSummaryStore"
 import { SiteGroundsStore } from "./SiteGroundsStore"
 import { BuildingEnvelopeStore } from "./BuildingEnvelopeStore"
+import { MechanicalSystemsStore } from "./MechanicalSystemsStore"
 
 export const AssessmentModel = types
   .model("Assessment", {
@@ -14,6 +15,7 @@ export const AssessmentModel = types
     projectSummary: types.optional(ProjectSummaryStore, {}),
     siteGrounds: types.optional(SiteGroundsStore, {}),
     buildingEnvelope: types.optional(BuildingEnvelopeStore, {}),
+    mechanicalSystems: types.optional(MechanicalSystemsStore, {}),
   })
   .actions((self) => ({
     touch() {
