@@ -237,83 +237,64 @@ export const MechanicalSystemsStep6Screen: FC<MechanicalSystemsStep6ScreenProps>
           onToggle={(n) => setOpenKey(n ? "commonAreaWaterStorageTanks" : null)}
         >
           <View style={themed($sectionBody)}>
-            <ChecklistField
-              label="Has Water Storage Tanks?"
-              items={[
-                { id: "no", label: "No", checked: !store?.commonAreaWaterStorageTanks?.hasWaterStorageTanks },
-                { id: "yes", label: "Yes", checked: store?.commonAreaWaterStorageTanks?.hasWaterStorageTanks ?? false },
-              ]}
-              onToggle={(id, checked) => {
-                if (id === "yes") {
-                  store?.updateCommonAreaWaterStorageTanks?.({ hasWaterStorageTanks: checked })
-                } else {
-                  store?.updateCommonAreaWaterStorageTanks?.({ hasWaterStorageTanks: !checked })
-                }
-              }}
+            <View style={$row}>
+              <TextField
+                label="Quantity"
+                placeholder="Enter quantity"
+                keyboardType="numeric"
+                value={store?.commonAreaWaterStorageTanks?.quantity?.toString() ?? ""}
+                onChangeText={(val) => store?.updateCommonAreaWaterStorageTanks?.({ 
+                  quantity: val ? parseInt(val, 10) : 0 
+                })}
+                containerStyle={$halfWidth}
+              />
+              <TextField
+                label="Capacity"
+                placeholder="Enter capacity"
+                keyboardType="numeric"
+                value={store?.commonAreaWaterStorageTanks?.capacity?.toString() ?? ""}
+                onChangeText={(val) => store?.updateCommonAreaWaterStorageTanks?.({ 
+                  capacity: val ? parseInt(val, 10) : 0 
+                })}
+                containerStyle={$halfWidth}
+              />
+            </View>
+
+            <TextField
+              label="Yr Installed"
+              placeholder="Year"
+              keyboardType="numeric"
+              value={store?.commonAreaWaterStorageTanks?.yearInstalled?.toString() ?? ""}
+              onChangeText={(val) => store?.updateCommonAreaWaterStorageTanks?.({ 
+                yearInstalled: val ? parseInt(val, 10) : 0 
+              })}
             />
 
-            {store?.commonAreaWaterStorageTanks?.hasWaterStorageTanks && (
-              <>
-                <View style={$row}>
-                  <TextField
-                    label="Quantity"
-                    placeholder="Enter quantity"
-                    keyboardType="numeric"
-                    value={store?.commonAreaWaterStorageTanks?.quantity?.toString() ?? ""}
-                    onChangeText={(val) => store?.updateCommonAreaWaterStorageTanks?.({ 
-                      quantity: val ? parseInt(val, 10) : 0 
-                    })}
-                    containerStyle={$halfWidth}
-                  />
-                  <TextField
-                    label="Capacity"
-                    placeholder="Enter capacity"
-                    keyboardType="numeric"
-                    value={store?.commonAreaWaterStorageTanks?.capacity?.toString() ?? ""}
-                    onChangeText={(val) => store?.updateCommonAreaWaterStorageTanks?.({ 
-                      capacity: val ? parseInt(val, 10) : 0 
-                    })}
-                    containerStyle={$halfWidth}
-                  />
-                </View>
+            <View style={themed($controlGroup)}>
+              <Text preset="formLabel" text="Condition" />
+              <ConditionAssessment
+                value={store?.commonAreaWaterStorageTanks?.assessment.condition as any}
+                onChange={(v) => store?.updateCommonAreaWaterStorageTanks?.({ assessment: { condition: v } })}
+              />
+            </View>
 
-                <TextField
-                  label="Yr Installed"
-                  placeholder="Year"
-                  keyboardType="numeric"
-                  value={store?.commonAreaWaterStorageTanks?.yearInstalled?.toString() ?? ""}
-                  onChangeText={(val) => store?.updateCommonAreaWaterStorageTanks?.({ 
-                    yearInstalled: val ? parseInt(val, 10) : 0 
-                  })}
-                />
+            <View style={themed($controlGroup)}>
+              <Text preset="formLabel" text="Repair Status" />
+              <RepairStatus
+                value={store?.commonAreaWaterStorageTanks?.assessment.repairStatus as any}
+                onChange={(v) => store?.updateCommonAreaWaterStorageTanks?.({ assessment: { repairStatus: v } })}
+              />
+            </View>
 
-                <View style={themed($controlGroup)}>
-                  <Text preset="formLabel" text="Condition" />
-                  <ConditionAssessment
-                    value={store?.commonAreaWaterStorageTanks?.assessment.condition as any}
-                    onChange={(v) => store?.updateCommonAreaWaterStorageTanks?.({ assessment: { condition: v } })}
-                  />
-                </View>
-
-                <View style={themed($controlGroup)}>
-                  <Text preset="formLabel" text="Repair Status" />
-                  <RepairStatus
-                    value={store?.commonAreaWaterStorageTanks?.assessment.repairStatus as any}
-                    onChange={(v) => store?.updateCommonAreaWaterStorageTanks?.({ assessment: { repairStatus: v } })}
-                  />
-                </View>
-
-                <TextField
-                  label="Amount to Replace/Repair ($)"
-                  placeholder="Dollar amount"
-                  keyboardType="numeric"
-                  value={store?.commonAreaWaterStorageTanks?.amountToReplaceRepair?.toString() ?? ""}
-                  onChangeText={(val) => store?.updateCommonAreaWaterStorageTanks?.({ 
-                    amountToReplaceRepair: val ? parseInt(val, 10) : 0 
-                  })}
-                />
-              </>
-            )}
+            <TextField
+              label="Amount to Replace/Repair ($)"
+              placeholder="Dollar amount"
+              keyboardType="numeric"
+              value={store?.commonAreaWaterStorageTanks?.amountToReplaceRepair?.toString() ?? ""}
+              onChangeText={(val) => store?.updateCommonAreaWaterStorageTanks?.({ 
+                amountToReplaceRepair: val ? parseInt(val, 10) : 0 
+              })}
+            />
           </View>
         </SectionAccordion>
 
@@ -473,83 +454,64 @@ export const MechanicalSystemsStep6Screen: FC<MechanicalSystemsStep6ScreenProps>
           onToggle={(n) => setOpenKey(n ? "tenantSpacesWaterStorageTanks" : null)}
         >
           <View style={themed($sectionBody)}>
-            <ChecklistField
-              label="Has Water Storage Tanks?"
-              items={[
-                { id: "no", label: "No", checked: !store?.tenantSpacesWaterStorageTanks?.hasWaterStorageTanks },
-                { id: "yes", label: "Yes", checked: store?.tenantSpacesWaterStorageTanks?.hasWaterStorageTanks ?? false },
-              ]}
-              onToggle={(id, checked) => {
-                if (id === "yes") {
-                  store?.updateTenantSpacesWaterStorageTanks?.({ hasWaterStorageTanks: checked })
-                } else {
-                  store?.updateTenantSpacesWaterStorageTanks?.({ hasWaterStorageTanks: !checked })
-                }
-              }}
+            <View style={$row}>
+              <TextField
+                label="Quantity"
+                placeholder="Enter quantity"
+                keyboardType="numeric"
+                value={store?.tenantSpacesWaterStorageTanks?.quantity?.toString() ?? ""}
+                onChangeText={(val) => store?.updateTenantSpacesWaterStorageTanks?.({ 
+                  quantity: val ? parseInt(val, 10) : 0 
+                })}
+                containerStyle={$halfWidth}
+              />
+              <TextField
+                label="Capacity"
+                placeholder="Enter capacity"
+                keyboardType="numeric"
+                value={store?.tenantSpacesWaterStorageTanks?.capacity?.toString() ?? ""}
+                onChangeText={(val) => store?.updateTenantSpacesWaterStorageTanks?.({ 
+                  capacity: val ? parseInt(val, 10) : 0 
+                })}
+                containerStyle={$halfWidth}
+              />
+            </View>
+
+            <TextField
+              label="Yr Installed"
+              placeholder="Year"
+              keyboardType="numeric"
+              value={store?.tenantSpacesWaterStorageTanks?.yearInstalled?.toString() ?? ""}
+              onChangeText={(val) => store?.updateTenantSpacesWaterStorageTanks?.({ 
+                yearInstalled: val ? parseInt(val, 10) : 0 
+              })}
             />
 
-            {store?.tenantSpacesWaterStorageTanks?.hasWaterStorageTanks && (
-              <>
-                <View style={$row}>
-                  <TextField
-                    label="Quantity"
-                    placeholder="Enter quantity"
-                    keyboardType="numeric"
-                    value={store?.tenantSpacesWaterStorageTanks?.quantity?.toString() ?? ""}
-                    onChangeText={(val) => store?.updateTenantSpacesWaterStorageTanks?.({ 
-                      quantity: val ? parseInt(val, 10) : 0 
-                    })}
-                    containerStyle={$halfWidth}
-                  />
-                  <TextField
-                    label="Capacity"
-                    placeholder="Enter capacity"
-                    keyboardType="numeric"
-                    value={store?.tenantSpacesWaterStorageTanks?.capacity?.toString() ?? ""}
-                    onChangeText={(val) => store?.updateTenantSpacesWaterStorageTanks?.({ 
-                      capacity: val ? parseInt(val, 10) : 0 
-                    })}
-                    containerStyle={$halfWidth}
-                  />
-                </View>
+            <View style={themed($controlGroup)}>
+              <Text preset="formLabel" text="Condition" />
+              <ConditionAssessment
+                value={store?.tenantSpacesWaterStorageTanks?.assessment.condition as any}
+                onChange={(v) => store?.updateTenantSpacesWaterStorageTanks?.({ assessment: { condition: v } })}
+              />
+            </View>
 
-                <TextField
-                  label="Yr Installed"
-                  placeholder="Year"
-                  keyboardType="numeric"
-                  value={store?.tenantSpacesWaterStorageTanks?.yearInstalled?.toString() ?? ""}
-                  onChangeText={(val) => store?.updateTenantSpacesWaterStorageTanks?.({ 
-                    yearInstalled: val ? parseInt(val, 10) : 0 
-                  })}
-                />
+            <View style={themed($controlGroup)}>
+              <Text preset="formLabel" text="Repair Status" />
+              <RepairStatus
+                value={store?.tenantSpacesWaterStorageTanks?.assessment.repairStatus as any}
+                onChange={(v) => store?.updateTenantSpacesWaterStorageTanks?.({ assessment: { repairStatus: v } })}
+              />
+            </View>
 
-                <View style={themed($controlGroup)}>
-                  <Text preset="formLabel" text="Condition" />
-                  <ConditionAssessment
-                    value={store?.tenantSpacesWaterStorageTanks?.assessment.condition as any}
-                    onChange={(v) => store?.updateTenantSpacesWaterStorageTanks?.({ assessment: { condition: v } })}
-                  />
-                </View>
-
-                <View style={themed($controlGroup)}>
-                  <Text preset="formLabel" text="Repair Status" />
-                  <RepairStatus
-                    value={store?.tenantSpacesWaterStorageTanks?.assessment.repairStatus as any}
-                    onChange={(v) => store?.updateTenantSpacesWaterStorageTanks?.({ assessment: { repairStatus: v } })}
-                  />
-                </View>
-
-                <TextField
-                  label="Amount to Replace/Repair ($)"
-                  placeholder="Dollar amount"
-                  keyboardType="numeric"
-                  value={store?.tenantSpacesWaterStorageTanks?.amountToReplaceRepair?.toString() ?? ""}
-                  onChangeText={(val) => store?.updateTenantSpacesWaterStorageTanks?.({ 
-                    amountToReplaceRepair: val ? parseInt(val, 10) : 0 
-                  })}
-                />
-              </>
-            )}
+            <TextField
+              label="Amount to Replace/Repair ($)"
+              placeholder="Dollar amount"
+              keyboardType="numeric"
+              value={store?.tenantSpacesWaterStorageTanks?.amountToReplaceRepair?.toString() ?? ""}
+              onChangeText={(val) => store?.updateTenantSpacesWaterStorageTanks?.({ 
+                amountToReplaceRepair: val ? parseInt(val, 10) : 0 
+              })}
+            />
           </View>
         </SectionAccordion>
 
