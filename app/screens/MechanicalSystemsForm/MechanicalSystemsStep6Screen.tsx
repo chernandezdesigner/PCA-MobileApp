@@ -237,33 +237,33 @@ export const MechanicalSystemsStep6Screen: FC<MechanicalSystemsStep6ScreenProps>
           onToggle={(n) => setOpenKey(n ? "commonAreaWaterStorageTanks" : null)}
         >
           <View style={themed($sectionBody)}>
-            <View style={$row}>
-              <TextField
-                label="Quantity"
-                placeholder="Enter quantity"
-                keyboardType="numeric"
+                <View style={$row}>
+                  <TextField
+                    label="Quantity"
+                    placeholder="Enter quantity"
+                    keyboardType="numeric"
                 value={store?.commonAreaWaterStorageTanks?.quantity?.toString() ?? ""}
                 onChangeText={(val) => store?.updateCommonAreaWaterStorageTanks?.({ 
                   quantity: val ? parseInt(val, 10) : 0 
-                })}
-                containerStyle={$halfWidth}
-              />
-              <TextField
-                label="Capacity"
-                placeholder="Enter capacity"
-                keyboardType="numeric"
+                    })}
+                    containerStyle={$halfWidth}
+                  />
+                  <TextField
+                    label="Capacity"
+                    placeholder="Enter capacity"
+                    keyboardType="numeric"
                 value={store?.commonAreaWaterStorageTanks?.capacity?.toString() ?? ""}
                 onChangeText={(val) => store?.updateCommonAreaWaterStorageTanks?.({ 
                   capacity: val ? parseInt(val, 10) : 0 
-                })}
-                containerStyle={$halfWidth}
-              />
-            </View>
+                    })}
+                    containerStyle={$halfWidth}
+                  />
+                </View>
 
-            <TextField
+                <TextField
               label="Yr Installed"
-              placeholder="Year"
-              keyboardType="numeric"
+                  placeholder="Year"
+                  keyboardType="numeric"
               value={store?.commonAreaWaterStorageTanks?.yearInstalled?.toString() ?? ""}
               onChangeText={(val) => store?.updateCommonAreaWaterStorageTanks?.({ 
                 yearInstalled: val ? parseInt(val, 10) : 0 
@@ -293,8 +293,8 @@ export const MechanicalSystemsStep6Screen: FC<MechanicalSystemsStep6ScreenProps>
               value={store?.commonAreaWaterStorageTanks?.amountToReplaceRepair?.toString() ?? ""}
               onChangeText={(val) => store?.updateCommonAreaWaterStorageTanks?.({ 
                 amountToReplaceRepair: val ? parseInt(val, 10) : 0 
-              })}
-            />
+                  })}
+                />
           </View>
         </SectionAccordion>
 
@@ -454,33 +454,33 @@ export const MechanicalSystemsStep6Screen: FC<MechanicalSystemsStep6ScreenProps>
           onToggle={(n) => setOpenKey(n ? "tenantSpacesWaterStorageTanks" : null)}
         >
           <View style={themed($sectionBody)}>
-            <View style={$row}>
-              <TextField
-                label="Quantity"
-                placeholder="Enter quantity"
-                keyboardType="numeric"
+                <View style={$row}>
+                  <TextField
+                    label="Quantity"
+                    placeholder="Enter quantity"
+                    keyboardType="numeric"
                 value={store?.tenantSpacesWaterStorageTanks?.quantity?.toString() ?? ""}
                 onChangeText={(val) => store?.updateTenantSpacesWaterStorageTanks?.({ 
                   quantity: val ? parseInt(val, 10) : 0 
-                })}
-                containerStyle={$halfWidth}
-              />
-              <TextField
-                label="Capacity"
-                placeholder="Enter capacity"
-                keyboardType="numeric"
+                    })}
+                    containerStyle={$halfWidth}
+                  />
+                  <TextField
+                    label="Capacity"
+                    placeholder="Enter capacity"
+                    keyboardType="numeric"
                 value={store?.tenantSpacesWaterStorageTanks?.capacity?.toString() ?? ""}
                 onChangeText={(val) => store?.updateTenantSpacesWaterStorageTanks?.({ 
                   capacity: val ? parseInt(val, 10) : 0 
-                })}
-                containerStyle={$halfWidth}
-              />
-            </View>
+                    })}
+                    containerStyle={$halfWidth}
+                  />
+                </View>
 
-            <TextField
+                <TextField
               label="Yr Installed"
-              placeholder="Year"
-              keyboardType="numeric"
+                  placeholder="Year"
+                  keyboardType="numeric"
               value={store?.tenantSpacesWaterStorageTanks?.yearInstalled?.toString() ?? ""}
               onChangeText={(val) => store?.updateTenantSpacesWaterStorageTanks?.({ 
                 yearInstalled: val ? parseInt(val, 10) : 0 
@@ -510,8 +510,8 @@ export const MechanicalSystemsStep6Screen: FC<MechanicalSystemsStep6ScreenProps>
               value={store?.tenantSpacesWaterStorageTanks?.amountToReplaceRepair?.toString() ?? ""}
               onChangeText={(val) => store?.updateTenantSpacesWaterStorageTanks?.({ 
                 amountToReplaceRepair: val ? parseInt(val, 10) : 0 
-              })}
-            />
+                  })}
+                />
           </View>
         </SectionAccordion>
 

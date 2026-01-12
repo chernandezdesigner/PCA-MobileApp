@@ -11,7 +11,7 @@ import { ConditionAssessment } from "../SharedModels"
 
 export const ElevatorModel = types.model("Elevator", {
   id: types.identifier,
-  type: types.optional(types.array(types.string), []), // Hydraulic, Traction
+  type: types.optional(types.string, ""), // Hydraulic, Traction (single select dropdown)
   quantity: types.optional(types.number, 0),
   manufacturer: types.optional(types.string, ""),
   machineryLocation: types.optional(types.array(types.string), []), // Penthouse, Base
@@ -20,9 +20,19 @@ export const ElevatorModel = types.model("Elevator", {
   assessment: types.optional(ConditionAssessment, {}),
   amountToReplaceRepair: types.optional(types.number, 0),
 })
+  .preProcessSnapshot((snapshot: any) => {
+    // Handle migration from array to string for type
+    if (snapshot && Array.isArray(snapshot.type)) {
+      return {
+        ...snapshot,
+        type: snapshot.type[0] || "",
+      }
+    }
+    return snapshot
+  })
   .actions((self) => ({
     update(data: {
-      type?: string[]
+      type?: string
       quantity?: number
       manufacturer?: string
       machineryLocation?: string[]
@@ -31,7 +41,7 @@ export const ElevatorModel = types.model("Elevator", {
       assessment?: Record<string, any>
       amountToReplaceRepair?: number
     }) {
-      if (data.type !== undefined) self.type.replace(data.type)
+      if (data.type !== undefined) self.type = data.type
       if (data.quantity !== undefined) self.quantity = data.quantity
       if (data.manufacturer !== undefined) self.manufacturer = data.manufacturer
       if (data.machineryLocation !== undefined) self.machineryLocation.replace(data.machineryLocation)
@@ -46,9 +56,15 @@ export const ElevatorModel = types.model("Elevator", {
 // PASSENGER ELEVATORS ACCORDION
 // ============================================
 
+// Helper to generate unique ID
+const generateElevatorId = (prefix: string) => 
+  `${prefix}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+
 export const PassengerElevatorsAccordionModel = types.model("PassengerElevatorsAccordion", {
   NotApplicable: types.optional(types.boolean, false),
-  elevators: types.optional(types.array(ElevatorModel), []),
+  elevators: types.optional(types.array(ElevatorModel), () => [
+    { id: generateElevatorId("passenger") } as any,
+  ]),
 })
   .actions((self) => ({
     updateAccordion(data: {
@@ -57,28 +73,21 @@ export const PassengerElevatorsAccordionModel = types.model("PassengerElevatorsA
       if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
     },
     
-    addElevator(
-      type: string[],
-      quantity: number,
-      manufacturer: string,
-      machineryLocation: string[],
-      speed: number,
-      capacity: number,
-    ) {
+    addElevator() {
       if (self.elevators.length >= 5) {
         console.warn("Cannot add more than 5 Passenger Elevators")
         return null
       }
       
-      const id = `passenger_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+      const id = generateElevatorId("passenger")
       self.elevators.push({
         id,
-        type,
-        quantity,
-        manufacturer,
-        machineryLocation,
-        speed,
-        capacity,
+        type: "",
+        quantity: 0,
+        manufacturer: "",
+        machineryLocation: [],
+        speed: 0,
+        capacity: 0,
       } as any)
       return id
     },
@@ -89,7 +98,7 @@ export const PassengerElevatorsAccordionModel = types.model("PassengerElevatorsA
     },
     
     updateElevator(id: string, data: {
-      type?: string[]
+      type?: string
       quantity?: number
       manufacturer?: string
       machineryLocation?: string[]
@@ -109,7 +118,9 @@ export const PassengerElevatorsAccordionModel = types.model("PassengerElevatorsA
 
 export const ServiceElevatorsAccordionModel = types.model("ServiceElevatorsAccordion", {
   NotApplicable: types.optional(types.boolean, false),
-  elevators: types.optional(types.array(ElevatorModel), []),
+  elevators: types.optional(types.array(ElevatorModel), () => [
+    { id: generateElevatorId("service") } as any,
+  ]),
 })
   .actions((self) => ({
     updateAccordion(data: {
@@ -118,28 +129,21 @@ export const ServiceElevatorsAccordionModel = types.model("ServiceElevatorsAccor
       if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
     },
     
-    addElevator(
-      type: string[],
-      quantity: number,
-      manufacturer: string,
-      machineryLocation: string[],
-      speed: number,
-      capacity: number,
-    ) {
+    addElevator() {
       if (self.elevators.length >= 5) {
         console.warn("Cannot add more than 5 Service Elevators")
         return null
       }
       
-      const id = `service_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+      const id = generateElevatorId("service")
       self.elevators.push({
         id,
-        type,
-        quantity,
-        manufacturer,
-        machineryLocation,
-        speed,
-        capacity,
+        type: "",
+        quantity: 0,
+        manufacturer: "",
+        machineryLocation: [],
+        speed: 0,
+        capacity: 0,
       } as any)
       return id
     },
@@ -150,7 +154,7 @@ export const ServiceElevatorsAccordionModel = types.model("ServiceElevatorsAccor
     },
     
     updateElevator(id: string, data: {
-      type?: string[]
+      type?: string
       quantity?: number
       manufacturer?: string
       machineryLocation?: string[]
@@ -276,22 +280,8 @@ export const MechanicalSystemsStep8 = types.model("MechanicalSystemsStep8", {
       self.lastModified = new Date()
     },
     
-    addPassengerElevator(
-      type: string[],
-      quantity: number,
-      manufacturer: string,
-      machineryLocation: string[],
-      speed: number,
-      capacity: number,
-    ) {
-      const id = self.passengerElevators.addElevator(
-        type,
-        quantity,
-        manufacturer,
-        machineryLocation,
-        speed,
-        capacity,
-      )
+    addPassengerElevator() {
+      const id = self.passengerElevators.addElevator()
       self.lastModified = new Date()
       return id
     },
@@ -302,7 +292,7 @@ export const MechanicalSystemsStep8 = types.model("MechanicalSystemsStep8", {
     },
     
     updatePassengerElevator(id: string, data: {
-      type?: string[]
+      type?: string
       quantity?: number
       manufacturer?: string
       machineryLocation?: string[]
@@ -326,22 +316,8 @@ export const MechanicalSystemsStep8 = types.model("MechanicalSystemsStep8", {
       self.lastModified = new Date()
     },
     
-    addServiceElevator(
-      type: string[],
-      quantity: number,
-      manufacturer: string,
-      machineryLocation: string[],
-      speed: number,
-      capacity: number,
-    ) {
-      const id = self.serviceElevators.addElevator(
-        type,
-        quantity,
-        manufacturer,
-        machineryLocation,
-        speed,
-        capacity,
-      )
+    addServiceElevator() {
+      const id = self.serviceElevators.addElevator()
       self.lastModified = new Date()
       return id
     },
@@ -352,7 +328,7 @@ export const MechanicalSystemsStep8 = types.model("MechanicalSystemsStep8", {
     },
     
     updateServiceElevator(id: string, data: {
-      type?: string[]
+      type?: string
       quantity?: number
       manufacturer?: string
       machineryLocation?: string[]

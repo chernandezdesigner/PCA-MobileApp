@@ -239,6 +239,12 @@ export const ELEVATOR_WALL_OPTIONS = [
     { id: "wood_lam", label: "Wood Lam" },
 ] as const
 
+// Inspection Certificate Options
+export const INSPECTION_CERTIFICATE_OPTIONS = [
+    { id: "cab", label: "Cab" },
+    { id: "office", label: "Office" },
+] as const
+
 // step 9 - Fire protection options
 
 export const SMOKE_DETECTOR_OPTIONS = [

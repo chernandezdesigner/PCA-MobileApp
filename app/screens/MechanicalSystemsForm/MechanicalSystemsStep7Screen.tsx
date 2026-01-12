@@ -472,41 +472,41 @@ export const MechanicalSystemsStep7Screen: FC<MechanicalSystemsStep7ScreenProps>
           onToggle={(n) => setOpenKey(n ? "emergencyGenerator2" : null)}
         >
           <View style={themed($sectionBody)}>
-            <ChecklistField
+                    <ChecklistField
               label="Type"
               items={generatorTypeItems.map((item) => ({
                 id: item.id,
                 label: item.label,
                 checked: store?.emergencyGenerator2.type.includes(item.id) ?? false,
-              }))}
-              onToggle={(id, checked) => {
+                      }))}
+                      onToggle={(id, checked) => {
                 const current = store?.emergencyGenerator2.type.slice() || []
                 const updated = checked
                   ? [...current, id]
                   : current.filter((v) => v !== id)
                 store?.updateEmergencyGenerator2({ type: updated })
-              }}
-            />
+                      }}
+                    />
 
-            <View style={$row}>
-              <TextField
-                label="Eff Age"
-                placeholder="Years"
-                keyboardType="numeric"
+                    <View style={$row}>
+                      <TextField
+                        label="Eff Age"
+                        placeholder="Years"
+                        keyboardType="numeric"
                 value={store?.emergencyGenerator2.effAge?.toString() ?? ""}
                 onChangeText={(val) =>
                   store?.updateEmergencyGenerator2({ effAge: val ? parseInt(val, 10) : 0 })
                 }
-                containerStyle={$halfWidth}
-              />
+                        containerStyle={$halfWidth}
+                      />
               <View style={$halfWidth} />
             </View>
 
             <View style={$row}>
-              <TextField
-                label="kVa"
-                placeholder="Enter kVa"
-                keyboardType="numeric"
+                      <TextField
+                        label="kVa"
+                        placeholder="Enter kVa"
+                        keyboardType="numeric"
                 value={store?.emergencyGenerator2.kVa?.toString() ?? ""}
                 onChangeText={(val) =>
                   store?.updateEmergencyGenerator2({ kVa: val ? parseFloat(val) : 0 })
@@ -521,9 +521,9 @@ export const MechanicalSystemsStep7Screen: FC<MechanicalSystemsStep7ScreenProps>
                 onChangeText={(val) =>
                   store?.updateEmergencyGenerator2({ kw: val ? parseFloat(val) : 0 })
                 }
-                containerStyle={$halfWidth}
-              />
-            </View>
+                        containerStyle={$halfWidth}
+                      />
+                    </View>
 
             <View style={themed($controlGroup)}>
               <Text preset="formLabel" text="Repair Status" />
@@ -533,17 +533,17 @@ export const MechanicalSystemsStep7Screen: FC<MechanicalSystemsStep7ScreenProps>
               />
             </View>
 
-            <TextField
+                    <TextField
               label="Amount to Replace/Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+                      keyboardType="numeric"
               value={store?.emergencyGenerator2.amountToReplaceRepair?.toString() ?? ""}
               onChangeText={(val) =>
                 store?.updateEmergencyGenerator2({
                   amountToReplaceRepair: val ? parseInt(val, 10) : 0,
                 })
               }
-            />
+                    />
           </View>
         </SectionAccordion>
 
@@ -556,21 +556,21 @@ export const MechanicalSystemsStep7Screen: FC<MechanicalSystemsStep7ScreenProps>
           onToggle={(n) => setOpenKey(n ? "tank2" : null)}
         >
           <View style={themed($sectionBody)}>
-            <ChecklistField
+                    <ChecklistField
               label="Location"
               items={tankLocationItems.map((item) => ({
                 id: item.id,
                 label: item.label,
                 checked: store?.tank2.location.includes(item.id) ?? false,
-              }))}
-              onToggle={(id, checked) => {
+                      }))}
+                      onToggle={(id, checked) => {
                 const current = store?.tank2.location.slice() || []
                 const updated = checked
                   ? [...current, id]
                   : current.filter((v) => v !== id)
                 store?.updateTank2({ location: updated })
-              }}
-            />
+                      }}
+                    />
 
             <View style={themed($controlGroup)}>
               <Text preset="formLabel" text="Repair Status" />
@@ -580,17 +580,17 @@ export const MechanicalSystemsStep7Screen: FC<MechanicalSystemsStep7ScreenProps>
               />
             </View>
 
-            <TextField
+                    <TextField
               label="Amount to Replace/Repair ($)"
-              placeholder="Dollar amount"
-              keyboardType="numeric"
+                      placeholder="Dollar amount"
+                      keyboardType="numeric"
               value={store?.tank2.amountToReplaceRepair?.toString() ?? ""}
               onChangeText={(val) =>
                 store?.updateTank2({
                   amountToReplaceRepair: val ? parseInt(val, 10) : 0,
                 })
               }
-            />
+              />
           </View>
         </SectionAccordion>
 
