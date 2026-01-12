@@ -57,16 +57,24 @@ export const MainElectricalModel = types.model("MainElectrical", {
   amps: types.optional(types.number, 0),
   voltage: types.optional(types.array(types.string), []),
   wiring: types.optional(types.array(types.string), []),
+  
+  // Assessment & Cost
+  assessment: types.optional(ConditionAssessment, {}),
+  amountToReplaceRepair: types.optional(types.number, 0),
 })
   .actions((self) => ({
     update(data: {
       amps?: number
       voltage?: string[]
       wiring?: string[]
+      assessment?: Record<string, any>
+      amountToReplaceRepair?: number
     }) {
       if (data.amps !== undefined) self.amps = data.amps
       if (data.voltage !== undefined) self.voltage.replace(data.voltage)
       if (data.wiring !== undefined) self.wiring.replace(data.wiring)
+      if (data.assessment) Object.assign(self.assessment as any, data.assessment)
+      if (data.amountToReplaceRepair !== undefined) self.amountToReplaceRepair = data.amountToReplaceRepair
     },
   }))
 
@@ -78,16 +86,24 @@ export const TenantAptElectricalModel = types.model("TenantAptElectrical", {
   amps: types.optional(types.number, 0),
   voltage: types.optional(types.array(types.string), []),
   wiring: types.optional(types.array(types.string), []),
+  
+  // Assessment & Cost
+  assessment: types.optional(ConditionAssessment, {}),
+  amountToReplaceRepair: types.optional(types.number, 0),
 })
   .actions((self) => ({
     update(data: {
       amps?: number
       voltage?: string[]
       wiring?: string[]
+      assessment?: Record<string, any>
+      amountToReplaceRepair?: number
     }) {
       if (data.amps !== undefined) self.amps = data.amps
       if (data.voltage !== undefined) self.voltage.replace(data.voltage)
       if (data.wiring !== undefined) self.wiring.replace(data.wiring)
+      if (data.assessment) Object.assign(self.assessment as any, data.assessment)
+      if (data.amountToReplaceRepair !== undefined) self.amountToReplaceRepair = data.amountToReplaceRepair
     },
   }))
 
@@ -100,7 +116,10 @@ export const EmergencyGeneratorModel = types.model("EmergencyGenerator", {
   effAge: types.optional(types.number, 0),
   kVa: types.optional(types.number, 0),
   kw: types.optional(types.number, 0),
-  tank: types.optional(types.array(types.string), []), // Underground, Belly, Adjacent
+  
+  // Assessment & Cost
+  assessment: types.optional(ConditionAssessment, {}),
+  amountToReplaceRepair: types.optional(types.number, 0),
 })
   .actions((self) => ({
     update(data: {
@@ -108,13 +127,38 @@ export const EmergencyGeneratorModel = types.model("EmergencyGenerator", {
       effAge?: number
       kVa?: number
       kw?: number
-      tank?: string[]
+      assessment?: Record<string, any>
+      amountToReplaceRepair?: number
     }) {
       if (data.type !== undefined) self.type.replace(data.type)
       if (data.effAge !== undefined) self.effAge = data.effAge
       if (data.kVa !== undefined) self.kVa = data.kVa
       if (data.kw !== undefined) self.kw = data.kw
-      if (data.tank !== undefined) self.tank.replace(data.tank)
+      if (data.assessment) Object.assign(self.assessment as any, data.assessment)
+      if (data.amountToReplaceRepair !== undefined) self.amountToReplaceRepair = data.amountToReplaceRepair
+    },
+  }))
+
+// ============================================
+// TANK MODEL (Reusable for Tank 1 & 2)
+// ============================================
+
+export const TankModel = types.model("Tank", {
+  location: types.optional(types.array(types.string), []), // Underground, Belly, Adjacent
+  
+  // Assessment & Cost
+  assessment: types.optional(ConditionAssessment, {}),
+  amountToReplaceRepair: types.optional(types.number, 0),
+})
+  .actions((self) => ({
+    update(data: {
+      location?: string[]
+      assessment?: Record<string, any>
+      amountToReplaceRepair?: number
+    }) {
+      if (data.location !== undefined) self.location.replace(data.location)
+      if (data.assessment) Object.assign(self.assessment as any, data.assessment)
+      if (data.amountToReplaceRepair !== undefined) self.amountToReplaceRepair = data.amountToReplaceRepair
     },
   }))
 
@@ -128,7 +172,9 @@ export const MechanicalSystemsStep7 = types.model("MechanicalSystemsStep7", {
   main: types.optional(MainElectricalModel, {}),
   tenantApt: types.optional(TenantAptElectricalModel, {}),
   emergencyGenerator1: types.optional(EmergencyGeneratorModel, {}),
+  tank1: types.optional(TankModel, {}),
   emergencyGenerator2: types.optional(EmergencyGeneratorModel, {}),
+  tank2: types.optional(TankModel, {}),
   
   comments: types.optional(types.string, ""),
   lastModified: types.optional(types.Date, () => new Date()),
@@ -158,8 +204,18 @@ export const MechanicalSystemsStep7 = types.model("MechanicalSystemsStep7", {
       self.lastModified = new Date()
     },
     
+    updateTank1(data: Parameters<typeof self.tank1.update>[0]) {
+      self.tank1.update(data)
+      self.lastModified = new Date()
+    },
+    
     updateEmergencyGenerator2(data: Parameters<typeof self.emergencyGenerator2.update>[0]) {
       self.emergencyGenerator2.update(data)
+      self.lastModified = new Date()
+    },
+    
+    updateTank2(data: Parameters<typeof self.tank2.update>[0]) {
+      self.tank2.update(data)
       self.lastModified = new Date()
     },
     
