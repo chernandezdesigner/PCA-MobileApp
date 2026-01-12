@@ -6,19 +6,14 @@ import { ConditionAssessment } from "../SharedModels"
 // ============================================
 
 // ============================================
-// SMOKE DETECTION ACCORDION
+// SMOKE DETECTORS ACCORDION
 // ============================================
 
-export const SmokeDetectionAccordionModel = types.model("SmokeDetectionAccordion", {
+export const SmokeDetectorsAccordionModel = types.model("SmokeDetectorsAccordion", {
   NotApplicable: types.optional(types.boolean, false),
   
-  // Smoke Detectors
-  smokeDetectorType: types.optional(types.array(types.string), []), // Hard, Battery
-  smokeDetectorLocation: types.optional(types.array(types.string), []), // Common Areas, Tenant Areas
-  
-  // Fire Alarm Panel
-  fireAlarmPanelLocation: types.optional(types.string, ""),
-  fireAlarmPanelAge: types.optional(types.number, 0),
+  // Smoke Detectors Type & Location (combined checklist)
+  smokeDetectorOptions: types.optional(types.array(types.string), []), // hardwired, batteryoperated, commonareas, tenantareas
   
   assessment: types.optional(ConditionAssessment, {}),
   amountToReplaceRepair: types.optional(types.number, 0),
@@ -26,18 +21,41 @@ export const SmokeDetectionAccordionModel = types.model("SmokeDetectionAccordion
   .actions((self) => ({
     updateAccordion(data: {
       NotApplicable?: boolean
-      smokeDetectorType?: string[]
-      smokeDetectorLocation?: string[]
-      fireAlarmPanelLocation?: string
-      fireAlarmPanelAge?: number
+      smokeDetectorOptions?: string[]
       assessment?: Record<string, any>
       amountToReplaceRepair?: number
     }) {
       if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
-      if (data.smokeDetectorType !== undefined) self.smokeDetectorType.replace(data.smokeDetectorType)
-      if (data.smokeDetectorLocation !== undefined) self.smokeDetectorLocation.replace(data.smokeDetectorLocation)
-      if (data.fireAlarmPanelLocation !== undefined) self.fireAlarmPanelLocation = data.fireAlarmPanelLocation
-      if (data.fireAlarmPanelAge !== undefined) self.fireAlarmPanelAge = data.fireAlarmPanelAge
+      if (data.smokeDetectorOptions !== undefined) self.smokeDetectorOptions.replace(data.smokeDetectorOptions)
+      if (data.assessment) Object.assign(self.assessment as any, data.assessment)
+      if (data.amountToReplaceRepair !== undefined) self.amountToReplaceRepair = data.amountToReplaceRepair
+    },
+  }))
+
+// ============================================
+// FIRE ALARM PANEL ACCORDION
+// ============================================
+
+export const FireAlarmPanelAccordionModel = types.model("FireAlarmPanelAccordion", {
+  NotApplicable: types.optional(types.boolean, false),
+  
+  location: types.optional(types.string, ""),
+  age: types.optional(types.number, 0),
+  
+  assessment: types.optional(ConditionAssessment, {}),
+  amountToReplaceRepair: types.optional(types.number, 0),
+})
+  .actions((self) => ({
+    updateAccordion(data: {
+      NotApplicable?: boolean
+      location?: string
+      age?: number
+      assessment?: Record<string, any>
+      amountToReplaceRepair?: number
+    }) {
+      if (data.NotApplicable !== undefined) self.NotApplicable = data.NotApplicable
+      if (data.location !== undefined) self.location = data.location
+      if (data.age !== undefined) self.age = data.age
       if (data.assessment) Object.assign(self.assessment as any, data.assessment)
       if (data.amountToReplaceRepair !== undefined) self.amountToReplaceRepair = data.amountToReplaceRepair
     },
@@ -259,21 +277,22 @@ export const AnsulSystemAccordionModel = types.model("AnsulSystemAccordion", {
 // ============================================
 
 export const MechanicalSystemsStep9 = types.model("MechanicalSystemsStep9", {
-  // Top-level fields
+  // Accordions
+  smokeDetectors: types.optional(SmokeDetectorsAccordionModel, {}),
+  fireAlarmPanel: types.optional(FireAlarmPanelAccordionModel, {}),
+  fireExtinguishers: types.optional(FireExtinguishersAccordionModel, {}),
+  fixtures: types.optional(FireAlarmFixturesAccordionModel, {}),
+  sprinklers: types.optional(SprinklerSystemAccordionModel, {}),
+  firePump: types.optional(FirePumpAccordionModel, {}),
+  smokeEvacSystem: types.optional(SmokeEvacuationSystemAccordionModel, {}),
+  fireExitStairwell: types.optional(FireExitStairwellAccordionModel, {}),
+  ansulSystem: types.optional(AnsulSystemAccordionModel, {}),
+  
+  // Top-level fields (below accordions)
   systemType: types.optional(types.string, ""), // N/A, Limited, Full
   systemCondition: types.optional(types.array(types.string), []), // Wet, Dry
   percentSprinklered: types.optional(types.number, 0),
   lastInspection: types.optional(types.string, ""),
-  
-  // Accordions
-  smokeDetection: types.optional(SmokeDetectionAccordionModel, {}),
-  fireExtinguishers: types.optional(FireExtinguishersAccordionModel, {}),
-  fireAlarmFixtures: types.optional(FireAlarmFixturesAccordionModel, {}),
-  sprinklerSystem: types.optional(SprinklerSystemAccordionModel, {}),
-  firePump: types.optional(FirePumpAccordionModel, {}),
-  smokeEvacuationSystem: types.optional(SmokeEvacuationSystemAccordionModel, {}),
-  fireExitStairwell: types.optional(FireExitStairwellAccordionModel, {}),
-  ansulSystem: types.optional(AnsulSystemAccordionModel, {}),
   
   additionalComments: types.optional(types.string, ""),
   lastModified: types.optional(types.Date, () => new Date()),
@@ -300,16 +319,24 @@ export const MechanicalSystemsStep9 = types.model("MechanicalSystemsStep9", {
     // ACCORDION UPDATE ACTIONS
     // ============================================
     
-    updateSmokeDetection(data: {
+    updateSmokeDetectors(data: {
       NotApplicable?: boolean
-      smokeDetectorType?: string[]
-      smokeDetectorLocation?: string[]
-      fireAlarmPanelLocation?: string
-      fireAlarmPanelAge?: number
+      smokeDetectorOptions?: string[]
       assessment?: Record<string, any>
       amountToReplaceRepair?: number
     }) {
-      self.smokeDetection.updateAccordion(data)
+      self.smokeDetectors.updateAccordion(data)
+      self.lastModified = new Date()
+    },
+    
+    updateFireAlarmPanel(data: {
+      NotApplicable?: boolean
+      location?: string
+      age?: number
+      assessment?: Record<string, any>
+      amountToReplaceRepair?: number
+    }) {
+      self.fireAlarmPanel.updateAccordion(data)
       self.lastModified = new Date()
     },
     
@@ -323,17 +350,17 @@ export const MechanicalSystemsStep9 = types.model("MechanicalSystemsStep9", {
       self.lastModified = new Date()
     },
     
-    updateFireAlarmFixtures(data: {
+    updateFixtures(data: {
       NotApplicable?: boolean
       fixtures?: string[]
       assessment?: Record<string, any>
       amountToReplaceRepair?: number
     }) {
-      self.fireAlarmFixtures.updateAccordion(data)
+      self.fixtures.updateAccordion(data)
       self.lastModified = new Date()
     },
     
-    updateSprinklerSystem(data: {
+    updateSprinklers(data: {
       NotApplicable?: boolean
       hasBackflowPreventer?: boolean
       standpipeLocations?: string
@@ -342,7 +369,7 @@ export const MechanicalSystemsStep9 = types.model("MechanicalSystemsStep9", {
       assessment?: Record<string, any>
       amountToReplaceRepair?: number
     }) {
-      self.sprinklerSystem.updateAccordion(data)
+      self.sprinklers.updateAccordion(data)
       self.lastModified = new Date()
     },
     
@@ -360,14 +387,14 @@ export const MechanicalSystemsStep9 = types.model("MechanicalSystemsStep9", {
       self.lastModified = new Date()
     },
     
-    updateSmokeEvacuationSystem(data: {
+    updateSmokeEvacSystem(data: {
       NotApplicable?: boolean
       hasSmokeEvacSystem?: boolean
       hasStairPressurization?: boolean
       assessment?: Record<string, any>
       amountToReplaceRepair?: number
     }) {
-      self.smokeEvacuationSystem.updateAccordion(data)
+      self.smokeEvacSystem.updateAccordion(data)
       self.lastModified = new Date()
     },
     

@@ -268,6 +268,37 @@ export const NEAREST_FIRE_HYDRANT_OPTIONS = [
     { id: "driveaisle", label: "Drive aisle" },
 ] as const
 
+// Fire Protection System Type (N/A, Limited, Full)
+export const FIRE_PROTECTION_SYSTEM_TYPE_OPTIONS = [
+    { id: "na", label: "N/A" },
+    { id: "limited", label: "Limited" },
+    { id: "full", label: "Full" },
+] as const
+
+// Fire Protection Condition (Wet, Dry)
+export const FIRE_PROTECTION_CONDITION_OPTIONS = [
+    { id: "wet", label: "Wet" },
+    { id: "dry", label: "Dry" },
+] as const
+
+// Sprinkler Location
+export const SPRINKLER_LOCATION_OPTIONS = [
+    { id: "near_riser", label: "Near Riser" },
+    { id: "exterior_vault", label: "Exterior Vault" },
+] as const
+
+// Fire Exit Stairwell Finish
+export const FIRE_EXIT_STAIRWELL_FINISH_OPTIONS = [
+    { id: "drywall", label: "Drywall" },
+    { id: "cmu", label: "CMU" },
+] as const
+
+// Ansul Discharge To
+export const ANSUL_DISCHARGE_OPTIONS = [
+    { id: "exterior", label: "Exterior" },
+    { id: "common_area", label: "Common Area" },
+] as const
+
 
 // Type exports for TypeScript
 export type RefrigerantTypeId = typeof REFRIGERANT_TYPE_OPTIONS[number]["id"]
