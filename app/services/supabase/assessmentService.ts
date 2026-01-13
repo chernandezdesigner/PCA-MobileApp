@@ -8,7 +8,7 @@ import type { AssessmentInstance } from '@/models/Assessment'
 export class AssessmentService {
   /**
    * Submit an assessment to Supabase
-   * Saves assessment, project_summaries, and site_grounds data
+   * Saves assessment, project_summaries, site_grounds, building_envelope, and mechanical_systems data
    */
   static async submitAssessment(assessment: AssessmentInstance): Promise<{
     success: boolean
@@ -139,7 +139,7 @@ export class AssessmentService {
             current_step: sg.currentStep,
             last_modified: new Date(sg.lastModified).toISOString(),
           }, {
-            onConflict: 'assessment_id' // Upsert based on assessment_id (which is UNIQUE)
+            onConflict: 'assessment_id'
           })
 
         if (siteError) {
@@ -148,6 +148,70 @@ export class AssessmentService {
         }
 
         console.log('✅ Site grounds saved')
+      }
+
+      // 4. Insert/Update building_envelope
+      if (snapshot.buildingEnvelope) {
+        const be = snapshot.buildingEnvelope
+        const { error: buildingError } = await supabase
+          .from('building_envelope')
+          .upsert({
+            assessment_id: supabaseAssessmentId,
+            step1: be.step1 || {},
+            step2: be.step2 || {},
+            // Combine step3 and step3B into step3 JSONB
+            step3: { ...be.step3, step3B: be.step3B } || {},
+            step4: be.step4 || {},
+            step5: be.step5 || {},
+            step6: be.step6 || {},
+            step7: be.step7 || {},
+            step8: be.step8 || {},
+            step9: be.step9 || {},
+            step10: be.step10 || {},
+            current_step: typeof be.currentStep === 'string' 
+              ? parseInt(be.currentStep.replace('step', '')) || 1 
+              : be.currentStep,
+            last_modified: new Date(be.lastModified).toISOString(),
+          }, {
+            onConflict: 'assessment_id'
+          })
+
+        if (buildingError) {
+          console.error('❌ Building envelope error:', buildingError)
+          throw buildingError
+        }
+
+        console.log('✅ Building envelope saved')
+      }
+
+      // 5. Insert/Update mechanical_systems
+      if (snapshot.mechanicalSystems) {
+        const ms = snapshot.mechanicalSystems
+        const { error: mechanicalError } = await supabase
+          .from('mechanical_systems')
+          .upsert({
+            assessment_id: supabaseAssessmentId,
+            step1: ms.step1 || {},
+            step2: ms.step2 || {},
+            step3: ms.step3 || {},
+            step4: ms.step4 || {},
+            step5: ms.step5 || {},
+            step6: ms.step6 || {},
+            step7: ms.step7 || {},
+            step8: ms.step8 || {},
+            step9: ms.step9 || {},
+            current_step: ms.currentStep,
+            last_modified: new Date(ms.lastModified).toISOString(),
+          }, {
+            onConflict: 'assessment_id'
+          })
+
+        if (mechanicalError) {
+          console.error('❌ Mechanical systems error:', mechanicalError)
+          throw mechanicalError
+        }
+
+        console.log('✅ Mechanical systems saved')
       }
 
       console.log('🎉 Assessment submitted successfully!')
@@ -185,7 +249,9 @@ export class AssessmentService {
         .select(`
           *,
           project_summaries (*),
-          site_grounds (*)
+          site_grounds (*),
+          building_envelope (*),
+          mechanical_systems (*)
         `)
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
