@@ -106,7 +106,54 @@ CREATE TABLE site_grounds (
 );
 
 -- ============================================
--- 4. PHOTOS TABLE
+-- 4. BUILDING_ENVELOPE TABLE (Form 3)
+-- ============================================
+CREATE TABLE building_envelope (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  assessment_id UUID REFERENCES assessments(id) ON DELETE CASCADE NOT NULL UNIQUE,
+  
+  -- Each step stored as JSONB for flexibility (10 steps)
+  step1 JSONB DEFAULT '{}',
+  step2 JSONB DEFAULT '{}',
+  step3 JSONB DEFAULT '{}',
+  step4 JSONB DEFAULT '{}',
+  step5 JSONB DEFAULT '{}',
+  step6 JSONB DEFAULT '{}',
+  step7 JSONB DEFAULT '{}',
+  step8 JSONB DEFAULT '{}',
+  step9 JSONB DEFAULT '{}',
+  step10 JSONB DEFAULT '{}',
+  
+  -- Progress tracking
+  current_step INTEGER DEFAULT 1,
+  last_modified TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- ============================================
+-- 5. MECHANICAL_SYSTEMS TABLE (Form 4)
+-- ============================================
+CREATE TABLE mechanical_systems (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  assessment_id UUID REFERENCES assessments(id) ON DELETE CASCADE NOT NULL UNIQUE,
+  
+  -- Each step stored as JSONB for flexibility (9 steps)
+  step1 JSONB DEFAULT '{}',
+  step2 JSONB DEFAULT '{}',
+  step3 JSONB DEFAULT '{}',
+  step4 JSONB DEFAULT '{}',
+  step5 JSONB DEFAULT '{}',
+  step6 JSONB DEFAULT '{}',
+  step7 JSONB DEFAULT '{}',
+  step8 JSONB DEFAULT '{}',
+  step9 JSONB DEFAULT '{}',
+  
+  -- Progress tracking
+  current_step INTEGER DEFAULT 1,
+  last_modified TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- ============================================
+-- 6. PHOTOS TABLE
 -- ============================================
 CREATE TABLE photos (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -145,26 +192,30 @@ CREATE TABLE photos (
 );
 
 -- ============================================
--- 5. CREATE INDEXES FOR PERFORMANCE
+-- 7. CREATE INDEXES FOR PERFORMANCE
 -- ============================================
 CREATE INDEX idx_assessments_user_id ON assessments(user_id);
 CREATE INDEX idx_assessments_status ON assessments(status);
 CREATE INDEX idx_assessments_local_id ON assessments(local_id);
 CREATE INDEX idx_project_summaries_assessment_id ON project_summaries(assessment_id);
 CREATE INDEX idx_site_grounds_assessment_id ON site_grounds(assessment_id);
+CREATE INDEX idx_building_envelope_assessment_id ON building_envelope(assessment_id);
+CREATE INDEX idx_mechanical_systems_assessment_id ON mechanical_systems(assessment_id);
 CREATE INDEX idx_photos_assessment_id ON photos(assessment_id);
 CREATE INDEX idx_photos_upload_status ON photos(upload_status);
 
 -- ============================================
--- 6. ENABLE ROW LEVEL SECURITY (RLS)
+-- 8. ENABLE ROW LEVEL SECURITY (RLS)
 -- ============================================
 ALTER TABLE assessments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE project_summaries ENABLE ROW LEVEL SECURITY;
 ALTER TABLE site_grounds ENABLE ROW LEVEL SECURITY;
+ALTER TABLE building_envelope ENABLE ROW LEVEL SECURITY;
+ALTER TABLE mechanical_systems ENABLE ROW LEVEL SECURITY;
 ALTER TABLE photos ENABLE ROW LEVEL SECURITY;
 
 -- ============================================
--- 7. RLS POLICIES - Users can only access their own data
+-- 9. RLS POLICIES - Users can only access their own data
 -- ============================================
 
 -- ASSESSMENTS POLICIES
@@ -266,6 +317,88 @@ CREATE POLICY "Users can delete own site_grounds"
     )
   );
 
+-- BUILDING_ENVELOPE POLICIES
+CREATE POLICY "Users can view own building_envelope" 
+  ON building_envelope FOR SELECT 
+  USING (
+    EXISTS (
+      SELECT 1 FROM assessments 
+      WHERE assessments.id = building_envelope.assessment_id 
+      AND assessments.user_id = auth.uid()
+    )
+  );
+
+CREATE POLICY "Users can insert own building_envelope" 
+  ON building_envelope FOR INSERT 
+  WITH CHECK (
+    EXISTS (
+      SELECT 1 FROM assessments 
+      WHERE assessments.id = building_envelope.assessment_id 
+      AND assessments.user_id = auth.uid()
+    )
+  );
+
+CREATE POLICY "Users can update own building_envelope" 
+  ON building_envelope FOR UPDATE 
+  USING (
+    EXISTS (
+      SELECT 1 FROM assessments 
+      WHERE assessments.id = building_envelope.assessment_id 
+      AND assessments.user_id = auth.uid()
+    )
+  );
+
+CREATE POLICY "Users can delete own building_envelope" 
+  ON building_envelope FOR DELETE 
+  USING (
+    EXISTS (
+      SELECT 1 FROM assessments 
+      WHERE assessments.id = building_envelope.assessment_id 
+      AND assessments.user_id = auth.uid()
+    )
+  );
+
+-- MECHANICAL_SYSTEMS POLICIES
+CREATE POLICY "Users can view own mechanical_systems" 
+  ON mechanical_systems FOR SELECT 
+  USING (
+    EXISTS (
+      SELECT 1 FROM assessments 
+      WHERE assessments.id = mechanical_systems.assessment_id 
+      AND assessments.user_id = auth.uid()
+    )
+  );
+
+CREATE POLICY "Users can insert own mechanical_systems" 
+  ON mechanical_systems FOR INSERT 
+  WITH CHECK (
+    EXISTS (
+      SELECT 1 FROM assessments 
+      WHERE assessments.id = mechanical_systems.assessment_id 
+      AND assessments.user_id = auth.uid()
+    )
+  );
+
+CREATE POLICY "Users can update own mechanical_systems" 
+  ON mechanical_systems FOR UPDATE 
+  USING (
+    EXISTS (
+      SELECT 1 FROM assessments 
+      WHERE assessments.id = mechanical_systems.assessment_id 
+      AND assessments.user_id = auth.uid()
+    )
+  );
+
+CREATE POLICY "Users can delete own mechanical_systems" 
+  ON mechanical_systems FOR DELETE 
+  USING (
+    EXISTS (
+      SELECT 1 FROM assessments 
+      WHERE assessments.id = mechanical_systems.assessment_id 
+      AND assessments.user_id = auth.uid()
+    )
+  );
+
 -- PHOTOS POLICIES
 CREATE POLICY "Users can view own photos" 
   ON photos FOR SELECT 
@@ -284,7 +417,7 @@ CREATE POLICY "Users can delete own photos"
   USING (auth.uid() = user_id);
 
 -- ============================================
--- 8. AUTO-UPDATE TIMESTAMPS
+-- 10. AUTO-UPDATE TIMESTAMPS
 -- ============================================
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
@@ -304,6 +437,14 @@ CREATE TRIGGER update_project_summaries_updated_at
 
 CREATE TRIGGER update_site_grounds_updated_at 
   BEFORE UPDATE ON site_grounds
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_building_envelope_updated_at 
+  BEFORE UPDATE ON building_envelope
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_mechanical_systems_updated_at 
+  BEFORE UPDATE ON mechanical_systems
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TRIGGER update_photos_updated_at 
