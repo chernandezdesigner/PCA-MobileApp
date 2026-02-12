@@ -3,6 +3,7 @@ import { ProjectSummaryStore } from "./ProjectSummaryStore"
 import { SiteGroundsStore } from "./SiteGroundsStore"
 import { BuildingEnvelopeStore } from "./BuildingEnvelopeStore"
 import { MechanicalSystemsStore } from "./MechanicalSystemsStore"
+import { InteriorConditionsStore } from "./InteriorConditionsStore"
 
 export const AssessmentModel = types
   .model("Assessment", {
@@ -16,6 +17,7 @@ export const AssessmentModel = types
     siteGrounds: types.optional(SiteGroundsStore, {}),
     buildingEnvelope: types.optional(BuildingEnvelopeStore, {}),
     mechanicalSystems: types.optional(MechanicalSystemsStore, {}),
+    interiorConditions: types.optional(InteriorConditionsStore, {}),
   })
   .actions((self) => ({
     touch() {

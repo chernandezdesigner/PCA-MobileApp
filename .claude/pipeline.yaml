@@ -1,0 +1,106 @@
+# Claude Code Multi-Agent Pipeline Configuration
+
+name: "Interior Conditions Form 5 Development"
+version: "1.0"
+
+agents:
+  - id: pm
+    name: "Product Manager"
+    prompt_file: "agents/pm-agent.md"
+    triggers:
+      - "requirements"
+      - "user story"
+      - "acceptance criteria"
+    
+  - id: backend
+    name: "Backend Engineer"
+    prompt_file: "agents/backend-agent.md"
+    triggers:
+      - "mst model"
+      - "store"
+      - "data schema"
+    dependencies:
+      - pm  # Needs requirements first
+    
+  - id: frontend
+    name: "Frontend Engineer"
+    prompt_file: "agents/frontend-agent.md"
+    triggers:
+      - "screen"
+      - "component"
+      - "ui"
+    dependencies:
+      - backend  # Needs store models first
+    
+  - id: continuity
+    name: "Code Continuity Manager"
+    prompt_file: "agents/continuity-agent.md"
+    triggers:
+      - "review"
+      - "refactor"
+      - "cleanup"
+    runs_on:
+      - "pre-commit"
+      - "post-implementation"
+
+workflows:
+  feature_development:
+    steps:
+      1:
+        agent: pm
+        action: "Define requirements and acceptance criteria"
+        output: "requirements.json"
+      2:
+        agent: backend
+        action: "Implement MST models based on requirements"
+        input: "requirements.json"
+        output: "models/*.ts"
+      3:
+        agent: frontend
+        action: "Implement screens using models"
+        input: "models/*.ts"
+        output: "screens/*.tsx"
+      4:
+        agent: continuity
+        action: "Review all changes for consistency"
+        input: ["models/*.ts", "screens/*.tsx"]
+        output: "review-report.md"
+
+  step4_implementation:
+    description: "Interior Conditions Step 4 - Dynamic Property Types"
+    steps:
+      1:
+        agent: pm
+        task: |
+          Define requirements for Step 4 dynamic form:
+          - Property type toggles (Hotel, Apartment, Storage, Mobile Homes, Nursing Homes, Multi-Family)
+          - Conditional accordion rendering
+          - Data persistence requirements
+        
+      2:
+        agent: backend
+        task: |
+          Create InteriorConditionsStepModels/step4.ts:
+          - Property type selection model
+          - Hotel accordions (from constants lines 297-640)
+          - Apartment accordions (from constants lines 642-935)
+          - Views for conditional rendering
+          - Actions for all updates
+        
+      3:
+        agent: frontend
+        task: |
+          Create InteriorConditionsStep4Screen.tsx:
+          - Property type toggle buttons
+          - Conditional accordion sections
+          - Follow BuildingEnvelopeStep3Screen pattern for toggles
+          - Implement all hotel/apartment sections
+        
+      4:
+        agent: continuity
+        task: |
+          Review implementation:
+          - Verify pattern consistency
+          - Check for duplicate code
+          - Ensure all components are reused
+          - Validate type exports

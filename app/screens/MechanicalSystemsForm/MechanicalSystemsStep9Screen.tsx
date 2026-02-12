@@ -59,8 +59,8 @@ export const MechanicalSystemsStep9Screen: FC<MechanicalSystemsStep9ScreenProps>
   const systemTypeOptions = FIRE_PROTECTION_SYSTEM_TYPE_OPTIONS.map((o) => ({ label: o.label, value: o.id }))
 
   const onNext = () => {
-    // Navigate to next form or completion
-    openDrawer()
+    // @ts-expect-error route params for animation
+    navigation.navigate("InteriorConditionsStep1" as never, { transition: "slide_from_right" } as never)
   }
 
   const onBack = () => navigation.goBack()

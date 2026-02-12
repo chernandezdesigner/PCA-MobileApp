@@ -99,7 +99,12 @@ const NAVIGATION_STRUCTURE: NavigationItem[] = [
   {
     id: "interior-conditions",
     label: "Interior Conditions",
-    children: [],
+    children: [
+      { id: "ic-step1", label: "Tenant Unit Finishes", route: "InteriorConditionsStep1" },
+      { id: "ic-step2", label: "Common Area Finishes", route: "InteriorConditionsStep2" },
+      { id: "ic-step3", label: "Mold & Moisture", route: "InteriorConditionsStep3" },
+      { id: "ic-step4", label: "Alternative Property Types", route: "InteriorConditionsStep4" },
+    ],
   },
 ]
 

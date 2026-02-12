@@ -26,6 +26,10 @@ import { MechanicalSystemsStep6Screen } from "@/screens/MechanicalSystemsForm/Me
 import { MechanicalSystemsStep7Screen } from "@/screens/MechanicalSystemsForm/MechanicalSystemsStep7Screen"
 import { MechanicalSystemsStep8Screen } from "@/screens/MechanicalSystemsForm/MechanicalSystemsStep8Screen"
 import { MechanicalSystemsStep9Screen } from "@/screens/MechanicalSystemsForm/MechanicalSystemsStep9Screen"
+import { InteriorConditionsStep1Screen } from "@/screens/InteriorConditionsForm/InteriorConditionsStep1Screen"
+import { InteriorConditionsStep2Screen } from "@/screens/InteriorConditionsForm/InteriorConditionsStep2Screen"
+import { InteriorConditionsStep3Screen } from "@/screens/InteriorConditionsForm/InteriorConditionsStep3Screen"
+import { InteriorConditionsStep4Screen } from "@/screens/InteriorConditionsForm/InteriorConditionsStep4Screen"
 
 export type AssessmentFormStackParamList = {
   // Project Summary
@@ -59,6 +63,11 @@ export type AssessmentFormStackParamList = {
   MechanicalSystemsStep7: undefined
   MechanicalSystemsStep8: undefined
   MechanicalSystemsStep9: undefined
+  // Interior Conditions
+  InteriorConditionsStep1: undefined
+  InteriorConditionsStep2: undefined
+  InteriorConditionsStep3: undefined
+  InteriorConditionsStep4: undefined
 }
 
 const Stack = createNativeStackNavigator<AssessmentFormStackParamList>()
@@ -108,6 +117,12 @@ export const AssessmentFormStackNavigator = () => {
       <Stack.Screen name="MechanicalSystemsStep7" component={MechanicalSystemsStep7Screen} />
       <Stack.Screen name="MechanicalSystemsStep8" component={MechanicalSystemsStep8Screen} />
       <Stack.Screen name="MechanicalSystemsStep9" component={MechanicalSystemsStep9Screen} />
+
+      {/* Interior Conditions */}
+      <Stack.Screen name="InteriorConditionsStep1" component={InteriorConditionsStep1Screen} />
+      <Stack.Screen name="InteriorConditionsStep2" component={InteriorConditionsStep2Screen} />
+      <Stack.Screen name="InteriorConditionsStep3" component={InteriorConditionsStep3Screen} />
+      <Stack.Screen name="InteriorConditionsStep4" component={InteriorConditionsStep4Screen} />
     </Stack.Navigator>
   )
 }
