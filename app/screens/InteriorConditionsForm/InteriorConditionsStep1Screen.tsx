@@ -72,7 +72,10 @@ export const InteriorConditionsStep1Screen: FC = observer(() => {
     navigation.navigate("InteriorConditionsStep2" as never, { transition: "slide_from_right" } as never)
   }
 
-  const onBack = () => navigation.goBack()
+  const onBack = () => {
+    // @ts-expect-error route params for animation
+    navigation.navigate("MechanicalSystemsStep9" as never, { transition: "slide_from_left" } as never)
+  }
 
   return (
     <Screen style={$root} preset="fixed" contentContainerStyle={$screenInner}>

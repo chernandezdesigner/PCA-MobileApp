@@ -63,7 +63,10 @@ export const MechanicalSystemsStep7Screen: FC<MechanicalSystemsStep7ScreenProps>
     navigation.navigate("MechanicalSystemsStep8" as never, { transition: "slide_from_right" } as never)
   }
 
-  const onBack = () => navigation.goBack()
+  const onBack = () => {
+    // @ts-expect-error route params for animation
+    navigation.navigate("MechanicalSystemsStep6" as never, { transition: "slide_from_left" } as never)
+  }
 
   return (
     <Screen style={$root} preset="fixed" contentContainerStyle={$screenInner}>

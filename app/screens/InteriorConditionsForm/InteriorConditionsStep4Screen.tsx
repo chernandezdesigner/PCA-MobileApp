@@ -301,10 +301,8 @@ export const InteriorConditionsStep4Screen: FC = observer(() => {
             // @ts-expect-error route params for animation
             navigation.navigate("InteriorConditionsStep3" as never, { transition: "slide_from_left" } as never)
           }}
-          onNext={() => {
-            // Last step in Interior Conditions - open drawer to navigate to next form
-            openDrawer()
-          }}
+          onNext={openDrawer}
+          nextButtonText="Next Form"
           showCamera={true}
         />
       </View>

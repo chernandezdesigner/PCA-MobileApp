@@ -71,7 +71,10 @@ export const MechanicalSystemsStep8Screen: FC<MechanicalSystemsStep8ScreenProps>
     navigation.navigate("MechanicalSystemsStep9" as never, { transition: "slide_from_right" } as never)
   }
 
-  const onBack = () => navigation.goBack()
+  const onBack = () => {
+    // @ts-expect-error route params for animation
+    navigation.navigate("MechanicalSystemsStep7" as never, { transition: "slide_from_left" } as never)
+  }
 
   return (
     <Screen style={$root} preset="fixed" contentContainerStyle={$screenInner}>
@@ -656,12 +659,9 @@ export const MechanicalSystemsStep8Screen: FC<MechanicalSystemsStep8ScreenProps>
     </View>
       </ScrollView>
 
-      <StickyFooterNav
-        leftLabel="Back"
-        rightLabel="Next"
-        onLeftPress={onBack}
-        onRightPress={onNext}
-      />
+      <View style={$stickyFooter}>
+        <StickyFooterNav onBack={onBack} onNext={onNext} showCamera={true} />
+      </View>
     </Screen>
   )
 })
@@ -680,6 +680,14 @@ const $screenInner: ViewStyle = {
 
 const $stickyHeader: ViewStyle = {
   zIndex: 10,
+}
+
+const $stickyFooter: ViewStyle = {
+  position: "absolute",
+  bottom: 0,
+  left: 0,
+  right: 0,
+  zIndex: 2,
 }
 
 const $scrollArea: ViewStyle = {

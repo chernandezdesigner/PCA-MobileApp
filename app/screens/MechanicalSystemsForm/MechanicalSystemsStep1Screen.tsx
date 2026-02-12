@@ -53,7 +53,10 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
     navigation.navigate("MechanicalSystemsStep2" as never, { transition: "slide_from_right" } as never)
   }
 
-  const onBack = () => navigation.goBack()
+  const onBack = () => {
+    // @ts-expect-error route params for animation
+    navigation.navigate("BuildingEnvelopeStep10" as never, { transition: "slide_from_left" } as never)
+  }
 
   // Dropdown options
   const refrigerantOptions = REFRIGERANT_TYPE_OPTIONS.map(opt => ({ label: opt.label, value: opt.id }))

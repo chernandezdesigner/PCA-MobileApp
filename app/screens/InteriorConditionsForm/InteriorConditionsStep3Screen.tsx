@@ -3,16 +3,47 @@ import { View, ViewStyle, ScrollView, TouchableOpacity, TextStyle } from "react-
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
 import { TextField } from "@/components/TextField"
+import { Checkbox } from "@/components/Toggle/Checkbox"
 import { HeaderBar } from "@/components/HeaderBar"
 import { ProgressBar } from "@/components/ProgressBar"
 import { StickyFooterNav } from "@/components/StickyFooterNav"
-import { Checkbox } from "@/components/Toggle/Checkbox"
 import { useStores } from "@/models/RootStoreProvider"
 import { observer } from "mobx-react-lite"
 import { useNavigation } from "@react-navigation/native"
 import { useDrawerControl } from "@/context/DrawerContext"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
+
+// ============================================
+// CONDITION CONFIG
+// ============================================
+
+const CONDITIONS = [
+  {
+    key: "commercialMoistureLessThan10SF",
+    label: "Moisture Damage < 10 SF",
+    updateAction: "updateCommercialMoistureLessThan10SF",
+  },
+  {
+    key: "commercialMoistureGreaterOrEqual10SF",
+    label: "Moisture Damage \u2265 10 SF",
+    updateAction: "updateCommercialMoistureGreaterOrEqual10SF",
+  },
+  {
+    key: "commercialMoldLessThan10SF",
+    label: "Mold < 10 SF",
+    updateAction: "updateCommercialMoldLessThan10SF",
+  },
+  {
+    key: "commercialMoldGreaterOrEqual10SF",
+    label: "Mold \u2265 10 SF",
+    updateAction: "updateCommercialMoldGreaterOrEqual10SF",
+  },
+] as const
+
+// ============================================
+// MAIN SCREEN COMPONENT
+// ============================================
 
 export const InteriorConditionsStep3Screen: FC = observer(() => {
   const { themed } = useAppTheme()
@@ -29,7 +60,10 @@ export const InteriorConditionsStep3Screen: FC = observer(() => {
     navigation.navigate("InteriorConditionsStep4" as never, { transition: "slide_from_right" } as never)
   }
 
-  const onBack = () => navigation.goBack()
+  const onBack = () => {
+    // @ts-expect-error route params for animation
+    navigation.navigate("InteriorConditionsStep2" as never, { transition: "slide_from_left" } as never)
+  }
 
   const isNA = store?.NotApplicable ?? false
 
@@ -52,179 +86,58 @@ export const InteriorConditionsStep3Screen: FC = observer(() => {
         </View>
 
         {/* Top-level N/A toggle */}
-        <View style={themed($naRow)}>
-          <Text preset="formLabel" text="Not Applicable" />
-          <Checkbox
-            value={isNA}
-            onValueChange={(val) => store?.updateTopLevel({ NotApplicable: val })}
-          />
+        <View style={themed($paddedBlock)}>
+          <TouchableOpacity
+            style={themed($naToggle(isNA))}
+            onPress={() => store?.updateTopLevel({ NotApplicable: !isNA })}
+          >
+            <Text
+              text="Not Applicable"
+              style={themed($naToggleText(isNA))}
+            />
+          </TouchableOpacity>
         </View>
 
         {!isNA && (
           <>
-            {/* Condition 1: Moisture Damage < 10 SF */}
-            <View style={themed($conditionCard)}>
-              <Text preset="bold" text="Moisture Damage < 10 SF" style={themed($conditionTitle)} />
-              <View style={themed($checkboxRow)}>
-                <Text preset="formLabel" text="Has Condition" />
-                <Checkbox
-                  value={store?.commercialMoistureLessThan10SF.hasCondition ?? false}
-                  onValueChange={(val) =>
-                    store?.updateCommercialMoistureLessThan10SF({ hasCondition: val })
-                  }
-                />
-              </View>
-              {store?.commercialMoistureLessThan10SF.hasCondition && (
-                <View style={$fieldGroup}>
-                  <TextField
-                    label="Size (SF)"
-                    placeholder="Enter square footage"
-                    keyboardType="numeric"
-                    value={
-                      store?.commercialMoistureLessThan10SF.sizeSF
-                        ? store.commercialMoistureLessThan10SF.sizeSF.toString()
-                        : ""
-                    }
-                    onChangeText={(val) =>
-                      store?.updateCommercialMoistureLessThan10SF({
-                        sizeSF: val ? parseFloat(val) : 0,
-                      })
-                    }
-                  />
-                  <TextField
-                    label="Location"
-                    placeholder="Enter location"
-                    value={store?.commercialMoistureLessThan10SF.location ?? ""}
-                    onChangeText={(val) =>
-                      store?.updateCommercialMoistureLessThan10SF({ location: val })
-                    }
-                  />
-                </View>
-              )}
-            </View>
+            {/* Condition Cards */}
+            {CONDITIONS.map((cfg) => {
+              const condition = store?.[cfg.key]
+              const updateFn = store?.[cfg.updateAction] as
+                | ((data: { hasCondition?: boolean; sizeSF?: number; location?: string }) => void)
+                | undefined
 
-            {/* Condition 2: Moisture Damage >= 10 SF */}
-            <View style={themed($conditionCard)}>
-              <Text preset="bold" text="Moisture Damage >= 10 SF" style={themed($conditionTitle)} />
-              <View style={themed($checkboxRow)}>
-                <Text preset="formLabel" text="Has Condition" />
-                <Checkbox
-                  value={store?.commercialMoistureGreaterOrEqual10SF.hasCondition ?? false}
-                  onValueChange={(val) =>
-                    store?.updateCommercialMoistureGreaterOrEqual10SF({ hasCondition: val })
-                  }
-                />
-              </View>
-              {store?.commercialMoistureGreaterOrEqual10SF.hasCondition && (
-                <View style={$fieldGroup}>
-                  <TextField
-                    label="Size (SF)"
-                    placeholder="Enter square footage"
-                    keyboardType="numeric"
-                    value={
-                      store?.commercialMoistureGreaterOrEqual10SF.sizeSF
-                        ? store.commercialMoistureGreaterOrEqual10SF.sizeSF.toString()
-                        : ""
-                    }
-                    onChangeText={(val) =>
-                      store?.updateCommercialMoistureGreaterOrEqual10SF({
-                        sizeSF: val ? parseFloat(val) : 0,
-                      })
-                    }
+              return (
+                <View key={cfg.key} style={themed($conditionCard)}>
+                  <Checkbox
+                    label={cfg.label}
+                    value={condition?.hasCondition ?? false}
+                    onValueChange={(val) => updateFn?.({ hasCondition: val })}
+                    labelStyle={themed($checkboxLabel)}
                   />
-                  <TextField
-                    label="Location"
-                    placeholder="Enter location"
-                    value={store?.commercialMoistureGreaterOrEqual10SF.location ?? ""}
-                    onChangeText={(val) =>
-                      store?.updateCommercialMoistureGreaterOrEqual10SF({ location: val })
-                    }
-                  />
-                </View>
-              )}
-            </View>
 
-            {/* Condition 3: Mold < 10 SF */}
-            <View style={themed($conditionCard)}>
-              <Text preset="bold" text="Mold < 10 SF" style={themed($conditionTitle)} />
-              <View style={themed($checkboxRow)}>
-                <Text preset="formLabel" text="Has Condition" />
-                <Checkbox
-                  value={store?.commercialMoldLessThan10SF.hasCondition ?? false}
-                  onValueChange={(val) =>
-                    store?.updateCommercialMoldLessThan10SF({ hasCondition: val })
-                  }
-                />
-              </View>
-              {store?.commercialMoldLessThan10SF.hasCondition && (
-                <View style={$fieldGroup}>
-                  <TextField
-                    label="Size (SF)"
-                    placeholder="Enter square footage"
-                    keyboardType="numeric"
-                    value={
-                      store?.commercialMoldLessThan10SF.sizeSF
-                        ? store.commercialMoldLessThan10SF.sizeSF.toString()
-                        : ""
-                    }
-                    onChangeText={(val) =>
-                      store?.updateCommercialMoldLessThan10SF({
-                        sizeSF: val ? parseFloat(val) : 0,
-                      })
-                    }
-                  />
-                  <TextField
-                    label="Location"
-                    placeholder="Enter location"
-                    value={store?.commercialMoldLessThan10SF.location ?? ""}
-                    onChangeText={(val) =>
-                      store?.updateCommercialMoldLessThan10SF({ location: val })
-                    }
-                  />
+                  {condition?.hasCondition && (
+                    <View style={$conditionFields}>
+                      <TextField
+                        label="Size (SF)"
+                        placeholder="Enter square footage"
+                        keyboardType="numeric"
+                        value={condition.sizeSF ? condition.sizeSF.toString() : ""}
+                        onChangeText={(val) =>
+                          updateFn?.({ sizeSF: val ? parseFloat(val) : 0 })
+                        }
+                      />
+                      <TextField
+                        label="Location"
+                        placeholder="Enter location"
+                        value={condition.location ?? ""}
+                        onChangeText={(val) => updateFn?.({ location: val })}
+                      />
+                    </View>
+                  )}
                 </View>
-              )}
-            </View>
-
-            {/* Condition 4: Mold >= 10 SF */}
-            <View style={themed($conditionCard)}>
-              <Text preset="bold" text="Mold >= 10 SF" style={themed($conditionTitle)} />
-              <View style={themed($checkboxRow)}>
-                <Text preset="formLabel" text="Has Condition" />
-                <Checkbox
-                  value={store?.commercialMoldGreaterOrEqual10SF.hasCondition ?? false}
-                  onValueChange={(val) =>
-                    store?.updateCommercialMoldGreaterOrEqual10SF({ hasCondition: val })
-                  }
-                />
-              </View>
-              {store?.commercialMoldGreaterOrEqual10SF.hasCondition && (
-                <View style={$fieldGroup}>
-                  <TextField
-                    label="Size (SF)"
-                    placeholder="Enter square footage"
-                    keyboardType="numeric"
-                    value={
-                      store?.commercialMoldGreaterOrEqual10SF.sizeSF
-                        ? store.commercialMoldGreaterOrEqual10SF.sizeSF.toString()
-                        : ""
-                    }
-                    onChangeText={(val) =>
-                      store?.updateCommercialMoldGreaterOrEqual10SF({
-                        sizeSF: val ? parseFloat(val) : 0,
-                      })
-                    }
-                  />
-                  <TextField
-                    label="Location"
-                    placeholder="Enter location"
-                    value={store?.commercialMoldGreaterOrEqual10SF.location ?? ""}
-                    onChangeText={(val) =>
-                      store?.updateCommercialMoldGreaterOrEqual10SF({ location: val })
-                    }
-                  />
-                </View>
-              )}
-            </View>
+              )
+            })}
 
             {/* Comments */}
             <View style={themed($commentsBlock)}>
@@ -248,6 +161,10 @@ export const InteriorConditionsStep3Screen: FC = observer(() => {
   )
 })
 
+// ============================================
+// STYLES
+// ============================================
+
 const $root: ViewStyle = {
   flex: 1,
 }
@@ -256,11 +173,11 @@ const $screenInner: ViewStyle = {
   flex: 1,
 }
 
-const $content: ThemedStyle<ViewStyle> = () => ({
+const $content: ViewStyle = {
   paddingTop: 88,
   paddingBottom: 96,
   gap: 0,
-})
+}
 
 const $scrollArea: ViewStyle = {
   flex: 1,
@@ -282,54 +199,55 @@ const $stickyFooter: ViewStyle = {
   zIndex: 2,
 }
 
-const $paddedBlock: ThemedStyle<ViewStyle> = () => ({
+const $paddedBlock: ViewStyle = {
   paddingHorizontal: 16,
   paddingBottom: 16,
   paddingTop: 16,
   gap: 8,
-})
+}
 
-const $titleStyle: ThemedStyle<TextStyle> = ({ colors }) => ({
-  color: colors.palette.primary2,
+const $conditionFields: ViewStyle = {
+  gap: 12,
+  marginTop: 12,
+}
+
+const $commentsBlock: ViewStyle = {
+  paddingHorizontal: 16,
+  paddingBottom: 16,
+  paddingTop: 24,
+  gap: 8,
+}
+
+const $titleStyle: ThemedStyle<any> = ({ colors }) => ({
+  color: colors.palette.primary2 as any,
   fontSize: 24,
   fontFamily: undefined,
 })
 
-const $naRow: ThemedStyle<ViewStyle> = () => ({
-  flexDirection: "row",
-  justifyContent: "space-between",
-  alignItems: "center",
-  paddingHorizontal: 16,
-  paddingVertical: 12,
-})
-
-const $conditionCard: ThemedStyle<ViewStyle> = ({ colors }) => ({
-  marginHorizontal: 16,
-  marginBottom: 16,
-  padding: 16,
-  borderRadius: 8,
+const $conditionCard: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+  marginHorizontal: spacing.md,
+  marginBottom: spacing.sm,
+  padding: spacing.md,
   backgroundColor: colors.palette.neutral200,
-  gap: 12,
+  borderRadius: 8,
 })
 
-const $conditionTitle: ThemedStyle<TextStyle> = ({ colors }) => ({
-  color: colors.palette.primary2,
+const $checkboxLabel: ThemedStyle<TextStyle> = ({ colors }) => ({
   fontSize: 16,
+  fontWeight: "600",
+  color: colors.text,
 })
 
-const $checkboxRow: ThemedStyle<ViewStyle> = () => ({
-  flexDirection: "row",
-  justifyContent: "space-between",
-  alignItems: "center",
-})
-
-const $fieldGroup: ViewStyle = {
-  gap: 12,
-}
-
-const $commentsBlock: ThemedStyle<ViewStyle> = () => ({
+const $naToggle = (isActive: boolean): ThemedStyle<ViewStyle> => ({ colors }) => ({
   paddingHorizontal: 16,
-  paddingBottom: 16,
-  paddingTop: 8,
-  gap: 8,
+  paddingVertical: 10,
+  borderRadius: 6,
+  backgroundColor: isActive ? colors.palette.primary2 : colors.palette.neutral300,
+  alignSelf: "flex-start",
+})
+
+const $naToggleText = (isActive: boolean): ThemedStyle<TextStyle> => ({ colors }) => ({
+  color: isActive ? colors.palette.neutral100 : colors.text,
+  fontSize: 14,
+  fontWeight: "600",
 })

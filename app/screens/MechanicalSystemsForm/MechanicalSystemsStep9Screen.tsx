@@ -58,12 +58,10 @@ export const MechanicalSystemsStep9Screen: FC<MechanicalSystemsStep9ScreenProps>
   // Dropdown options for system type
   const systemTypeOptions = FIRE_PROTECTION_SYSTEM_TYPE_OPTIONS.map((o) => ({ label: o.label, value: o.id }))
 
-  const onNext = () => {
+  const onBack = () => {
     // @ts-expect-error route params for animation
-    navigation.navigate("InteriorConditionsStep1" as never, { transition: "slide_from_right" } as never)
+    navigation.navigate("MechanicalSystemsStep8" as never, { transition: "slide_from_left" } as never)
   }
-
-  const onBack = () => navigation.goBack()
 
   return (
     <Screen style={$root} preset="fixed" contentContainerStyle={$screenInner}>
@@ -886,12 +884,9 @@ export const MechanicalSystemsStep9Screen: FC<MechanicalSystemsStep9ScreenProps>
         </View>
       </ScrollView>
 
-      <StickyFooterNav
-        leftLabel="Back"
-        rightLabel="Complete"
-        onLeftPress={onBack}
-        onRightPress={onNext}
-      />
+      <View style={$stickyFooter}>
+        <StickyFooterNav onBack={onBack} onNext={openDrawer} nextButtonText="Next Form" showCamera={true} />
+      </View>
     </Screen>
   )
 })
@@ -910,6 +905,14 @@ const $screenInner: ViewStyle = {
 
 const $stickyHeader: ViewStyle = {
   zIndex: 10,
+}
+
+const $stickyFooter: ViewStyle = {
+  position: "absolute",
+  bottom: 0,
+  left: 0,
+  right: 0,
+  zIndex: 2,
 }
 
 const $scrollArea: ViewStyle = {

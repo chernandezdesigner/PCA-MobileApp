@@ -44,7 +44,10 @@ export const MechanicalSystemsStep6Screen: FC<MechanicalSystemsStep6ScreenProps>
     navigation.navigate("MechanicalSystemsStep7" as never, { transition: "slide_from_right" } as never)
   }
 
-  const onBack = () => navigation.goBack()
+  const onBack = () => {
+    // @ts-expect-error route params for animation
+    navigation.navigate("MechanicalSystemsStep5" as never, { transition: "slide_from_left" } as never)
+  }
 
   // Create checklist helpers
   const createChecklistItems = (options: readonly { id: string; label: string }[], selectedIds: string[]) => {

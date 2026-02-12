@@ -47,7 +47,10 @@ export const MechanicalSystemsStep4Screen: FC<MechanicalSystemsStep4ScreenProps>
     navigation.navigate("MechanicalSystemsStep5" as never, { transition: "slide_from_right" } as never)
   }
 
-  const onBack = () => navigation.goBack()
+  const onBack = () => {
+    // @ts-expect-error route params for animation
+    navigation.navigate("MechanicalSystemsStep3" as never, { transition: "slide_from_left" } as never)
+  }
 
   // Get unit lists
   const heatBoilersList = store?.heatBoilers.units.slice() ?? []
