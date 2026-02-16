@@ -106,7 +106,7 @@ export const BuildingEnvelopeStep3Screen: FC<BuildingEnvelopeStep3ScreenProps> =
         />
       </View>
       <ScrollView contentContainerStyle={themed($content)} style={$scrollArea}>
-        <View style={themed($paddedBlock)}>
+        <View style={$introBlock}>
           <Text preset="subheading" text="Primary Roofing" style={themed($titleStyle)} />
           <ProgressBar current={3} total={10} />
         </View>
@@ -132,7 +132,7 @@ export const BuildingEnvelopeStep3Screen: FC<BuildingEnvelopeStep3ScreenProps> =
           <TextField
             label="Remaining Years"
             placeholder="Years"
-            keyboardType="numeric"
+            keyboardType="decimal-pad"
             value={String(primaryStore?.remainingYears ?? "")}
             onChangeText={(txt) => primaryStore?.updateRemainingYears(Number(txt.replace(/[^0-9]/g, "")) || 0)}
           />
@@ -226,7 +226,7 @@ export const BuildingEnvelopeStep3Screen: FC<BuildingEnvelopeStep3ScreenProps> =
               <TextField
                 label="Remaining Years"
                 placeholder="Years"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={String(secondaryStore?.remainingYears ?? "")}
                 onChangeText={(txt) => secondaryStore?.updateRemainingYears(Number(txt.replace(/[^0-9]/g, "")) || 0)}
               />
@@ -441,7 +441,7 @@ const RoofAccordions: FC<{
           <TextField
             label="Amount to Repair ($)"
             placeholder="Dollar amount"
-            keyboardType="numeric"
+            keyboardType="decimal-pad"
             value={store?.material.assessment.amountToRepair ?? ""}
             onChangeText={(txt) => store?.updateMaterial({ assessment: { amountToRepair: txt } })}
           />
@@ -486,7 +486,7 @@ const RoofAccordions: FC<{
           <TextField
             label="Amount to Repair ($)"
             placeholder="Dollar amount"
-            keyboardType="numeric"
+            keyboardType="decimal-pad"
             value={store?.shingles.assessment.amountToRepair ?? ""}
             onChangeText={(txt) => store?.updateShingles({ assessment: { amountToRepair: txt } })}
           />
@@ -541,7 +541,7 @@ const RoofAccordions: FC<{
               <TextField
                 label="Amount to Repair ($)"
                 placeholder="Dollar amount"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.secondaryRoof.assessment.amountToRepair ?? ""}
                 onChangeText={(txt) => store?.updateSecondaryRoof({ assessment: { amountToRepair: txt } })}
               />
@@ -596,7 +596,7 @@ const RoofAccordions: FC<{
           <TextField
             label="Amount to Repair ($)"
             placeholder="Dollar amount"
-            keyboardType="numeric"
+            keyboardType="decimal-pad"
             value={store?.parapets.assessment.amountToRepair ?? ""}
             onChangeText={(txt) => store?.updateParapets({ assessment: { amountToRepair: txt } })}
           />
@@ -630,7 +630,7 @@ const RoofAccordions: FC<{
           <TextField
             label="Amount to Repair ($)"
             placeholder="Dollar amount"
-            keyboardType="numeric"
+            keyboardType="decimal-pad"
             value={store?.roofLeaks.assessment.amountToRepair ?? ""}
             onChangeText={(txt) => store?.updateRoofLeaks({ assessment: { amountToRepair: txt } })}
           />
@@ -664,7 +664,7 @@ const RoofAccordions: FC<{
           <TextField
             label="Amount to Repair ($)"
             placeholder="Dollar amount"
-            keyboardType="numeric"
+            keyboardType="decimal-pad"
             value={store?.flashing.assessment.amountToRepair ?? ""}
             onChangeText={(txt) => store?.updateFlashing({ assessment: { amountToRepair: txt } })}
           />
@@ -698,7 +698,7 @@ const RoofAccordions: FC<{
           <TextField
             label="Amount to Repair ($)"
             placeholder="Dollar amount"
-            keyboardType="numeric"
+            keyboardType="decimal-pad"
             value={store?.curbMounted.assessment.amountToRepair ?? ""}
             onChangeText={(txt) => store?.updateCurbMounted({ assessment: { amountToRepair: txt } })}
           />
@@ -743,7 +743,7 @@ const RoofAccordions: FC<{
           <TextField
             label="Amount to Repair ($)"
             placeholder="Dollar amount"
-            keyboardType="numeric"
+            keyboardType="decimal-pad"
             value={store?.roofStructures.assessment.amountToRepair ?? ""}
             onChangeText={(txt) => store?.updateRoofStructures({ assessment: { amountToRepair: txt } })}
           />
@@ -796,7 +796,7 @@ const RoofAccordions: FC<{
               <TextField
                 label="Amount to Repair ($)"
                 placeholder="Dollar amount"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.mechScreen.assessment.amountToRepair ?? ""}
                 onChangeText={(txt) => store?.updateMechScreen({ assessment: { amountToRepair: txt } })}
               />
@@ -831,7 +831,7 @@ const RoofAccordions: FC<{
           <TextField
             label="Amount to Repair ($)"
             placeholder="Dollar amount"
-            keyboardType="numeric"
+            keyboardType="decimal-pad"
             value={store?.drainage.assessment.amountToRepair ?? ""}
             onChangeText={(txt) => store?.updateDrainage({ assessment: { amountToRepair: txt } })}
           />
@@ -865,7 +865,7 @@ const RoofAccordions: FC<{
           <TextField
             label="Amount to Repair ($)"
             placeholder="Dollar amount"
-            keyboardType="numeric"
+            keyboardType="decimal-pad"
             value={store?.insulation.assessment.amountToRepair ?? ""}
             onChangeText={(txt) => store?.updateInsulation({ assessment: { amountToRepair: txt } })}
           />
@@ -885,7 +885,7 @@ const $screenInner: ViewStyle = {
 
 const $content: ViewStyle = {
   paddingTop: 88,
-  paddingBottom: 96,
+  paddingBottom: 112, // 96 (footer height) + 16 (spacing)
   gap: 0,
 }
 
@@ -924,6 +924,13 @@ const $stickyFooter: ViewStyle = {
   left: 0,
   right: 0,
   zIndex: 2,
+}
+
+const $introBlock: ViewStyle = {
+  paddingHorizontal: 16,
+  paddingTop: 16,
+  paddingBottom: 32,
+  gap: 8,
 }
 
 const $paddedBlock: ViewStyle = {

@@ -131,7 +131,7 @@ export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = obs
           render={({ field: { value, onChange, onBlur } }) => (
             <TextField
               label="Project Number"
-              placeholder="PCA-0000"
+              placeholder="Enter number"
               value={value}
               onChangeText={onChange}
               onBlur={onBlur}
@@ -242,7 +242,7 @@ export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = obs
                 value={String(value ?? "")}
                 onChangeText={(txt) => onChange(Number(txt.replace(/[^0-9.-]/g, "")) || 0)}
                 onBlur={onBlur}
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 containerStyle={$temperatureField}
                 returnKeyType="next"
                 blurOnSubmit={false}

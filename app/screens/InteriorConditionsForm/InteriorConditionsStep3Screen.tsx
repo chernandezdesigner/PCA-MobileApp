@@ -80,7 +80,7 @@ export const InteriorConditionsStep3Screen: FC = observer(() => {
       </View>
 
       <ScrollView contentContainerStyle={themed($content)} style={$scrollArea}>
-        <View style={themed($paddedBlock)}>
+        <View style={$introBlock}>
           <Text preset="subheading" text="Mold & Moisture" style={themed($titleStyle)} />
           <ProgressBar current={3} total={4} />
         </View>
@@ -121,7 +121,7 @@ export const InteriorConditionsStep3Screen: FC = observer(() => {
                       <TextField
                         label="Size (SF)"
                         placeholder="Enter square footage"
-                        keyboardType="numeric"
+                        keyboardType="decimal-pad"
                         value={condition.sizeSF ? condition.sizeSF.toString() : ""}
                         onChangeText={(val) =>
                           updateFn?.({ sizeSF: val ? parseFloat(val) : 0 })
@@ -175,7 +175,7 @@ const $screenInner: ViewStyle = {
 
 const $content: ViewStyle = {
   paddingTop: 88,
-  paddingBottom: 96,
+  paddingBottom: 112, // 96 (footer height) + 16 (spacing)
   gap: 0,
 }
 
@@ -197,6 +197,13 @@ const $stickyFooter: ViewStyle = {
   left: 0,
   right: 0,
   zIndex: 2,
+}
+
+const $introBlock: ViewStyle = {
+  paddingHorizontal: 16,
+  paddingTop: 16,
+  paddingBottom: 32,
+  gap: 8,
 }
 
 const $paddedBlock: ViewStyle = {

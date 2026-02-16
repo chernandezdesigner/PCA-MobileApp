@@ -154,7 +154,7 @@ export const BuildingEnvelopeStep4Screen: FC<BuildingEnvelopeStep4ScreenProps> =
         />
       </View>
       <ScrollView contentContainerStyle={themed($content)} style={$scrollArea}>
-        <View style={themed($paddedBlock)}>
+        <View style={$introBlock}>
           <Text preset="subheading" text="Exterior Walls" style={themed($titleStyle)} />
           <ProgressBar current={4} total={10} />
         </View>
@@ -213,7 +213,7 @@ export const BuildingEnvelopeStep4Screen: FC<BuildingEnvelopeStep4ScreenProps> =
             <TextField
               label="Amount to Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={store?.material.assessment.amountToRepair ?? ""}
               onChangeText={(txt) => store?.updateMaterial({ assessment: { amountToRepair: txt } })}
             />
@@ -247,7 +247,7 @@ export const BuildingEnvelopeStep4Screen: FC<BuildingEnvelopeStep4ScreenProps> =
             <TextField
               label="Amount to Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={store?.siding.assessment.amountToRepair ?? ""}
               onChangeText={(txt) => store?.updateSiding({ assessment: { amountToRepair: txt } })}
             />
@@ -292,7 +292,7 @@ export const BuildingEnvelopeStep4Screen: FC<BuildingEnvelopeStep4ScreenProps> =
             <TextField
               label="Amount to Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={store?.soffit.assessment.amountToRepair ?? ""}
               onChangeText={(txt) => store?.updateSoffit({ assessment: { amountToRepair: txt } })}
             />
@@ -347,7 +347,7 @@ export const BuildingEnvelopeStep4Screen: FC<BuildingEnvelopeStep4ScreenProps> =
             <TextField
               label="Amount to Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={store?.sealant.assessment.amountToRepair ?? ""}
               onChangeText={(txt) => store?.updateSealant({ assessment: { amountToRepair: txt } })}
             />
@@ -407,7 +407,7 @@ export const BuildingEnvelopeStep4Screen: FC<BuildingEnvelopeStep4ScreenProps> =
               <TextField
                 label="Amount to Repair ($)"
                 placeholder="Dollar amount"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.curtainWall.assessment.amountToRepair ?? ""}
                 onChangeText={(txt) => store?.updateCurtainWall({ assessment: { amountToRepair: txt } })}
               />
@@ -473,7 +473,7 @@ export const BuildingEnvelopeStep4Screen: FC<BuildingEnvelopeStep4ScreenProps> =
 
               <TextField
                 label="Frequency of Inspection"
-                placeholder="e.g., Annual, Bi-annual"
+                placeholder="Enter frequency"
                 value={store?.facadeOrdinance.FrequencyOfInspection ?? ""}
                 onChangeText={(txt) => store?.updateFacadeOrdinance({ FrequencyOfInspection: txt })}
               />
@@ -538,7 +538,7 @@ const $screenInner: ViewStyle = {
 
 const $content: ViewStyle = {
   paddingTop: 88,
-  paddingBottom: 96,
+  paddingBottom: 112, // 96 (footer height) + 16 (spacing)
   gap: 0,
 }
 
@@ -577,6 +577,13 @@ const $stickyFooter: ViewStyle = {
   left: 0,
   right: 0,
   zIndex: 2,
+}
+
+const $introBlock: ViewStyle = {
+  paddingHorizontal: 16,
+  paddingTop: 16,
+  paddingBottom: 32,
+  gap: 8,
 }
 
 const $paddedBlock: ViewStyle = {

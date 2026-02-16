@@ -76,7 +76,7 @@ export const MechanicalSystemsStep9Screen: FC<MechanicalSystemsStep9ScreenProps>
       </View>
 
       <ScrollView contentContainerStyle={themed($content)} style={$scrollArea}>
-        <View style={themed($paddedBlock)}>
+        <View style={$introBlock}>
           <Text preset="subheading" text="Fire Protection" style={themed($titleStyle)} />
           <ProgressBar current={9} total={9} />
         </View>
@@ -143,10 +143,10 @@ export const MechanicalSystemsStep9Screen: FC<MechanicalSystemsStep9ScreenProps>
               <TextField
                 label="Amount to Replace/Repair ($)"
                 placeholder="Dollar amount"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.smokeDetectors?.amountToReplaceRepair?.toString() ?? ""}
                 onChangeText={(val) =>
-                  store?.updateSmokeDetectors({ amountToReplaceRepair: val ? parseInt(val, 10) : 0 })
+                  store?.updateSmokeDetectors({ amountToReplaceRepair: val ? parseFloat(val) : 0 })
                 }
               />
             </View>
@@ -194,7 +194,7 @@ export const MechanicalSystemsStep9Screen: FC<MechanicalSystemsStep9ScreenProps>
                 <TextField
                   label="Age"
                   placeholder="Years"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   value={store?.fireAlarmPanel?.age?.toString() ?? ""}
                   onChangeText={(val) =>
                     store?.updateFireAlarmPanel({ age: val ? parseInt(val, 10) : 0 })
@@ -222,10 +222,10 @@ export const MechanicalSystemsStep9Screen: FC<MechanicalSystemsStep9ScreenProps>
               <TextField
                 label="Amount to Replace/Repair ($)"
                 placeholder="Dollar amount"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.fireAlarmPanel?.amountToReplaceRepair?.toString() ?? ""}
                 onChangeText={(val) =>
-                  store?.updateFireAlarmPanel({ amountToReplaceRepair: val ? parseInt(val, 10) : 0 })
+                  store?.updateFireAlarmPanel({ amountToReplaceRepair: val ? parseFloat(val) : 0 })
                 }
               />
             </View>
@@ -288,10 +288,10 @@ export const MechanicalSystemsStep9Screen: FC<MechanicalSystemsStep9ScreenProps>
               <TextField
                 label="Amount to Replace/Repair ($)"
                 placeholder="Dollar amount"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.fireExtinguishers?.amountToReplaceRepair?.toString() ?? ""}
                 onChangeText={(val) =>
-                  store?.updateFireExtinguishers({ amountToReplaceRepair: val ? parseInt(val, 10) : 0 })
+                  store?.updateFireExtinguishers({ amountToReplaceRepair: val ? parseFloat(val) : 0 })
                 }
               />
             </View>
@@ -360,10 +360,10 @@ export const MechanicalSystemsStep9Screen: FC<MechanicalSystemsStep9ScreenProps>
               <TextField
                 label="Amount to Replace/Repair ($)"
                 placeholder="Dollar amount"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.fixtures?.amountToReplaceRepair?.toString() ?? ""}
                 onChangeText={(val) =>
-                  store?.updateFixtures({ amountToReplaceRepair: val ? parseInt(val, 10) : 0 })
+                  store?.updateFixtures({ amountToReplaceRepair: val ? parseFloat(val) : 0 })
                 }
               />
             </View>
@@ -454,10 +454,10 @@ export const MechanicalSystemsStep9Screen: FC<MechanicalSystemsStep9ScreenProps>
               <TextField
                 label="Amount to Replace/Repair ($)"
                 placeholder="Dollar amount"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.sprinklers?.amountToReplaceRepair?.toString() ?? ""}
                 onChangeText={(val) =>
-                  store?.updateSprinklers({ amountToReplaceRepair: val ? parseInt(val, 10) : 0 })
+                  store?.updateSprinklers({ amountToReplaceRepair: val ? parseFloat(val) : 0 })
                 }
               />
             </View>
@@ -506,10 +506,10 @@ export const MechanicalSystemsStep9Screen: FC<MechanicalSystemsStep9ScreenProps>
                 <TextField
                   label="Tank Gallons"
                   placeholder="#"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   value={store?.firePump?.tankGallons?.toString() ?? ""}
                   onChangeText={(val) =>
-                    store?.updateFirePump({ tankGallons: val ? parseInt(val, 10) : 0 })
+                    store?.updateFirePump({ tankGallons: val ? parseFloat(val) : 0 })
                   }
                   containerStyle={$halfWidth}
                 />
@@ -565,10 +565,10 @@ export const MechanicalSystemsStep9Screen: FC<MechanicalSystemsStep9ScreenProps>
               <TextField
                 label="Amount to Replace/Repair ($)"
                 placeholder="Dollar amount"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.firePump?.amountToReplaceRepair?.toString() ?? ""}
                 onChangeText={(val) =>
-                  store?.updateFirePump({ amountToReplaceRepair: val ? parseInt(val, 10) : 0 })
+                  store?.updateFirePump({ amountToReplaceRepair: val ? parseFloat(val) : 0 })
                 }
               />
             </View>
@@ -643,10 +643,10 @@ export const MechanicalSystemsStep9Screen: FC<MechanicalSystemsStep9ScreenProps>
               <TextField
                 label="Amount to Replace/Repair ($)"
                 placeholder="Dollar amount"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.smokeEvacSystem?.amountToReplaceRepair?.toString() ?? ""}
                 onChangeText={(val) =>
-                  store?.updateSmokeEvacSystem({ amountToReplaceRepair: val ? parseInt(val, 10) : 0 })
+                  store?.updateSmokeEvacSystem({ amountToReplaceRepair: val ? parseFloat(val) : 0 })
                 }
               />
             </View>
@@ -723,10 +723,10 @@ export const MechanicalSystemsStep9Screen: FC<MechanicalSystemsStep9ScreenProps>
               <TextField
                 label="Amount to Replace/Repair ($)"
                 placeholder="Dollar amount"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.fireExitStairwell?.amountToReplaceRepair?.toString() ?? ""}
                 onChangeText={(val) =>
-                  store?.updateFireExitStairwell({ amountToReplaceRepair: val ? parseInt(val, 10) : 0 })
+                  store?.updateFireExitStairwell({ amountToReplaceRepair: val ? parseFloat(val) : 0 })
                 }
               />
             </View>
@@ -814,10 +814,10 @@ export const MechanicalSystemsStep9Screen: FC<MechanicalSystemsStep9ScreenProps>
               <TextField
                 label="Amount to Replace/Repair ($)"
                 placeholder="Dollar amount"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.ansulSystem?.amountToReplaceRepair?.toString() ?? ""}
                 onChangeText={(val) =>
-                  store?.updateAnsulSystem({ amountToReplaceRepair: val ? parseInt(val, 10) : 0 })
+                  store?.updateAnsulSystem({ amountToReplaceRepair: val ? parseFloat(val) : 0 })
                 }
               />
             </View>
@@ -852,7 +852,7 @@ export const MechanicalSystemsStep9Screen: FC<MechanicalSystemsStep9ScreenProps>
             <TextField
               label="% Sprinklered"
               placeholder="%"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={store?.percentSprinklered?.toString() ?? ""}
               onChangeText={(val) =>
                 store?.updateTopLevel({ percentSprinklered: val ? parseInt(val, 10) : 0 })
@@ -904,7 +904,11 @@ const $screenInner: ViewStyle = {
 }
 
 const $stickyHeader: ViewStyle = {
-  zIndex: 10,
+  position: "absolute",
+  top: 0,
+  left: 0,
+  right: 0,
+  zIndex: 2,
 }
 
 const $stickyFooter: ViewStyle = {
@@ -920,15 +924,26 @@ const $scrollArea: ViewStyle = {
 }
 
 const $content: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  paddingBottom: spacing.xl,
+  paddingTop: 88,
+  paddingBottom: 112, // 96 (footer height) + 16 (spacing)
+  gap: 0,
 })
+
+const $introBlock: ViewStyle = {
+  paddingHorizontal: 16,
+  paddingTop: 16,
+  paddingBottom: 32,
+  gap: 8,
+}
 
 const $paddedBlock: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   paddingHorizontal: spacing.md,
   marginBottom: spacing.md,
 })
 
-const $titleStyle: ThemedStyle<TextStyle> = ({ spacing }) => ({
+const $titleStyle: ThemedStyle<TextStyle> = ({ spacing, colors }) => ({
+  color: colors.palette.primary2,
+  fontSize: 24,
   marginBottom: spacing.xs,
 })
 

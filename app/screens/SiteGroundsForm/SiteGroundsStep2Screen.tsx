@@ -354,7 +354,7 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
               <TextField
                 label="Amount to Repair ($)"
                 placeholder="Dollar amount"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
@@ -396,7 +396,7 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
               <TextField
                 label="Amount to Repair ($)"
                 placeholder="Dollar amount"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
@@ -464,7 +464,7 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
           <TextField
             label="Amount to Repair ($)"
             placeholder="Dollar amount"
-            keyboardType="numeric"
+            keyboardType="decimal-pad"
             value={store?.retainingWalls.assessment.amountToRepair}
             onChangeText={(t) => store?.updateRetainingWalls({ assessment: { amountToRepair: t } })}
           />
@@ -514,7 +514,7 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
                 <TextField
                   label="Amount to Repair ($)"
                   placeholder="Dollar amount"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   value={store?.retainingWalls.railingDetails?.assessment.amountToRepair ?? ""}
                   onChangeText={(t) =>
                     store?.retainingWalls.railingDetails
@@ -587,7 +587,7 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
           <TextField
             label="Amount to Repair ($)"
             placeholder="Dollar amount"
-            keyboardType="numeric"
+            keyboardType="decimal-pad"
             value={store?.screenWalls.assessment.amountToRepair}
             onChangeText={(t) => store?.updateScreenWalls({ assessment: { amountToRepair: t } })}
           />
@@ -637,7 +637,7 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
                 <TextField
                   label="Amount to Repair ($)"
                   placeholder="Dollar amount"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   value={store?.screenWalls.railingDetails?.assessment.amountToRepair ?? ""}
                   onChangeText={(t) =>
                     store?.screenWalls.railingDetails
@@ -692,7 +692,7 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
           <TextField
             label="Amount to Repair ($)"
             placeholder="Dollar amount"
-            keyboardType="numeric"
+            keyboardType="decimal-pad"
             value={store?.waterFeatures.assessment.amountToRepair}
             onChangeText={(t) => store?.updateWaterFeatures({ assessment: { amountToRepair: t } })}
           />

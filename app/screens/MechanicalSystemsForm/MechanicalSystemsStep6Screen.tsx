@@ -79,7 +79,7 @@ export const MechanicalSystemsStep6Screen: FC<MechanicalSystemsStep6ScreenProps>
       </View>
       
       <ScrollView contentContainerStyle={themed($content)} style={$scrollArea}>
-        <View style={themed($paddedBlock)}>
+        <View style={$introBlock}>
           <Text preset="subheading" text="Water Heaters" style={themed($titleStyle)} />
           <ProgressBar current={6} total={9} />
         </View>
@@ -106,7 +106,7 @@ export const MechanicalSystemsStep6Screen: FC<MechanicalSystemsStep6ScreenProps>
               <TextField
                 label="Quantity"
                 placeholder="Enter quantity"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.commonAreaWaterHeater.quantity?.toString() ?? ""}
                 onChangeText={(val) => store?.updateCommonAreaWaterHeater({ 
                   quantity: val ? parseInt(val, 10) : 0 
@@ -116,10 +116,10 @@ export const MechanicalSystemsStep6Screen: FC<MechanicalSystemsStep6ScreenProps>
               <TextField
                 label="Capacity (BTU, Watts)"
                 placeholder="Enter capacity"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.commonAreaWaterHeater.capacity?.toString() ?? ""}
                 onChangeText={(val) => store?.updateCommonAreaWaterHeater({ 
-                  capacity: val ? parseInt(val, 10) : 0 
+                  capacity: val ? parseFloat(val) : 0 
                 })}
                 containerStyle={$halfWidth}
               />
@@ -129,7 +129,7 @@ export const MechanicalSystemsStep6Screen: FC<MechanicalSystemsStep6ScreenProps>
               <TextField
                 label="Yr Installed (ea.)"
                 placeholder="Year"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.commonAreaWaterHeater.yearInstalled?.toString() ?? ""}
                 onChangeText={(val) => store?.updateCommonAreaWaterHeater({ 
                   yearInstalled: val ? parseInt(val, 10) : 0 
@@ -139,7 +139,7 @@ export const MechanicalSystemsStep6Screen: FC<MechanicalSystemsStep6ScreenProps>
               <TextField
                 label="Yr Rebuild (ea.)"
                 placeholder="Year"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.commonAreaWaterHeater.yearRebuild?.toString() ?? ""}
                 onChangeText={(val) => store?.updateCommonAreaWaterHeater({ 
                   yearRebuild: val ? parseInt(val, 10) : 0 
@@ -176,10 +176,10 @@ export const MechanicalSystemsStep6Screen: FC<MechanicalSystemsStep6ScreenProps>
             <TextField
               label="Amount to Replace/Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={store?.commonAreaWaterHeater.amountToReplaceRepair?.toString() ?? ""}
               onChangeText={(val) => store?.updateCommonAreaWaterHeater({ 
-                amountToReplaceRepair: val ? parseInt(val, 10) : 0 
+                amountToReplaceRepair: val ? parseFloat(val) : 0 
               })}
             />
           </View>
@@ -222,10 +222,10 @@ export const MechanicalSystemsStep6Screen: FC<MechanicalSystemsStep6ScreenProps>
             <TextField
               label="Amount to Replace/Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={store?.commonAreaHeatedWaterPumps?.amountToReplaceRepair?.toString() ?? ""}
               onChangeText={(val) => store?.updateCommonAreaHeatedWaterPumps?.({ 
-                amountToReplaceRepair: val ? parseInt(val, 10) : 0 
+                amountToReplaceRepair: val ? parseFloat(val) : 0 
               })}
             />
           </View>
@@ -244,7 +244,7 @@ export const MechanicalSystemsStep6Screen: FC<MechanicalSystemsStep6ScreenProps>
                   <TextField
                     label="Quantity"
                     placeholder="Enter quantity"
-                    keyboardType="numeric"
+                    keyboardType="decimal-pad"
                 value={store?.commonAreaWaterStorageTanks?.quantity?.toString() ?? ""}
                 onChangeText={(val) => store?.updateCommonAreaWaterStorageTanks?.({ 
                   quantity: val ? parseInt(val, 10) : 0 
@@ -254,10 +254,10 @@ export const MechanicalSystemsStep6Screen: FC<MechanicalSystemsStep6ScreenProps>
                   <TextField
                     label="Capacity"
                     placeholder="Enter capacity"
-                    keyboardType="numeric"
+                    keyboardType="decimal-pad"
                 value={store?.commonAreaWaterStorageTanks?.capacity?.toString() ?? ""}
                 onChangeText={(val) => store?.updateCommonAreaWaterStorageTanks?.({ 
-                  capacity: val ? parseInt(val, 10) : 0 
+                  capacity: val ? parseFloat(val) : 0 
                     })}
                     containerStyle={$halfWidth}
                   />
@@ -266,7 +266,7 @@ export const MechanicalSystemsStep6Screen: FC<MechanicalSystemsStep6ScreenProps>
                 <TextField
               label="Yr Installed"
                   placeholder="Year"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
               value={store?.commonAreaWaterStorageTanks?.yearInstalled?.toString() ?? ""}
               onChangeText={(val) => store?.updateCommonAreaWaterStorageTanks?.({ 
                 yearInstalled: val ? parseInt(val, 10) : 0 
@@ -292,10 +292,10 @@ export const MechanicalSystemsStep6Screen: FC<MechanicalSystemsStep6ScreenProps>
             <TextField
               label="Amount to Replace/Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={store?.commonAreaWaterStorageTanks?.amountToReplaceRepair?.toString() ?? ""}
               onChangeText={(val) => store?.updateCommonAreaWaterStorageTanks?.({ 
-                amountToReplaceRepair: val ? parseInt(val, 10) : 0 
+                amountToReplaceRepair: val ? parseFloat(val) : 0 
                   })}
                 />
           </View>
@@ -323,7 +323,7 @@ export const MechanicalSystemsStep6Screen: FC<MechanicalSystemsStep6ScreenProps>
               <TextField
                 label="Quantity"
                 placeholder="Enter quantity"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.tenantSpacesWaterHeater.quantity?.toString() ?? ""}
                 onChangeText={(val) => store?.updateTenantSpacesWaterHeater({ 
                   quantity: val ? parseInt(val, 10) : 0 
@@ -333,10 +333,10 @@ export const MechanicalSystemsStep6Screen: FC<MechanicalSystemsStep6ScreenProps>
               <TextField
                 label="Capacity (BTU, Watts)"
                 placeholder="Enter capacity"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.tenantSpacesWaterHeater.capacity?.toString() ?? ""}
                 onChangeText={(val) => store?.updateTenantSpacesWaterHeater({ 
-                  capacity: val ? parseInt(val, 10) : 0 
+                  capacity: val ? parseFloat(val) : 0 
                 })}
                 containerStyle={$halfWidth}
               />
@@ -346,7 +346,7 @@ export const MechanicalSystemsStep6Screen: FC<MechanicalSystemsStep6ScreenProps>
               <TextField
                 label="Yr Installed (ea.)"
                 placeholder="Year"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.tenantSpacesWaterHeater.yearInstalled?.toString() ?? ""}
                 onChangeText={(val) => store?.updateTenantSpacesWaterHeater({ 
                   yearInstalled: val ? parseInt(val, 10) : 0 
@@ -356,7 +356,7 @@ export const MechanicalSystemsStep6Screen: FC<MechanicalSystemsStep6ScreenProps>
               <TextField
                 label="Yr Rebuild (ea.)"
                 placeholder="Year"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.tenantSpacesWaterHeater.yearRebuild?.toString() ?? ""}
                 onChangeText={(val) => store?.updateTenantSpacesWaterHeater({ 
                   yearRebuild: val ? parseInt(val, 10) : 0 
@@ -393,10 +393,10 @@ export const MechanicalSystemsStep6Screen: FC<MechanicalSystemsStep6ScreenProps>
             <TextField
               label="Amount to Replace/Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={store?.tenantSpacesWaterHeater.amountToReplaceRepair?.toString() ?? ""}
               onChangeText={(val) => store?.updateTenantSpacesWaterHeater({ 
-                amountToReplaceRepair: val ? parseInt(val, 10) : 0 
+                amountToReplaceRepair: val ? parseFloat(val) : 0 
               })}
             />
           </View>
@@ -439,10 +439,10 @@ export const MechanicalSystemsStep6Screen: FC<MechanicalSystemsStep6ScreenProps>
             <TextField
               label="Amount to Replace/Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={store?.tenantSpacesHeatedWaterPumps?.amountToReplaceRepair?.toString() ?? ""}
               onChangeText={(val) => store?.updateTenantSpacesHeatedWaterPumps?.({ 
-                amountToReplaceRepair: val ? parseInt(val, 10) : 0 
+                amountToReplaceRepair: val ? parseFloat(val) : 0 
               })}
             />
           </View>
@@ -461,7 +461,7 @@ export const MechanicalSystemsStep6Screen: FC<MechanicalSystemsStep6ScreenProps>
                   <TextField
                     label="Quantity"
                     placeholder="Enter quantity"
-                    keyboardType="numeric"
+                    keyboardType="decimal-pad"
                 value={store?.tenantSpacesWaterStorageTanks?.quantity?.toString() ?? ""}
                 onChangeText={(val) => store?.updateTenantSpacesWaterStorageTanks?.({ 
                   quantity: val ? parseInt(val, 10) : 0 
@@ -471,10 +471,10 @@ export const MechanicalSystemsStep6Screen: FC<MechanicalSystemsStep6ScreenProps>
                   <TextField
                     label="Capacity"
                     placeholder="Enter capacity"
-                    keyboardType="numeric"
+                    keyboardType="decimal-pad"
                 value={store?.tenantSpacesWaterStorageTanks?.capacity?.toString() ?? ""}
                 onChangeText={(val) => store?.updateTenantSpacesWaterStorageTanks?.({ 
-                  capacity: val ? parseInt(val, 10) : 0 
+                  capacity: val ? parseFloat(val) : 0 
                     })}
                     containerStyle={$halfWidth}
                   />
@@ -483,7 +483,7 @@ export const MechanicalSystemsStep6Screen: FC<MechanicalSystemsStep6ScreenProps>
                 <TextField
               label="Yr Installed"
                   placeholder="Year"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
               value={store?.tenantSpacesWaterStorageTanks?.yearInstalled?.toString() ?? ""}
               onChangeText={(val) => store?.updateTenantSpacesWaterStorageTanks?.({ 
                 yearInstalled: val ? parseInt(val, 10) : 0 
@@ -509,10 +509,10 @@ export const MechanicalSystemsStep6Screen: FC<MechanicalSystemsStep6ScreenProps>
             <TextField
               label="Amount to Replace/Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={store?.tenantSpacesWaterStorageTanks?.amountToReplaceRepair?.toString() ?? ""}
               onChangeText={(val) => store?.updateTenantSpacesWaterStorageTanks?.({ 
-                amountToReplaceRepair: val ? parseInt(val, 10) : 0 
+                amountToReplaceRepair: val ? parseFloat(val) : 0 
                   })}
                 />
           </View>
@@ -550,7 +550,7 @@ const $screenInner: ViewStyle = {
 
 const $content: ViewStyle = {
   paddingTop: 88,
-  paddingBottom: 96,
+  paddingBottom: 112, // 96 (footer height) + 16 (spacing)
   gap: 0,
 }
 
@@ -582,6 +582,13 @@ const $stickyFooter: ViewStyle = {
   left: 0,
   right: 0,
   zIndex: 2,
+}
+
+const $introBlock: ViewStyle = {
+  paddingHorizontal: 16,
+  paddingTop: 16,
+  paddingBottom: 32,
+  gap: 8,
 }
 
 const $paddedBlock: ViewStyle = {

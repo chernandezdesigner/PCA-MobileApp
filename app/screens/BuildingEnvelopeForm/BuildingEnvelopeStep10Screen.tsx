@@ -163,7 +163,7 @@ export const BuildingEnvelopeStep10Screen: FC<BuildingEnvelopeStep10ScreenProps>
           onRightPress={openDrawer}
         />
 
-        <View style={themed($paddedBlock)}>
+        <View style={$introBlock}>
           <Text preset="subheading" text="Swimming Pool & Spa" style={themed($titleStyle)} />
           <ProgressBar current={10} total={10} />
         </View>
@@ -242,7 +242,7 @@ export const BuildingEnvelopeStep10Screen: FC<BuildingEnvelopeStep10ScreenProps>
                         onChangeText={(text) =>
                           store?.updateSwimmingPool({ quantity: parseInt(text) || 0 })
                         }
-                        keyboardType="numeric"
+                        keyboardType="decimal-pad"
                       />
                     </View>
 
@@ -313,7 +313,7 @@ export const BuildingEnvelopeStep10Screen: FC<BuildingEnvelopeStep10ScreenProps>
                               repairedreplacedyear: parseInt(text) || 0,
                             })
                           }
-                          keyboardType="numeric"
+                          keyboardType="decimal-pad"
                         />
                       </View>
                     )}
@@ -404,7 +404,7 @@ export const BuildingEnvelopeStep10Screen: FC<BuildingEnvelopeStep10ScreenProps>
                         onChangeText={(text) =>
                           store?.updateSpa({ quantity: parseInt(text) || 0 })
                         }
-                        keyboardType="numeric"
+                        keyboardType="decimal-pad"
                       />
                     </View>
 
@@ -469,7 +469,7 @@ export const BuildingEnvelopeStep10Screen: FC<BuildingEnvelopeStep10ScreenProps>
                           onChangeText={(text) =>
                             store?.updateSpa({ repairedreplacedyear: parseInt(text) || 0 })
                           }
-                          keyboardType="numeric"
+                          keyboardType="decimal-pad"
                         />
                       </View>
                     )}
@@ -532,12 +532,21 @@ const $scrollContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   paddingBottom: spacing.xxl * 3,
 })
 
+const $introBlock: ViewStyle = {
+  paddingHorizontal: 16,
+  paddingTop: 16,
+  paddingBottom: 32,
+  gap: 8,
+}
+
 const $paddedBlock: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   paddingHorizontal: spacing.md,
   paddingVertical: spacing.sm,
 })
 
-const $titleStyle: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+const $titleStyle: ThemedStyle<TextStyle> = ({ spacing, colors }) => ({
+  color: colors.palette.primary2,
+  fontSize: 24,
   marginBottom: spacing.xs,
 })
 

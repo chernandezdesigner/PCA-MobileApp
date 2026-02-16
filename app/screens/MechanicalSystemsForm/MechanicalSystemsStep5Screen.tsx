@@ -82,7 +82,7 @@ export const MechanicalSystemsStep5Screen: FC<MechanicalSystemsStep5ScreenProps>
       </View>
       
       <ScrollView contentContainerStyle={themed($content)} style={$scrollArea}>
-        <View style={themed($paddedBlock)}>
+        <View style={$introBlock}>
           <Text preset="subheading" text="Plumbing Systems" style={themed($titleStyle)} />
           <ProgressBar current={5} total={9} />
         </View>
@@ -133,10 +133,10 @@ export const MechanicalSystemsStep5Screen: FC<MechanicalSystemsStep5ScreenProps>
             <TextField
               label="Amount to Replace/Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={store?.domesticPiping.amountToReplaceRepair?.toString() ?? ""}
               onChangeText={(val) => store?.updateDomesticPiping({ 
-                amountToReplaceRepair: val ? parseInt(val, 10) : 0 
+                amountToReplaceRepair: val ? parseFloat(val) : 0 
               })}
             />
           </View>
@@ -191,7 +191,7 @@ export const MechanicalSystemsStep5Screen: FC<MechanicalSystemsStep5ScreenProps>
                 <TextField
                   label="Quantity (#)"
                   placeholder="Enter quantity"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   value={store?.waterMeter.boosterPumpsQuantity?.toString() ?? ""}
                   onChangeText={(val) => store?.updateWaterMeter({ 
                     boosterPumpsQuantity: val ? parseInt(val, 10) : 0 
@@ -201,10 +201,10 @@ export const MechanicalSystemsStep5Screen: FC<MechanicalSystemsStep5ScreenProps>
                 <TextField
                   label="GPM (#)"
                   placeholder="Enter GPM"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   value={store?.waterMeter.boosterPumpsGPM?.toString() ?? ""}
                   onChangeText={(val) => store?.updateWaterMeter({ 
-                    boosterPumpsGPM: val ? parseInt(val, 10) : 0 
+                    boosterPumpsGPM: val ? parseFloat(val) : 0 
                   })}
                   containerStyle={$halfWidth}
                 />
@@ -230,10 +230,10 @@ export const MechanicalSystemsStep5Screen: FC<MechanicalSystemsStep5ScreenProps>
             <TextField
               label="Amount to Replace/Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={store?.waterMeter.amountToReplaceRepair?.toString() ?? ""}
               onChangeText={(val) => store?.updateWaterMeter({ 
-                amountToReplaceRepair: val ? parseInt(val, 10) : 0 
+                amountToReplaceRepair: val ? parseFloat(val) : 0 
               })}
             />
           </View>
@@ -311,10 +311,10 @@ export const MechanicalSystemsStep5Screen: FC<MechanicalSystemsStep5ScreenProps>
             <TextField
               label="Amount to Replace/Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={store?.wastePiping.amountToReplaceRepair?.toString() ?? ""}
               onChangeText={(val) => store?.updateWastePiping({ 
-                amountToReplaceRepair: val ? parseInt(val, 10) : 0 
+                amountToReplaceRepair: val ? parseFloat(val) : 0 
               })}
             />
           </View>
@@ -373,10 +373,10 @@ export const MechanicalSystemsStep5Screen: FC<MechanicalSystemsStep5ScreenProps>
             <TextField
               label="Amount to Replace/Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={store?.naturalGasPipe.amountToReplaceRepair?.toString() ?? ""}
               onChangeText={(val) => store?.updateNaturalGasPipe({ 
-                amountToReplaceRepair: val ? parseInt(val, 10) : 0 
+                amountToReplaceRepair: val ? parseFloat(val) : 0 
               })}
             />
           </View>
@@ -414,7 +414,7 @@ const $screenInner: ViewStyle = {
 
 const $content: ViewStyle = {
   paddingTop: 88,
-  paddingBottom: 96,
+  paddingBottom: 112, // 96 (footer height) + 16 (spacing)
   gap: 0,
 }
 
@@ -446,6 +446,13 @@ const $stickyFooter: ViewStyle = {
   left: 0,
   right: 0,
   zIndex: 2,
+}
+
+const $introBlock: ViewStyle = {
+  paddingHorizontal: 16,
+  paddingTop: 16,
+  paddingBottom: 32,
+  gap: 8,
 }
 
 const $paddedBlock: ViewStyle = {

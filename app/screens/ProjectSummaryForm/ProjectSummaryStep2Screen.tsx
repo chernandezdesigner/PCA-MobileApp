@@ -20,13 +20,13 @@ import { useDrawerControl } from "@/context/DrawerContext"
 interface ProjectSummaryStep2ScreenProps extends NativeStackScreenProps<ProjectSummaryFormNavigatorParamList, "ProjectSummaryStep2"> {}
 
 type Step2FormValues = {
-  acreage: number
+  acreage: number | string
   numberSignDown: number
   yearRenovated: number
   numberOfBuildings: number
-  netSqFt: number
+  netSqFt: number | string
   numberOfUnits: number
-  GSF: number
+  GSF: number | string
   numberOfVacantUnits: number
   yearBuilt: number
   leaseType: string
@@ -74,7 +74,14 @@ export const ProjectSummaryStep2Screen: FC<ProjectSummaryStep2ScreenProps> = obs
     const subscription = watch((values) => {
       if (debounceRef.current) clearTimeout(debounceRef.current)
       debounceRef.current = setTimeout(() => {
-        projectSummaryStore?.updateStep2(values)
+        // Convert any intermediate string values to numbers before saving to MST store
+        const sanitized = {
+          ...values,
+          acreage: Number(values.acreage) || 0,
+          netSqFt: Number(values.netSqFt) || 0,
+          GSF: Number(values.GSF) || 0,
+        }
+        projectSummaryStore?.updateStep2(sanitized)
       }, 300)
     })
     return () => subscription.unsubscribe()
@@ -111,9 +118,19 @@ export const ProjectSummaryStep2Screen: FC<ProjectSummaryStep2ScreenProps> = obs
               label="Acreage"
               placeholder="0.0"
               value={String(value ?? "")}
-              onChangeText={(txt) => onChange(Number(txt) || 0)}
-              onBlur={onBlur}
-              keyboardType="numeric"
+              onChangeText={(txt) => {
+                const cleaned = txt.replace(/[^0-9.]/g, "")
+                if (cleaned === "" || cleaned.endsWith(".")) {
+                  onChange(cleaned)
+                } else {
+                  onChange(Number(cleaned) || 0)
+                }
+              }}
+              onBlur={() => {
+                onChange(Number(value) || 0)
+                onBlur()
+              }}
+              keyboardType="decimal-pad"
             />
           )}
         />
@@ -128,7 +145,7 @@ export const ProjectSummaryStep2Screen: FC<ProjectSummaryStep2ScreenProps> = obs
               value={String(value ?? "")}
               onChangeText={(txt) => onChange(Number(txt) || 0)}
               onBlur={onBlur}
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
             />
           )}
         />
@@ -143,7 +160,7 @@ export const ProjectSummaryStep2Screen: FC<ProjectSummaryStep2ScreenProps> = obs
               value={String(value ?? "")}
               onChangeText={(txt) => onChange(Number(txt) || 0)}
               onBlur={onBlur}
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
             />
           )}
         />
@@ -158,7 +175,7 @@ export const ProjectSummaryStep2Screen: FC<ProjectSummaryStep2ScreenProps> = obs
               value={String(value ?? "")}
               onChangeText={(txt) => onChange(Number(txt) || 0)}
               onBlur={onBlur}
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
             />
           )}
         />
@@ -171,9 +188,19 @@ export const ProjectSummaryStep2Screen: FC<ProjectSummaryStep2ScreenProps> = obs
               label="Net Square Feet"
               placeholder="Square feet"
               value={String(value ?? "")}
-              onChangeText={(txt) => onChange(Number(txt) || 0)}
-              onBlur={onBlur}
-              keyboardType="numeric"
+              onChangeText={(txt) => {
+                const cleaned = txt.replace(/[^0-9.]/g, "")
+                if (cleaned === "" || cleaned.endsWith(".")) {
+                  onChange(cleaned)
+                } else {
+                  onChange(Number(cleaned) || 0)
+                }
+              }}
+              onBlur={() => {
+                onChange(Number(value) || 0)
+                onBlur()
+              }}
+              keyboardType="decimal-pad"
             />
           )}
         />
@@ -190,7 +217,7 @@ export const ProjectSummaryStep2Screen: FC<ProjectSummaryStep2ScreenProps> = obs
               value={String(value ?? "")}
               onChangeText={(txt) => onChange(Number(txt) || 0)}
               onBlur={onBlur}
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
             />
           )}
         />
@@ -203,9 +230,19 @@ export const ProjectSummaryStep2Screen: FC<ProjectSummaryStep2ScreenProps> = obs
               label="GSF"
               placeholder="Square feet"
               value={String(value ?? "")}
-              onChangeText={(txt) => onChange(Number(txt) || 0)}
-              onBlur={onBlur}
-              keyboardType="numeric"
+              onChangeText={(txt) => {
+                const cleaned = txt.replace(/[^0-9.]/g, "")
+                if (cleaned === "" || cleaned.endsWith(".")) {
+                  onChange(cleaned)
+                } else {
+                  onChange(Number(cleaned) || 0)
+                }
+              }}
+              onBlur={() => {
+                onChange(Number(value) || 0)
+                onBlur()
+              }}
+              keyboardType="decimal-pad"
             />
           )}
         />
@@ -220,7 +257,7 @@ export const ProjectSummaryStep2Screen: FC<ProjectSummaryStep2ScreenProps> = obs
               value={String(value ?? "")}
               onChangeText={(txt) => onChange(Number(txt) || 0)}
               onBlur={onBlur}
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
             />
           )}
         />
@@ -235,7 +272,7 @@ export const ProjectSummaryStep2Screen: FC<ProjectSummaryStep2ScreenProps> = obs
               value={String(value ?? "")}
               onChangeText={(txt) => onChange(Number(txt) || 0)}
               onBlur={onBlur}
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
             />
           )}
         />

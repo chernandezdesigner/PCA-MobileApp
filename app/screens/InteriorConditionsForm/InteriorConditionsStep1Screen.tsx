@@ -90,7 +90,7 @@ export const InteriorConditionsStep1Screen: FC = observer(() => {
       </View>
 
       <ScrollView contentContainerStyle={themed($content)} style={$scrollArea}>
-        <View style={themed($paddedBlock)}>
+        <View style={$introBlock}>
           <Text preset="subheading" text="Commercial Tenant Unit Finishes" style={themed($titleStyle)} />
           <ProgressBar current={1} total={4} />
         </View>
@@ -101,7 +101,7 @@ export const InteriorConditionsStep1Screen: FC = observer(() => {
         <View style={themed($paddedBlock)}>
           <TextField
             label="Last Renovated"
-            placeholder="e.g., 2019"
+            placeholder="Enter year"
             value={store?.lastRenovated ?? ""}
             onChangeText={(val) => store?.updateTopLevel({ lastRenovated: val })}
           />
@@ -197,7 +197,7 @@ export const InteriorConditionsStep1Screen: FC = observer(() => {
               <TextField
                 label="Amount to Repair ($)"
                 placeholder="Dollar amount"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.tenantFinishes.assessment.amountToRepair ?? ""}
                 onChangeText={(val) => store?.updateTenantFinishes({ assessment: { amountToRepair: val } })}
               />
@@ -205,7 +205,7 @@ export const InteriorConditionsStep1Screen: FC = observer(() => {
               <TextField
                 label="Effective Age (Years)"
                 placeholder="Enter effective age"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.tenantFinishes.effectiveAge ? store.tenantFinishes.effectiveAge.toString() : ""}
                 onChangeText={(val) => store?.updateTenantFinishes({ effectiveAge: val ? parseInt(val, 10) : 0 })}
               />
@@ -246,7 +246,7 @@ export const InteriorConditionsStep1Screen: FC = observer(() => {
               <TextField
                 label="Quantity"
                 placeholder="Number of restrooms"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.restroomFinishes.quantity ? store.restroomFinishes.quantity.toString() : ""}
                 onChangeText={(val) => store?.updateRestroomFinishes({ quantity: val ? parseInt(val, 10) : 0 })}
               />
@@ -311,7 +311,7 @@ export const InteriorConditionsStep1Screen: FC = observer(() => {
               <TextField
                 label="Amount to Repair ($)"
                 placeholder="Dollar amount"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.restroomFinishes.assessment.amountToRepair ?? ""}
                 onChangeText={(val) => store?.updateRestroomFinishes({ assessment: { amountToRepair: val } })}
               />
@@ -319,7 +319,7 @@ export const InteriorConditionsStep1Screen: FC = observer(() => {
               <TextField
                 label="Effective Age (Years)"
                 placeholder="Enter effective age"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.restroomFinishes.effectiveAge ? store.restroomFinishes.effectiveAge.toString() : ""}
                 onChangeText={(val) => store?.updateRestroomFinishes({ effectiveAge: val ? parseInt(val, 10) : 0 })}
               />
@@ -417,7 +417,7 @@ export const InteriorConditionsStep1Screen: FC = observer(() => {
               <TextField
                 label="Amount to Repair ($)"
                 placeholder="Dollar amount"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.kitchenFinishes.assessment.amountToRepair ?? ""}
                 onChangeText={(val) => store?.updateKitchenFinishes({ assessment: { amountToRepair: val } })}
               />
@@ -425,7 +425,7 @@ export const InteriorConditionsStep1Screen: FC = observer(() => {
               <TextField
                 label="Effective Age (Years)"
                 placeholder="Enter effective age"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.kitchenFinishes.effectiveAge ? store.kitchenFinishes.effectiveAge.toString() : ""}
                 onChangeText={(val) => store?.updateKitchenFinishes({ effectiveAge: val ? parseInt(val, 10) : 0 })}
               />
@@ -523,7 +523,7 @@ export const InteriorConditionsStep1Screen: FC = observer(() => {
               <TextField
                 label="Amount to Repair ($)"
                 placeholder="Dollar amount"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.warehouseFinishes.assessment.amountToRepair ?? ""}
                 onChangeText={(val) => store?.updateWarehouseFinishes({ assessment: { amountToRepair: val } })}
               />
@@ -531,7 +531,7 @@ export const InteriorConditionsStep1Screen: FC = observer(() => {
               <TextField
                 label="Effective Age (Years)"
                 placeholder="Enter effective age"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.warehouseFinishes.effectiveAge ? store.warehouseFinishes.effectiveAge.toString() : ""}
                 onChangeText={(val) => store?.updateWarehouseFinishes({ effectiveAge: val ? parseInt(val, 10) : 0 })}
               />
@@ -575,7 +575,7 @@ const $screenInner: ViewStyle = {
 
 const $content: ViewStyle = {
   paddingTop: 88,
-  paddingBottom: 96,
+  paddingBottom: 112, // 96 (footer height) + 16 (spacing)
   gap: 0,
 }
 
@@ -607,6 +607,13 @@ const $stickyFooter: ViewStyle = {
   left: 0,
   right: 0,
   zIndex: 2,
+}
+
+const $introBlock: ViewStyle = {
+  paddingHorizontal: 16,
+  paddingTop: 16,
+  paddingBottom: 32,
+  gap: 8,
 }
 
 const $paddedBlock: ViewStyle = {

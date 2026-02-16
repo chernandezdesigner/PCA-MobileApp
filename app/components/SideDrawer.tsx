@@ -18,6 +18,7 @@ import { Icon } from "@/components/Icon"
 import { TextField } from "@/components/TextField"
 import { Button } from "@/components/Button"
 import { navigate, resetRoot, navigationRef } from "@/navigators/navigationUtilities"
+import { Ionicons } from "@expo/vector-icons"
 import { useAuth } from "@/context/AuthContext"
 import { useStores } from "@/models/RootStoreProvider"
 import { AssessmentService } from "@/services/supabase"
@@ -358,18 +359,21 @@ export const SideDrawer = (props: SideDrawerProps) => {
           autoCorrect={false}
           containerStyle={themed($searchFieldContainer)}
           inputWrapperStyle={themed($searchInputWrapper)}
-          LeftAccessory={() => (
-            <Icon 
-              icon="menu" 
-              size={20} 
-              color={theme.colors.textDim} 
-            />
-          )}
-          RightAccessory={searchQuery.length > 0 ? () => (
-            <TouchableOpacity onPress={() => setSearchQuery("")}>
-              <Icon icon="x" size={18} color={theme.colors.textDim} />
-            </TouchableOpacity>
-          ) : undefined}
+          style={$searchInput}
+          RightAccessory={() =>
+            searchQuery.length > 0 ? (
+              <TouchableOpacity
+                onPress={() => setSearchQuery("")}
+                style={$searchAccessory}
+              >
+                <Icon icon="x" size={16} color={theme.colors.textDim} />
+              </TouchableOpacity>
+            ) : (
+              <View style={$searchAccessory}>
+                <Ionicons name="hourglass-outline" size={16} color={theme.colors.textDim} />
+              </View>
+            )
+          }
         />
       </View>
 
@@ -514,12 +518,22 @@ const $searchFieldContainer: ThemedStyleArray<ViewStyle> = [
 ]
 
 const $searchInputWrapper: ThemedStyleArray<ViewStyle> = [
-  (theme) => ({
-    minHeight: 48,
-    backgroundColor: theme.colors.palette.gray1,
-    borderColor: theme.colors.border,
+  () => ({
+    minHeight: 40,
+    alignItems: "center",
   }),
 ]
+
+const $searchInput: TextStyle = {
+  fontSize: 14,
+}
+
+const $searchAccessory: ViewStyle = {
+  justifyContent: "center",
+  alignItems: "center",
+  width: 36,
+  height: 40,
+}
 
 const $tocHeader: ThemedStyleArray<ViewStyle> = [
   (theme) => ({

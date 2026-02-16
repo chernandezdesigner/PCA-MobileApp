@@ -177,7 +177,7 @@ export const BuildingEnvelopeStep1Screen: FC<BuildingEnvelopeStep1ScreenProps> =
         />
       </View>
       <ScrollView contentContainerStyle={themed($content)} style={$scrollArea}>
-        <View style={themed($paddedBlock)}>
+        <View style={$introBlock}>
           <Text preset="subheading" text="Foundation & Substructure" style={themed($titleStyle)} />
           <ProgressBar current={1} total={10} />
         </View>
@@ -217,7 +217,7 @@ export const BuildingEnvelopeStep1Screen: FC<BuildingEnvelopeStep1ScreenProps> =
                 <TextField
                   label="Amount to Repair ($)"
                   placeholder="Dollar amount"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   value={value}
                   onChangeText={onChange}
                   onBlur={onBlur}
@@ -262,7 +262,7 @@ export const BuildingEnvelopeStep1Screen: FC<BuildingEnvelopeStep1ScreenProps> =
                 <TextField
                   label="Amount to Repair ($)"
                   placeholder="Dollar amount"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   value={value}
                   onChangeText={onChange}
                   onBlur={onBlur}
@@ -307,7 +307,7 @@ const $screenInner: ViewStyle = {
 
 const $content: ViewStyle = {
   paddingTop: 88, // Header height (72) + spacing (16)
-  paddingBottom: 96, // Footer height
+  paddingBottom: 112, // 96 (footer height) + 16 (spacing)
   gap: 0,
 }
 
@@ -339,6 +339,13 @@ const $stickyFooter: ViewStyle = {
   left: 0,
   right: 0,
   zIndex: 2,
+}
+
+const $introBlock: ViewStyle = {
+  paddingHorizontal: 16,
+  paddingTop: 16,
+  paddingBottom: 32,
+  gap: 8,
 }
 
 const $paddedBlock: ViewStyle = {

@@ -180,7 +180,7 @@ export const ProjectSummaryStep3Screen: FC<ProjectSummaryStep3ScreenProps> = obs
                         yearsAtProperty: Number(txt.replace(/[^0-9.-]/g, "")) || 0,
                       })
                     }
-                    keyboardType="numeric"
+                    keyboardType="decimal-pad"
                     containerStyle={{ flex: 1 }}
                   />
                   <TextField

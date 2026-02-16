@@ -112,7 +112,7 @@ export const BuildingEnvelopeStep6Screen: FC<BuildingEnvelopeStep6ScreenProps> =
         />
       </View>
       <ScrollView contentContainerStyle={themed($content)} style={$scrollArea}>
-        <View style={themed($paddedBlock)}>
+        <View style={$introBlock}>
           <Text preset="subheading" text="Parking Garage Structure" style={themed($titleStyle)} />
           <ProgressBar current={6} total={10} />
         </View>
@@ -166,7 +166,7 @@ export const BuildingEnvelopeStep6Screen: FC<BuildingEnvelopeStep6ScreenProps> =
                 <TextField
                   label="Amount to Repair ($)"
                   placeholder="Dollar amount"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   value={store?.structure.assessment.amountToRepair ?? ""}
                   onChangeText={(txt) => store?.updateStructure({ assessment: { amountToRepair: txt } })}
                 />
@@ -209,7 +209,7 @@ export const BuildingEnvelopeStep6Screen: FC<BuildingEnvelopeStep6ScreenProps> =
                 <TextField
                   label="Amount to Repair ($)"
                   placeholder="Dollar amount"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   value={store?.decking.assessment.amountToRepair ?? ""}
                   onChangeText={(txt) => store?.updateDecking({ assessment: { amountToRepair: txt } })}
                 />
@@ -270,7 +270,7 @@ export const BuildingEnvelopeStep6Screen: FC<BuildingEnvelopeStep6ScreenProps> =
                   <TextField
                     label="Amount to Repair ($)"
                     placeholder="Dollar amount"
-                    keyboardType="numeric"
+                    keyboardType="decimal-pad"
                     value={store?.expansionJointsMaterials.assessment.amountToRepair ?? ""}
                     onChangeText={(txt) => store?.updateExpansionJointsMaterials({ assessment: { amountToRepair: txt } })}
                   />
@@ -335,7 +335,7 @@ export const BuildingEnvelopeStep6Screen: FC<BuildingEnvelopeStep6ScreenProps> =
                   <TextField
                     label="Amount to Repair ($)"
                     placeholder="Dollar amount"
-                    keyboardType="numeric"
+                    keyboardType="decimal-pad"
                     value={store?.perimeterWall.assessment.amountToRepair ?? ""}
                     onChangeText={(txt) => store?.updatePerimeterWall({ assessment: { amountToRepair: txt } })}
                   />
@@ -391,7 +391,7 @@ export const BuildingEnvelopeStep6Screen: FC<BuildingEnvelopeStep6ScreenProps> =
                   <TextField
                     label="Amount to Repair ($)"
                     placeholder="Dollar amount"
-                    keyboardType="numeric"
+                    keyboardType="decimal-pad"
                     value={store?.trafficCoating.assessment.amountToRepair ?? ""}
                     onChangeText={(txt) => store?.updateTrafficCoating({ assessment: { amountToRepair: txt } })}
                   />
@@ -439,7 +439,7 @@ const $screenInner: ViewStyle = {
 
 const $content: ViewStyle = {
   paddingTop: 88,
-  paddingBottom: 96,
+  paddingBottom: 112, // 96 (footer height) + 16 (spacing)
   gap: 0,
 }
 
@@ -478,6 +478,13 @@ const $stickyFooter: ViewStyle = {
   left: 0,
   right: 0,
   zIndex: 2,
+}
+
+const $introBlock: ViewStyle = {
+  paddingHorizontal: 16,
+  paddingTop: 16,
+  paddingBottom: 32,
+  gap: 8,
 }
 
 const $paddedBlock: ViewStyle = {

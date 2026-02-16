@@ -93,7 +93,7 @@ export const BuildingEnvelopeStep5Screen: FC<BuildingEnvelopeStep5ScreenProps> =
                   <TextField
                     label="Amount to Repair ($)"
                     placeholder="Dollar amount"
-                    keyboardType="numeric"
+                    keyboardType="decimal-pad"
                     value={assessment?.amountToRepair ?? ""}
                     onChangeText={(txt) => onUpdateMaterial(material.id, { ...assessment, amountToRepair: txt })}
                   />
@@ -101,7 +101,7 @@ export const BuildingEnvelopeStep5Screen: FC<BuildingEnvelopeStep5ScreenProps> =
                   <TextField
                     label="Effective Age (years)"
                     placeholder="Years"
-                    keyboardType="numeric"
+                    keyboardType="decimal-pad"
                     value={assessment?.effectiveAge ? String(assessment.effectiveAge) : ""}
                     onChangeText={(txt) => onUpdateMaterial(material.id, { ...assessment, effectiveAge: Number(txt) || 0 })}
                   />
@@ -220,7 +220,7 @@ export const BuildingEnvelopeStep5Screen: FC<BuildingEnvelopeStep5ScreenProps> =
         />
       </View>
       <ScrollView contentContainerStyle={themed($content)} style={$scrollArea}>
-        <View style={themed($paddedBlock)}>
+        <View style={$introBlock}>
           <Text preset="subheading" text="Parking, Paving, Sidewalks" style={themed($titleStyle)} />
           <ProgressBar current={5} total={10} />
         </View>
@@ -234,7 +234,7 @@ export const BuildingEnvelopeStep5Screen: FC<BuildingEnvelopeStep5ScreenProps> =
             <TextField
               label="Amount of Parking Spaces"
               placeholder="Number"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={String(store?.basicInformation.amountOfParkingSpaces ?? "")}
               onChangeText={(txt) => store?.updateBasicInformation({ amountOfParkingSpaces: Number(txt) || 0 })}
             />
@@ -242,7 +242,7 @@ export const BuildingEnvelopeStep5Screen: FC<BuildingEnvelopeStep5ScreenProps> =
             <TextField
               label="Open Lot Spaces"
               placeholder="Number"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={String(store?.basicInformation.openLotSpaces ?? "")}
               onChangeText={(txt) => store?.updateBasicInformation({ openLotSpaces: Number(txt) || 0 })}
             />
@@ -250,7 +250,7 @@ export const BuildingEnvelopeStep5Screen: FC<BuildingEnvelopeStep5ScreenProps> =
             <TextField
               label="Carport Spaces"
               placeholder="Number"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={String(store?.basicInformation.carportSpaces ?? "")}
               onChangeText={(txt) => store?.updateBasicInformation({ carportSpaces: Number(txt) || 0 })}
             />
@@ -258,7 +258,7 @@ export const BuildingEnvelopeStep5Screen: FC<BuildingEnvelopeStep5ScreenProps> =
             <TextField
               label="Garage Spaces"
               placeholder="Number"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={String(store?.basicInformation.garageSpaces ?? "")}
               onChangeText={(txt) => store?.updateBasicInformation({ garageSpaces: Number(txt) || 0 })}
             />
@@ -274,7 +274,7 @@ export const BuildingEnvelopeStep5Screen: FC<BuildingEnvelopeStep5ScreenProps> =
             <TextField
               label="Regular ADA Spaces"
               placeholder="Number"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={String(store?.basicInformation.regADASpaces ?? "")}
               onChangeText={(txt) => store?.updateBasicInformation({ regADASpaces: Number(txt) || 0 })}
             />
@@ -282,7 +282,7 @@ export const BuildingEnvelopeStep5Screen: FC<BuildingEnvelopeStep5ScreenProps> =
             <TextField
               label="Van Spaces"
               placeholder="Number"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={String(store?.basicInformation.vanSpaces ?? "")}
               onChangeText={(txt) => store?.updateBasicInformation({ vanSpaces: Number(txt) || 0 })}
             />
@@ -298,7 +298,7 @@ export const BuildingEnvelopeStep5Screen: FC<BuildingEnvelopeStep5ScreenProps> =
             <TextField
               label="Missing ADA Signs"
               placeholder="Number"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={String(store?.basicInformation.missingADASigns ?? "")}
               onChangeText={(txt) => store?.updateBasicInformation({ missingADASigns: Number(txt) || 0 })}
             />
@@ -314,7 +314,7 @@ export const BuildingEnvelopeStep5Screen: FC<BuildingEnvelopeStep5ScreenProps> =
             <TextField
               label="Missing ADA Van Signs"
               placeholder="Number"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={String(store?.basicInformation.missingADAVanSigns ?? "")}
               onChangeText={(txt) => store?.updateBasicInformation({ missingADAVanSigns: Number(txt) || 0 })}
             />
@@ -525,7 +525,7 @@ export const BuildingEnvelopeStep5Screen: FC<BuildingEnvelopeStep5ScreenProps> =
                   <TextField
                     label="Amount to Repair ($)"
                     placeholder="Dollar amount"
-                    keyboardType="numeric"
+                    keyboardType="decimal-pad"
                     value={store?.sidewalksWalkways.railingDetails?.assessment.amountToRepair ?? ""}
                     onChangeText={(txt) => store?.sidewalksWalkways.updateRailingDetails({ assessment: { amountToRepair: txt } })}
                   />
@@ -586,7 +586,7 @@ export const BuildingEnvelopeStep5Screen: FC<BuildingEnvelopeStep5ScreenProps> =
                 <TextField
                   label="Amount to Repair ($)"
                   placeholder="Dollar amount"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   value={store?.stepsStairs.railingDetails?.assessment.amountToRepair ?? ""}
                   onChangeText={(txt) => store?.stepsStairs.updateRailingDetails({ assessment: { amountToRepair: txt } })}
                 />
@@ -633,7 +633,7 @@ const $screenInner: ViewStyle = {
 
 const $content: ViewStyle = {
   paddingTop: 88,
-  paddingBottom: 96,
+  paddingBottom: 112, // 96 (footer height) + 16 (spacing)
   gap: 0,
 }
 
@@ -672,6 +672,13 @@ const $stickyFooter: ViewStyle = {
   left: 0,
   right: 0,
   zIndex: 2,
+}
+
+const $introBlock: ViewStyle = {
+  paddingHorizontal: 16,
+  paddingTop: 16,
+  paddingBottom: 32,
+  gap: 8,
 }
 
 const $paddedBlock: ViewStyle = {

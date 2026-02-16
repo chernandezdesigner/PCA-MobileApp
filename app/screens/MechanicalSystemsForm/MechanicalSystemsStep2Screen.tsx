@@ -91,7 +91,7 @@ export const MechanicalSystemsStep2Screen: FC<MechanicalSystemsStep2ScreenProps>
       </View>
       
       <ScrollView contentContainerStyle={themed($content)} style={$scrollArea}>
-        <View style={themed($paddedBlock)}>
+        <View style={$introBlock}>
           <Text preset="subheading" text="Misc Units" style={themed($titleStyle)} />
           <ProgressBar current={2} total={9} />
         </View>
@@ -145,7 +145,7 @@ export const MechanicalSystemsStep2Screen: FC<MechanicalSystemsStep2ScreenProps>
                         <View style={$row}>
                           <TextField
                             label="Type"
-                            placeholder="Radiant, Baseboard, etc."
+                            placeholder="Enter type"
                             value={unit.type}
                             onChangeText={(val) => store?.updateUnitHeater(unit.id, { type: val })}
                             containerStyle={$halfWidth}
@@ -153,7 +153,7 @@ export const MechanicalSystemsStep2Screen: FC<MechanicalSystemsStep2ScreenProps>
                           <TextField
                             label="Quantity"
                             placeholder="Enter quantity"
-                            keyboardType="numeric"
+                            keyboardType="decimal-pad"
                             value={unit.quantity?.toString() ?? ""}
                             onChangeText={(val) => store?.updateUnitHeater(unit.id, { 
                               quantity: val ? parseInt(val, 10) : 0 
@@ -206,7 +206,7 @@ export const MechanicalSystemsStep2Screen: FC<MechanicalSystemsStep2ScreenProps>
                         <TextField
                           label="Amount to Replace/Repair ($)"
                           placeholder="Dollar amount"
-                          keyboardType="numeric"
+                          keyboardType="decimal-pad"
                           value={unit.assessment.amountToRepair ?? ""}
                           onChangeText={(val) => store?.updateUnitHeater(unit.id, { 
                             assessment: { amountToRepair: val } 
@@ -326,7 +326,7 @@ export const MechanicalSystemsStep2Screen: FC<MechanicalSystemsStep2ScreenProps>
                           <TextField
                             label="Quantity"
                             placeholder="Enter quantity"
-                            keyboardType="numeric"
+                            keyboardType="decimal-pad"
                             value={unit.quantity?.toString() ?? ""}
                             onChangeText={(val) => store?.updateAirHandlingUnit(unit.id, { 
                               quantity: val ? parseInt(val, 10) : 0 
@@ -336,10 +336,10 @@ export const MechanicalSystemsStep2Screen: FC<MechanicalSystemsStep2ScreenProps>
                           <TextField
                             label="CFM"
                             placeholder="Enter CFM"
-                            keyboardType="numeric"
+                            keyboardType="decimal-pad"
                             value={unit.cfm?.toString() ?? ""}
                             onChangeText={(val) => store?.updateAirHandlingUnit(unit.id, { 
-                              cfm: val ? parseInt(val, 10) : 0 
+                              cfm: val ? parseFloat(val) : 0 
                             })}
                             containerStyle={$halfWidth}
                           />
@@ -382,7 +382,7 @@ export const MechanicalSystemsStep2Screen: FC<MechanicalSystemsStep2ScreenProps>
                         <TextField
                           label="Amount to Replace/Repair ($)"
                           placeholder="Dollar amount"
-                          keyboardType="numeric"
+                          keyboardType="decimal-pad"
                           value={unit.assessment.amountToRepair ?? ""}
                           onChangeText={(val) => store?.updateAirHandlingUnit(unit.id, { 
                             assessment: { amountToRepair: val } 
@@ -501,7 +501,7 @@ export const MechanicalSystemsStep2Screen: FC<MechanicalSystemsStep2ScreenProps>
                         <TextField
                           label="Quantity"
                           placeholder="Enter quantity"
-                          keyboardType="numeric"
+                          keyboardType="decimal-pad"
                           value={unit.quantity?.toString() ?? ""}
                           onChangeText={(val) => store?.updateExhaustFan(unit.id, { 
                             quantity: val ? parseInt(val, 10) : 0 
@@ -612,7 +612,7 @@ const $screenInner: ViewStyle = {
 
 const $content: ViewStyle = {
   paddingTop: 88,
-  paddingBottom: 96,
+  paddingBottom: 112, // 96 (footer height) + 16 (spacing)
   gap: 0,
 }
 
@@ -644,6 +644,13 @@ const $stickyFooter: ViewStyle = {
   left: 0,
   right: 0,
   zIndex: 2,
+}
+
+const $introBlock: ViewStyle = {
+  paddingHorizontal: 16,
+  paddingTop: 16,
+  paddingBottom: 32,
+  gap: 8,
 }
 
 const $paddedBlock: ViewStyle = {

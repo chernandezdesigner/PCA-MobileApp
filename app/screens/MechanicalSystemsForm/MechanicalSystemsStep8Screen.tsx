@@ -89,7 +89,7 @@ export const MechanicalSystemsStep8Screen: FC<MechanicalSystemsStep8ScreenProps>
       </View>
 
       <ScrollView contentContainerStyle={themed($content)} style={$scrollArea}>
-        <View style={themed($paddedBlock)}>
+        <View style={$introBlock}>
           <Text preset="subheading" text="Elevators & Conveying Systems" style={themed($titleStyle)} />
           <ProgressBar current={8} total={9} />
         </View>
@@ -151,7 +151,7 @@ export const MechanicalSystemsStep8Screen: FC<MechanicalSystemsStep8ScreenProps>
                           <TextField
                             label="QTY"
                             placeholder="#"
-                            keyboardType="numeric"
+                            keyboardType="decimal-pad"
                             value={elevator.quantity?.toString() ?? ""}
                             onChangeText={(val) =>
                               store?.updatePassengerElevator(elevator.id, { quantity: val ? parseInt(val, 10) : 0 })
@@ -186,20 +186,20 @@ export const MechanicalSystemsStep8Screen: FC<MechanicalSystemsStep8ScreenProps>
                           <TextField
                             label="Speed"
                             placeholder="FPM"
-                            keyboardType="numeric"
+                            keyboardType="decimal-pad"
                             value={elevator.speed?.toString() ?? ""}
                             onChangeText={(val) =>
-                              store?.updatePassengerElevator(elevator.id, { speed: val ? parseInt(val, 10) : 0 })
+                              store?.updatePassengerElevator(elevator.id, { speed: val ? parseFloat(val) : 0 })
                             }
                             containerStyle={$halfWidth}
                           />
                           <TextField
                             label="Capacity"
                             placeholder="LBS"
-                            keyboardType="numeric"
+                            keyboardType="decimal-pad"
                             value={elevator.capacity?.toString() ?? ""}
                             onChangeText={(val) =>
-                              store?.updatePassengerElevator(elevator.id, { capacity: val ? parseInt(val, 10) : 0 })
+                              store?.updatePassengerElevator(elevator.id, { capacity: val ? parseFloat(val) : 0 })
                             }
                             containerStyle={$halfWidth}
                           />
@@ -224,10 +224,10 @@ export const MechanicalSystemsStep8Screen: FC<MechanicalSystemsStep8ScreenProps>
                         <TextField
                           label="Amount to Replace/Repair ($)"
                           placeholder="Dollar amount"
-                          keyboardType="numeric"
+                          keyboardType="decimal-pad"
                           value={elevator.amountToReplaceRepair?.toString() ?? ""}
                           onChangeText={(val) =>
-                            store?.updatePassengerElevator(elevator.id, { amountToReplaceRepair: val ? parseInt(val, 10) : 0 })
+                            store?.updatePassengerElevator(elevator.id, { amountToReplaceRepair: val ? parseFloat(val) : 0 })
                           }
                         />
                       </View>
@@ -306,7 +306,7 @@ export const MechanicalSystemsStep8Screen: FC<MechanicalSystemsStep8ScreenProps>
                           <TextField
                             label="QTY"
                             placeholder="#"
-                            keyboardType="numeric"
+                            keyboardType="decimal-pad"
                             value={elevator.quantity?.toString() ?? ""}
                             onChangeText={(val) =>
                               store?.updateServiceElevator(elevator.id, { quantity: val ? parseInt(val, 10) : 0 })
@@ -341,20 +341,20 @@ export const MechanicalSystemsStep8Screen: FC<MechanicalSystemsStep8ScreenProps>
                           <TextField
                             label="Speed"
                             placeholder="FPM"
-                            keyboardType="numeric"
+                            keyboardType="decimal-pad"
                             value={elevator.speed?.toString() ?? ""}
                             onChangeText={(val) =>
-                              store?.updateServiceElevator(elevator.id, { speed: val ? parseInt(val, 10) : 0 })
+                              store?.updateServiceElevator(elevator.id, { speed: val ? parseFloat(val) : 0 })
                             }
                             containerStyle={$halfWidth}
                           />
                           <TextField
                             label="Capacity"
                             placeholder="LBS"
-                            keyboardType="numeric"
+                            keyboardType="decimal-pad"
                             value={elevator.capacity?.toString() ?? ""}
                             onChangeText={(val) =>
-                              store?.updateServiceElevator(elevator.id, { capacity: val ? parseInt(val, 10) : 0 })
+                              store?.updateServiceElevator(elevator.id, { capacity: val ? parseFloat(val) : 0 })
                             }
                             containerStyle={$halfWidth}
                           />
@@ -379,10 +379,10 @@ export const MechanicalSystemsStep8Screen: FC<MechanicalSystemsStep8ScreenProps>
                         <TextField
                           label="Amount to Replace/Repair ($)"
                           placeholder="Dollar amount"
-                          keyboardType="numeric"
+                          keyboardType="decimal-pad"
                           value={elevator.amountToReplaceRepair?.toString() ?? ""}
                           onChangeText={(val) =>
-                            store?.updateServiceElevator(elevator.id, { amountToReplaceRepair: val ? parseInt(val, 10) : 0 })
+                            store?.updateServiceElevator(elevator.id, { amountToReplaceRepair: val ? parseFloat(val) : 0 })
                           }
                         />
                       </View>
@@ -438,7 +438,7 @@ export const MechanicalSystemsStep8Screen: FC<MechanicalSystemsStep8ScreenProps>
                 <TextField
                   label="Quantity"
                   placeholder="#"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   value={store?.escalators.quantity?.toString() ?? ""}
                   onChangeText={(val) =>
                     store?.updateEscalatorsAccordion({ quantity: val ? parseInt(val, 10) : 0 })
@@ -489,10 +489,10 @@ export const MechanicalSystemsStep8Screen: FC<MechanicalSystemsStep8ScreenProps>
               <TextField
                 label="Amount to Replace/Repair ($)"
                 placeholder="Dollar amount"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.escalators.amountToReplaceRepair?.toString() ?? ""}
                 onChangeText={(val) =>
-                  store?.updateEscalatorsAccordion({ amountToReplaceRepair: val ? parseInt(val, 10) : 0 })
+                  store?.updateEscalatorsAccordion({ amountToReplaceRepair: val ? parseFloat(val) : 0 })
                 }
               />
             </View>
@@ -609,10 +609,10 @@ export const MechanicalSystemsStep8Screen: FC<MechanicalSystemsStep8ScreenProps>
               <TextField
                 label="Amount to Replace/Repair ($)"
                 placeholder="Dollar amount"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.cabFinishes.amountToReplaceRepair?.toString() ?? ""}
                 onChangeText={(val) =>
-                  store?.updateCabFinishesAccordion({ amountToReplaceRepair: val ? parseInt(val, 10) : 0 })
+                  store?.updateCabFinishesAccordion({ amountToReplaceRepair: val ? parseFloat(val) : 0 })
                 }
               />
             </View>
@@ -679,7 +679,11 @@ const $screenInner: ViewStyle = {
 }
 
 const $stickyHeader: ViewStyle = {
-  zIndex: 10,
+  position: "absolute",
+  top: 0,
+  left: 0,
+  right: 0,
+  zIndex: 2,
 }
 
 const $stickyFooter: ViewStyle = {
@@ -695,15 +699,26 @@ const $scrollArea: ViewStyle = {
 }
 
 const $content: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  paddingBottom: spacing.xl,
+  paddingTop: 88,
+  paddingBottom: 112, // 96 (footer height) + 16 (spacing)
+  gap: 0,
 })
+
+const $introBlock: ViewStyle = {
+  paddingHorizontal: 16,
+  paddingTop: 16,
+  paddingBottom: 32,
+  gap: 8,
+}
 
 const $paddedBlock: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   paddingHorizontal: spacing.md,
   marginBottom: spacing.md,
 })
 
-const $titleStyle: ThemedStyle<TextStyle> = ({ spacing }) => ({
+const $titleStyle: ThemedStyle<TextStyle> = ({ spacing, colors }) => ({
+  color: colors.palette.primary2,
+  fontSize: 24,
   marginBottom: spacing.xs,
 })
 

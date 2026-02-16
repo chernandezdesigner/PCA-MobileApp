@@ -268,7 +268,7 @@ export const BuildingEnvelopeStep9Screen: FC<BuildingEnvelopeStep9ScreenProps> =
         />
       </View>
       <ScrollView contentContainerStyle={themed($content)} style={$scrollArea}>
-        <View style={themed($paddedBlock)}>
+        <View style={$introBlock}>
           <Text preset="subheading" text="Doors" style={themed($titleStyle)} />
           <ProgressBar current={9} total={10} />
         </View>
@@ -307,7 +307,7 @@ export const BuildingEnvelopeStep9Screen: FC<BuildingEnvelopeStep9ScreenProps> =
             <TextField
               label="Amount to Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={store?.doors.assessment.amountToRepair ?? ""}
               onChangeText={(txt) => store?.updateDoors({ assessment: { amountToRepair: txt } })}
             />
@@ -348,7 +348,7 @@ export const BuildingEnvelopeStep9Screen: FC<BuildingEnvelopeStep9ScreenProps> =
             <TextField
               label="Amount to Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={store?.serviceDoors.assessment.amountToRepair ?? ""}
               onChangeText={(txt) => store?.updateServiceDoors({ assessment: { amountToRepair: txt } })}
             />
@@ -383,7 +383,7 @@ export const BuildingEnvelopeStep9Screen: FC<BuildingEnvelopeStep9ScreenProps> =
             <TextField
               label="Amount to Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={store?.hardwareType.assessment.amountToRepair ?? ""}
               onChangeText={(txt) => store?.updateHardwareType({ assessment: { amountToRepair: txt } })}
             />
@@ -441,7 +441,7 @@ export const BuildingEnvelopeStep9Screen: FC<BuildingEnvelopeStep9ScreenProps> =
               <TextField
                 label="Amount to Repair ($)"
                 placeholder="Dollar amount"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.balconyPatioDoor.assessment.amountToRepair ?? ""}
                 onChangeText={(txt) => store?.updateBalconyPatioDoor({ assessment: { amountToRepair: txt } })}
               />
@@ -502,7 +502,7 @@ export const BuildingEnvelopeStep9Screen: FC<BuildingEnvelopeStep9ScreenProps> =
               <TextField
                 label="Amount to Repair ($)"
                 placeholder="Dollar amount"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.overheadDoor.assessment.amountToRepair ?? ""}
                 onChangeText={(txt) => store?.updateOverheadDoor({ assessment: { amountToRepair: txt } })}
               />
@@ -559,7 +559,7 @@ export const BuildingEnvelopeStep9Screen: FC<BuildingEnvelopeStep9ScreenProps> =
               <TextField
                 label="Amount to Repair ($)"
                 placeholder="Dollar amount"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.dockEquipment.assessment.amountToRepair ?? ""}
                 onChangeText={(txt) => store?.updateDockEquipment({ assessment: { amountToRepair: txt } })}
               />
@@ -605,7 +605,7 @@ const $screenInner: ViewStyle = {
 
 const $content: ViewStyle = {
   paddingTop: 88,
-  paddingBottom: 96,
+  paddingBottom: 112, // 96 (footer height) + 16 (spacing)
   gap: 0,
 }
 
@@ -637,6 +637,13 @@ const $stickyFooter: ViewStyle = {
   left: 0,
   right: 0,
   zIndex: 2,
+}
+
+const $introBlock: ViewStyle = {
+  paddingHorizontal: 16,
+  paddingTop: 16,
+  paddingBottom: 32,
+  gap: 8,
 }
 
 const $paddedBlock: ViewStyle = {

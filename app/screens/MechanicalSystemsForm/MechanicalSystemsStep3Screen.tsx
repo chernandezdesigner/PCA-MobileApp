@@ -89,7 +89,7 @@ export const MechanicalSystemsStep3Screen: FC<MechanicalSystemsStep3ScreenProps>
       </View>
       
       <ScrollView contentContainerStyle={themed($content)} style={$scrollArea}>
-        <View style={themed($paddedBlock)}>
+        <View style={$introBlock}>
           <Text preset="subheading" text="Chillers & Cooling Towers" style={themed($titleStyle)} />
           <ProgressBar current={3} total={9} />
         </View>
@@ -144,7 +144,7 @@ export const MechanicalSystemsStep3Screen: FC<MechanicalSystemsStep3ScreenProps>
                           <TextField
                             label="Quantity"
                             placeholder="Enter quantity"
-                            keyboardType="numeric"
+                            keyboardType="decimal-pad"
                             value={unit.quantity?.toString() ?? ""}
                             onChangeText={(val) => store?.updateChiller(unit.id, { 
                               quantity: val ? parseInt(val, 10) : 0 
@@ -154,10 +154,10 @@ export const MechanicalSystemsStep3Screen: FC<MechanicalSystemsStep3ScreenProps>
                           <TextField
                             label="Capacity Each (Tons)"
                             placeholder="Enter capacity"
-                            keyboardType="numeric"
+                            keyboardType="decimal-pad"
                             value={unit.capacityTons?.toString() ?? ""}
                             onChangeText={(val) => store?.updateChiller(unit.id, { 
-                              capacityTons: val ? parseInt(val, 10) : 0 
+                              capacityTons: val ? parseFloat(val) : 0 
                             })}
                             containerStyle={$halfWidth}
                           />
@@ -167,7 +167,7 @@ export const MechanicalSystemsStep3Screen: FC<MechanicalSystemsStep3ScreenProps>
                           <TextField
                             label="Year Install (ea.)"
                             placeholder="Year"
-                            keyboardType="numeric"
+                            keyboardType="decimal-pad"
                             value={unit.yearInstall?.toString() ?? ""}
                             onChangeText={(val) => store?.updateChiller(unit.id, { 
                               yearInstall: val ? parseInt(val, 10) : 0 
@@ -177,7 +177,7 @@ export const MechanicalSystemsStep3Screen: FC<MechanicalSystemsStep3ScreenProps>
                           <TextField
                             label="Year Rebuild (ea.)"
                             placeholder="Year"
-                            keyboardType="numeric"
+                            keyboardType="decimal-pad"
                             value={unit.yearRebuild?.toString() ?? ""}
                             onChangeText={(val) => store?.updateChiller(unit.id, { 
                               yearRebuild: val ? parseInt(val, 10) : 0 
@@ -237,7 +237,7 @@ export const MechanicalSystemsStep3Screen: FC<MechanicalSystemsStep3ScreenProps>
                         <TextField
                           label="Amount to Replace/Repair ($)"
                           placeholder="Dollar amount"
-                          keyboardType="numeric"
+                          keyboardType="decimal-pad"
                           value={unit.assessment.amountToRepair ?? ""}
                           onChangeText={(val) => store?.updateChiller(unit.id, { 
                             assessment: { amountToRepair: val } 
@@ -272,7 +272,7 @@ export const MechanicalSystemsStep3Screen: FC<MechanicalSystemsStep3ScreenProps>
                         <TextField
                           label="Pump Amount to Replace/Repair ($)"
                           placeholder="Dollar amount"
-                          keyboardType="numeric"
+                          keyboardType="decimal-pad"
                           value={unit.chillerH2oPumpsAssessment.amountToRepair ?? ""}
                           onChangeText={(val) => store?.updateChiller(unit.id, { 
                             chillerH2oPumpsAssessment: { amountToRepair: val } 
@@ -363,7 +363,7 @@ export const MechanicalSystemsStep3Screen: FC<MechanicalSystemsStep3ScreenProps>
                           <TextField
                             label="Quantity"
                             placeholder="Enter quantity"
-                            keyboardType="numeric"
+                            keyboardType="decimal-pad"
                             value={unit.quantity?.toString() ?? ""}
                             onChangeText={(val) => store?.updateCoolingTower(unit.id, { 
                               quantity: val ? parseInt(val, 10) : 0 
@@ -373,10 +373,10 @@ export const MechanicalSystemsStep3Screen: FC<MechanicalSystemsStep3ScreenProps>
                           <TextField
                             label="Capacity Each (Tons)"
                             placeholder="Enter capacity"
-                            keyboardType="numeric"
+                            keyboardType="decimal-pad"
                             value={unit.capacityTons?.toString() ?? ""}
                             onChangeText={(val) => store?.updateCoolingTower(unit.id, { 
-                              capacityTons: val ? parseInt(val, 10) : 0 
+                              capacityTons: val ? parseFloat(val) : 0 
                             })}
                             containerStyle={$halfWidth}
                           />
@@ -386,7 +386,7 @@ export const MechanicalSystemsStep3Screen: FC<MechanicalSystemsStep3ScreenProps>
                           <TextField
                             label="Year Install (ea.)"
                             placeholder="Year"
-                            keyboardType="numeric"
+                            keyboardType="decimal-pad"
                             value={unit.yearInstall?.toString() ?? ""}
                             onChangeText={(val) => store?.updateCoolingTower(unit.id, { 
                               yearInstall: val ? parseInt(val, 10) : 0 
@@ -396,7 +396,7 @@ export const MechanicalSystemsStep3Screen: FC<MechanicalSystemsStep3ScreenProps>
                           <TextField
                             label="Year Rebuild (ea.)"
                             placeholder="Year"
-                            keyboardType="numeric"
+                            keyboardType="decimal-pad"
                             value={unit.yearRebuild?.toString() ?? ""}
                             onChangeText={(val) => store?.updateCoolingTower(unit.id, { 
                               yearRebuild: val ? parseInt(val, 10) : 0 
@@ -447,7 +447,7 @@ export const MechanicalSystemsStep3Screen: FC<MechanicalSystemsStep3ScreenProps>
                         <TextField
                           label="Amount to Replace/Repair ($)"
                           placeholder="Dollar amount"
-                          keyboardType="numeric"
+                          keyboardType="decimal-pad"
                           value={unit.assessment.amountToRepair ?? ""}
                           onChangeText={(val) => store?.updateCoolingTower(unit.id, { 
                             assessment: { amountToRepair: val } 
@@ -482,7 +482,7 @@ export const MechanicalSystemsStep3Screen: FC<MechanicalSystemsStep3ScreenProps>
                         <TextField
                           label="Pump Amount to Replace/Repair ($)"
                           placeholder="Dollar amount"
-                          keyboardType="numeric"
+                          keyboardType="decimal-pad"
                           value={unit.condensedH2oPumpsAssessment.amountToRepair ?? ""}
                           onChangeText={(val) => store?.updateCoolingTower(unit.id, { 
                             condensedH2oPumpsAssessment: { amountToRepair: val } 
@@ -555,7 +555,7 @@ const $screenInner: ViewStyle = {
 
 const $content: ViewStyle = {
   paddingTop: 88,
-  paddingBottom: 96,
+  paddingBottom: 112, // 96 (footer height) + 16 (spacing)
   gap: 0,
 }
 
@@ -587,6 +587,13 @@ const $stickyFooter: ViewStyle = {
   left: 0,
   right: 0,
   zIndex: 2,
+}
+
+const $introBlock: ViewStyle = {
+  paddingHorizontal: 16,
+  paddingTop: 16,
+  paddingBottom: 32,
+  gap: 8,
 }
 
 const $paddedBlock: ViewStyle = {

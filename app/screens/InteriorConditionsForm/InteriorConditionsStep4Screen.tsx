@@ -179,7 +179,7 @@ export const InteriorConditionsStep4Screen: FC = observer(() => {
       </View>
 
       <ScrollView contentContainerStyle={themed($content)} style={$scrollArea}>
-        <View style={themed($paddedBlock)}>
+        <View style={$introBlock}>
           <Text preset="subheading" text="Alternate Properties" style={themed($titleStyle)} />
           <ProgressBar current={4} total={4} />
         </View>
@@ -375,14 +375,14 @@ const HotelAccordions: FC<{
             <TextField
               label="Amount to Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={hotel?.unitFinishes.assessment.amountToRepair ?? ""}
               onChangeText={(txt) => store?.updateHotelUnitFinishes({ assessment: { amountToRepair: txt } })}
             />
             <TextField
               label="Effective Age (Years)"
               placeholder="Years"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={hotel?.unitFinishes.effectiveAge ? String(hotel.unitFinishes.effectiveAge) : ""}
               onChangeText={(txt) => store?.updateHotelUnitFinishes({ effectiveAge: Number(txt.replace(/[^0-9]/g, "")) || 0 })}
             />
@@ -533,14 +533,14 @@ const HotelAccordions: FC<{
             <TextField
               label="Amount to Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={hotel?.guestLaundry.assessment.amountToRepair ?? ""}
               onChangeText={(txt) => store?.updateHotelGuestLaundry({ assessment: { amountToRepair: txt } })}
             />
             <TextField
               label="Effective Age (Years)"
               placeholder="Years"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={hotel?.guestLaundry.effectiveAge ? String(hotel.guestLaundry.effectiveAge) : ""}
               onChangeText={(txt) => store?.updateHotelGuestLaundry({ effectiveAge: Number(txt.replace(/[^0-9]/g, "")) || 0 })}
             />
@@ -591,14 +591,14 @@ const HotelAccordions: FC<{
             <TextField
               label="Amount to Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={hotel?.commercialLaundry.assessment.amountToRepair ?? ""}
               onChangeText={(txt) => store?.updateHotelCommercialLaundry({ assessment: { amountToRepair: txt } })}
             />
             <TextField
               label="Effective Age (Years)"
               placeholder="Years"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={hotel?.commercialLaundry.effectiveAge ? String(hotel.commercialLaundry.effectiveAge) : ""}
               onChangeText={(txt) => store?.updateHotelCommercialLaundry({ effectiveAge: Number(txt.replace(/[^0-9]/g, "")) || 0 })}
             />
@@ -657,7 +657,7 @@ const HotelAccordions: FC<{
             <TextField
               label="Amount to Replace/Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={hotel?.lobbyFFE.amountToReplaceRepair ? String(hotel.lobbyFFE.amountToReplaceRepair) : ""}
               onChangeText={(txt) => store?.updateHotelLobbyFFE({ amountToReplaceRepair: Number(txt.replace(/[^0-9]/g, "")) || 0 })}
             />
@@ -708,7 +708,7 @@ const HotelAccordions: FC<{
             <TextField
               label="Amount to Replace/Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={hotel?.commercialLaundryEquipment.amountToReplaceRepair ? String(hotel.commercialLaundryEquipment.amountToReplaceRepair) : ""}
               onChangeText={(txt) => store?.updateHotelCommercialLaundryEquipment({ amountToReplaceRepair: Number(txt.replace(/[^0-9]/g, "")) || 0 })}
             />
@@ -765,7 +765,7 @@ const HotelAccordions: FC<{
             <TextField
               label="Amount to Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={hotel?.guestLaundryEquipment.assessment.amountToRepair ?? ""}
               onChangeText={(txt) => store?.updateHotelGuestLaundryEquipment({ assessment: { amountToRepair: txt } })}
             />
@@ -822,7 +822,7 @@ const HotelAccordions: FC<{
             <TextField
               label="Amount to Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={hotel?.commercialKitchenEquipment.assessment.amountToRepair ?? ""}
               onChangeText={(txt) => store?.updateHotelCommercialKitchenEquipment({ assessment: { amountToRepair: txt } })}
             />
@@ -881,7 +881,7 @@ const HotelAccordions: FC<{
             <TextField
               label="Amount to Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={hotel?.guestRoomSoftGoods.assessment.amountToRepair ?? ""}
               onChangeText={(txt) => store?.updateHotelGuestRoomSoftGoods({ assessment: { amountToRepair: txt } })}
             />
@@ -952,7 +952,7 @@ const HotelAccordions: FC<{
             <TextField
               label="Amount to Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={hotel?.guestRoomHardGoods.assessment.amountToRepair ?? ""}
               onChangeText={(txt) => store?.updateHotelGuestRoomHardGoods({ assessment: { amountToRepair: txt } })}
             />
@@ -1035,7 +1035,7 @@ const HotelAccordions: FC<{
             <TextField
               label="Amount to Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={hotel?.guestRoomKitchen.assessment.amountToRepair ?? ""}
               onChangeText={(txt) => store?.updateHotelGuestRoomKitchen({ assessment: { amountToRepair: txt } })}
             />
@@ -1112,7 +1112,7 @@ const HotelAccordions: FC<{
             <TextField
               label="Amount to Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={hotel?.guestRoomBathroom.assessment.amountToRepair ?? ""}
               onChangeText={(txt) => store?.updateHotelGuestRoomBathroom({ assessment: { amountToRepair: txt } })}
             />
@@ -1236,14 +1236,14 @@ const ApartmentAccordions: FC<{
             <TextField
               label="Amount to Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={apt?.interiorDoors.assessment.amountToRepair ?? ""}
               onChangeText={(txt) => store?.updateApartmentInteriorDoors({ assessment: { amountToRepair: txt } })}
             />
             <TextField
               label="Effective Age (Years)"
               placeholder="Years"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={apt?.interiorDoors.effectiveAge ? String(apt.interiorDoors.effectiveAge) : ""}
               onChangeText={(txt) => store?.updateApartmentInteriorDoors({ effectiveAge: Number(txt.replace(/[^0-9]/g, "")) || 0 })}
             />
@@ -1322,14 +1322,14 @@ const ApartmentAccordions: FC<{
             <TextField
               label="Amount to Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={apt?.commonRestroomsFinishes.assessment.amountToRepair ?? ""}
               onChangeText={(txt) => store?.updateApartmentCommonRestroomsFinishes({ assessment: { amountToRepair: txt } })}
             />
             <TextField
               label="Effective Age (Years)"
               placeholder="Years"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={apt?.commonRestroomsFinishes.effectiveAge ? String(apt.commonRestroomsFinishes.effectiveAge) : ""}
               onChangeText={(txt) => store?.updateApartmentCommonRestroomsFinishes({ effectiveAge: Number(txt.replace(/[^0-9]/g, "")) || 0 })}
             />
@@ -1394,7 +1394,7 @@ const ApartmentAccordions: FC<{
             <TextField
               label="Amount to Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={apt?.commonKitchenFinishes.assessment.amountToRepair ?? ""}
               onChangeText={(txt) => store?.updateApartmentCommonKitchenFinishes({ assessment: { amountToRepair: txt } })}
             />
@@ -1445,7 +1445,7 @@ const ApartmentAccordions: FC<{
             <TextField
               label="Amount to Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={apt?.laundryRoomFinishes.assessment.amountToRepair ?? ""}
               onChangeText={(txt) => store?.updateApartmentLaundryRoomFinishes({ assessment: { amountToRepair: txt } })}
             />
@@ -1518,7 +1518,7 @@ const ApartmentAccordions: FC<{
             <TextField
               label="Amount to Replace/Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={apt?.lobbyFFE.amountToReplaceRepair ? String(apt.lobbyFFE.amountToReplaceRepair) : ""}
               onChangeText={(txt) => store?.updateApartmentLobbyFFE({ amountToReplaceRepair: Number(txt.replace(/[^0-9]/g, "")) || 0 })}
             />
@@ -1569,7 +1569,7 @@ const ApartmentAccordions: FC<{
             <TextField
               label="Amount to Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={apt?.businessCenter.assessment.amountToRepair ?? ""}
               onChangeText={(txt) => store?.updateApartmentBusinessCenter({ assessment: { amountToRepair: txt } })}
             />
@@ -1638,7 +1638,7 @@ const ApartmentAccordions: FC<{
             <TextField
               label="Amount to Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={apt?.commonAreaLaundryEquipment.assessment.amountToRepair ?? ""}
               onChangeText={(txt) => store?.updateApartmentCommonAreaLaundryEquipment({ assessment: { amountToRepair: txt } })}
             />
@@ -1721,7 +1721,7 @@ const ApartmentAccordions: FC<{
             <TextField
               label="Amount to Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={apt?.kitchenEquipment.assessment.amountToRepair ?? ""}
               onChangeText={(txt) => store?.updateApartmentKitchenEquipment({ assessment: { amountToRepair: txt } })}
             />
@@ -1798,7 +1798,7 @@ const ApartmentAccordions: FC<{
             <TextField
               label="Amount to Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={apt?.bathroom.assessment.amountToRepair ?? ""}
               onChangeText={(txt) => store?.updateApartmentBathroom({ assessment: { amountToRepair: txt } })}
             />
@@ -1855,7 +1855,7 @@ const ApartmentAccordions: FC<{
             <TextField
               label="Amount to Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={apt?.furnishedItems.assessment.amountToRepair ?? ""}
               onChangeText={(txt) => store?.updateApartmentFurnishedItems({ assessment: { amountToRepair: txt } })}
             />
@@ -1937,7 +1937,7 @@ const StandardFinishesAccordion: FC<{
           <TextField
             label="Amount to Repair ($)"
             placeholder="Dollar amount"
-            keyboardType="numeric"
+            keyboardType="decimal-pad"
             value={subStore?.assessment.amountToRepair ?? ""}
             onChangeText={(txt) => update({ assessment: { amountToRepair: txt } })}
           />
@@ -1945,7 +1945,7 @@ const StandardFinishesAccordion: FC<{
             <TextField
               label="Effective Age (Years)"
               placeholder="Years"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={subStore?.effectiveAge ? String(subStore.effectiveAge) : ""}
               onChangeText={(txt) => update({ effectiveAge: Number(txt.replace(/[^0-9]/g, "")) || 0 })}
             />
@@ -1970,7 +1970,7 @@ const $screenInner: ViewStyle = {
 
 const $content: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   paddingTop: 88,
-  paddingBottom: 96,
+  paddingBottom: 112, // 96 (footer height) + 16 (spacing)
   gap: 0,
 })
 
@@ -2002,6 +2002,13 @@ const $stickyFooter: ViewStyle = {
   left: 0,
   right: 0,
   zIndex: 2,
+}
+
+const $introBlock: ViewStyle = {
+  paddingHorizontal: 16,
+  paddingTop: 16,
+  paddingBottom: 32,
+  gap: 8,
 }
 
 const $paddedBlock: ViewStyle = {

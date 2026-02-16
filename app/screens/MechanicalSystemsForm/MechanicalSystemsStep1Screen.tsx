@@ -89,7 +89,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
       </View>
       
       <ScrollView contentContainerStyle={themed($content)} style={$scrollArea}>
-        <View style={themed($paddedBlock)}>
+        <View style={$introBlock}>
           <Text preset="subheading" text="HVAC Individual Units" style={themed($titleStyle)} />
           <ProgressBar current={1} total={9} />
         </View>
@@ -136,7 +136,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                   <TextField
                     label="Quantity"
                     placeholder="Enter quantity"
-                    keyboardType="numeric"
+                    keyboardType="decimal-pad"
                     value={store?.packagedUnits[packagedUnitsLocation].quantity?.toString() ?? ""}
                     onChangeText={(val) => store?.updatePackagedUnits({ 
                       [packagedUnitsLocation]: { quantity: val ? parseInt(val, 10) : 0 }
@@ -145,7 +145,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                   />
                   <TextField
                     label="Capacity Range (Tons)"
-                    placeholder="e.g., 3-5"
+                    placeholder="Enter range"
                     value={store?.packagedUnits[packagedUnitsLocation].capacityRangeTons ?? ""}
                     onChangeText={(val) => store?.updatePackagedUnits({ 
                       [packagedUnitsLocation]: { capacityRangeTons: val }
@@ -157,7 +157,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                   <TextField
                     label="Total Capacity (Tons)"
                     placeholder="Enter total"
-                    keyboardType="numeric"
+                    keyboardType="decimal-pad"
                     value={store?.packagedUnits[packagedUnitsLocation].totalCapacityTons?.toString() ?? ""}
                     onChangeText={(val) => store?.updatePackagedUnits({ 
                       [packagedUnitsLocation]: { totalCapacityTons: val ? parseFloat(val) : 0 }
@@ -167,7 +167,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                   <TextField
                     label="Age 0-10 Years (Tons)"
                     placeholder="Enter tonnage"
-                    keyboardType="numeric"
+                    keyboardType="decimal-pad"
                     value={store?.packagedUnits[packagedUnitsLocation].age0to10Tons?.toString() ?? ""}
                     onChangeText={(val) => store?.updatePackagedUnits({ 
                       [packagedUnitsLocation]: { age0to10Tons: val ? parseFloat(val) : 0 }
@@ -179,7 +179,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                   <TextField
                     label="Age 11-20 Years (Tons)"
                     placeholder="Enter tonnage"
-                    keyboardType="numeric"
+                    keyboardType="decimal-pad"
                     value={store?.packagedUnits[packagedUnitsLocation].age11to20Tons?.toString() ?? ""}
                     onChangeText={(val) => store?.updatePackagedUnits({ 
                       [packagedUnitsLocation]: { age11to20Tons: val ? parseFloat(val) : 0 }
@@ -189,7 +189,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                   <TextField
                     label="Age 21+ Years (Tons)"
                     placeholder="Enter tonnage"
-                    keyboardType="numeric"
+                    keyboardType="decimal-pad"
                     value={store?.packagedUnits[packagedUnitsLocation].age21PlusTons?.toString() ?? ""}
                     onChangeText={(val) => store?.updatePackagedUnits({ 
                       [packagedUnitsLocation]: { age21PlusTons: val ? parseFloat(val) : 0 }
@@ -267,7 +267,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                 <TextField
                   label="Amount to Repair ($)"
                   placeholder="Dollar amount"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   value={store?.packagedUnits[packagedUnitsLocation].assessment.amountToRepair ?? ""}
                   onChangeText={(val) => store?.updatePackagedUnits({ 
                     [packagedUnitsLocation]: { assessment: { amountToRepair: val } }
@@ -320,7 +320,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                   <TextField
                     label="Quantity"
                     placeholder="Enter quantity"
-                    keyboardType="numeric"
+                    keyboardType="decimal-pad"
                     value={store?.splitSystemCondenser[condenserLocation].quantity?.toString() ?? ""}
                     onChangeText={(val) => store?.updateSplitSystemCondenser({ 
                       [condenserLocation]: { quantity: val ? parseInt(val, 10) : 0 }
@@ -329,7 +329,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                   />
                   <TextField
                     label="Capacity Range (Tons)"
-                    placeholder="e.g., 3-5"
+                    placeholder="Enter range"
                     value={store?.splitSystemCondenser[condenserLocation].capacityRangeTons ?? ""}
                     onChangeText={(val) => store?.updateSplitSystemCondenser({ 
                       [condenserLocation]: { capacityRangeTons: val }
@@ -341,7 +341,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                   <TextField
                     label="Total Capacity (Tons)"
                     placeholder="Enter total"
-                    keyboardType="numeric"
+                    keyboardType="decimal-pad"
                     value={store?.splitSystemCondenser[condenserLocation].totalCapacityTons?.toString() ?? ""}
                     onChangeText={(val) => store?.updateSplitSystemCondenser({ 
                       [condenserLocation]: { totalCapacityTons: val ? parseFloat(val) : 0 }
@@ -351,7 +351,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                   <TextField
                     label="Age 0-10 Years (Tons)"
                     placeholder="Enter tonnage"
-                    keyboardType="numeric"
+                    keyboardType="decimal-pad"
                     value={store?.splitSystemCondenser[condenserLocation].age0to10Tons?.toString() ?? ""}
                     onChangeText={(val) => store?.updateSplitSystemCondenser({ 
                       [condenserLocation]: { age0to10Tons: val ? parseFloat(val) : 0 }
@@ -363,7 +363,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                   <TextField
                     label="Age 11-20 Years (Tons)"
                     placeholder="Enter tonnage"
-                    keyboardType="numeric"
+                    keyboardType="decimal-pad"
                     value={store?.splitSystemCondenser[condenserLocation].age11to20Tons?.toString() ?? ""}
                     onChangeText={(val) => store?.updateSplitSystemCondenser({ 
                       [condenserLocation]: { age11to20Tons: val ? parseFloat(val) : 0 }
@@ -373,7 +373,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                   <TextField
                     label="Age 21+ Years (Tons)"
                     placeholder="Enter tonnage"
-                    keyboardType="numeric"
+                    keyboardType="decimal-pad"
                     value={store?.splitSystemCondenser[condenserLocation].age21PlusTons?.toString() ?? ""}
                     onChangeText={(val) => store?.updateSplitSystemCondenser({ 
                       [condenserLocation]: { age21PlusTons: val ? parseFloat(val) : 0 }
@@ -443,7 +443,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                 <TextField
                   label="Amount to Repair ($)"
                   placeholder="Dollar amount"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   value={store?.splitSystemCondenser[condenserLocation].assessment.amountToRepair ?? ""}
                   onChangeText={(val) => store?.updateSplitSystemCondenser({ 
                     [condenserLocation]: { assessment: { amountToRepair: val } }
@@ -488,7 +488,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                 <TextField
                   label="Quantity"
                   placeholder="Enter quantity"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   value={store?.furnace.furnace.quantity?.toString() ?? ""}
                   onChangeText={(val) => store?.updateFurnace({ 
                     furnace: { quantity: val ? parseInt(val, 10) : 0 }
@@ -497,7 +497,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                 />
                 <TextField
                   label="Location"
-                  placeholder="e.g., attic, basement"
+                  placeholder="Enter location"
                   value={store?.furnace.furnace.location ?? ""}
                   onChangeText={(val) => store?.updateFurnace({ 
                     furnace: { location: val }
@@ -579,7 +579,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                   <TextField
                     label="Quantity"
                     placeholder="Enter quantity"
-                    keyboardType="numeric"
+                    keyboardType="decimal-pad"
                     value={store?.splitSystemHeatPump[heatPumpLocation].quantity?.toString() ?? ""}
                     onChangeText={(val) => store?.updateSplitSystemHeatPump({ 
                       [heatPumpLocation]: { quantity: val ? parseInt(val, 10) : 0 }
@@ -588,7 +588,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                   />
                   <TextField
                     label="Capacity Range (Tons)"
-                    placeholder="e.g., 3-5"
+                    placeholder="Enter range"
                     value={store?.splitSystemHeatPump[heatPumpLocation].capacityRangeTons ?? ""}
                     onChangeText={(val) => store?.updateSplitSystemHeatPump({ 
                       [heatPumpLocation]: { capacityRangeTons: val }
@@ -600,7 +600,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                   <TextField
                     label="Total Capacity (Tons)"
                     placeholder="Enter total"
-                    keyboardType="numeric"
+                    keyboardType="decimal-pad"
                     value={store?.splitSystemHeatPump[heatPumpLocation].totalCapacityTons?.toString() ?? ""}
                     onChangeText={(val) => store?.updateSplitSystemHeatPump({ 
                       [heatPumpLocation]: { totalCapacityTons: val ? parseFloat(val) : 0 }
@@ -610,7 +610,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                   <TextField
                     label="Age 0-10 Years (Tons)"
                     placeholder="Enter tonnage"
-                    keyboardType="numeric"
+                    keyboardType="decimal-pad"
                     value={store?.splitSystemHeatPump[heatPumpLocation].age0to10Tons?.toString() ?? ""}
                     onChangeText={(val) => store?.updateSplitSystemHeatPump({ 
                       [heatPumpLocation]: { age0to10Tons: val ? parseFloat(val) : 0 }
@@ -622,7 +622,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                   <TextField
                     label="Age 11-20 Years (Tons)"
                     placeholder="Enter tonnage"
-                    keyboardType="numeric"
+                    keyboardType="decimal-pad"
                     value={store?.splitSystemHeatPump[heatPumpLocation].age11to20Tons?.toString() ?? ""}
                     onChangeText={(val) => store?.updateSplitSystemHeatPump({ 
                       [heatPumpLocation]: { age11to20Tons: val ? parseFloat(val) : 0 }
@@ -632,7 +632,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                   <TextField
                     label="Age 21+ Years (Tons)"
                     placeholder="Enter tonnage"
-                    keyboardType="numeric"
+                    keyboardType="decimal-pad"
                     value={store?.splitSystemHeatPump[heatPumpLocation].age21PlusTons?.toString() ?? ""}
                     onChangeText={(val) => store?.updateSplitSystemHeatPump({ 
                       [heatPumpLocation]: { age21PlusTons: val ? parseFloat(val) : 0 }
@@ -710,7 +710,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                 <TextField
                   label="Amount to Repair ($)"
                   placeholder="Dollar amount"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   value={store?.splitSystemHeatPump[heatPumpLocation].assessment.amountToRepair ?? ""}
                   onChangeText={(val) => store?.updateSplitSystemHeatPump({ 
                     [heatPumpLocation]: { assessment: { amountToRepair: val } }
@@ -755,7 +755,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                 <TextField
                   label="Quantity"
                   placeholder="Enter quantity"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   value={store?.airHandler.airHandler.quantity?.toString() ?? ""}
                   onChangeText={(val) => store?.updateAirHandler({ 
                     airHandler: { quantity: val ? parseInt(val, 10) : 0 }
@@ -764,7 +764,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                 />
                 <TextField
                   label="Capacity Range (CFM)"
-                  placeholder="e.g., 1000-2000"
+                  placeholder="Enter range"
                   value={store?.airHandler.airHandler.capacityRangeTons ?? ""}
                   onChangeText={(val) => store?.updateAirHandler({ 
                     airHandler: { capacityRangeTons: val }
@@ -776,7 +776,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                 <TextField
                   label="Total Capacity (CFM)"
                   placeholder="Enter total"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   value={store?.airHandler.airHandler.totalCapacityTons?.toString() ?? ""}
                   onChangeText={(val) => store?.updateAirHandler({ 
                     airHandler: { totalCapacityTons: val ? parseFloat(val) : 0 }
@@ -786,7 +786,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                 <TextField
                   label="Age 0-10 Years (CFM)"
                   placeholder="Enter CFM"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   value={store?.airHandler.airHandler.age0to10Tons?.toString() ?? ""}
                   onChangeText={(val) => store?.updateAirHandler({ 
                     airHandler: { age0to10Tons: val ? parseFloat(val) : 0 }
@@ -798,7 +798,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                 <TextField
                   label="Age 11-20 Years (CFM)"
                   placeholder="Enter CFM"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   value={store?.airHandler.airHandler.age11to20Tons?.toString() ?? ""}
                   onChangeText={(val) => store?.updateAirHandler({ 
                     airHandler: { age11to20Tons: val ? parseFloat(val) : 0 }
@@ -808,7 +808,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                 <TextField
                   label="Age 21+ Years (CFM)"
                   placeholder="Enter CFM"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   value={store?.airHandler.airHandler.age21PlusTons?.toString() ?? ""}
                   onChangeText={(val) => store?.updateAirHandler({ 
                     airHandler: { age21PlusTons: val ? parseFloat(val) : 0 }
@@ -840,7 +840,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
               <TextField
                 label="Amount to Repair ($)"
                 placeholder="Dollar amount"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.airHandler.airHandler.assessment.amountToRepair ?? ""}
                 onChangeText={(val) => store?.updateAirHandler({ 
                   airHandler: { assessment: { amountToRepair: val } }
@@ -884,7 +884,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                 <TextField
                   label="Quantity"
                   placeholder="Enter quantity"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   value={store?.ownerPTACs.ownerPTACs.quantity?.toString() ?? ""}
                   onChangeText={(val) => store?.updateOwnerPTACs({ 
                     ownerPTACs: { quantity: val ? parseInt(val, 10) : 0 }
@@ -893,7 +893,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                 />
                 <TextField
                   label="Capacity Range (CFM)"
-                  placeholder="e.g., 1000-2000"
+                  placeholder="Enter range"
                   value={store?.ownerPTACs.ownerPTACs.capacityRangeTons ?? ""}
                   onChangeText={(val) => store?.updateOwnerPTACs({ 
                     ownerPTACs: { capacityRangeTons: val }
@@ -905,7 +905,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                 <TextField
                   label="Total Capacity (CFM)"
                   placeholder="Enter total"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   value={store?.ownerPTACs.ownerPTACs.totalCapacityTons?.toString() ?? ""}
                   onChangeText={(val) => store?.updateOwnerPTACs({ 
                     ownerPTACs: { totalCapacityTons: val ? parseFloat(val) : 0 }
@@ -915,7 +915,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                 <TextField
                   label="Age 0-10 Years (CFM)"
                   placeholder="Enter CFM"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   value={store?.ownerPTACs.ownerPTACs.age0to10Tons?.toString() ?? ""}
                   onChangeText={(val) => store?.updateOwnerPTACs({ 
                     ownerPTACs: { age0to10Tons: val ? parseFloat(val) : 0 }
@@ -927,7 +927,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                 <TextField
                   label="Age 11-20 Years (CFM)"
                   placeholder="Enter CFM"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   value={store?.ownerPTACs.ownerPTACs.age11to20Tons?.toString() ?? ""}
                   onChangeText={(val) => store?.updateOwnerPTACs({ 
                     ownerPTACs: { age11to20Tons: val ? parseFloat(val) : 0 }
@@ -937,7 +937,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                 <TextField
                   label="Age 21+ Years (CFM)"
                   placeholder="Enter CFM"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   value={store?.ownerPTACs.ownerPTACs.age21PlusTons?.toString() ?? ""}
                   onChangeText={(val) => store?.updateOwnerPTACs({ 
                     ownerPTACs: { age21PlusTons: val ? parseFloat(val) : 0 }
@@ -969,7 +969,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
               <TextField
                 label="Amount to Repair ($)"
                 placeholder="Dollar amount"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.ownerPTACs.ownerPTACs.assessment.amountToRepair ?? ""}
                 onChangeText={(val) => store?.updateOwnerPTACs({ 
                   ownerPTACs: { assessment: { amountToRepair: val } }
@@ -1013,7 +1013,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                 <TextField
                   label="Quantity"
                   placeholder="Enter quantity"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   value={store?.tenantPTACs.tenantPTACs.quantity?.toString() ?? ""}
                   onChangeText={(val) => store?.updateTenantPTACs({ 
                     tenantPTACs: { quantity: val ? parseInt(val, 10) : 0 }
@@ -1022,7 +1022,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                 />
                 <TextField
                   label="Capacity Range (CFM)"
-                  placeholder="e.g., 1000-2000"
+                  placeholder="Enter range"
                   value={store?.tenantPTACs.tenantPTACs.capacityRangeTons ?? ""}
                   onChangeText={(val) => store?.updateTenantPTACs({ 
                     tenantPTACs: { capacityRangeTons: val }
@@ -1034,7 +1034,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                 <TextField
                   label="Total Capacity (CFM)"
                   placeholder="Enter total"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   value={store?.tenantPTACs.tenantPTACs.totalCapacityTons?.toString() ?? ""}
                   onChangeText={(val) => store?.updateTenantPTACs({ 
                     tenantPTACs: { totalCapacityTons: val ? parseFloat(val) : 0 }
@@ -1044,7 +1044,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                 <TextField
                   label="Age 0-10 Years (CFM)"
                   placeholder="Enter CFM"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   value={store?.tenantPTACs.tenantPTACs.age0to10Tons?.toString() ?? ""}
                   onChangeText={(val) => store?.updateTenantPTACs({ 
                     tenantPTACs: { age0to10Tons: val ? parseFloat(val) : 0 }
@@ -1056,7 +1056,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                 <TextField
                   label="Age 11-20 Years (CFM)"
                   placeholder="Enter CFM"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   value={store?.tenantPTACs.tenantPTACs.age11to20Tons?.toString() ?? ""}
                   onChangeText={(val) => store?.updateTenantPTACs({ 
                     tenantPTACs: { age11to20Tons: val ? parseFloat(val) : 0 }
@@ -1066,7 +1066,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                 <TextField
                   label="Age 21+ Years (CFM)"
                   placeholder="Enter CFM"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   value={store?.tenantPTACs.tenantPTACs.age21PlusTons?.toString() ?? ""}
                   onChangeText={(val) => store?.updateTenantPTACs({ 
                     tenantPTACs: { age21PlusTons: val ? parseFloat(val) : 0 }
@@ -1098,7 +1098,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
               <TextField
                 label="Amount to Repair ($)"
                 placeholder="Dollar amount"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.tenantPTACs.tenantPTACs.assessment.amountToRepair ?? ""}
                 onChangeText={(val) => store?.updateTenantPTACs({ 
                   tenantPTACs: { assessment: { amountToRepair: val } }
@@ -1142,7 +1142,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                 <TextField
                   label="Quantity"
                   placeholder="Enter quantity"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   value={store?.windowUnitsOwner.windowUnitsOwner.quantity?.toString() ?? ""}
                   onChangeText={(val) => store?.updateWindowUnitsOwner({ 
                     windowUnitsOwner: { quantity: val ? parseInt(val, 10) : 0 }
@@ -1151,7 +1151,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                 />
                 <TextField
                   label="Capacity Range (CFM)"
-                  placeholder="e.g., 1000-2000"
+                  placeholder="Enter range"
                   value={store?.windowUnitsOwner.windowUnitsOwner.capacityRangeTons ?? ""}
                   onChangeText={(val) => store?.updateWindowUnitsOwner({ 
                     windowUnitsOwner: { capacityRangeTons: val }
@@ -1163,7 +1163,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                 <TextField
                   label="Total Capacity (CFM)"
                   placeholder="Enter total"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   value={store?.windowUnitsOwner.windowUnitsOwner.totalCapacityTons?.toString() ?? ""}
                   onChangeText={(val) => store?.updateWindowUnitsOwner({ 
                     windowUnitsOwner: { totalCapacityTons: val ? parseFloat(val) : 0 }
@@ -1173,7 +1173,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                 <TextField
                   label="Age 0-10 Years (CFM)"
                   placeholder="Enter CFM"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   value={store?.windowUnitsOwner.windowUnitsOwner.age0to10Tons?.toString() ?? ""}
                   onChangeText={(val) => store?.updateWindowUnitsOwner({ 
                     windowUnitsOwner: { age0to10Tons: val ? parseFloat(val) : 0 }
@@ -1185,7 +1185,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                 <TextField
                   label="Age 11-20 Years (CFM)"
                   placeholder="Enter CFM"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   value={store?.windowUnitsOwner.windowUnitsOwner.age11to20Tons?.toString() ?? ""}
                   onChangeText={(val) => store?.updateWindowUnitsOwner({ 
                     windowUnitsOwner: { age11to20Tons: val ? parseFloat(val) : 0 }
@@ -1195,7 +1195,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                 <TextField
                   label="Age 21+ Years (CFM)"
                   placeholder="Enter CFM"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   value={store?.windowUnitsOwner.windowUnitsOwner.age21PlusTons?.toString() ?? ""}
                   onChangeText={(val) => store?.updateWindowUnitsOwner({ 
                     windowUnitsOwner: { age21PlusTons: val ? parseFloat(val) : 0 }
@@ -1227,7 +1227,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
               <TextField
                 label="Amount to Repair ($)"
                 placeholder="Dollar amount"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.windowUnitsOwner.windowUnitsOwner.assessment.amountToRepair ?? ""}
                 onChangeText={(val) => store?.updateWindowUnitsOwner({ 
                   windowUnitsOwner: { assessment: { amountToRepair: val } }
@@ -1271,7 +1271,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                 <TextField
                   label="Quantity"
                   placeholder="Enter quantity"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   value={store?.windowUnitsTenant.windowUnitsTenant.quantity?.toString() ?? ""}
                   onChangeText={(val) => store?.updateWindowUnitsTenant({ 
                     windowUnitsTenant: { quantity: val ? parseInt(val, 10) : 0 }
@@ -1280,7 +1280,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                 />
                 <TextField
                   label="Capacity Range (CFM)"
-                  placeholder="e.g., 1000-2000"
+                  placeholder="Enter range"
                   value={store?.windowUnitsTenant.windowUnitsTenant.capacityRangeTons ?? ""}
                   onChangeText={(val) => store?.updateWindowUnitsTenant({ 
                     windowUnitsTenant: { capacityRangeTons: val }
@@ -1292,7 +1292,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                 <TextField
                   label="Total Capacity (CFM)"
                   placeholder="Enter total"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   value={store?.windowUnitsTenant.windowUnitsTenant.totalCapacityTons?.toString() ?? ""}
                   onChangeText={(val) => store?.updateWindowUnitsTenant({ 
                     windowUnitsTenant: { totalCapacityTons: val ? parseFloat(val) : 0 }
@@ -1302,7 +1302,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                 <TextField
                   label="Age 0-10 Years (CFM)"
                   placeholder="Enter CFM"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   value={store?.windowUnitsTenant.windowUnitsTenant.age0to10Tons?.toString() ?? ""}
                   onChangeText={(val) => store?.updateWindowUnitsTenant({ 
                     windowUnitsTenant: { age0to10Tons: val ? parseFloat(val) : 0 }
@@ -1314,7 +1314,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                 <TextField
                   label="Age 11-20 Years (CFM)"
                   placeholder="Enter CFM"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   value={store?.windowUnitsTenant.windowUnitsTenant.age11to20Tons?.toString() ?? ""}
                   onChangeText={(val) => store?.updateWindowUnitsTenant({ 
                     windowUnitsTenant: { age11to20Tons: val ? parseFloat(val) : 0 }
@@ -1324,7 +1324,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                 <TextField
                   label="Age 21+ Years (CFM)"
                   placeholder="Enter CFM"
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   value={store?.windowUnitsTenant.windowUnitsTenant.age21PlusTons?.toString() ?? ""}
                   onChangeText={(val) => store?.updateWindowUnitsTenant({ 
                     windowUnitsTenant: { age21PlusTons: val ? parseFloat(val) : 0 }
@@ -1356,7 +1356,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
               <TextField
                 label="Amount to Repair ($)"
                 placeholder="Dollar amount"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.windowUnitsTenant.windowUnitsTenant.assessment.amountToRepair ?? ""}
                 onChangeText={(val) => store?.updateWindowUnitsTenant({ 
                   windowUnitsTenant: { assessment: { amountToRepair: val } }
@@ -1394,7 +1394,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                       <TextField
                         label="# Units"
                         placeholder="Quantity"
-                        keyboardType="numeric"
+                        keyboardType="decimal-pad"
                         value={item.quantity?.toString() ?? ""}
                         onChangeText={(val) => store?.updateUnitManufacturerSpecific(item.id, { 
                           quantity: val ? parseInt(val, 10) : 0 
@@ -1413,7 +1413,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                       <TextField
                         label="Approx. Tonnage"
                         placeholder="Tonnage"
-                        keyboardType="numeric"
+                        keyboardType="decimal-pad"
                         value={item.approxTonnage?.toString() ?? ""}
                         onChangeText={(val) => store?.updateUnitManufacturerSpecific(item.id, { 
                           approxTonnage: val ? parseFloat(val) : 0 
@@ -1423,7 +1423,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                       <TextField
                         label="Approx. Age"
                         placeholder="Years"
-                        keyboardType="numeric"
+                        keyboardType="decimal-pad"
                         value={item.approxAge?.toString() ?? ""}
                         onChangeText={(val) => store?.updateUnitManufacturerSpecific(item.id, { 
                           approxAge: val ? parseInt(val, 10) : 0 
@@ -1483,7 +1483,7 @@ const $screenInner: ViewStyle = {
 
 const $content: ViewStyle = {
   paddingTop: 88,
-  paddingBottom: 96,
+  paddingBottom: 112, // 96 (footer height) + 16 (spacing)
   gap: 0,
 }
 
@@ -1515,6 +1515,13 @@ const $stickyFooter: ViewStyle = {
   left: 0,
   right: 0,
   zIndex: 2,
+}
+
+const $introBlock: ViewStyle = {
+  paddingHorizontal: 16,
+  paddingTop: 16,
+  paddingBottom: 32,
+  gap: 8,
 }
 
 const $paddedBlock: ViewStyle = {

@@ -405,8 +405,8 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
                 render={({ field: { value, onChange, onBlur } }) => (
                   <TextField
                     label="Amount to Repair ($)"
-                    placeholder="5500"
-                    keyboardType="numeric"
+                    placeholder="Dollar amount"
+                    keyboardType="decimal-pad"
                     value={value}
                     onChangeText={onChange}
                     onBlur={onBlur}
@@ -475,8 +475,8 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
                 render={({ field: { value, onChange, onBlur } }) => (
                   <TextField
                     label="Amount to Repair ($)"
-                    placeholder="5500"
-                    keyboardType="numeric"
+                    placeholder="Dollar amount"
+                    keyboardType="decimal-pad"
                     value={value}
                     onChangeText={onChange}
                     onBlur={onBlur}
@@ -545,8 +545,8 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
                 render={({ field: { value, onChange, onBlur } }) => (
                   <TextField
                     label="Amount to Repair ($)"
-                    placeholder="5500"
-                    keyboardType="numeric"
+                    placeholder="Dollar amount"
+                    keyboardType="decimal-pad"
                     value={value}
                     onChangeText={onChange}
                     onBlur={onBlur}
@@ -615,8 +615,8 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
                 render={({ field: { value, onChange, onBlur } }) => (
                   <TextField
                     label="Amount to Repair ($)"
-                    placeholder="5500"
-                    keyboardType="numeric"
+                    placeholder="Dollar amount"
+                    keyboardType="decimal-pad"
                     value={value}
                     onChangeText={onChange}
                     onBlur={onBlur}
@@ -685,8 +685,8 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
                 render={({ field: { value, onChange, onBlur } }) => (
                   <TextField
                     label="Amount to Repair ($)"
-                    placeholder="5500"
-                    keyboardType="numeric"
+                    placeholder="Dollar amount"
+                    keyboardType="decimal-pad"
                     value={value}
                     onChangeText={onChange}
                     onBlur={onBlur}
@@ -755,8 +755,8 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
                 render={({ field: { value, onChange, onBlur } }) => (
                   <TextField
                     label="Amount to Repair ($)"
-                    placeholder="5500"
-                    keyboardType="numeric"
+                    placeholder="Dollar amount"
+                    keyboardType="decimal-pad"
                     value={value}
                     onChangeText={onChange}
                     onBlur={onBlur}
@@ -825,8 +825,8 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
                 render={({ field: { value, onChange, onBlur } }) => (
                   <TextField
                     label="Amount to Repair ($)"
-                    placeholder="5500"
-                    keyboardType="numeric"
+                    placeholder="Dollar amount"
+                    keyboardType="decimal-pad"
                     value={value}
                     onChangeText={onChange}
                     onBlur={onBlur}
@@ -895,8 +895,8 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
                 render={({ field: { value, onChange, onBlur } }) => (
                   <TextField
                     label="Amount to Repair ($)"
-                    placeholder="5500"
-                    keyboardType="numeric"
+                    placeholder="Dollar amount"
+                    keyboardType="decimal-pad"
                     value={value}
                     onChangeText={onChange}
                     onBlur={onBlur}
@@ -965,8 +965,8 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
                 render={({ field: { value, onChange, onBlur } }) => (
                   <TextField
                     label="Amount to Repair ($)"
-                    placeholder="5500"
-                    keyboardType="numeric"
+                    placeholder="Dollar amount"
+                    keyboardType="decimal-pad"
                     value={value}
                     onChangeText={onChange}
                     onBlur={onBlur}

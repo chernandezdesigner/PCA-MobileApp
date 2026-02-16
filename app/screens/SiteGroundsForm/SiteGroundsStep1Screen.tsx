@@ -191,7 +191,7 @@ export const SiteGroundsStep1Screen: FC<SiteGroundsStep1ScreenProps> = observer(
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 returnKeyType="next"
                 blurOnSubmit={false}
               />

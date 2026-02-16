@@ -94,22 +94,13 @@ Building Envelope (10 steps) - Structure, roofing, walls
 Mechanical Systems (9 steps) - HVAC, plumbing, electrical
 Interior Conditions (4 steps) - Finishes, common areas, mold, alt properties
 
-## Current Task: Interior Conditions Form (Form 5)
+## Current Task: Small surgical updates / bug fixes
 
 ## Completed
 Constants: interiorConditionOptions.ts (937 lines)
 MST Models: Steps 1-3 complete
 Step 4 model: Empty (needs dynamic property type logic)
 
-## Step 4 Requirements
-Dynamic form based on property type toggles:
-Hotel
-Apartment
-Storage
-Mobile Homes
-Nursing Homes
-Multi-Family
-Each toggle reveals specific accordions/inputs from the constants file.
 
 ## Important Rules
 ALWAYS use existing components from app/components/

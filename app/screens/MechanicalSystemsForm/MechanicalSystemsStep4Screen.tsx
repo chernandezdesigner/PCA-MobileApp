@@ -86,7 +86,7 @@ export const MechanicalSystemsStep4Screen: FC<MechanicalSystemsStep4ScreenProps>
       </View>
       
       <ScrollView contentContainerStyle={themed($content)} style={$scrollArea}>
-        <View style={themed($paddedBlock)}>
+        <View style={$introBlock}>
           <Text preset="subheading" text="Boilers" style={themed($titleStyle)} />
           <ProgressBar current={4} total={9} />
         </View>
@@ -141,7 +141,7 @@ export const MechanicalSystemsStep4Screen: FC<MechanicalSystemsStep4ScreenProps>
                           <TextField
                             label="Quantity"
                             placeholder="Enter quantity"
-                            keyboardType="numeric"
+                            keyboardType="decimal-pad"
                             value={unit.quantity?.toString() ?? ""}
                             onChangeText={(val) => store?.updateHeatBoiler(unit.id, { 
                               quantity: val ? parseInt(val, 10) : 0 
@@ -151,10 +151,10 @@ export const MechanicalSystemsStep4Screen: FC<MechanicalSystemsStep4ScreenProps>
                           <TextField
                             label="Capacity Each (BTU)"
                             placeholder="Enter capacity"
-                            keyboardType="numeric"
+                            keyboardType="decimal-pad"
                             value={unit.capacityBTU?.toString() ?? ""}
                             onChangeText={(val) => store?.updateHeatBoiler(unit.id, { 
-                              capacityBTU: val ? parseInt(val, 10) : 0 
+                              capacityBTU: val ? parseFloat(val) : 0 
                             })}
                             containerStyle={$halfWidth}
                           />
@@ -164,7 +164,7 @@ export const MechanicalSystemsStep4Screen: FC<MechanicalSystemsStep4ScreenProps>
                           <TextField
                             label="Year Install (ea.)"
                             placeholder="Year"
-                            keyboardType="numeric"
+                            keyboardType="decimal-pad"
                             value={unit.yearInstall?.toString() ?? ""}
                             onChangeText={(val) => store?.updateHeatBoiler(unit.id, { 
                               yearInstall: val ? parseInt(val, 10) : 0 
@@ -174,7 +174,7 @@ export const MechanicalSystemsStep4Screen: FC<MechanicalSystemsStep4ScreenProps>
                           <TextField
                             label="Year Rebuild (ea.)"
                             placeholder="Year"
-                            keyboardType="numeric"
+                            keyboardType="decimal-pad"
                             value={unit.yearRebuild?.toString() ?? ""}
                             onChangeText={(val) => store?.updateHeatBoiler(unit.id, { 
                               yearRebuild: val ? parseInt(val, 10) : 0 
@@ -229,7 +229,7 @@ export const MechanicalSystemsStep4Screen: FC<MechanicalSystemsStep4ScreenProps>
                         <TextField
                           label="Amount to Replace/Repair ($)"
                           placeholder="Dollar amount"
-                          keyboardType="numeric"
+                          keyboardType="decimal-pad"
                           value={unit.assessment.amountToRepair ?? ""}
                           onChangeText={(val) => store?.updateHeatBoiler(unit.id, { 
                             assessment: { amountToRepair: val } 
@@ -264,7 +264,7 @@ export const MechanicalSystemsStep4Screen: FC<MechanicalSystemsStep4ScreenProps>
                         <TextField
                           label="Water Pumps Amount to Replace/Repair ($)"
                           placeholder="Dollar amount"
-                          keyboardType="numeric"
+                          keyboardType="decimal-pad"
                           value={unit.waterPumpsAssessment.amountToRepair ?? ""}
                           onChangeText={(val) => store?.updateHeatBoiler(unit.id, { 
                             waterPumpsAssessment: { amountToRepair: val } 
@@ -355,7 +355,7 @@ export const MechanicalSystemsStep4Screen: FC<MechanicalSystemsStep4ScreenProps>
                           <TextField
                             label="Quantity"
                             placeholder="Enter quantity"
-                            keyboardType="numeric"
+                            keyboardType="decimal-pad"
                             value={unit.quantity?.toString() ?? ""}
                             onChangeText={(val) => store?.updatePlumbingWaterBoiler(unit.id, { 
                               quantity: val ? parseInt(val, 10) : 0 
@@ -365,10 +365,10 @@ export const MechanicalSystemsStep4Screen: FC<MechanicalSystemsStep4ScreenProps>
                           <TextField
                             label="Capacity Each (BTU)"
                             placeholder="Enter capacity"
-                            keyboardType="numeric"
+                            keyboardType="decimal-pad"
                             value={unit.capacityBTU?.toString() ?? ""}
                             onChangeText={(val) => store?.updatePlumbingWaterBoiler(unit.id, { 
-                              capacityBTU: val ? parseInt(val, 10) : 0 
+                              capacityBTU: val ? parseFloat(val) : 0 
                             })}
                             containerStyle={$halfWidth}
                           />
@@ -378,7 +378,7 @@ export const MechanicalSystemsStep4Screen: FC<MechanicalSystemsStep4ScreenProps>
                           <TextField
                             label="Year Install (ea.)"
                             placeholder="Year"
-                            keyboardType="numeric"
+                            keyboardType="decimal-pad"
                             value={unit.yearInstall?.toString() ?? ""}
                             onChangeText={(val) => store?.updatePlumbingWaterBoiler(unit.id, { 
                               yearInstall: val ? parseInt(val, 10) : 0 
@@ -388,7 +388,7 @@ export const MechanicalSystemsStep4Screen: FC<MechanicalSystemsStep4ScreenProps>
                           <TextField
                             label="Year Rebuild (ea.)"
                             placeholder="Year"
-                            keyboardType="numeric"
+                            keyboardType="decimal-pad"
                             value={unit.yearRebuild?.toString() ?? ""}
                             onChangeText={(val) => store?.updatePlumbingWaterBoiler(unit.id, { 
                               yearRebuild: val ? parseInt(val, 10) : 0 
@@ -443,7 +443,7 @@ export const MechanicalSystemsStep4Screen: FC<MechanicalSystemsStep4ScreenProps>
                         <TextField
                           label="Amount to Replace/Repair ($)"
                           placeholder="Dollar amount"
-                          keyboardType="numeric"
+                          keyboardType="decimal-pad"
                           value={unit.assessment.amountToRepair ?? ""}
                           onChangeText={(val) => store?.updatePlumbingWaterBoiler(unit.id, { 
                             assessment: { amountToRepair: val } 
@@ -478,7 +478,7 @@ export const MechanicalSystemsStep4Screen: FC<MechanicalSystemsStep4ScreenProps>
                         <TextField
                           label="Water Pumps Amount to Replace/Repair ($)"
                           placeholder="Dollar amount"
-                          keyboardType="numeric"
+                          keyboardType="decimal-pad"
                           value={unit.waterPumpsAssessment.amountToRepair ?? ""}
                           onChangeText={(val) => store?.updatePlumbingWaterBoiler(unit.id, { 
                             waterPumpsAssessment: { amountToRepair: val } 
@@ -551,7 +551,7 @@ const $screenInner: ViewStyle = {
 
 const $content: ViewStyle = {
   paddingTop: 88,
-  paddingBottom: 96,
+  paddingBottom: 112, // 96 (footer height) + 16 (spacing)
   gap: 0,
 }
 
@@ -583,6 +583,13 @@ const $stickyFooter: ViewStyle = {
   left: 0,
   right: 0,
   zIndex: 2,
+}
+
+const $introBlock: ViewStyle = {
+  paddingHorizontal: 16,
+  paddingTop: 16,
+  paddingBottom: 32,
+  gap: 8,
 }
 
 const $paddedBlock: ViewStyle = {

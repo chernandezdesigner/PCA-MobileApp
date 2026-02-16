@@ -81,7 +81,7 @@ export const MechanicalSystemsStep7Screen: FC<MechanicalSystemsStep7ScreenProps>
       </View>
 
       <ScrollView contentContainerStyle={themed($content)} style={$scrollArea}>
-        <View style={themed($paddedBlock)}>
+        <View style={$introBlock}>
           <Text preset="subheading" text="Electrical" style={themed($titleStyle)} />
           <ProgressBar current={7} total={9} />
         </View>
@@ -106,7 +106,7 @@ export const MechanicalSystemsStep7Screen: FC<MechanicalSystemsStep7ScreenProps>
               <TextField
                 label="#"
                 placeholder="Enter quantity"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.transformers.padQuantity?.toString() ?? ""}
                 onChangeText={(val) =>
                   store?.updateTransformers({ padQuantity: val ? parseInt(val, 10) : 0 })
@@ -125,7 +125,7 @@ export const MechanicalSystemsStep7Screen: FC<MechanicalSystemsStep7ScreenProps>
               <TextField
                 label="#"
                 placeholder="Enter quantity"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.transformers.poleMountedQuantity?.toString() ?? ""}
                 onChangeText={(val) =>
                   store?.updateTransformers({ poleMountedQuantity: val ? parseInt(val, 10) : 0 })
@@ -136,10 +136,10 @@ export const MechanicalSystemsStep7Screen: FC<MechanicalSystemsStep7ScreenProps>
             <TextField
               label="Amps"
               placeholder="Enter amps"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={store?.transformers.amps?.toString() ?? ""}
               onChangeText={(val) =>
-                store?.updateTransformers({ amps: val ? parseInt(val, 10) : 0 })
+                store?.updateTransformers({ amps: val ? parseFloat(val) : 0 })
               }
             />
 
@@ -186,11 +186,11 @@ export const MechanicalSystemsStep7Screen: FC<MechanicalSystemsStep7ScreenProps>
             <TextField
               label="Amount to Replace/Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={store?.transformers.amountToReplaceRepair?.toString() ?? ""}
               onChangeText={(val) =>
                 store?.updateTransformers({
-                  amountToReplaceRepair: val ? parseInt(val, 10) : 0,
+                  amountToReplaceRepair: val ? parseFloat(val) : 0,
                 })
               }
             />
@@ -209,9 +209,9 @@ export const MechanicalSystemsStep7Screen: FC<MechanicalSystemsStep7ScreenProps>
             <TextField
               label="Amps"
               placeholder="Enter amps"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={store?.main.amps?.toString() ?? ""}
-              onChangeText={(val) => store?.updateMain({ amps: val ? parseInt(val, 10) : 0 })}
+              onChangeText={(val) => store?.updateMain({ amps: val ? parseFloat(val) : 0 })}
             />
 
             <ChecklistField
@@ -257,10 +257,10 @@ export const MechanicalSystemsStep7Screen: FC<MechanicalSystemsStep7ScreenProps>
             <TextField
               label="Amount to Replace/Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={store?.main.amountToReplaceRepair?.toString() ?? ""}
               onChangeText={(val) =>
-                store?.updateMain({ amountToReplaceRepair: val ? parseInt(val, 10) : 0 })
+                store?.updateMain({ amountToReplaceRepair: val ? parseFloat(val) : 0 })
               }
             />
           </View>
@@ -278,9 +278,9 @@ export const MechanicalSystemsStep7Screen: FC<MechanicalSystemsStep7ScreenProps>
             <TextField
               label="Amps"
               placeholder="Enter amps"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={store?.tenantApt.amps?.toString() ?? ""}
-              onChangeText={(val) => store?.updateTenantApt({ amps: val ? parseInt(val, 10) : 0 })}
+              onChangeText={(val) => store?.updateTenantApt({ amps: val ? parseFloat(val) : 0 })}
             />
 
             <ChecklistField
@@ -326,10 +326,10 @@ export const MechanicalSystemsStep7Screen: FC<MechanicalSystemsStep7ScreenProps>
             <TextField
               label="Amount to Replace/Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={store?.tenantApt.amountToReplaceRepair?.toString() ?? ""}
               onChangeText={(val) =>
-                store?.updateTenantApt({ amountToReplaceRepair: val ? parseInt(val, 10) : 0 })
+                store?.updateTenantApt({ amountToReplaceRepair: val ? parseFloat(val) : 0 })
               }
             />
           </View>
@@ -364,7 +364,7 @@ export const MechanicalSystemsStep7Screen: FC<MechanicalSystemsStep7ScreenProps>
               <TextField
                 label="Eff Age"
                 placeholder="Years"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.emergencyGenerator1.effAge?.toString() ?? ""}
                 onChangeText={(val) =>
                   store?.updateEmergencyGenerator1({ effAge: val ? parseInt(val, 10) : 0 })
@@ -378,7 +378,7 @@ export const MechanicalSystemsStep7Screen: FC<MechanicalSystemsStep7ScreenProps>
               <TextField
                 label="kVa"
                 placeholder="Enter kVa"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.emergencyGenerator1.kVa?.toString() ?? ""}
                 onChangeText={(val) =>
                   store?.updateEmergencyGenerator1({ kVa: val ? parseFloat(val) : 0 })
@@ -388,7 +388,7 @@ export const MechanicalSystemsStep7Screen: FC<MechanicalSystemsStep7ScreenProps>
               <TextField
                 label="Kw"
                 placeholder="Enter Kw"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.emergencyGenerator1.kw?.toString() ?? ""}
                 onChangeText={(val) =>
                   store?.updateEmergencyGenerator1({ kw: val ? parseFloat(val) : 0 })
@@ -408,11 +408,11 @@ export const MechanicalSystemsStep7Screen: FC<MechanicalSystemsStep7ScreenProps>
             <TextField
               label="Amount to Replace/Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={store?.emergencyGenerator1.amountToReplaceRepair?.toString() ?? ""}
               onChangeText={(val) =>
                 store?.updateEmergencyGenerator1({
-                  amountToReplaceRepair: val ? parseInt(val, 10) : 0,
+                  amountToReplaceRepair: val ? parseFloat(val) : 0,
                 })
               }
             />
@@ -455,11 +455,11 @@ export const MechanicalSystemsStep7Screen: FC<MechanicalSystemsStep7ScreenProps>
             <TextField
               label="Amount to Replace/Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={store?.tank1.amountToReplaceRepair?.toString() ?? ""}
               onChangeText={(val) =>
                 store?.updateTank1({
-                  amountToReplaceRepair: val ? parseInt(val, 10) : 0,
+                  amountToReplaceRepair: val ? parseFloat(val) : 0,
                 })
               }
             />
@@ -495,7 +495,7 @@ export const MechanicalSystemsStep7Screen: FC<MechanicalSystemsStep7ScreenProps>
                       <TextField
                         label="Eff Age"
                         placeholder="Years"
-                        keyboardType="numeric"
+                        keyboardType="decimal-pad"
                 value={store?.emergencyGenerator2.effAge?.toString() ?? ""}
                 onChangeText={(val) =>
                   store?.updateEmergencyGenerator2({ effAge: val ? parseInt(val, 10) : 0 })
@@ -509,7 +509,7 @@ export const MechanicalSystemsStep7Screen: FC<MechanicalSystemsStep7ScreenProps>
                       <TextField
                         label="kVa"
                         placeholder="Enter kVa"
-                        keyboardType="numeric"
+                        keyboardType="decimal-pad"
                 value={store?.emergencyGenerator2.kVa?.toString() ?? ""}
                 onChangeText={(val) =>
                   store?.updateEmergencyGenerator2({ kVa: val ? parseFloat(val) : 0 })
@@ -519,7 +519,7 @@ export const MechanicalSystemsStep7Screen: FC<MechanicalSystemsStep7ScreenProps>
               <TextField
                 label="Kw"
                 placeholder="Enter Kw"
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 value={store?.emergencyGenerator2.kw?.toString() ?? ""}
                 onChangeText={(val) =>
                   store?.updateEmergencyGenerator2({ kw: val ? parseFloat(val) : 0 })
@@ -539,11 +539,11 @@ export const MechanicalSystemsStep7Screen: FC<MechanicalSystemsStep7ScreenProps>
                     <TextField
               label="Amount to Replace/Repair ($)"
               placeholder="Dollar amount"
-                      keyboardType="numeric"
+                      keyboardType="decimal-pad"
               value={store?.emergencyGenerator2.amountToReplaceRepair?.toString() ?? ""}
               onChangeText={(val) =>
                 store?.updateEmergencyGenerator2({
-                  amountToReplaceRepair: val ? parseInt(val, 10) : 0,
+                  amountToReplaceRepair: val ? parseFloat(val) : 0,
                 })
               }
                     />
@@ -586,11 +586,11 @@ export const MechanicalSystemsStep7Screen: FC<MechanicalSystemsStep7ScreenProps>
                     <TextField
               label="Amount to Replace/Repair ($)"
                       placeholder="Dollar amount"
-                      keyboardType="numeric"
+                      keyboardType="decimal-pad"
               value={store?.tank2.amountToReplaceRepair?.toString() ?? ""}
               onChangeText={(val) =>
                 store?.updateTank2({
-                  amountToReplaceRepair: val ? parseInt(val, 10) : 0,
+                  amountToReplaceRepair: val ? parseFloat(val) : 0,
                 })
               }
               />
@@ -628,7 +628,11 @@ const $screenInner: ViewStyle = {
 }
 
 const $stickyHeader: ViewStyle = {
-  zIndex: 10,
+  position: "absolute",
+  top: 0,
+  left: 0,
+  right: 0,
+  zIndex: 2,
 }
 
 const $scrollArea: ViewStyle = {
@@ -636,8 +640,17 @@ const $scrollArea: ViewStyle = {
 }
 
 const $content: ThemedStyle<ViewStyle> = (theme) => ({
-  paddingBottom: 120,
+  paddingTop: 88,
+  paddingBottom: 112, // 96 (footer height) + 16 (spacing)
+  gap: 0,
 })
+
+const $introBlock: ViewStyle = {
+  paddingHorizontal: 16,
+  paddingTop: 16,
+  paddingBottom: 32,
+  gap: 8,
+}
 
 const $paddedBlock: ThemedStyle<ViewStyle> = (theme) => ({
   paddingHorizontal: theme.spacing.md,
@@ -646,6 +659,8 @@ const $paddedBlock: ThemedStyle<ViewStyle> = (theme) => ({
 })
 
 const $titleStyle: ThemedStyle<TextStyle> = (theme) => ({
+  color: theme.colors.palette.primary2,
+  fontSize: 24,
   marginBottom: theme.spacing.xs,
 })
 

@@ -198,7 +198,7 @@ export const InteriorConditionsStep2Screen: FC = observer(() => {
       </View>
 
       <ScrollView contentContainerStyle={themed($content)} style={$scrollArea}>
-        <View style={themed($paddedBlock)}>
+        <View style={$introBlock}>
           <Text preset="subheading" text="Common Area Finishes" style={themed($titleStyle)} />
           <ProgressBar current={2} total={4} />
         </View>
@@ -344,7 +344,7 @@ export const InteriorConditionsStep2Screen: FC = observer(() => {
                   <TextField
                     label="Effective Age (Years)"
                     placeholder="Enter effective age"
-                    keyboardType="numeric"
+                    keyboardType="decimal-pad"
                     value={store?.lobbyOfficeFinishes.effectiveAge ? store.lobbyOfficeFinishes.effectiveAge.toString() : ""}
                     onChangeText={(val) => store?.updateLobbyOfficeFinishes({ effectiveAge: val ? parseInt(val, 10) : 0 })}
                   />
@@ -442,7 +442,7 @@ export const InteriorConditionsStep2Screen: FC = observer(() => {
                   <TextField
                     label="Effective Age (Years)"
                     placeholder="Enter effective age"
-                    keyboardType="numeric"
+                    keyboardType="decimal-pad"
                     value={store?.backOfHouseFinishes.effectiveAge ? store.backOfHouseFinishes.effectiveAge.toString() : ""}
                     onChangeText={(val) => store?.updateBackOfHouseFinishes({ effectiveAge: val ? parseInt(val, 10) : 0 })}
                   />
@@ -483,7 +483,7 @@ export const InteriorConditionsStep2Screen: FC = observer(() => {
                   <TextField
                     label="Quantity"
                     placeholder="Enter quantity"
-                    keyboardType="numeric"
+                    keyboardType="decimal-pad"
                     value={store?.commonAreaRestrooms.quantity ? store.commonAreaRestrooms.quantity.toString() : ""}
                     onChangeText={(val) => store?.updateCommonAreaRestrooms({ quantity: val ? parseInt(val, 10) : 0 })}
                   />
@@ -547,7 +547,7 @@ export const InteriorConditionsStep2Screen: FC = observer(() => {
                   <TextField
                     label="Effective Age (Years)"
                     placeholder="Enter effective age"
-                    keyboardType="numeric"
+                    keyboardType="decimal-pad"
                     value={store?.commonAreaRestrooms.effectiveAge ? store.commonAreaRestrooms.effectiveAge.toString() : ""}
                     onChangeText={(val) => store?.updateCommonAreaRestrooms({ effectiveAge: val ? parseInt(val, 10) : 0 })}
                   />
@@ -621,7 +621,7 @@ export const InteriorConditionsStep2Screen: FC = observer(() => {
                   <TextField
                     label="Amount to Replace/Repair ($)"
                     placeholder="Dollar amount"
-                    keyboardType="numeric"
+                    keyboardType="decimal-pad"
                     value={store?.furnitureFixturesEquipment.amountToReplaceRepair ? store.furnitureFixturesEquipment.amountToReplaceRepair.toString() : ""}
                     onChangeText={(val) => store?.updateFurnitureFixturesEquipment({ amountToReplaceRepair: val ? parseFloat(val) : 0 })}
                   />
@@ -719,7 +719,7 @@ export const InteriorConditionsStep2Screen: FC = observer(() => {
                   <TextField
                     label="Amount to Replace/Repair ($)"
                     placeholder="Dollar amount"
-                    keyboardType="numeric"
+                    keyboardType="decimal-pad"
                     value={store?.exerciseRoom.amountToReplaceRepair ? store.exerciseRoom.amountToReplaceRepair.toString() : ""}
                     onChangeText={(val) => store?.updateExerciseRoom({ amountToReplaceRepair: val ? parseFloat(val) : 0 })}
                   />
@@ -801,7 +801,7 @@ export const InteriorConditionsStep2Screen: FC = observer(() => {
                   <TextField
                     label="Amount to Replace/Repair ($)"
                     placeholder="Dollar amount"
-                    keyboardType="numeric"
+                    keyboardType="decimal-pad"
                     value={store?.commonKitchen.amountToReplaceRepair ? store.commonKitchen.amountToReplaceRepair.toString() : ""}
                     onChangeText={(val) => store?.updateCommonKitchen({ amountToReplaceRepair: val ? parseFloat(val) : 0 })}
                   />
@@ -843,7 +843,7 @@ const $screenInner: ViewStyle = {
 
 const $content: ViewStyle = {
   paddingTop: 88,
-  paddingBottom: 96,
+  paddingBottom: 112, // 96 (footer height) + 16 (spacing)
   gap: 0,
 }
 
@@ -875,6 +875,13 @@ const $stickyFooter: ViewStyle = {
   left: 0,
   right: 0,
   zIndex: 2,
+}
+
+const $introBlock: ViewStyle = {
+  paddingHorizontal: 16,
+  paddingTop: 16,
+  paddingBottom: 32,
+  gap: 8,
 }
 
 const $paddedBlock: ViewStyle = {

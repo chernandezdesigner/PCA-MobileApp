@@ -111,7 +111,7 @@ export const BuildingEnvelopeStep8Screen: FC<BuildingEnvelopeStep8ScreenProps> =
         />
       </View>
       <ScrollView contentContainerStyle={themed($content)} style={$scrollArea}>
-        <View style={themed($paddedBlock)}>
+        <View style={$introBlock}>
           <Text preset="subheading" text="Windows" style={themed($titleStyle)} />
           <ProgressBar current={8} total={10} />
         </View>
@@ -143,7 +143,7 @@ export const BuildingEnvelopeStep8Screen: FC<BuildingEnvelopeStep8ScreenProps> =
             <TextField
               label="Amount to Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={store?.windowsType.assessment.amountToRepair ?? ""}
               onChangeText={(txt) => store?.updateWindowsType({ assessment: { amountToRepair: txt } })}
             />
@@ -179,7 +179,7 @@ export const BuildingEnvelopeStep8Screen: FC<BuildingEnvelopeStep8ScreenProps> =
             <TextField
               label="Amount to Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={store?.glazingAndPanes.assessment.amountToRepair ?? ""}
               onChangeText={(txt) => store?.updateGlazingAndPanes({ assessment: { amountToRepair: txt } })}
             />
@@ -213,7 +213,7 @@ export const BuildingEnvelopeStep8Screen: FC<BuildingEnvelopeStep8ScreenProps> =
             <TextField
               label="Amount to Repair ($)"
               placeholder="Dollar amount"
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               value={store?.frameType.assessment.amountToRepair ?? ""}
               onChangeText={(txt) => store?.updateFrameType({ assessment: { amountToRepair: txt } })}
             />
@@ -258,7 +258,7 @@ const $screenInner: ViewStyle = {
 
 const $content: ViewStyle = {
   paddingTop: 88,
-  paddingBottom: 96,
+  paddingBottom: 112, // 96 (footer height) + 16 (spacing)
   gap: 0,
 }
 
@@ -290,6 +290,13 @@ const $stickyFooter: ViewStyle = {
   left: 0,
   right: 0,
   zIndex: 2,
+}
+
+const $introBlock: ViewStyle = {
+  paddingHorizontal: 16,
+  paddingTop: 16,
+  paddingBottom: 32,
+  gap: 8,
 }
 
 const $paddedBlock: ViewStyle = {
