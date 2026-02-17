@@ -5,7 +5,11 @@
       "mcp__ide__getDiagnostics",
       "Bash(grep:*)",
       "Bash(python3:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "Bash(npx expo install:*)",
+      "Bash(npm uninstall:*)"
     ]
   }
 }

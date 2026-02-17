@@ -1,5 +1,5 @@
 import { Instance, SnapshotOut, types } from "mobx-state-tree"
-import { v4 as uuidv4 } from "uuid"
+import { generateUUID } from "@/utils/generateUUID"
 
 /**
  * PhotoModel - Represents a single photo captured during an assessment
@@ -75,7 +75,7 @@ export const PhotoStore = types
       height?: number
       notes?: string
     }) {
-      const id = uuidv4()
+      const id = generateUUID()
       self.photos.put({
         id,
         localUri: data.localUri,

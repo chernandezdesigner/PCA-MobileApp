@@ -21,7 +21,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
-import { v4 as uuidv4 } from "uuid"
+import { generateUUID } from "@/utils/generateUUID"
 import { Text } from "@/components/Text"
 import { Button } from "@/components/Button"
 import { useStores } from "@/models/RootStoreProvider"
@@ -96,7 +96,7 @@ export const CameraScreen: FC = observer(() => {
         withTiming(0, { duration: 200 }),
       )
 
-      const photoId = uuidv4()
+      const photoId = generateUUID()
       const filename = `${photoId}.jpg`
 
       // Save locally

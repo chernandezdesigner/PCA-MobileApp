@@ -36,7 +36,7 @@ export class PhotoService {
     const stat = await FileSystem.stat(localUri)
 
     return {
-      localUri,
+      localUri: `file://${localUri}`,
       fileSize: stat.size,
     }
   }
