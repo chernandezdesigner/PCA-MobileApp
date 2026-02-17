@@ -77,7 +77,6 @@ export class PhotoService {
           id: photo.id,
           assessment_id: assessmentId,
           user_id: userId,
-          local_uri: photo.localUri,
           storage_path: storagePath,
           filename: photo.filename || photo.id + ".jpg",
           mime_type: photo.mimeType || "image/jpeg",
