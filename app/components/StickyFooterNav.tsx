@@ -1,4 +1,4 @@
-import { StyleProp, View, ViewStyle } from "react-native"
+import { StyleProp, Text as RNText, View, ViewStyle } from "react-native"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
 import { Button } from "@/components/Button"
@@ -13,11 +13,12 @@ export interface StickyFooterNavProps {
   nextButtonText?: string
   showCamera?: boolean
   onCamera?: () => void
+  photoCount?: number
   safeBottom?: boolean
 }
 
 export const StickyFooterNav = (props: StickyFooterNavProps) => {
-  const { style, onBack, onNext, nextDisabled, nextButtonText = "Next", showCamera = false, onCamera, safeBottom = true } = props
+  const { style, onBack, onNext, nextDisabled, nextButtonText = "Next", showCamera = false, onCamera, photoCount = 0, safeBottom = true } = props
   const { themed } = useAppTheme()
   const safe = useSafeAreaInsetsStyle([safeBottom ? "bottom" : (undefined as any)].filter(Boolean) as any)
 
@@ -26,7 +27,14 @@ export const StickyFooterNav = (props: StickyFooterNavProps) => {
       <Button text="Back" onPress={onBack} style={themed($secondaryBtn)} textStyle={themed($secondaryText)} />
 
       {showCamera ? (
-        <PressableIcon icon="view" size={24} onPress={onCamera} containerStyle={themed($cameraBtn)} />
+        <View>
+          <PressableIcon icon="view" size={24} onPress={onCamera} containerStyle={themed($cameraBtn)} />
+          {photoCount > 0 && (
+            <View style={$badge}>
+              <RNText style={$badgeText}>{photoCount}</RNText>
+            </View>
+          )}
+        </View>
       ) : (
         <View style={themed($cameraBtn)} />
       )}
@@ -79,3 +87,23 @@ const $cameraBtn: ThemedStyle<ViewStyle> = ({ colors }) => ({
   borderColor: colors.palette.SecondaryButtonBorder,
   backgroundColor: colors.palette.SecondaryButtonBackground,
 })
+
+const $badge: ViewStyle = {
+  position: "absolute",
+  top: -4,
+  right: 2,
+  backgroundColor: "#E53935",
+  borderRadius: 10,
+  minWidth: 20,
+  height: 20,
+  alignItems: "center",
+  justifyContent: "center",
+  paddingHorizontal: 4,
+}
+
+const $badgeText: any = {
+  color: "#FFFFFF",
+  fontSize: 11,
+  fontWeight: "700",
+  textAlign: "center",
+}

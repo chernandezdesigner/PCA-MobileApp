@@ -11,6 +11,7 @@ import type { ChecklistItem } from "@/components/ChecklistCard"
 import { HeaderBar } from "@/components/HeaderBar"
 import { ProgressBar } from "@/components/ProgressBar"
 import { StickyFooterNav } from "@/components/StickyFooterNav"
+import { usePhotoCapture } from "@/hooks/usePhotoCapture"
 import { useStores } from "@/models/RootStoreProvider"
 import { observer } from "mobx-react-lite"
 import { useNavigation } from "@react-navigation/native"
@@ -45,6 +46,7 @@ export const InteriorConditionsStep2Screen: FC = observer(() => {
   const { themed } = useAppTheme()
   const navigation = useNavigation()
   const { openDrawer } = useDrawerControl()
+  const { onCamera, photoCount } = usePhotoCapture("interior_conditions", 2)
   const rootStore = useStores()
   const store = rootStore.activeAssessmentId
     ? rootStore.assessments.get(rootStore.activeAssessmentId)?.interiorConditions?.step2
@@ -827,7 +829,7 @@ export const InteriorConditionsStep2Screen: FC = observer(() => {
       </ScrollView>
 
       <View style={$stickyFooter}>
-        <StickyFooterNav onBack={onBack} onNext={onNext} showCamera={true} />
+        <StickyFooterNav onBack={onBack} onNext={onNext} showCamera={true} onCamera={onCamera} photoCount={photoCount} />
       </View>
     </Screen>
   )

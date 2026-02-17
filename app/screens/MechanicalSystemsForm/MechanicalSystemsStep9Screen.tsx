@@ -12,6 +12,7 @@ import { ChecklistField } from "@/components/ChecklistField"
 import { HeaderBar } from "@/components/HeaderBar"
 import { ProgressBar } from "@/components/ProgressBar"
 import { StickyFooterNav } from "@/components/StickyFooterNav"
+import { usePhotoCapture } from "@/hooks/usePhotoCapture"
 import { useStores } from "@/models/RootStoreProvider"
 import { observer } from "mobx-react-lite"
 import { useNavigation } from "@react-navigation/native"
@@ -37,6 +38,7 @@ export const MechanicalSystemsStep9Screen: FC<MechanicalSystemsStep9ScreenProps>
   const { themed } = useAppTheme()
   const navigation = useNavigation()
   const { openDrawer } = useDrawerControl()
+  const { onCamera, photoCount } = usePhotoCapture("mechanical_systems", 9)
   const rootStore = useStores()
   const activeAssessment = rootStore.activeAssessmentId
     ? rootStore.assessments.get(rootStore.activeAssessmentId)
@@ -885,7 +887,7 @@ export const MechanicalSystemsStep9Screen: FC<MechanicalSystemsStep9ScreenProps>
       </ScrollView>
 
       <View style={$stickyFooter}>
-        <StickyFooterNav onBack={onBack} onNext={openDrawer} nextButtonText="Next Form" showCamera={true} />
+        <StickyFooterNav onBack={onBack} onNext={openDrawer} nextButtonText="Next Form" showCamera={true} onCamera={onCamera} photoCount={photoCount} />
       </View>
     </Screen>
   )

@@ -7,6 +7,7 @@ import { Checkbox } from "@/components/Toggle/Checkbox"
 import { HeaderBar } from "@/components/HeaderBar"
 import { ProgressBar } from "@/components/ProgressBar"
 import { StickyFooterNav } from "@/components/StickyFooterNav"
+import { usePhotoCapture } from "@/hooks/usePhotoCapture"
 import { useStores } from "@/models/RootStoreProvider"
 import { observer } from "mobx-react-lite"
 import { useNavigation } from "@react-navigation/native"
@@ -49,6 +50,7 @@ export const InteriorConditionsStep3Screen: FC = observer(() => {
   const { themed } = useAppTheme()
   const navigation = useNavigation()
   const { openDrawer } = useDrawerControl()
+  const { onCamera, photoCount } = usePhotoCapture("interior_conditions", 3)
   const rootStore = useStores()
   const activeAssessment = rootStore.activeAssessmentId
     ? rootStore.assessments.get(rootStore.activeAssessmentId)
@@ -155,7 +157,7 @@ export const InteriorConditionsStep3Screen: FC = observer(() => {
       </ScrollView>
 
       <View style={$stickyFooter}>
-        <StickyFooterNav onBack={onBack} onNext={onNext} showCamera={true} />
+        <StickyFooterNav onBack={onBack} onNext={onNext} showCamera={true} onCamera={onCamera} photoCount={photoCount} />
       </View>
     </Screen>
   )

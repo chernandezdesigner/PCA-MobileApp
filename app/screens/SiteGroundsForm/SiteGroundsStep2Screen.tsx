@@ -19,6 +19,7 @@ import { ChecklistField } from "@/components/ChecklistField"
 import { HeaderBar } from "@/components/HeaderBar"
 import { ProgressBar } from "@/components/ProgressBar"
 import { StickyFooterNav } from "@/components/StickyFooterNav"
+import { usePhotoCapture } from "@/hooks/usePhotoCapture"
 import { useNavigation } from "@react-navigation/native"
 import { useDrawerControl } from "@/context/DrawerContext"
 import {
@@ -38,6 +39,7 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
   const { themed, theme } = useAppTheme()
   const navigation = useNavigation()
   const { openDrawer } = useDrawerControl()
+  const { onCamera, photoCount } = usePhotoCapture("site_grounds", 2)
   const rootStore = useStores()
   const activeAssessment = rootStore.activeAssessmentId
     ? rootStore.assessments.get(rootStore.activeAssessmentId)
@@ -729,7 +731,7 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
             // @ts-expect-error route params for animation
             navigation.navigate("SiteGroundsStep3" as never, { transition: "slide_from_right" } as never)
           }}
-          showCamera={true}
+          showCamera={true} onCamera={onCamera} photoCount={photoCount}
         />
       </View>
     </Screen>

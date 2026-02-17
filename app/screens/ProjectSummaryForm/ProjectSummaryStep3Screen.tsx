@@ -16,6 +16,7 @@ import { useStores } from "@/models/RootStoreProvider"
 import { HeaderBar } from "@/components/HeaderBar"
 import { ProgressBar } from "@/components/ProgressBar"
 import { StickyFooterNav } from "@/components/StickyFooterNav"
+import { usePhotoCapture } from "@/hooks/usePhotoCapture"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
 import { useDrawerControl } from "@/context/DrawerContext"
@@ -55,6 +56,7 @@ export const ProjectSummaryStep3Screen: FC<ProjectSummaryStep3ScreenProps> = obs
   const navigation = useNavigation()
   const { themed } = useAppTheme()
   const { openDrawer } = useDrawerControl()
+  const { onCamera, photoCount } = usePhotoCapture("project_summary", 3)
   const rootStore = useStores()
   const activeAssessment = rootStore.activeAssessmentId
     ? rootStore.assessments.get(rootStore.activeAssessmentId)
@@ -256,7 +258,7 @@ export const ProjectSummaryStep3Screen: FC<ProjectSummaryStep3ScreenProps> = obs
 
     </ScrollView>
     <View style={$stickyFooter}>
-      <StickyFooterNav onBack={() => navigation.goBack()} onNext={onNext} showCamera={true} />
+      <StickyFooterNav onBack={() => navigation.goBack()} onNext={onNext} showCamera={true} onCamera={onCamera} photoCount={photoCount} />
     </View>
     </Screen>
   )

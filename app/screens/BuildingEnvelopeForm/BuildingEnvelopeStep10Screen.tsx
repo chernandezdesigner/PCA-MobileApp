@@ -12,6 +12,7 @@ import type { ChecklistItem } from "@/components/ChecklistCard"
 import { HeaderBar } from "@/components/HeaderBar"
 import { ProgressBar } from "@/components/ProgressBar"
 import { StickyFooterNav } from "@/components/StickyFooterNav"
+import { usePhotoCapture } from "@/hooks/usePhotoCapture"
 import { Checkbox } from "@/components/Toggle/Checkbox"
 import { Dropdown } from "@/components/Dropdown"
 import { useStores } from "@/models/RootStoreProvider"
@@ -38,6 +39,7 @@ export const BuildingEnvelopeStep10Screen: FC<BuildingEnvelopeStep10ScreenProps>
     const { themed } = useAppTheme()
     const navigation = useNavigation()
     const { openDrawer } = useDrawerControl()
+  const { onCamera, photoCount } = usePhotoCapture("building_envelope", 10)
     const rootStore = useStores()
     const activeAssessment = rootStore.activeAssessmentId
       ? rootStore.assessments.get(rootStore.activeAssessmentId)
@@ -514,7 +516,7 @@ export const BuildingEnvelopeStep10Screen: FC<BuildingEnvelopeStep10ScreenProps>
           }}
           onNext={openDrawer}
           nextButtonText="Next Form"
-          showCamera={true}
+          showCamera={true} onCamera={onCamera} photoCount={photoCount}
         />
       </View>
     )

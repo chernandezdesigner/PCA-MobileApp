@@ -12,6 +12,7 @@ import { SectionAccordion } from "@/components/SectionAccordion"
 import { HeaderBar } from "@/components/HeaderBar"
 import { ProgressBar } from "@/components/ProgressBar"
 import { StickyFooterNav } from "@/components/StickyFooterNav"
+import { usePhotoCapture } from "@/hooks/usePhotoCapture"
 import { ChecklistField } from "@/components/ChecklistField"
 import type { ChecklistItem } from "@/components/ChecklistCard"
 import { Dropdown } from "@/components/Dropdown"
@@ -36,6 +37,7 @@ export const MechanicalSystemsStep3Screen: FC<MechanicalSystemsStep3ScreenProps>
   const { themed } = useAppTheme()
   const navigation = useNavigation()
   const { openDrawer } = useDrawerControl()
+  const { onCamera, photoCount } = usePhotoCapture("mechanical_systems", 3)
   const rootStore = useStores()
   const activeAssessment = rootStore.activeAssessmentId
     ? rootStore.assessments.get(rootStore.activeAssessmentId)
@@ -539,7 +541,7 @@ export const MechanicalSystemsStep3Screen: FC<MechanicalSystemsStep3ScreenProps>
       </ScrollView>
 
       <View style={$stickyFooter}>
-        <StickyFooterNav onBack={onBack} onNext={onNext} showCamera={true} />
+        <StickyFooterNav onBack={onBack} onNext={onNext} showCamera={true} onCamera={onCamera} photoCount={photoCount} />
     </View>
     </Screen>
   )

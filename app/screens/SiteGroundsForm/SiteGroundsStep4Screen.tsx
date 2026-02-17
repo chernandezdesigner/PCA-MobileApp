@@ -20,6 +20,7 @@ import { HeaderBar } from "@/components/HeaderBar"
 import { useDrawerControl } from "@/context/DrawerContext"
 import { ProgressBar } from "@/components/ProgressBar"
 import { StickyFooterNav } from "@/components/StickyFooterNav"
+import { usePhotoCapture } from "@/hooks/usePhotoCapture"
 import { useNavigation } from "@react-navigation/native"
 import { GENERAL_CONSTRUCTION_OPTIONS } from "@/constants/siteGroundsOptions"
 
@@ -30,6 +31,7 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
   const { themed, theme } = useAppTheme()
   const navigation = useNavigation()
   const { openDrawer } = useDrawerControl()
+  const { onCamera, photoCount } = usePhotoCapture("site_grounds", 4)
   const rootStore = useStores()
   const activeAssessment = rootStore.activeAssessmentId
     ? rootStore.assessments.get(rootStore.activeAssessmentId)
@@ -1011,7 +1013,7 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
           }}
           onNext={openDrawer}
           nextButtonText="Next Form"
-          showCamera={true}
+          showCamera={true} onCamera={onCamera} photoCount={photoCount}
         />
       </View>
     </Screen>

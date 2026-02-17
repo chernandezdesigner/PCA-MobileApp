@@ -94,12 +94,7 @@ Building Envelope (10 steps) - Structure, roofing, walls
 Mechanical Systems (9 steps) - HVAC, plumbing, electrical
 Interior Conditions (4 steps) - Finishes, common areas, mold, alt properties
 
-## Current Task: Small surgical updates / bug fixes
-
-## Completed
-Constants: interiorConditionOptions.ts (937 lines)
-MST Models: Steps 1-3 complete
-Step 4 model: Empty (needs dynamic property type logic)
+## Current Task: photo capture + gallery full integration
 
 
 ## Important Rules

@@ -1,6 +1,7 @@
 import { supabase } from './client'
 import { getSnapshot } from 'mobx-state-tree'
 import type { AssessmentInstance } from '@/models/Assessment'
+import { PhotoService } from '@/services/supabase/photoService'
 
 /**
  * Service for submitting assessments to Supabase
@@ -214,6 +215,24 @@ export class AssessmentService {
         console.log('✅ Mechanical systems saved')
       }
 
+      // 6. Upload photos (failures warn but do not fail submission)
+      if (snapshot.photoStore) {
+        try {
+          const allPhotos = Object.values(snapshot.photoStore.photos || {}) as any[]
+          if (allPhotos.length > 0) {
+            console.log(`📷 Uploading ${allPhotos.length} photos...`)
+            const photoResult = await PhotoService.uploadAllPhotos({
+              photos: allPhotos,
+              assessmentId: supabaseAssessmentId,
+              userId: user.id,
+            })
+            console.log(`✅ Photos: ${photoResult.uploaded} uploaded, ${photoResult.failed} failed`)
+          }
+        } catch (photoError: any) {
+          console.warn('⚠️ Photo upload error (non-blocking):', photoError.message)
+        }
+      }
+
       console.log('🎉 Assessment submitted successfully!')
 
       return {
@@ -251,7 +270,8 @@ export class AssessmentService {
           project_summaries (*),
           site_grounds (*),
           building_envelope (*),
-          mechanical_systems (*)
+          mechanical_systems (*),
+          photos (*)
         `)
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })

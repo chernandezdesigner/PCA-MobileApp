@@ -12,6 +12,7 @@ import type { ChecklistItem } from "@/components/ChecklistCard"
 import { HeaderBar } from "@/components/HeaderBar"
 import { ProgressBar } from "@/components/ProgressBar"
 import { StickyFooterNav } from "@/components/StickyFooterNav"
+import { usePhotoCapture } from "@/hooks/usePhotoCapture"
 import { useStores } from "@/models/RootStoreProvider"
 import { observer } from "mobx-react-lite"
 import { useNavigation } from "@react-navigation/native"
@@ -40,6 +41,7 @@ export const BuildingEnvelopeStep9Screen: FC<BuildingEnvelopeStep9ScreenProps> =
   const { themed } = useAppTheme()
   const navigation = useNavigation()
   const { openDrawer } = useDrawerControl()
+  const { onCamera, photoCount } = usePhotoCapture("building_envelope", 9)
   const rootStore = useStores()
   const activeAssessment = rootStore.activeAssessmentId
     ? rootStore.assessments.get(rootStore.activeAssessmentId)
@@ -588,7 +590,7 @@ export const BuildingEnvelopeStep9Screen: FC<BuildingEnvelopeStep9ScreenProps> =
             // @ts-expect-error route params for animation
             navigation.navigate("BuildingEnvelopeStep10" as never, { transition: "slide_from_right" } as never)
           }}
-          showCamera={true}
+          showCamera={true} onCamera={onCamera} photoCount={photoCount}
         />
       </View>
     </Screen>

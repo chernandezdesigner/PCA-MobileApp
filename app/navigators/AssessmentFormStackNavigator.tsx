@@ -30,6 +30,8 @@ import { InteriorConditionsStep1Screen } from "@/screens/InteriorConditionsForm/
 import { InteriorConditionsStep2Screen } from "@/screens/InteriorConditionsForm/InteriorConditionsStep2Screen"
 import { InteriorConditionsStep3Screen } from "@/screens/InteriorConditionsForm/InteriorConditionsStep3Screen"
 import { InteriorConditionsStep4Screen } from "@/screens/InteriorConditionsForm/InteriorConditionsStep4Screen"
+import { CameraScreen } from "@/screens/CameraScreen"
+import { PhotoGalleryScreen } from "@/screens/PhotoGalleryScreen"
 
 export type AssessmentFormStackParamList = {
   // Project Summary
@@ -68,6 +70,9 @@ export type AssessmentFormStackParamList = {
   InteriorConditionsStep2: undefined
   InteriorConditionsStep3: undefined
   InteriorConditionsStep4: undefined
+  // Photo screens
+  Camera: { formType: string; formStep: number; fieldName?: string }
+  PhotoGallery: { formType?: string; formStep?: number }
 }
 
 const Stack = createNativeStackNavigator<AssessmentFormStackParamList>()
@@ -123,6 +128,10 @@ export const AssessmentFormStackNavigator = () => {
       <Stack.Screen name="InteriorConditionsStep2" component={InteriorConditionsStep2Screen} />
       <Stack.Screen name="InteriorConditionsStep3" component={InteriorConditionsStep3Screen} />
       <Stack.Screen name="InteriorConditionsStep4" component={InteriorConditionsStep4Screen} />
+
+      {/* Photo screens */}
+      <Stack.Screen name="Camera" component={CameraScreen} options={{ animation: "slide_from_bottom" }} />
+      <Stack.Screen name="PhotoGallery" component={PhotoGalleryScreen} />
     </Stack.Navigator>
   )
 }

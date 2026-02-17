@@ -20,6 +20,7 @@ import { useDrawerControl } from "@/context/DrawerContext"
 import { HeaderBar } from "@/components/HeaderBar"
 import { ProgressBar } from "@/components/ProgressBar"
 import { StickyFooterNav } from "@/components/StickyFooterNav"
+import { usePhotoCapture } from "@/hooks/usePhotoCapture"
 import { useNavigation } from "@react-navigation/native"
 import {
   SIGNAGE_OPTIONS,
@@ -40,6 +41,7 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
   const { themed, theme } = useAppTheme()
   const navigation = useNavigation()
   const { openDrawer } = useDrawerControl()
+  const { onCamera, photoCount } = usePhotoCapture("site_grounds", 3)
   const rootStore = useStores()
   const activeAssessment = rootStore.activeAssessmentId
     ? rootStore.assessments.get(rootStore.activeAssessmentId)
@@ -1029,7 +1031,7 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
             // @ts-expect-error route params for animation
             navigation.navigate("SiteGroundsStep4" as never, { transition: "slide_from_right" } as never)
           }}
-          showCamera={true}
+          showCamera={true} onCamera={onCamera} photoCount={photoCount}
         />
       </View>
     </Screen>

@@ -39,7 +39,8 @@
       ]
     },
     "infoPlist": {
-      "ITSAppUsesNonExemptEncryption": false
+      "ITSAppUsesNonExemptEncryption": false,
+      "NSCameraUsageDescription": "This app uses the camera to capture photos during property condition assessments."
     }
   },
   "web": {
@@ -67,7 +68,13 @@
         }
       }
     ],
-    "expo-build-properties"
+    "expo-build-properties",
+    [
+      "react-native-vision-camera",
+      {
+        "cameraPermissionText": "This app uses the camera to capture photos during property condition assessments."
+      }
+    ]
   ],
   "experiments": {
     "tsconfigPaths": true

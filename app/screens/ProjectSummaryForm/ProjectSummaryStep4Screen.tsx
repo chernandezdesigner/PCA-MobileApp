@@ -12,6 +12,7 @@ import { useNavigation } from "@react-navigation/native"
 import { HeaderBar } from "@/components/HeaderBar"
 import { ProgressBar } from "@/components/ProgressBar"
 import { StickyFooterNav } from "@/components/StickyFooterNav"
+import { usePhotoCapture } from "@/hooks/usePhotoCapture"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
 import { ChecklistCard } from "@/components/ChecklistCard"
@@ -54,6 +55,7 @@ export const ProjectSummaryStep4Screen: FC<ProjectSummaryStep4ScreenProps> = obs
   const navigation = useNavigation()
   const { themed } = useAppTheme()
   const { openDrawer } = useDrawerControl()
+  const { onCamera, photoCount } = usePhotoCapture("project_summary", 4)
   const rootStore = useStores()
   const activeAssessment = rootStore.activeAssessmentId
     ? rootStore.assessments.get(rootStore.activeAssessmentId)
@@ -231,7 +233,7 @@ export const ProjectSummaryStep4Screen: FC<ProjectSummaryStep4ScreenProps> = obs
         }}
         onNext={openDrawer}
         nextButtonText="Next Form"
-        showCamera={true}
+        showCamera={true} onCamera={onCamera} photoCount={photoCount}
       />
     </View>
     </Screen>
