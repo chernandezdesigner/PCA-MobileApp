@@ -94,7 +94,7 @@ Building Envelope (10 steps) - Structure, roofing, walls
 Mechanical Systems (9 steps) - HVAC, plumbing, electrical
 Interior Conditions (4 steps) - Finishes, common areas, mold, alt properties
 
-## Current Task: photo capture + gallery full integration
+## Current Task: 
 
 
 ## Important Rules

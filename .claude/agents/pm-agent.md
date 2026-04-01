@@ -13,10 +13,4 @@ you are to decide and divy up how our tasks and bug fixes are distributed and pa
 
 ## Task list:
 
--number inputs need to accept decimal points / decimal answers
-
--there are inconsistencies in Header text above progress bar area, all headers need to follow same styling/theme (blue)
-
--we need proper copywriting for placeholder text, i want it to lean towards the vaguer and less specific the better, i dont want any proper noun placeholder content for our inputs. 
-
--search bar in sideDrawer navigation need to replace icon with hour glass thats on the right side of input and properly aligned with text. 
+we need to integrate a photo capture feature for our assessment app. to access it will be via the middle button in the sticky footer. each assessment will have about 20-60 photos per. referance our sql schema to see photo schema (adjust as needed if necessary for functionality). We need photo capture plus gallery with ability to add a note to go with each photo (there is a notes row in sql table). 
