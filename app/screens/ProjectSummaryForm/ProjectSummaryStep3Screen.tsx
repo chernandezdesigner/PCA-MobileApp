@@ -20,6 +20,7 @@ import { usePhotoCapture } from "@/hooks/usePhotoCapture"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
 import { useDrawerControl } from "@/context/DrawerContext"
+import { $formScreen, $stickyHeader, $stickyFooter } from "@/theme/styles"
 
 interface ProjectSummaryStep3ScreenProps extends NativeStackScreenProps<ProjectSummaryFormNavigatorParamList, "ProjectSummaryStep3"> {}
 
@@ -114,7 +115,7 @@ export const ProjectSummaryStep3Screen: FC<ProjectSummaryStep3ScreenProps> = obs
   }
 
   return (
-    <Screen style={$root} preset="fixed" contentContainerStyle={$screenInner}>
+    <Screen style={$formScreen} preset="fixed" contentContainerStyle={$formScreen}>
       <View style={$stickyHeader}>
         <HeaderBar title="Project Summary" leftIcon="back" onLeftPress={() => navigation.goBack()} rightIcon="menu" onRightPress={openDrawer} />
       </View>
@@ -264,10 +265,6 @@ export const ProjectSummaryStep3Screen: FC<ProjectSummaryStep3ScreenProps> = obs
   )
 })
 
-const $root: ViewStyle = {
-  flex: 1,
-}
-
 const $content: ViewStyle = {
   padding: 16,
   paddingTop: 88, // 72 (header height) + 16 (spacing)
@@ -316,9 +313,6 @@ const $listContainer: ViewStyle = {
   gap: 12,
 }
 
-const $screenInner: ViewStyle = { flex: 1 }
-const $stickyHeader: ViewStyle = { position: "absolute", top: 0, left: 0, right: 0, zIndex: 2 }
-const $stickyFooter: ViewStyle = { position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 2 }
 const $scrollArea: ViewStyle = { flex: 1 }
 const $titleStyle: ThemedStyle<any> = ({ colors }) => ({ color: colors.palette.primary2 as any, fontSize: 24 })
 const $introBlock: ViewStyle = { paddingTop: 16, paddingBottom: 32 }

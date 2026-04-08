@@ -86,8 +86,7 @@ export const SectionAccordion = (props: SectionAccordionProps) => {
         onPress={handleToggle}
         style={[
           headerStyles,
-          // Background responds to expansion state per figma
-          { backgroundColor: isExpanded ? (theme.colors.palette as any).accordionBackground : theme.colors.palette.gray1 },
+          { backgroundColor: isExpanded ? theme.colors.palette.accordionBackground : theme.colors.palette.gray1 },
           headerStyle,
         ] as StyleProp<ViewStyle>}
         activeOpacity={0.8}
@@ -95,11 +94,11 @@ export const SectionAccordion = (props: SectionAccordionProps) => {
         <Text
           preset="subheading"
           text={title}
-          tx={titleTx as any}
+          tx={titleTx}
           style={{
             color: isExpanded
-              ? (theme.colors.palette as any).accordionHeaderActiveText
-              : (theme.colors.palette as any).accordionHeaderInactiveText,
+              ? theme.colors.palette.accordionHeaderActiveText
+              : theme.colors.palette.accordionHeaderInactiveText,
           }}
         />
 
@@ -116,7 +115,7 @@ export const SectionAccordion = (props: SectionAccordionProps) => {
           style={[
             themed($content),
             // Expanded body uses the darker accordion background and preserves the container bottom border
-            { backgroundColor: (theme.colors.palette as any).accordionBackground },
+            { backgroundColor: theme.colors.palette.accordionBackground },
             contentStyle,
           ] as StyleProp<ViewStyle>}
         >

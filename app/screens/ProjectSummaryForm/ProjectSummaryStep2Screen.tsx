@@ -18,6 +18,7 @@ import { usePhotoCapture } from "@/hooks/usePhotoCapture"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
 import { useDrawerControl } from "@/context/DrawerContext"
+import { $formScreen, $stickyHeader, $stickyFooter } from "@/theme/styles"
 interface ProjectSummaryStep2ScreenProps extends NativeStackScreenProps<ProjectSummaryFormNavigatorParamList, "ProjectSummaryStep2"> {}
 
 type Step2FormValues = {
@@ -102,7 +103,7 @@ export const ProjectSummaryStep2Screen: FC<ProjectSummaryStep2ScreenProps> = obs
 
 
   return (
-    <Screen style={$root} preset="fixed" contentContainerStyle={$screenInner}>
+    <Screen style={$formScreen} preset="fixed" contentContainerStyle={$formScreen}>
       <View style={$stickyHeader}>
         <HeaderBar title="Project Summary" leftIcon="back" onLeftPress={() => navigation.goBack()} rightIcon="menu" onRightPress={openDrawer} />
       </View>
@@ -327,10 +328,6 @@ export const ProjectSummaryStep2Screen: FC<ProjectSummaryStep2ScreenProps> = obs
   )
 })
 
-const $root: ViewStyle = {
-  flex: 1,
-}
-
 const $content: ViewStyle = {
   padding: 16,
   paddingTop: 88, // 72 (header height) + 16 (spacing)
@@ -350,7 +347,4 @@ const $row: ViewStyle = {
 const $scrollArea: ViewStyle = { flex: 1 }
 const $progressHeaderText: ThemedStyle<any> = ({ colors }) => ({ color: colors.palette.primary2 as any })
 const $titleStyle: ThemedStyle<any> = ({ colors }) => ({ color: colors.palette.primary2 as any, fontSize: 24 })
-const $screenInner: ViewStyle = { flex: 1 }
-const $stickyHeader: ViewStyle = { position: "absolute", top: 0, left: 0, right: 0, zIndex: 2 }
-const $stickyFooter: ViewStyle = { position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 2 }
 const $introBlock: ViewStyle = { paddingTop: 16, paddingBottom: 32 }

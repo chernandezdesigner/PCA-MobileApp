@@ -107,9 +107,8 @@ const $text: ThemedStyle<TextStyle> = () => ({
 })
 
 // Interactive state
-const $interactive: ThemedStyle<ViewStyle> = () => ({
-  // Subtle shadow for interactive pills
-  shadowColor: "#000000",
+const $interactive: ThemedStyle<ViewStyle> = ({ colors }) => ({
+  shadowColor: colors.palette.shadowDefault,
   shadowOpacity: 0.05,
   shadowRadius: 2,
   shadowOffset: { width: 0, height: 1 },
@@ -163,16 +162,16 @@ const $textVariants: Record<PillVariant, ThemedStyle<TextStyle>> = {
     color: colors.palette.primary2,
     fontWeight: "600",
   }),
-  success: () => ({
-    color: "#047857", // Dark green for contrast
+  success: ({ colors }) => ({
+    color: colors.palette.statusSuccessText,
     fontWeight: "600",
   }),
-  warning: () => ({
-    color: "#92400e", // Dark amber for contrast
+  warning: ({ colors }) => ({
+    color: colors.palette.statusWarningText,
     fontWeight: "600",
   }),
-  error: () => ({
-    color: "#991b1b", // Dark red for contrast
+  error: ({ colors }) => ({
+    color: colors.palette.statusErrorText,
     fontWeight: "600",
   }),
 }

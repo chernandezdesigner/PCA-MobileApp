@@ -35,6 +35,19 @@ const palette = {
 
   SectionHeaderText: "#0B7DB1",
 
+  // Semantic tokens
+  badgeDanger: "#E53935",
+  badgeDangerText: "#FFFFFF",
+  statusSuccessText: "#047857",
+  statusWarningText: "#92400e",
+  statusErrorText: "#991b1b",
+  shadowDefault: "#000000",
+  scrollIndicator: "rgba(0,0,0,0.35)",
+  noticeBg: "#fff3cd",
+  noticeText: "#856404",
+  overlaySubtle: "rgba(0,0,0,0.02)",
+  overlayActive: "rgba(79,70,229,0.08)",
+
   progressBarBackground: "#E5E7EB",
   progressBarActive: "#7DD3FC",
 

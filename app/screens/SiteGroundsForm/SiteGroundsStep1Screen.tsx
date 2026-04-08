@@ -18,6 +18,7 @@ import { useNavigation } from "@react-navigation/native"
 import { useDrawerControl } from "@/context/DrawerContext"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
+import { $formScreen, $stickyHeader, $stickyFooter } from "@/theme/styles"
 import { Controller, useForm, useWatch } from "react-hook-form"
 import type { SiteGroundsFormNavigatorParamList } from "@/navigators/SiteGroundsFormNavigator"
 import { SURFACE_TO_OPTIONS, DRAINAGE_FEATURES_OPTIONS } from "@/constants/siteGroundsOptions"
@@ -141,7 +142,7 @@ export const SiteGroundsStep1Screen: FC<SiteGroundsStep1ScreenProps> = observer(
   const onBack = () => navigation.goBack()
 
   return (
-    <Screen style={$root} preset="fixed" contentContainerStyle={$screenInner}>
+    <Screen style={$formScreen} preset="fixed" contentContainerStyle={$formScreen}>
       <View style={$stickyHeader}>
         <HeaderBar
           title="Site & Grounds"
@@ -261,14 +262,6 @@ export const SiteGroundsStep1Screen: FC<SiteGroundsStep1ScreenProps> = observer(
   )
 })
 
-const $root: ViewStyle = {
-  flex: 1,
-}
-
-const $screenInner: ViewStyle = {
-  flex: 1,
-}
-
 const $content: ViewStyle = {
   padding: 16,
   paddingTop: 88, // 72 (header height) + 16 (spacing)
@@ -293,22 +286,6 @@ const $checkboxRow: ViewStyle = {
   alignItems: "center",
   justifyContent: "space-between",
   gap: 12,
-}
-
-const $stickyHeader: ViewStyle = {
-  position: "absolute",
-  top: 0,
-  left: 0,
-  right: 0,
-  zIndex: 2,
-}
-
-const $stickyFooter: ViewStyle = {
-  position: "absolute",
-  bottom: 0,
-  left: 0,
-  right: 0,
-  zIndex: 2,
 }
 
 const $introBlock: ViewStyle = {

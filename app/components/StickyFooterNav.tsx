@@ -1,9 +1,10 @@
-import { StyleProp, Text as RNText, View, ViewStyle } from "react-native"
+import { StyleProp, Text as RNText, TextStyle, View, ViewStyle } from "react-native"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
 import { Button } from "@/components/Button"
 import { PressableIcon } from "@/components/Icon"
 import { useSafeAreaInsetsStyle } from "@/utils/useSafeAreaInsetsStyle"
+import type { ExtendedEdge } from "@/utils/useSafeAreaInsetsStyle"
 
 export interface StickyFooterNavProps {
   style?: StyleProp<ViewStyle>
@@ -20,18 +21,19 @@ export interface StickyFooterNavProps {
 export const StickyFooterNav = (props: StickyFooterNavProps) => {
   const { style, onBack, onNext, nextDisabled, nextButtonText = "Next", showCamera = false, onCamera, photoCount = 0, safeBottom = true } = props
   const { themed } = useAppTheme()
-  const safe = useSafeAreaInsetsStyle([safeBottom ? "bottom" : (undefined as any)].filter(Boolean) as any)
+  const edges: ExtendedEdge[] = safeBottom ? ["bottom"] : []
+  const safe = useSafeAreaInsetsStyle(edges)
 
   return (
     <View style={[themed($container), safe, style]}>
-      <Button text="Back" onPress={onBack} style={themed($secondaryBtn)} textStyle={themed($secondaryText)} />
+      <Button text="Back" onPress={onBack} style={themed($secondaryBtn)} textStyle={themed($secondaryText)} accessibilityLabel="Go back" />
 
       {showCamera ? (
         <View>
-          <PressableIcon icon="view" size={24} onPress={onCamera} containerStyle={themed($cameraBtn)} />
+          <PressableIcon icon="view" size={24} onPress={onCamera} containerStyle={themed($cameraBtn)} accessibilityLabel="Take photo" />
           {photoCount > 0 && (
-            <View style={$badge}>
-              <RNText style={$badgeText}>{photoCount}</RNText>
+            <View style={themed($badge)}>
+              <RNText style={themed($badgeText)}>{photoCount}</RNText>
             </View>
           )}
         </View>
@@ -39,7 +41,7 @@ export const StickyFooterNav = (props: StickyFooterNavProps) => {
         <View style={themed($cameraBtn)} />
       )}
 
-      <Button text={nextButtonText} onPress={onNext} disabled={nextDisabled} preset="filled" style={themed($primaryBtn)} />
+      <Button text={nextButtonText} onPress={onNext} disabled={nextDisabled} preset="filled" style={themed($primaryBtn)} accessibilityLabel="Go to next step" />
     </View>
   )
 }
@@ -58,29 +60,29 @@ const $container: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   width: "100%",
 })
 
-const $secondaryBtn: ThemedStyle<ViewStyle> = ({ colors }) => ({
+const $secondaryBtn: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   flex: 1,
-  marginRight: 8,
+  marginRight: spacing.xs,
   backgroundColor: colors.palette.SecondaryButtonBackground,
   borderWidth: 1,
   borderColor: colors.palette.SecondaryButtonBorder,
 })
 
-const $secondaryText: ThemedStyle<ViewStyle> = ({ colors }) => ({
+const $secondaryText: ThemedStyle<TextStyle> = ({ colors }) => ({
   color: colors.palette.gray6,
-}) as any
+})
 
-const $primaryBtn: ThemedStyle<ViewStyle> = ({ colors }) => ({
+const $primaryBtn: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   flex: 1,
-  marginLeft: 8,
+  marginLeft: spacing.xs,
   backgroundColor: colors.palette.primary1,
 })
 
-const $cameraBtn: ThemedStyle<ViewStyle> = ({ colors }) => ({
+const $cameraBtn: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   width: 56,
   height: 56,
   borderRadius: 12,
-  marginHorizontal: 8,
+  marginHorizontal: spacing.xs,
   alignItems: "center",
   justifyContent: "center",
   borderWidth: 1,
@@ -88,22 +90,22 @@ const $cameraBtn: ThemedStyle<ViewStyle> = ({ colors }) => ({
   backgroundColor: colors.palette.SecondaryButtonBackground,
 })
 
-const $badge: ViewStyle = {
+const $badge: ThemedStyle<ViewStyle> = ({ colors }) => ({
   position: "absolute",
   top: -4,
   right: 2,
-  backgroundColor: "#E53935",
+  backgroundColor: colors.palette.badgeDanger,
   borderRadius: 10,
   minWidth: 20,
   height: 20,
   alignItems: "center",
   justifyContent: "center",
   paddingHorizontal: 4,
-}
+})
 
-const $badgeText: any = {
-  color: "#FFFFFF",
+const $badgeText: ThemedStyle<TextStyle> = ({ colors }) => ({
+  color: colors.palette.badgeDangerText,
   fontSize: 11,
   fontWeight: "700",
   textAlign: "center",
-}
+})

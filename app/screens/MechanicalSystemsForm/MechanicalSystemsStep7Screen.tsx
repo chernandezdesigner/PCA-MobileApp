@@ -16,6 +16,7 @@ import { observer } from "mobx-react-lite"
 import { useNavigation } from "@react-navigation/native"
 import { useDrawerControl } from "@/context/DrawerContext"
 import { useAppTheme } from "@/theme/context"
+import { $formScreen, $stickyHeader, $stickyFooter } from "@/theme/styles"
 import type { ThemedStyle } from "@/theme/types"
 import type { MechanicalSystemsFormNavigatorParamList } from "@/navigators/MechanicalSystemsFormNavigator"
 import {
@@ -71,7 +72,7 @@ export const MechanicalSystemsStep7Screen: FC<MechanicalSystemsStep7ScreenProps>
   }
 
   return (
-    <Screen style={$root} preset="fixed" contentContainerStyle={$screenInner}>
+    <Screen style={$formScreen} preset="fixed" contentContainerStyle={$formScreen}>
       <View style={$stickyHeader}>
         <HeaderBar
           title="Mechanical Systems"
@@ -621,22 +622,6 @@ export const MechanicalSystemsStep7Screen: FC<MechanicalSystemsStep7ScreenProps>
   )
 })
 
-const $root: ViewStyle = {
-  flex: 1,
-}
-
-const $screenInner: ViewStyle = {
-  flex: 1,
-}
-
-const $stickyHeader: ViewStyle = {
-  position: "absolute",
-  top: 0,
-  left: 0,
-  right: 0,
-  zIndex: 2,
-}
-
 const $scrollArea: ViewStyle = {
   flex: 1,
 }
@@ -678,13 +663,6 @@ const $commentsBlock: ThemedStyle<ViewStyle> = (theme) => ({
   paddingHorizontal: theme.spacing.md,
   paddingTop: theme.spacing.md,
 })
-
-const $stickyFooter: ViewStyle = {
-  position: "absolute",
-  bottom: 0,
-  left: 0,
-  right: 0,
-}
 
 const $row: ViewStyle = {
   flexDirection: "row",

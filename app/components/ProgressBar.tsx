@@ -27,7 +27,11 @@ export const ProgressBar = (props: ProgressBarProps) => {
   const progress = Math.max(0, Math.min(1, total > 0 ? current / total : 0))
 
   return (
-    <View style={[themed([$track, { height }]), style]}> 
+    <View
+      style={[themed([$track, { height }]), style]}
+      accessibilityRole="progressbar"
+      accessibilityValue={{ min: 0, max: total, now: current }}
+    >
       <View style={themed([$fill, { width: `${progress * 100}%`, height }])} />
     </View>
   )

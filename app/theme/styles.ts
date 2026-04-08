@@ -21,3 +21,36 @@ export const $styles = {
     overflow: "hidden",
   } as ViewStyle,
 }
+
+/** Shared form screen layout constants */
+export const $formScreen: ViewStyle = {
+  flex: 1,
+}
+
+export const $stickyHeader: ViewStyle = {
+  position: "absolute",
+  top: 0,
+  left: 0,
+  right: 0,
+  zIndex: 2,
+}
+
+export const $stickyFooter: ViewStyle = {
+  position: "absolute",
+  bottom: 0,
+  left: 0,
+  right: 0,
+  zIndex: 2,
+}
+
+export const $formContent: ViewStyle = {
+  padding: spacing.md,
+  paddingTop: 88, // 72 (header height) + 16 (spacing)
+  paddingBottom: 112, // 96 (footer height) + 16 (spacing)
+  gap: spacing.md,
+}
+
+export const $fieldRow: ViewStyle = {
+  flexDirection: "row",
+  gap: spacing.sm,
+}

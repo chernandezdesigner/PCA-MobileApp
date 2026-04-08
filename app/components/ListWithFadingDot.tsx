@@ -1,5 +1,6 @@
 import { FC, useMemo, useRef, useState } from "react"
 import { Animated, FlatList, View, ViewProps } from "react-native"
+import { useAppTheme } from "@/theme/context"
 
 type Props = ViewProps & {
   data: any[]
@@ -11,6 +12,7 @@ type Props = ViewProps & {
 
 export const ListWithFadingDot: FC<Props> = (props) => {
   const { data, renderItem, keyExtractor, ItemSeparatorComponent, style, contentContainerStyle, ...rest } = props
+  const { theme } = useAppTheme()
   const [listHeight, setListHeight] = useState(1)
   const [contentHeight, setContentHeight] = useState(1)
   const scrollY = useRef(new Animated.Value(0)).current
@@ -55,7 +57,7 @@ export const ListWithFadingDot: FC<Props> = (props) => {
             width: 6,
             height: 24,
             borderRadius: 3,
-            backgroundColor: "rgba(0,0,0,0.35)",
+            backgroundColor: theme.colors.palette.scrollIndicator,
             opacity,
             transform: [{ translateY }],
           }}

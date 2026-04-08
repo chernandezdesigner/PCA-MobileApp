@@ -33,9 +33,9 @@ export const RepairStatus = (props: RepairStatusProps) => {
           selected && {
             backgroundColor: theme.colors.palette.SecondaryButtonActiveBackground,
             borderColor: theme.colors.palette.SecondaryButtonActiveBackground,
-            ...$tileSelected,
+            ...themed($tileSelected),
           },
-        ] as any}
+        ]}
       >
         <Text weight={selected ? "bold" : "medium"} text={code} style={themed(selected ? $tileTextSelected : $tileText)} />
       </TouchableOpacity>
@@ -43,7 +43,7 @@ export const RepairStatus = (props: RepairStatusProps) => {
   }
 
   return (
-    <View style={[themed($grid), style] as any}>
+    <View style={[themed($grid), style]}>
       <Tile code="IR" label="Immediate Repair" />
       <Tile code="ST" label="Short Term" />
       <Tile code="RR" label="Replace/Repair" />
@@ -81,14 +81,13 @@ const $tile: ThemedStyleArray<ViewStyle> = [
   }),
 ]
 
-const $tileSelected: ViewStyle = {
-  // Subtle elevation for selected state
-  shadowColor: "#000000",
+const $tileSelected: ThemedStyle<ViewStyle> = ({ colors }) => ({
+  shadowColor: colors.palette.shadowDefault,
   shadowOpacity: 0.08,
   shadowRadius: 4,
   shadowOffset: { width: 0, height: 2 },
   elevation: 2,
-}
+})
 
 const $tileText: ThemedStyle<TextStyle> = ({ colors }) => ({
   color: colors.palette.gray6,

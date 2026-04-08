@@ -112,7 +112,6 @@ const $tile: ThemedStyleArray<ViewStyle> = [
 ]
 
 const $tileSelected: ViewStyle = {
-  // Subtle elevation for selected state
   shadowColor: "#000000",
   shadowOpacity: 0.08,
   shadowRadius: 4,

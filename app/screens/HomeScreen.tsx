@@ -124,7 +124,7 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
         style={themed($cardStyle)}
         ContentComponent={
           <View>
-            <View style={$cardHeader}>
+            <View style={themed($cardHeader)}>
               <Text preset="subheading" style={themed($projectNameText)}>
                 {projectName}
               </Text>
@@ -147,7 +147,7 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
               Last modified: {lastModified}
             </Text>
 
-            <View style={$buttonRow}>
+            <View style={themed($buttonRow)}>
               <Button
                 text="Continue"
                 preset="default"
@@ -180,7 +180,7 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
           style={themed($cardStyle)}
           ContentComponent={
             <View>
-              <View style={$cardHeader}>
+              <View style={themed($cardHeader)}>
                 <Text preset="subheading" style={themed($projectNameText)}>
                   {projectName}
                 </Text>
@@ -258,8 +258,8 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
             )}
 
             {loadError && (
-              <View style={$offlineNotice}>
-                <Text style={$offlineNoticeText} text={loadError} />
+              <View style={themed($offlineNotice)}>
+                <Text style={themed($offlineNoticeText)} text={loadError} />
               </View>
             )}
 
@@ -299,11 +299,11 @@ const $header: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginBottom: spacing.lg,
 })
 
-const $signOutButton: ThemedStyle<ViewStyle> = ({ colors }) => ({
+const $signOutButton: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   backgroundColor: colors.palette.neutral300,
-  borderRadius: 8,
-  paddingHorizontal: 16,
-  paddingVertical: 8,
+  borderRadius: spacing.xs,
+  paddingHorizontal: spacing.md,
+  paddingVertical: spacing.xs,
   minHeight: 0,
 })
 
@@ -335,24 +335,24 @@ const $cardStyle: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginBottom: spacing.sm,
 })
 
-const $cardHeader: ViewStyle = {
+const $cardHeader: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   flexDirection: "row",
   justifyContent: "space-between",
   alignItems: "flex-start",
-  marginBottom: 8,
-}
-
-const $projectNameText: ThemedStyle<TextStyle> = ({ colors }) => ({
-  color: colors.text,
-  flex: 1,
-  marginRight: 8,
+  marginBottom: spacing.xs,
 })
 
-const $statusBadge: ThemedStyle<ViewStyle> = ({ colors }) => ({
+const $projectNameText: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
+  color: colors.text,
+  flex: 1,
+  marginRight: spacing.xs,
+})
+
+const $statusBadge: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   backgroundColor: colors.palette.accent400,
-  paddingHorizontal: 8,
-  paddingVertical: 4,
-  borderRadius: 4,
+  paddingHorizontal: spacing.xs,
+  paddingVertical: spacing.xxs,
+  borderRadius: spacing.xxs,
 })
 
 const $statusText: ThemedStyle<TextStyle> = ({ colors }) => ({
@@ -361,11 +361,11 @@ const $statusText: ThemedStyle<TextStyle> = ({ colors }) => ({
   fontWeight: "600",
 })
 
-const $submittedBadge: ThemedStyle<ViewStyle> = ({ colors }) => ({
+const $submittedBadge: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   backgroundColor: colors.palette.conditionGoodBorder,
-  paddingHorizontal: 8,
-  paddingVertical: 4,
-  borderRadius: 4,
+  paddingHorizontal: spacing.xs,
+  paddingVertical: spacing.xxs,
+  borderRadius: spacing.xxs,
 })
 
 const $submittedText: ThemedStyle<TextStyle> = ({ colors }) => ({
@@ -374,21 +374,21 @@ const $submittedText: ThemedStyle<TextStyle> = ({ colors }) => ({
   fontWeight: "600",
 })
 
-const $detailText: ThemedStyle<TextStyle> = ({ colors }) => ({
+const $detailText: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
   color: colors.text,
-  marginBottom: 4,
+  marginBottom: spacing.xxs,
 })
 
-const $metaText: ThemedStyle<TextStyle> = ({ colors }) => ({
+const $metaText: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
   color: colors.textDim,
-  marginTop: 8,
+  marginTop: spacing.xs,
 })
 
-const $buttonRow: ViewStyle = {
+const $buttonRow: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   flexDirection: "row",
-  gap: 8,
-  marginTop: 12,
-}
+  gap: spacing.xs,
+  marginTop: spacing.sm,
+})
 
 const $continueButton: ViewStyle = {
   flex: 1,
@@ -411,26 +411,26 @@ const $emptyState: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   paddingVertical: spacing.xxxl,
 })
 
-const $emptyText: ThemedStyle<TextStyle> = ({ colors }) => ({
+const $emptyText: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
   color: colors.textDim,
   fontSize: 18,
-  marginBottom: 8,
+  marginBottom: spacing.xs,
 })
 
 const $emptySubtext: ThemedStyle<TextStyle> = ({ colors }) => ({
   color: colors.textDim,
 })
 
-const $offlineNotice: ViewStyle = {
-  backgroundColor: "#fff3cd",
+const $offlineNotice: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+  backgroundColor: colors.palette.noticeBg,
   borderRadius: 6,
-  paddingHorizontal: 12,
-  paddingVertical: 8,
-  marginHorizontal: 16,
-  marginBottom: 8,
-}
+  paddingHorizontal: spacing.sm,
+  paddingVertical: spacing.xs,
+  marginHorizontal: spacing.md,
+  marginBottom: spacing.xs,
+})
 
-const $offlineNoticeText: TextStyle = {
+const $offlineNoticeText: ThemedStyle<TextStyle> = ({ colors }) => ({
   fontSize: 13,
-  color: "#856404",
-}
+  color: colors.palette.noticeText,
+})

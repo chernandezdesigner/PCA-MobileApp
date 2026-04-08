@@ -19,6 +19,7 @@ import { useNavigation } from "@react-navigation/native"
 import { useDrawerControl } from "@/context/DrawerContext"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
+import { $formScreen, $stickyHeader, $stickyFooter } from "@/theme/styles"
 import type { BuildingEnvelopeFormNavigatorParamList } from "@/navigators/BuildingEnvelopeFormNavigator"
 import {
   DOOR_TYPE_OPTIONS,
@@ -256,7 +257,7 @@ export const BuildingEnvelopeStep9Screen: FC<BuildingEnvelopeStep9ScreenProps> =
   }
 
   return (
-    <Screen style={$root} preset="fixed" contentContainerStyle={$screenInner}>
+    <Screen style={$formScreen} preset="fixed" contentContainerStyle={$formScreen}>
       <View style={$stickyHeader}>
         <HeaderBar
           title="Building Envelope"
@@ -597,14 +598,6 @@ export const BuildingEnvelopeStep9Screen: FC<BuildingEnvelopeStep9ScreenProps> =
   )
 })
 
-const $root: ViewStyle = {
-  flex: 1,
-}
-
-const $screenInner: ViewStyle = {
-  flex: 1,
-}
-
 const $content: ViewStyle = {
   paddingTop: 88,
   paddingBottom: 112, // 96 (footer height) + 16 (spacing)
@@ -623,22 +616,6 @@ const $sectionBody: ViewStyle = {
 
 const $controlGroup: ViewStyle = {
   gap: 8,
-}
-
-const $stickyHeader: ViewStyle = {
-  position: "absolute",
-  top: 0,
-  left: 0,
-  right: 0,
-  zIndex: 2,
-}
-
-const $stickyFooter: ViewStyle = {
-  position: "absolute",
-  bottom: 0,
-  left: 0,
-  right: 0,
-  zIndex: 2,
 }
 
 const $introBlock: ViewStyle = {

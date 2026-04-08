@@ -10,6 +10,7 @@ import { RepairStatus } from "@/components/RepairStatus"
 import { useStores } from "@/models/RootStoreProvider"
 import { observer } from "mobx-react-lite"
 import { useAppTheme } from "@/theme/context"
+import { $formScreen, $stickyHeader, $stickyFooter } from "@/theme/styles"
 import type { SiteGroundsFormNavigatorParamList } from "@/navigators/SiteGroundsFormNavigator"
 import type { ThemedStyle } from "@/theme/types"
 import { Controller, useForm, useWatch } from "react-hook-form"
@@ -312,7 +313,7 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
   }
 
   return (
-    <Screen style={$root} preset="fixed" contentContainerStyle={$screenInner}>
+    <Screen style={$formScreen} preset="fixed" contentContainerStyle={$formScreen}>
       <View style={$stickyHeader}>
         <HeaderBar title="Site & Grounds" leftIcon="back" onLeftPress={() => navigation.goBack()} rightIcon="menu" onRightPress={openDrawer} />
       </View>
@@ -738,10 +739,6 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
   )
 })
 
-const $root: ViewStyle = {
-  flex: 1,
-}
-
 const $content: ViewStyle = {
   // Remove side padding so accordions span full width and touch edges
   paddingTop: 88, // Header height (72) + spacing (16)
@@ -797,9 +794,6 @@ const $scrollArea: ViewStyle = { flex: 1 }
 const $paddedBlock: ViewStyle = { paddingHorizontal: 16, paddingBottom: 16, paddingTop: 16, gap: 8 }
 const $commentsBlock: ViewStyle = { paddingHorizontal: 16, paddingBottom: 16, paddingTop: 24, gap: 8 }
 const $titleStyle: any = ({ colors }: any) => ({ color: colors.palette.primary2 as any, fontSize: 24 })
-const $screenInner: ViewStyle = { flex: 1 }
-const $stickyHeader: ViewStyle = { position: "absolute", top: 0, left: 0, right: 0, zIndex: 2 }
-const $stickyFooter: ViewStyle = { position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 2 }
 const $toggleWrap: ViewStyle = { flexDirection: "row", alignItems: "center", gap: 8 }
 const $pill = (on: boolean): ViewStyle => ({ height: 32, minWidth: 64, paddingHorizontal: 12, borderRadius: 16, alignItems: "center", justifyContent: "center", backgroundColor: on ? "#dbeafe" : "#e5e7eb" })
 const $controlGroup: ViewStyle = { gap: 8 }

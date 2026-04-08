@@ -391,7 +391,7 @@ export const SideDrawer = (props: SideDrawerProps) => {
               {/* Section Header */}
               <TouchableOpacity
                 onPress={() => hasChildren && toggleSection(section.id)}
-                style={[themed($sectionHeader), isExpanded && $sectionHeaderExpanded]}
+                style={[themed($sectionHeader), isExpanded && themed($sectionHeaderExpanded)]}
                 disabled={!hasChildren}
               >
                 <Text 
@@ -420,7 +420,7 @@ export const SideDrawer = (props: SideDrawerProps) => {
                       <TouchableOpacity
                         key={child.id}
                         onPress={() => child.route && handleNavigate(child.route)}
-                        style={[themed($childItem), isActive && $childItemActive]}
+                        style={[themed($childItem), isActive && themed($childItemActive)]}
                       >
                         <Text 
                           text={child.label} 
@@ -575,9 +575,11 @@ const $sectionHeader: ThemedStyleArray<ViewStyle> = [
   }),
 ]
 
-const $sectionHeaderExpanded: ViewStyle = {
-  backgroundColor: "rgba(0, 0, 0, 0.02)",
-}
+const $sectionHeaderExpanded: ThemedStyleArray<ViewStyle> = [
+  (theme) => ({
+    backgroundColor: theme.colors.palette.overlaySubtle,
+  }),
+]
 
 const $sectionLabel: ThemedStyleArray<TextStyle> = [
   (theme) => ({
@@ -603,9 +605,11 @@ const $childItem: ThemedStyleArray<ViewStyle> = [
   }),
 ]
 
-const $childItemActive: ViewStyle = {
-  backgroundColor: "rgba(79, 70, 229, 0.08)",
-}
+const $childItemActive: ThemedStyleArray<ViewStyle> = [
+  (theme) => ({
+    backgroundColor: theme.colors.palette.overlayActive,
+  }),
+]
 
 const $childLabel: ThemedStyleArray<TextStyle> = [
   (theme) => ({

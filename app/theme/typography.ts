@@ -59,7 +59,16 @@ export const typography = {
   /**
    * The primary font. Used in most places.
    */
-  primary: fonts.spaceGrotesk,
+  primary: Platform.select({
+    web: {
+      light: "spaceGroteskLight, system-ui, sans-serif",
+      normal: "spaceGroteskRegular, system-ui, sans-serif",
+      medium: "spaceGroteskMedium, system-ui, sans-serif",
+      semiBold: "spaceGroteskSemiBold, system-ui, sans-serif",
+      bold: "spaceGroteskBold, system-ui, sans-serif",
+    },
+    default: fonts.spaceGrotesk,
+  })!,
   /**
    * An alternate font used for perhaps titles and stuff.
    */

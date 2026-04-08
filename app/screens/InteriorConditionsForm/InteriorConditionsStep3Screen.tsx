@@ -14,6 +14,7 @@ import { useNavigation } from "@react-navigation/native"
 import { useDrawerControl } from "@/context/DrawerContext"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
+import { $formScreen, $stickyHeader, $stickyFooter } from "@/theme/styles"
 
 // ============================================
 // CONDITION CONFIG
@@ -70,7 +71,7 @@ export const InteriorConditionsStep3Screen: FC = observer(() => {
   const isNA = store?.NotApplicable ?? false
 
   return (
-    <Screen style={$root} preset="fixed" contentContainerStyle={$screenInner}>
+    <Screen style={$formScreen} preset="fixed" contentContainerStyle={$formScreen}>
       <View style={$stickyHeader}>
         <HeaderBar
           title="Interior Conditions"
@@ -167,14 +168,6 @@ export const InteriorConditionsStep3Screen: FC = observer(() => {
 // STYLES
 // ============================================
 
-const $root: ViewStyle = {
-  flex: 1,
-}
-
-const $screenInner: ViewStyle = {
-  flex: 1,
-}
-
 const $content: ViewStyle = {
   paddingTop: 88,
   paddingBottom: 112, // 96 (footer height) + 16 (spacing)
@@ -183,22 +176,6 @@ const $content: ViewStyle = {
 
 const $scrollArea: ViewStyle = {
   flex: 1,
-}
-
-const $stickyHeader: ViewStyle = {
-  position: "absolute",
-  top: 0,
-  left: 0,
-  right: 0,
-  zIndex: 2,
-}
-
-const $stickyFooter: ViewStyle = {
-  position: "absolute",
-  bottom: 0,
-  left: 0,
-  right: 0,
-  zIndex: 2,
 }
 
 const $introBlock: ViewStyle = {

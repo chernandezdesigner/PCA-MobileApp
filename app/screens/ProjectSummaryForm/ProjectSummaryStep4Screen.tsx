@@ -17,6 +17,7 @@ import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
 import { ChecklistCard } from "@/components/ChecklistCard"
 import { useDrawerControl } from "@/context/DrawerContext"
+import { $formScreen, $stickyHeader, $stickyFooter } from "@/theme/styles"
 
 interface ProjectSummaryStep4ScreenProps extends NativeStackScreenProps<ProjectSummaryFormNavigatorParamList, "ProjectSummaryStep4"> {}
 
@@ -120,7 +121,7 @@ export const ProjectSummaryStep4Screen: FC<ProjectSummaryStep4ScreenProps> = obs
   }, [watch, projectSummaryStore])
 
   return (
-    <Screen style={$root} preset="fixed" contentContainerStyle={$screenInner}>
+    <Screen style={$formScreen} preset="fixed" contentContainerStyle={$formScreen}>
       <View style={$stickyHeader}>
         <HeaderBar title="Project Summary" leftIcon="back" onLeftPress={() => navigation.goBack()} rightIcon="menu" onRightPress={openDrawer} />
       </View>
@@ -240,10 +241,6 @@ export const ProjectSummaryStep4Screen: FC<ProjectSummaryStep4ScreenProps> = obs
   )
 })
 
-const $root: ViewStyle = {
-  flex: 1,
-}
-
 const $content: ViewStyle = {
   padding: 16,
   paddingTop: 88, // 72 (header height) + 16 (spacing)
@@ -256,9 +253,6 @@ const $fieldsGrid: ViewStyle = {
   // Full-width stacked layout for mobile (consistent with other form screens)
 }
 
-const $screenInner: ViewStyle = { flex: 1 }
-const $stickyHeader: ViewStyle = { position: "absolute", top: 0, left: 0, right: 0, zIndex: 2 }
-const $stickyFooter: ViewStyle = { position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 2 }
 const $scrollArea: ViewStyle = { flex: 1 }
 const $titleStyle: ThemedStyle<any> = ({ colors }) => ({ color: colors.palette.primary2, fontSize: 24 })
 const $introBlock: ViewStyle = { paddingTop: 16, paddingBottom: 32 }

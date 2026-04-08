@@ -285,9 +285,10 @@ const $containerStyle: ViewStyle = {
   position: "relative",
 }
 
+const DROPDOWN_Z_INDEX = 9999
+
 const $containerOpenStyle: ViewStyle = {
-  // High z-index to appear above all content including cards, headers, footers
-  zIndex: 9999,
+  zIndex: DROPDOWN_Z_INDEX,
 }
 
 const $labelStyle: ThemedStyle<TextStyle> = ({ spacing, colors }) => ({
@@ -350,13 +351,12 @@ const $menuStyle: ThemedStyle<ViewStyle> = ({ colors }) => ({
   borderRadius: 12,
   borderWidth: 1,
   overflow: "hidden",
-  shadowColor: "#000",
+  shadowColor: colors.palette.shadowDefault,
   shadowOpacity: 0.2,
   shadowRadius: 12,
   shadowOffset: { width: 0, height: 4 },
-  // High elevation for Android to appear above all content
   elevation: 10,
-  zIndex: 10000,
+  zIndex: DROPDOWN_Z_INDEX + 1,
 })
 
 const $optionStyle: ThemedStyle<ViewStyle> = ({ spacing }) => ({

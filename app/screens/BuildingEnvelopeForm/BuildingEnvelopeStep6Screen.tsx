@@ -20,6 +20,7 @@ import { useNavigation } from "@react-navigation/native"
 import { useDrawerControl } from "@/context/DrawerContext"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
+import { $formScreen, $stickyHeader, $stickyFooter } from "@/theme/styles"
 import type { BuildingEnvelopeFormNavigatorParamList } from "@/navigators/BuildingEnvelopeFormNavigator"
 import {
   PARKING_GARAGE_STRUCTURE_OPTIONS,
@@ -100,7 +101,7 @@ export const BuildingEnvelopeStep6Screen: FC<BuildingEnvelopeStep6ScreenProps> =
   }
 
   return (
-    <Screen style={$root} preset="fixed" contentContainerStyle={$screenInner}>
+    <Screen style={$formScreen} preset="fixed" contentContainerStyle={$formScreen}>
       <View style={$stickyHeader}>
         <HeaderBar
           title="Building Envelope"
@@ -431,14 +432,6 @@ export const BuildingEnvelopeStep6Screen: FC<BuildingEnvelopeStep6ScreenProps> =
   )
 })
 
-const $root: ViewStyle = {
-  flex: 1,
-}
-
-const $screenInner: ViewStyle = {
-  flex: 1,
-}
-
 const $content: ViewStyle = {
   paddingTop: 88,
   paddingBottom: 112, // 96 (footer height) + 16 (spacing)
@@ -464,22 +457,6 @@ const $checkboxRow: ViewStyle = {
   alignItems: "center",
   justifyContent: "space-between",
   gap: 12,
-}
-
-const $stickyHeader: ViewStyle = {
-  position: "absolute",
-  top: 0,
-  left: 0,
-  right: 0,
-  zIndex: 2,
-}
-
-const $stickyFooter: ViewStyle = {
-  position: "absolute",
-  bottom: 0,
-  left: 0,
-  right: 0,
-  zIndex: 2,
 }
 
 const $introBlock: ViewStyle = {

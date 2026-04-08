@@ -31,6 +31,7 @@ import {
   roofframingsteelOptions,
   sheathingOptions,
 } from "@/constants/buildingEnvelopeOptions"
+import { $formScreen, $stickyHeader, $stickyFooter } from "@/theme/styles"
 
 interface BuildingEnvelopeStep2ScreenProps
   extends NativeStackScreenProps<BuildingEnvelopeFormNavigatorParamList, "BuildingEnvelopeStep2"> {}
@@ -272,7 +273,7 @@ export const BuildingEnvelopeStep2Screen: FC<BuildingEnvelopeStep2ScreenProps> =
   }
 
   return (
-    <Screen style={$root} preset="fixed" contentContainerStyle={$screenInner}>
+    <Screen style={$formScreen} preset="fixed" contentContainerStyle={$formScreen}>
       <View style={$stickyHeader}>
         <HeaderBar
           title="Building Envelope"
@@ -624,14 +625,6 @@ export const BuildingEnvelopeStep2Screen: FC<BuildingEnvelopeStep2ScreenProps> =
   )
 })
 
-const $root: ViewStyle = {
-  flex: 1,
-}
-
-const $screenInner: ViewStyle = {
-  flex: 1,
-}
-
 const $content: ViewStyle = {
   paddingTop: 88, // Header height (72) + spacing (16)
   paddingBottom: 112, // 96 (footer height) + 16 (spacing)
@@ -657,22 +650,6 @@ const $checkboxRow: ViewStyle = {
   alignItems: "center",
   justifyContent: "space-between",
   gap: 12,
-}
-
-const $stickyHeader: ViewStyle = {
-  position: "absolute",
-  top: 0,
-  left: 0,
-  right: 0,
-  zIndex: 2,
-}
-
-const $stickyFooter: ViewStyle = {
-  position: "absolute",
-  bottom: 0,
-  left: 0,
-  right: 0,
-  zIndex: 2,
 }
 
 const $introBlock: ViewStyle = {

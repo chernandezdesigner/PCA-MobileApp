@@ -20,6 +20,7 @@ import { format as formatDateFns } from "date-fns/format"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
 import { useDrawerControl } from "@/context/DrawerContext"
+import { $formScreen, $stickyHeader, $stickyFooter } from "@/theme/styles"
 
 interface ProjectSummaryStep1ScreenProps extends NativeStackScreenProps<ProjectSummaryFormNavigatorParamList, "ProjectSummaryStep1"> {}
 
@@ -99,7 +100,7 @@ export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = obs
   const onBack = () => navigation.goBack()
 
   return (
-    <Screen style={$root} preset="fixed" contentContainerStyle={$screenInner}>
+    <Screen style={$formScreen} preset="fixed" contentContainerStyle={$formScreen}>
       <View style={$stickyHeader}>
         <HeaderBar title="Project Summary" leftIcon="back" onLeftPress={onBack} rightIcon="menu" onRightPress={openDrawer} />
       </View>
@@ -384,10 +385,6 @@ export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = obs
   )
 })
 
-const $root: ViewStyle = {
-  flex: 1,
-}
-
 const $content: ViewStyle = {
   padding: 16,
   paddingTop: 88, // 72 (header height) + 16 (spacing)
@@ -435,8 +432,4 @@ const $temperatureField: ViewStyle = {
 const $scrollArea: ViewStyle = { flex: 1 }
 const $progressHeaderText: ThemedStyle<any> = ({ colors }) => ({ color: colors.palette.primary2 as any })
 const $titleStyle: ThemedStyle<any> = ({ colors }) => ({ color: colors.palette.primary2 as any, fontSize: 24, fontFamily: undefined })
-const $screenInner: ViewStyle = { flex: 1 }
-
-const $stickyHeader: ViewStyle = { position: "absolute", top: 0, left: 0, right: 0, zIndex: 2 }
-const $stickyFooter: ViewStyle = { position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 2 }
 const $introBlock: ViewStyle = { paddingTop: 16, paddingBottom: 32 }
