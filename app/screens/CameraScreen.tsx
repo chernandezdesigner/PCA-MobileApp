@@ -100,22 +100,27 @@ export const CameraScreen: FC = observer(() => {
       const filename = `${photoId}.jpg`
 
       // Save locally
-      const { localUri, fileSize } = await PhotoService.savePhotoLocally({
+      const saveResult = await PhotoService.savePhotoLocally({
         tempUri: `file://${photo.path}`,
         assessmentId: rootStore.activeAssessmentId!,
         photoId,
         filename,
       })
 
+      if (!saveResult.success || !saveResult.localUri) {
+        console.warn("Photo save failed:", saveResult.error)
+        return
+      }
+
       // Add to store
       photoStore.addPhoto({
-        localUri,
+        localUri: saveResult.localUri,
         formType,
         formStep,
         fieldName: fieldName ?? "",
         filename,
         mimeType: "image/jpeg",
-        fileSize,
+        fileSize: saveResult.fileSize,
         width: photo.width,
         height: photo.height,
       })
@@ -145,26 +150,19 @@ export const CameraScreen: FC = observer(() => {
   }, [])
 
   const handleRequestPermission = useCallback(async () => {
-    console.log("📷 Requesting camera permission...")
-    console.log("   hasPermission before:", hasPermission)
-    console.log("   requestPermission fn:", typeof requestPermission)
-
     try {
       const result = await requestPermission()
-      console.log("📷 Permission result:", result)
 
       // If still not granted after request, the user denied or
       // the permission isn't in the manifest. Offer to open settings.
       if (!result) {
-        console.log("📷 Permission denied or unavailable, opening app settings...")
         Linking.openSettings()
       }
-    } catch (error) {
-      console.warn("📷 Permission request error:", error)
+    } catch (_error) {
       // Fallback: open app settings so user can manually grant
       Linking.openSettings()
     }
-  }, [hasPermission, requestPermission])
+  }, [requestPermission])
 
   const handleClose = useCallback(() => {
     navigation.goBack()
@@ -433,7 +431,7 @@ const $photoBadge: ViewStyle = {
   position: "absolute",
   top: -6,
   right: -6,
-  backgroundColor: "#FF3B30",
+  backgroundColor: "#ef4444", // colors.palette.angry500 — static style (camera overlay context)
   borderRadius: 10,
   minWidth: 20,
   height: 20,

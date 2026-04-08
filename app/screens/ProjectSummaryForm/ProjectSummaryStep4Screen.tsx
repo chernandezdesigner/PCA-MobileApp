@@ -110,7 +110,7 @@ export const ProjectSummaryStep4Screen: FC<ProjectSummaryStep4ScreenProps> = obs
     reset(defaultValues) 
   }, [rootStore.activeAssessmentId]) // Only reset when switching assessments
 
-  const debounceRef = useRef<NodeJS.Timeout | null>(null)
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   useEffect(() => {
     const sub = watch((values) => {
       if (debounceRef.current) clearTimeout(debounceRef.current)

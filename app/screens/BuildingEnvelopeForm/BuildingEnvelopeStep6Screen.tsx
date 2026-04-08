@@ -50,28 +50,28 @@ export const BuildingEnvelopeStep6Screen: FC<BuildingEnvelopeStep6ScreenProps> =
   const structureItems: ChecklistItem[] = PARKING_GARAGE_STRUCTURE_OPTIONS.map((opt) => ({
     id: opt.id,
     label: opt.label,
-    checked: structureData.includes(opt.id),
+    checked: structureData.slice().includes(opt.id),
   }))
 
   const deckingData = store?.decking.decking ?? []
   const deckingItems: ChecklistItem[] = PARKING_GARAGE_DECKING_OPTIONS.map((opt) => ({
     id: opt.id,
     label: opt.label,
-    checked: deckingData.includes(opt.id),
+    checked: deckingData.slice().includes(opt.id),
   }))
 
   const perimeterWallData = store?.perimeterWall.perimeterWalls ?? []
   const perimeterWallItems: ChecklistItem[] = PARKING_GARAGE_PERIMETER_WALL_OPTIONS.map((opt) => ({
     id: opt.id,
     label: opt.label,
-    checked: perimeterWallData.includes(opt.id),
+    checked: perimeterWallData.slice().includes(opt.id),
   }))
 
   const trafficCoatingData = store?.trafficCoating.trafficCoating ?? []
   const trafficCoatingItems: ChecklistItem[] = PARKING_GARAGE_TRAFFIC_COATING_OPTIONS.map((opt) => ({
     id: opt.id,
     label: opt.label,
-    checked: trafficCoatingData.includes(opt.id),
+    checked: trafficCoatingData.slice().includes(opt.id),
   }))
 
   // Toggle handlers
@@ -140,7 +140,7 @@ export const BuildingEnvelopeStep6Screen: FC<BuildingEnvelopeStep6ScreenProps> =
               <View style={themed($sectionBody)}>
                 <ChecklistField label="Structure Types" items={structureItems} onToggle={toggleStructure} />
 
-                {structureData.includes("other") && (
+                {structureData.slice().includes("other") && (
                   <TextField
                     label="Specify Other Type"
                     placeholder="Specify type"
@@ -183,7 +183,7 @@ export const BuildingEnvelopeStep6Screen: FC<BuildingEnvelopeStep6ScreenProps> =
               <View style={themed($sectionBody)}>
                 <ChecklistField label="Decking Types" items={deckingItems} onToggle={toggleDecking} />
 
-                {deckingData.includes("other") && (
+                {deckingData.slice().includes("other") && (
                   <TextField
                     label="Specify Other Type"
                     placeholder="Specify type"
@@ -309,7 +309,7 @@ export const BuildingEnvelopeStep6Screen: FC<BuildingEnvelopeStep6ScreenProps> =
                 <View style={themed($sectionBody)}>
                   <ChecklistField label="Perimeter Wall Types" items={perimeterWallItems} onToggle={togglePerimeterWall} />
 
-                  {perimeterWallData.includes("other") && (
+                  {perimeterWallData.slice().includes("other") && (
                     <TextField
                       label="Specify Other Type"
                       placeholder="Specify type"

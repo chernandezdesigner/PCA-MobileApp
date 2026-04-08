@@ -261,11 +261,11 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
         />
       )}
 
-      <InputWrapperComponent 
+      <InputWrapperComponent
         style={[
           themed($inputWrapperStyles),
           Platform.OS === "android" && $inputWrapperAnimatedStyles,
-        ]}
+        ] as any}
       >
         {!!LeftAccessory && (
           <LeftAccessory

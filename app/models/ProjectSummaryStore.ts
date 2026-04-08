@@ -4,8 +4,8 @@ export const PersonnelInterviewedModel = types
 .model("PersonnelInterviewed")
 .props({
     id: types.identifier,
-    name: types.string,
-    title: types.string,
+    name: types.optional(types.string, ""),
+    title: types.optional(types.string, ""),
     yearsAtProperty: types.optional(types.number, 0),
     phoneNumber: types.optional(types.string, ""),
 })
@@ -14,8 +14,8 @@ export const CommercialTenantModel = types
 .model("CommercialTenant")
 .props({
     id: types.identifier,
-    name: types.string,
-    addressOrUnit: types.string,
+    name: types.optional(types.string, ""),
+    addressOrUnit: types.optional(types.string, ""),
     accessed: types.optional(types.boolean, false),
 })
 

@@ -1,5 +1,5 @@
 import { FC, useState } from "react"
-import { View, ViewStyle, ScrollView, TouchableOpacity } from "react-native"
+import { View, ViewStyle, TextStyle, ScrollView, TouchableOpacity } from "react-native"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
@@ -172,7 +172,7 @@ export const BuildingEnvelopeStep5Screen: FC<BuildingEnvelopeStep5ScreenProps> =
   const sidewalkRailingItems: ChecklistItem[] = SIDEWALK_RAILING_OPTIONS.map((opt) => ({
     id: opt.id,
     label: opt.label,
-    checked: sidewalkRailingData.includes(opt.id),
+    checked: sidewalkRailingData.slice().includes(opt.id),
   }))
 
   const toggleSidewalkRailing = (id: string, checked: boolean) => {
@@ -198,7 +198,7 @@ export const BuildingEnvelopeStep5Screen: FC<BuildingEnvelopeStep5ScreenProps> =
   const stepsRailingItems: ChecklistItem[] = STEPS_STAIRS_RAILING_OPTIONS.map((opt) => ({
     id: opt.id,
     label: opt.label,
-    checked: stepsRailingData.includes(opt.id),
+    checked: stepsRailingData.slice().includes(opt.id),
   }))
 
   const toggleStepsRailing = (id: string, checked: boolean) => {
@@ -371,8 +371,8 @@ export const BuildingEnvelopeStep5Screen: FC<BuildingEnvelopeStep5ScreenProps> =
           <View style={themed($sectionBody)}>
             <MaterialSection
               title="Select Pavement Materials"
-              materials={PAVEMENT_OPTIONS}
-              selectedMaterials={store?.pavement.materials ?? new Map()}
+              materials={PAVEMENT_OPTIONS as unknown as { id: string; label: string }[]}
+              selectedMaterials={(store?.pavement.materials ?? new Map()) as Map<any, any>}
               onToggleMaterial={togglePavementMaterial}
               onUpdateMaterial={updatePavementMaterial}
             />
@@ -408,8 +408,8 @@ export const BuildingEnvelopeStep5Screen: FC<BuildingEnvelopeStep5ScreenProps> =
             <View style={themed($sectionBody)}>
               <MaterialSection
                 title="Select Entrance Apron Materials"
-                materials={ENTRANCE_APRON_OPTIONS}
-                selectedMaterials={store?.entranceAprons.materials ?? new Map()}
+                materials={ENTRANCE_APRON_OPTIONS as unknown as { id: string; label: string }[]}
+                selectedMaterials={(store?.entranceAprons.materials ?? new Map()) as Map<any, any>}
                 onToggleMaterial={toggleEntranceApronMaterial}
                 onUpdateMaterial={updateEntranceApronMaterial}
               />
@@ -446,8 +446,8 @@ export const BuildingEnvelopeStep5Screen: FC<BuildingEnvelopeStep5ScreenProps> =
             <View style={themed($sectionBody)}>
               <MaterialSection
                 title="Select Curbing Materials"
-                materials={CURBING_OPTIONS}
-                selectedMaterials={store?.curbing.materials ?? new Map()}
+                materials={CURBING_OPTIONS as unknown as { id: string; label: string }[]}
+                selectedMaterials={(store?.curbing.materials ?? new Map()) as Map<any, any>}
                 onToggleMaterial={toggleCurbingMaterial}
                 onUpdateMaterial={updateCurbingMaterial}
               />
@@ -484,8 +484,8 @@ export const BuildingEnvelopeStep5Screen: FC<BuildingEnvelopeStep5ScreenProps> =
             <View style={themed($sectionBody)}>
               <MaterialSection
                 title="Select Sidewalk/Walkway Materials"
-                materials={SIDEWALK_WALKWAY_OPTIONS}
-                selectedMaterials={store?.sidewalksWalkways.materials ?? new Map()}
+                materials={SIDEWALK_WALKWAY_OPTIONS as unknown as { id: string; label: string }[]}
+                selectedMaterials={(store?.sidewalksWalkways.materials ?? new Map()) as Map<any, any>}
                 onToggleMaterial={toggleSidewalkMaterial}
                 onUpdateMaterial={updateSidewalkMaterial}
               />
@@ -545,8 +545,8 @@ export const BuildingEnvelopeStep5Screen: FC<BuildingEnvelopeStep5ScreenProps> =
           <View style={themed($sectionBody)}>
             <MaterialSection
               title="Select Steps/Stairs Materials"
-              materials={STEPS_STAIRS_OPTIONS}
-              selectedMaterials={store?.stepsStairs.materials ?? new Map()}
+              materials={STEPS_STAIRS_OPTIONS as unknown as { id: string; label: string }[]}
+              selectedMaterials={(store?.stepsStairs.materials ?? new Map()) as Map<any, any>}
               onToggleMaterial={toggleStepsMaterial}
               onUpdateMaterial={updateStepsMaterial}
             />
@@ -701,45 +701,40 @@ const $materialSectionContainer: ViewStyle = {
   gap: 12,
 }
 
-const $materialSectionTitle: ViewStyle = {
+const $materialSectionTitle: TextStyle = {
   fontSize: 16,
   fontWeight: "600",
   marginBottom: 8,
 }
 
-const $materialCard: ViewStyle = {
+const $materialCard: ThemedStyle<ViewStyle> = ({ colors }) => ({
   borderWidth: 1,
-  borderColor: "#e5e7eb",
+  borderColor: colors.palette.neutral300,
   borderRadius: 8,
   padding: 12,
   gap: 12,
-}
+})
 
-const $materialAssessment: ViewStyle = {
+const $materialAssessment: ThemedStyle<ViewStyle> = ({ colors }) => ({
   gap: 12,
   paddingTop: 8,
   borderTopWidth: 1,
-  borderTopColor: "#e5e7eb",
-}
+  borderTopColor: colors.palette.neutral300,
+})
 
-const $divider: ViewStyle = {
+const $divider: ThemedStyle<ViewStyle> = ({ colors }) => ({
   height: 1,
-  backgroundColor: "#e5e7eb",
+  backgroundColor: colors.palette.neutral300,
   marginVertical: 8,
-}
+})
 
-const $nestedSection: ViewStyle = {
-  backgroundColor: "#f9fafb",
+const $nestedSection: ThemedStyle<ViewStyle> = ({ colors }) => ({
+  backgroundColor: colors.palette.neutral100,
   padding: 12,
   borderRadius: 8,
   gap: 12,
   marginTop: 8,
-}
-
-const $nestedTitle: ViewStyle = {
-  fontSize: 15,
-  fontWeight: "600",
-}
+})
 
 const $titleStyle: ThemedStyle<any> = ({ colors }) => ({
   color: colors.palette.primary2 as any,

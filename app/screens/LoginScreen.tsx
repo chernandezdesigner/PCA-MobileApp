@@ -51,7 +51,6 @@ export const LoginScreen: FC<LoginScreenProps> = () => {
 
     if (result.error) {
       // Error is already set in context
-      console.log("Auth error:", result.error)
     } else {
       // Success! Auth context will handle navigation
       setIsSubmitted(false)
@@ -164,10 +163,6 @@ const $enterDetails: ThemedStyle<TextStyle> = ({ spacing }) => ({
   marginBottom: spacing.lg,
 })
 
-const $hint: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
-  color: colors.tint,
-  marginBottom: spacing.md,
-})
 
 const $textField: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginBottom: spacing.lg,

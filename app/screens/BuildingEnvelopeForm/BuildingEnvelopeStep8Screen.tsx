@@ -49,28 +49,28 @@ export const BuildingEnvelopeStep8Screen: FC<BuildingEnvelopeStep8ScreenProps> =
   const windowTypeItems: ChecklistItem[] = WINDOW_TYPE_OPTIONS.map((opt) => ({
     id: opt.id,
     label: opt.label,
-    checked: windowTypeData.includes(opt.id),
+    checked: windowTypeData.slice().includes(opt.id),
   }))
 
   const glazingData = store?.glazingAndPanes.glazing ?? []
   const glazingItems: ChecklistItem[] = WINDOW_GLAZING_TYPE_OPTIONS.map((opt) => ({
     id: opt.id,
     label: opt.label,
-    checked: glazingData.includes(opt.id),
+    checked: glazingData.slice().includes(opt.id),
   }))
 
   const panesData = store?.glazingAndPanes.panes ?? []
   const panesItems: ChecklistItem[] = WINDOW_PANE_OPTIONS.map((opt) => ({
     id: opt.id,
     label: opt.label,
-    checked: panesData.includes(opt.id),
+    checked: panesData.slice().includes(opt.id),
   }))
 
   const frameTypeData = store?.frameType.frameTypes ?? []
   const frameTypeItems: ChecklistItem[] = WINDOW_FRAME_OPTIONS.map((opt) => ({
     id: opt.id,
     label: opt.label,
-    checked: frameTypeData.includes(opt.id),
+    checked: frameTypeData.slice().includes(opt.id),
   }))
 
   // Toggle handlers

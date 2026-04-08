@@ -1,5 +1,6 @@
 import { supabase } from "@/services/supabase/client"
 import { FileSystem, Dirs } from "react-native-file-access"
+import * as ImageManipulator from "expo-image-manipulator"
 import type { PhotoModelSnapshot } from "@/models/PhotoStore"
 
 /**
@@ -10,12 +11,16 @@ export class PhotoService {
    * Get (and create if needed) the local photos directory for an assessment
    */
   static async getPhotosDir(assessmentId: string): Promise<string> {
-    const dir = `${Dirs.DocumentDir}/photos/${assessmentId}`
-    const exists = await FileSystem.exists(dir)
-    if (!exists) {
-      await FileSystem.mkdir(dir)
+    try {
+      const dir = `${Dirs.DocumentDir}/photos/${assessmentId}`
+      const exists = await FileSystem.exists(dir)
+      if (!exists) {
+        await FileSystem.mkdir(dir)
+      }
+      return dir
+    } catch (error) {
+      throw new Error(`Failed to initialize photo directory: ${error}`)
     }
-    return dir
   }
 
   /**
@@ -26,18 +31,23 @@ export class PhotoService {
     assessmentId: string
     photoId: string
     filename: string
-  }): Promise<{ localUri: string; fileSize: number }> {
-    const { tempUri, assessmentId, photoId, filename } = params
-    const dir = await PhotoService.getPhotosDir(assessmentId)
-    const ext = filename.split(".").pop() || "jpg"
-    const localUri = `${dir}/${photoId}.${ext}`
+  }): Promise<{ success: boolean; localUri?: string; fileSize?: number; error?: string }> {
+    try {
+      const { tempUri, assessmentId, photoId, filename } = params
+      const dir = await PhotoService.getPhotosDir(assessmentId)
+      const ext = filename.split(".").pop() || "jpg"
+      const localUri = `${dir}/${photoId}.${ext}`
 
-    await FileSystem.cp(tempUri, localUri)
-    const stat = await FileSystem.stat(localUri)
+      await FileSystem.cp(tempUri, localUri)
+      const stat = await FileSystem.stat(localUri)
 
-    return {
-      localUri: `file://${localUri}`,
-      fileSize: stat.size,
+      return {
+        success: true,
+        localUri: `file://${localUri}`,
+        fileSize: stat.size,
+      }
+    } catch (error) {
+      return { success: false, error: String(error) }
     }
   }
 
@@ -52,8 +62,15 @@ export class PhotoService {
     const { photo, assessmentId, userId } = params
 
     try {
+      // Compress the image before upload (max 1920px wide, 80% JPEG quality)
+      const compressed = await ImageManipulator.manipulateAsync(
+        photo.localUri,
+        [{ resize: { width: 1920 } }],
+        { compress: 0.8, format: ImageManipulator.SaveFormat.JPEG },
+      )
+
       // Read the file as base64
-      const base64Data = await FileSystem.readFile(photo.localUri, "base64")
+      const base64Data = await FileSystem.readFile(compressed.uri, "base64")
 
       // Build storage path
       const storagePath = `${userId}/${assessmentId}/${photo.filename || photo.id + ".jpg"}`
@@ -185,10 +202,5 @@ export class PhotoService {
  * Decode a base64 string to a Uint8Array for Supabase storage upload
  */
 function decode(base64: string): Uint8Array {
-  const binaryStr = atob(base64)
-  const bytes = new Uint8Array(binaryStr.length)
-  for (let i = 0; i < binaryStr.length; i++) {
-    bytes[i] = binaryStr.charCodeAt(i)
-  }
-  return bytes
+  return new Uint8Array(Buffer.from(base64, "base64"))
 }

@@ -4,20 +4,14 @@ import Config from '@/config'
 
 /**
  * Supabase client for authentication, database, and storage
- * 
+ *
  * Uses AsyncStorage to persist auth sessions across app restarts
  */
 
-// Debug: Check if credentials are loaded
-console.log('🔍 Supabase Config Check:')
-console.log('   URL:', Config.SUPABASE_URL || '❌ MISSING')
-console.log('   Key:', Config.SUPABASE_ANON_KEY ? `✅ ${Config.SUPABASE_ANON_KEY.substring(0, 20)}...` : '❌ MISSING')
-
 if (!Config.SUPABASE_URL || !Config.SUPABASE_ANON_KEY) {
-  console.error('❌ SUPABASE CREDENTIALS MISSING!')
-  console.error('   Check your .env.local file exists with:')
-  console.error('   EXPO_PUBLIC_SUPABASE_URL=https://...')
-  console.error('   EXPO_PUBLIC_SUPABASE_ANON_KEY=eyJ...')
+  throw new Error(
+    'Supabase credentials are missing. Check your .env.local file for EXPO_PUBLIC_SUPABASE_URL and EXPO_PUBLIC_SUPABASE_ANON_KEY.'
+  )
 }
 
 export const supabase = createClient(

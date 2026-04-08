@@ -12,7 +12,7 @@ const AssessmentDrawer = () => {
       onOpen={openDrawer}
       onClose={closeDrawer}
       drawerType="slide"
-      drawerWidth={340}
+      drawerStyle={{ width: 340 }}
       renderDrawerContent={() => (
         <SideDrawer 
           onNavigate={closeDrawer}

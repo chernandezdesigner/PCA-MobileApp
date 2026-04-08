@@ -9,6 +9,7 @@ import { PhotoStore } from "./PhotoStore"
 export const AssessmentModel = types
   .model("Assessment", {
     id: types.identifier,
+    supabaseId: types.optional(types.string, ""),
     status: types.optional(types.enumeration(["draft", "submitted", "synced"]), "draft"),
     createdAt: types.optional(types.Date, () => new Date()),
     updatedAt: types.optional(types.Date, () => new Date()),
@@ -34,6 +35,9 @@ export const AssessmentModel = types
     markAsSynced() {
       self.status = "synced"
       self.updatedAt = new Date()
+    },
+    setSupabaseId(id: string) {
+      self.supabaseId = id
     },
   }))
 

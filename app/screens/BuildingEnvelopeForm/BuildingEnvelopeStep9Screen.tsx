@@ -56,28 +56,28 @@ export const BuildingEnvelopeStep9Screen: FC<BuildingEnvelopeStep9ScreenProps> =
   const doorTypesItems: ChecklistItem[] = DOOR_TYPE_OPTIONS.map((opt) => ({
     id: opt.id,
     label: opt.label,
-    checked: doorTypesData.includes(opt.id),
+    checked: doorTypesData.slice().includes(opt.id),
   }))
 
   const doorHandleData = store?.doors.handleTypes ?? []
   const doorHandleItems: ChecklistItem[] = DOOR_HARDWARE_HANDLE_OPTIONS.map((opt) => ({
     id: opt.id,
     label: opt.label,
-    checked: doorHandleData.includes(opt.id),
+    checked: doorHandleData.slice().includes(opt.id),
   }))
 
   const doorOperationData = store?.doors.operationTypes ?? []
   const doorOperationItems: ChecklistItem[] = DOOR_HARDWARE_OPERATION_OPTIONS.map((opt) => ({
     id: opt.id,
     label: opt.label,
-    checked: doorOperationData.includes(opt.id),
+    checked: doorOperationData.slice().includes(opt.id),
   }))
 
   const doorFrameData = store?.doors.frameTypes ?? []
   const doorFrameItems: ChecklistItem[] = DOOR_FRAME_OPTIONS.map((opt) => ({
     id: opt.id,
     label: opt.label,
-    checked: doorFrameData.includes(opt.id),
+    checked: doorFrameData.slice().includes(opt.id),
   }))
 
   // Service Doors data
@@ -85,28 +85,28 @@ export const BuildingEnvelopeStep9Screen: FC<BuildingEnvelopeStep9ScreenProps> =
   const serviceDoorTypesItems: ChecklistItem[] = DOOR_TYPE_OPTIONS.map((opt) => ({
     id: opt.id,
     label: opt.label,
-    checked: serviceDoorTypesData.includes(opt.id),
+    checked: serviceDoorTypesData.slice().includes(opt.id),
   }))
 
   const serviceDoorHandleData = store?.serviceDoors.handleTypes ?? []
   const serviceDoorHandleItems: ChecklistItem[] = DOOR_HARDWARE_HANDLE_OPTIONS.map((opt) => ({
     id: opt.id,
     label: opt.label,
-    checked: serviceDoorHandleData.includes(opt.id),
+    checked: serviceDoorHandleData.slice().includes(opt.id),
   }))
 
   const serviceDoorOperationData = store?.serviceDoors.operationTypes ?? []
   const serviceDoorOperationItems: ChecklistItem[] = DOOR_HARDWARE_OPERATION_OPTIONS.map((opt) => ({
     id: opt.id,
     label: opt.label,
-    checked: serviceDoorOperationData.includes(opt.id),
+    checked: serviceDoorOperationData.slice().includes(opt.id),
   }))
 
   const serviceDoorFrameData = store?.serviceDoors.frameTypes ?? []
   const serviceDoorFrameItems: ChecklistItem[] = DOOR_FRAME_OPTIONS.map((opt) => ({
     id: opt.id,
     label: opt.label,
-    checked: serviceDoorFrameData.includes(opt.id),
+    checked: serviceDoorFrameData.slice().includes(opt.id),
   }))
 
   // Hardware Type data
@@ -114,7 +114,7 @@ export const BuildingEnvelopeStep9Screen: FC<BuildingEnvelopeStep9ScreenProps> =
   const hardwareTypeItems: ChecklistItem[] = DOOR_HARDWARE_TYPE_OPTIONS.map((opt) => ({
     id: opt.id,
     label: opt.label,
-    checked: hardwareTypeData.includes(opt.id),
+    checked: hardwareTypeData.slice().includes(opt.id),
   }))
 
   // Balcony/Patio Door data
@@ -122,14 +122,14 @@ export const BuildingEnvelopeStep9Screen: FC<BuildingEnvelopeStep9ScreenProps> =
   const balconyDoorTypesItems: ChecklistItem[] = BALCONY_PATIO_DOOR_TYPE_OPTIONS.map((opt) => ({
     id: opt.id,
     label: opt.label,
-    checked: balconyDoorTypesData.includes(opt.id),
+    checked: balconyDoorTypesData.slice().includes(opt.id),
   }))
 
   const balconyDoorGlazingData = store?.balconyPatioDoor.glazing ?? []
   const balconyDoorGlazingItems: ChecklistItem[] = BALCONY_PATIO_DOOR_GLAZING_OPTIONS.map((opt) => ({
     id: opt.id,
     label: opt.label,
-    checked: balconyDoorGlazingData.includes(opt.id),
+    checked: balconyDoorGlazingData.slice().includes(opt.id),
   }))
 
   // Overhead Door data
@@ -137,21 +137,21 @@ export const BuildingEnvelopeStep9Screen: FC<BuildingEnvelopeStep9ScreenProps> =
   const overheadDoorMaterialItems: ChecklistItem[] = OVERHEAD_DOOR_MATERIAL_OPTIONS.map((opt) => ({
     id: opt.id,
     label: opt.label,
-    checked: overheadDoorMaterialData.includes(opt.id),
+    checked: overheadDoorMaterialData.slice().includes(opt.id),
   }))
 
   const overheadDoorStyleData = store?.overheadDoor.style ?? []
   const overheadDoorStyleItems: ChecklistItem[] = OVERHEAD_DOOR_STYLE_OPTIONS.map((opt) => ({
     id: opt.id,
     label: opt.label,
-    checked: overheadDoorStyleData.includes(opt.id),
+    checked: overheadDoorStyleData.slice().includes(opt.id),
   }))
 
   const overheadDoorOperationData = store?.overheadDoor.operation ?? []
   const overheadDoorOperationItems: ChecklistItem[] = OVERHEAD_DOOR_OPERATION_OPTIONS.map((opt) => ({
     id: opt.id,
     label: opt.label,
-    checked: overheadDoorOperationData.includes(opt.id),
+    checked: overheadDoorOperationData.slice().includes(opt.id),
   }))
 
   // Dock Equipment data
@@ -159,7 +159,7 @@ export const BuildingEnvelopeStep9Screen: FC<BuildingEnvelopeStep9ScreenProps> =
   const dockEquipmentItems: ChecklistItem[] = DOCK_EQUIPMENT_OPTIONS.map((opt) => ({
     id: opt.id,
     label: opt.label,
-    checked: dockEquipmentData.includes(opt.id),
+    checked: dockEquipmentData.slice().includes(opt.id),
   }))
 
   // Toggle handlers for Doors

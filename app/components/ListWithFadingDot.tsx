@@ -15,7 +15,7 @@ export const ListWithFadingDot: FC<Props> = (props) => {
   const [contentHeight, setContentHeight] = useState(1)
   const scrollY = useRef(new Animated.Value(0)).current
   const opacity = useRef(new Animated.Value(0)).current
-  const fadeTimeout = useRef<NodeJS.Timeout | null>(null)
+  const fadeTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   function handleScroll(e: any) {
     const y = e.nativeEvent.contentOffset.y || 0

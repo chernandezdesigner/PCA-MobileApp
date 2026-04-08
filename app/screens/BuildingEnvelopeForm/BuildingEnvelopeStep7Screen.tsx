@@ -1,5 +1,5 @@
 import { FC, useState } from "react"
-import { View, ViewStyle, ScrollView, TouchableOpacity } from "react-native"
+import { View, ViewStyle, TextStyle, ScrollView, TouchableOpacity } from "react-native"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
@@ -52,7 +52,7 @@ export const BuildingEnvelopeStep7Screen: FC<BuildingEnvelopeStep7ScreenProps> =
   const stairsExteriorItems: ChecklistItem[] = STAIRS_EXTERIOR_OPTIONS.map((opt) => ({
     id: opt.id,
     label: opt.label,
-    checked: stairsExteriorData.includes(opt.id),
+    checked: stairsExteriorData.slice().includes(opt.id),
   }))
 
   const toggleStairsExterior = (id: string, checked: boolean) => {
@@ -65,7 +65,7 @@ export const BuildingEnvelopeStep7Screen: FC<BuildingEnvelopeStep7ScreenProps> =
   const stairsExteriorRailingItems: ChecklistItem[] = BUILDING_STAIRS_BALCONIES_RAILING_OPTIONS.map((opt) => ({
     id: opt.id,
     label: opt.label,
-    checked: stairsExteriorRailingData.includes(opt.id),
+    checked: stairsExteriorRailingData.slice().includes(opt.id),
   }))
 
   const toggleStairsExteriorRailing = (id: string, checked: boolean) => {
@@ -79,7 +79,7 @@ export const BuildingEnvelopeStep7Screen: FC<BuildingEnvelopeStep7ScreenProps> =
   const stairsInteriorItems: ChecklistItem[] = STAIRS_INTERIOR_OPTIONS.map((opt) => ({
     id: opt.id,
     label: opt.label,
-    checked: stairsInteriorData.includes(opt.id),
+    checked: stairsInteriorData.slice().includes(opt.id),
   }))
 
   const toggleStairsInterior = (id: string, checked: boolean) => {
@@ -92,7 +92,7 @@ export const BuildingEnvelopeStep7Screen: FC<BuildingEnvelopeStep7ScreenProps> =
   const stairsInteriorRailingItems: ChecklistItem[] = BUILDING_STAIRS_BALCONIES_RAILING_OPTIONS.map((opt) => ({
     id: opt.id,
     label: opt.label,
-    checked: stairsInteriorRailingData.includes(opt.id),
+    checked: stairsInteriorRailingData.slice().includes(opt.id),
   }))
 
   const toggleStairsInteriorRailing = (id: string, checked: boolean) => {
@@ -106,7 +106,7 @@ export const BuildingEnvelopeStep7Screen: FC<BuildingEnvelopeStep7ScreenProps> =
   const balconyBalusterSpacingItems: ChecklistItem[] = BALCONY_BALUSTER_SPACING_OPTIONS.map((opt) => ({
     id: opt.id,
     label: opt.label,
-    checked: balconyBalusterSpacingData.includes(opt.id),
+    checked: balconyBalusterSpacingData.slice().includes(opt.id),
   }))
 
   const toggleBalconyBalusterSpacing = (id: string, checked: boolean) => {
@@ -440,8 +440,8 @@ export const BuildingEnvelopeStep7Screen: FC<BuildingEnvelopeStep7ScreenProps> =
             <View style={themed($sectionBody)}>
               <MaterialSection
                 title="Select Balcony Materials"
-                materials={BALCONY_OPTIONS}
-                selectedMaterials={store?.balconies.materials ?? new Map()}
+                materials={BALCONY_OPTIONS as unknown as { id: string; label: string }[]}
+                selectedMaterials={(store?.balconies.materials ?? new Map()) as Map<any, any>}
                 onToggleMaterial={(id, checked) => {
                   if (checked) {
                     store?.balconies.updateMaterial(id, {})
@@ -469,7 +469,7 @@ export const BuildingEnvelopeStep7Screen: FC<BuildingEnvelopeStep7ScreenProps> =
                     items={BUILDING_STAIRS_BALCONIES_RAILING_OPTIONS.map(opt => ({
                       id: opt.id,
                       label: opt.label,
-                      checked: store?.balconies.railingDetails?.railingTypes.includes(opt.id) ?? false,
+                      checked: store?.balconies.railingDetails?.railingTypes.slice().includes(opt.id) ?? false,
                     }))}
                     onToggle={(id, checked) => {
                       const current = store?.balconies.railingDetails?.railingTypes ?? []
@@ -579,8 +579,8 @@ export const BuildingEnvelopeStep7Screen: FC<BuildingEnvelopeStep7ScreenProps> =
             <View style={themed($sectionBody)}>
               <MaterialSection
                 title="Select Patio/Plaza Materials"
-                materials={PATIO_PLAZA_OPTIONS}
-                selectedMaterials={store?.patiosPlaza.materials ?? new Map()}
+                materials={PATIO_PLAZA_OPTIONS as unknown as { id: string; label: string }[]}
+                selectedMaterials={(store?.patiosPlaza.materials ?? new Map()) as Map<any, any>}
                 onToggleMaterial={(id, checked) => {
                   if (checked) {
                     store?.patiosPlaza.updateMaterial(id, {})
@@ -608,7 +608,7 @@ export const BuildingEnvelopeStep7Screen: FC<BuildingEnvelopeStep7ScreenProps> =
                     items={BUILDING_STAIRS_BALCONIES_RAILING_OPTIONS.map(opt => ({
                       id: opt.id,
                       label: opt.label,
-                      checked: store?.patiosPlaza.railingDetails?.railingTypes.includes(opt.id) ?? false,
+                      checked: store?.patiosPlaza.railingDetails?.railingTypes.slice().includes(opt.id) ?? false,
                     }))}
                     onToggle={(id, checked) => {
                       const current = store?.patiosPlaza.railingDetails?.railingTypes ?? []
@@ -757,42 +757,42 @@ const $materialSectionContainer: ViewStyle = {
   gap: 12,
 }
 
-const $materialSectionTitle: ViewStyle = {
+const $materialSectionTitle: TextStyle = {
   fontSize: 16,
   fontWeight: "600",
   marginBottom: 8,
 }
 
-const $materialCard: ViewStyle = {
+const $materialCard: ThemedStyle<ViewStyle> = ({ colors }) => ({
   borderWidth: 1,
-  borderColor: "#e5e7eb",
+  borderColor: colors.palette.neutral300,
   borderRadius: 8,
   padding: 12,
   gap: 12,
-}
+})
 
-const $materialAssessment: ViewStyle = {
+const $materialAssessment: ThemedStyle<ViewStyle> = ({ colors }) => ({
   gap: 12,
   paddingTop: 8,
   borderTopWidth: 1,
-  borderTopColor: "#e5e7eb",
-}
+  borderTopColor: colors.palette.neutral300,
+})
 
-const $divider: ViewStyle = {
+const $divider: ThemedStyle<ViewStyle> = ({ colors }) => ({
   height: 1,
-  backgroundColor: "#e5e7eb",
+  backgroundColor: colors.palette.neutral300,
   marginVertical: 8,
-}
+})
 
-const $nestedSection: ViewStyle = {
-  backgroundColor: "#f9fafb",
+const $nestedSection: ThemedStyle<ViewStyle> = ({ colors }) => ({
+  backgroundColor: colors.palette.neutral100,
   padding: 12,
   borderRadius: 8,
   gap: 12,
   marginTop: 8,
-}
+})
 
-const $subSectionTitle: ViewStyle = {
+const $subSectionTitle: TextStyle = {
   fontSize: 16,
   fontWeight: "600",
   marginTop: 16,

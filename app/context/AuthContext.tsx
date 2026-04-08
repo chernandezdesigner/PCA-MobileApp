@@ -10,6 +10,7 @@ export type AuthContextType = {
   signIn: (email: string, password: string) => Promise<{ error?: string }>
   signUp: (email: string, password: string) => Promise<{ error?: string }>
   signOut: () => Promise<void>
+  logout: () => Promise<void>
   error: string | null
 }
 
@@ -124,6 +125,7 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({ childre
     signIn,
     signUp,
     signOut,
+    logout: signOut,
     error,
   }
 

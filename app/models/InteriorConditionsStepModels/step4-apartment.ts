@@ -1,4 +1,4 @@
-import { types } from "mobx-state-tree"
+import { types, Instance } from "mobx-state-tree"
 import { ConditionAssessment } from "../SharedModels"
 
 // ============================================
@@ -455,6 +455,38 @@ export const ApartmentFurnishedItemsAccordionModel = types.model("ApartmentFurni
     },
   }))
 
+// ============================================================
+// Unit Types Table Model
+// ============================================================
+export const ApartmentUnitTypeRowModel = types.model("ApartmentUnitTypeRow", {
+  id: types.identifier,
+  unitType: types.optional(types.string, ""),
+  number: types.optional(types.number, 0),
+  vacant: types.optional(types.number, 0),
+  occupied: types.optional(types.number, 0),
+  down: types.optional(types.number, 0),
+  squareFoot: types.optional(types.number, 0),
+}).actions((self) => ({
+  update(data: Partial<Omit<Instance<typeof ApartmentUnitTypeRowModel>, "id">>) {
+    Object.assign(self, data)
+  },
+}))
+
+// ============================================================
+// Units Observed Table Model (16 fixed rows)
+// ============================================================
+export const ApartmentUnitObservedRowModel = types.model("ApartmentUnitObservedRow", {
+  id: types.identifier,
+  rowNumber: types.optional(types.number, 0),
+  unitObserved: types.optional(types.string, ""),
+  status: types.optional(types.string, ""),
+  observation: types.optional(types.string, ""),
+}).actions((self) => ({
+  update(data: Partial<Omit<Instance<typeof ApartmentUnitObservedRowModel>, "id">>) {
+    Object.assign(self, data)
+  },
+}))
+
 // ============================================
 // APARTMENT PROPERTY SUB-MODEL
 // ============================================
@@ -484,6 +516,19 @@ export const ApartmentPropertyModel = types.model("ApartmentProperty", {
   kitchenEquipment: types.optional(ApartmentKitchenEquipmentAccordionModel, {}),
   bathroom: types.optional(ApartmentBathroomAccordionModel, {}),
   furnishedItems: types.optional(ApartmentFurnishedItemsAccordionModel, {}),
+
+  // Unit Tables
+  unitTypes: types.optional(types.array(ApartmentUnitTypeRowModel), () => [
+    ApartmentUnitTypeRowModel.create({ id: "apt-ut-1", unitType: "Studio" }),
+    ApartmentUnitTypeRowModel.create({ id: "apt-ut-2", unitType: "1BR" }),
+    ApartmentUnitTypeRowModel.create({ id: "apt-ut-3", unitType: "2BR" }),
+    ApartmentUnitTypeRowModel.create({ id: "apt-ut-4", unitType: "3BR" }),
+  ]),
+  unitsObserved: types.optional(types.array(ApartmentUnitObservedRowModel), () =>
+    Array.from({ length: 16 }, (_, i) =>
+      ApartmentUnitObservedRowModel.create({ id: `apt-uo-${i + 1}`, rowNumber: i + 1 })
+    )
+  ),
 })
   .actions((self) => ({
     updateUnitFinishes(data: Parameters<typeof self.unitFinishes.updateAccordion>[0]) {
@@ -537,4 +582,25 @@ export const ApartmentPropertyModel = types.model("ApartmentProperty", {
     updateFurnishedItems(data: Parameters<typeof self.furnishedItems.updateAccordion>[0]) {
       self.furnishedItems.updateAccordion(data)
     },
+    addUnitType() {
+      if (self.unitTypes.length < 10) {
+        const id = `apt-ut-${Date.now()}`
+        self.unitTypes.push(ApartmentUnitTypeRowModel.create({ id }))
+      }
+    },
+    removeUnitType(id: string) {
+      const idx = self.unitTypes.findIndex((u) => u.id === id)
+      if (idx !== -1) self.unitTypes.splice(idx, 1)
+    },
+    updateUnitType(id: string, data: { unitType?: string; number?: number; vacant?: number; occupied?: number; down?: number; squareFoot?: number }) {
+      const row = self.unitTypes.find((u) => u.id === id)
+      if (row) row.update(data)
+    },
+    updateUnitObserved(id: string, data: { unitObserved?: string; status?: string; observation?: string }) {
+      const row = self.unitsObserved.find((u) => u.id === id)
+      if (row) row.update(data)
+    },
   }))
+
+export type ApartmentUnitTypeRowInstance = Instance<typeof ApartmentUnitTypeRowModel>
+export type ApartmentUnitObservedRowInstance = Instance<typeof ApartmentUnitObservedRowModel>

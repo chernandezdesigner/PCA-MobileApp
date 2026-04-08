@@ -80,7 +80,7 @@ export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = obs
   }, [rootStore.activeAssessmentId]) // Only reset when switching assessments
 
   // Autosave with small debounce
-  const debounceRef = useRef<NodeJS.Timeout | null>(null)
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   useEffect(() => {
     const subscription = watch((values) => {
       if (debounceRef.current) clearTimeout(debounceRef.current)

@@ -6,6 +6,7 @@ import { TextField } from "@/components/TextField"
 import { ConditionAssessment } from "@/components/ConditionAssessment"
 import { RepairStatus } from "@/components/RepairStatus"
 import { SectionAccordion } from "@/components/SectionAccordion"
+import { Button } from "@/components/Button"
 import { ChecklistField } from "@/components/ChecklistField"
 import type { ChecklistItem } from "@/components/ChecklistCard"
 import { HeaderBar } from "@/components/HeaderBar"
@@ -326,6 +327,131 @@ const HotelAccordions: FC<{
 
   return (
     <>
+      {/* Unit Types */}
+      <SectionAccordion
+        title="Unit Types"
+        expanded={openKey === "hotel-unit-types"}
+        onToggle={(n) => setOpenKey(n ? "hotel-unit-types" : null)}
+      >
+        <View style={$unitTypeNumericLabels}>
+          <Text style={$unitTypeNumericLabel} text="No." />
+          <Text style={$unitTypeNumericLabel} text="Vacant" />
+          <Text style={$unitTypeNumericLabel} text="Occupied" />
+          <Text style={$unitTypeNumericLabel} text="Down" />
+          <Text style={$unitTypeNumericLabel} text="Sq.Ft." />
+        </View>
+        {hotel?.unitTypes.map((row) => (
+          <View key={row.id} style={$unitTypeRow}>
+            <View style={$unitTypeTopLine}>
+              <TextField
+                containerStyle={$unitTypeNameInput}
+                value={row.unitType}
+                onChangeText={(v) => store?.hotel.updateUnitType(row.id, { unitType: v })}
+                placeholder="Unit type (e.g. Studio)"
+              />
+              {(hotel?.unitTypes.length ?? 0) > 1 && (
+                <TouchableOpacity
+                  style={$unitTypeDeleteBtn}
+                  onPress={() => store?.hotel.removeUnitType(row.id)}
+                  accessibilityLabel={`Remove ${row.unitType || "unit type"} row`}
+                >
+                  <Text text="✕" style={$unitTypeDeleteBtnText} />
+                </TouchableOpacity>
+              )}
+            </View>
+            <View style={$unitTypeNumericRow}>
+              <TextField
+                containerStyle={$unitTypeNumericInput}
+                value={row.number > 0 ? String(row.number) : ""}
+                onChangeText={(v) => store?.hotel.updateUnitType(row.id, { number: parseInt(v) || 0 })}
+                keyboardType="numeric"
+                placeholder="0"
+              />
+              <TextField
+                containerStyle={$unitTypeNumericInput}
+                value={row.vacant > 0 ? String(row.vacant) : ""}
+                onChangeText={(v) => store?.hotel.updateUnitType(row.id, { vacant: parseInt(v) || 0 })}
+                keyboardType="numeric"
+                placeholder="0"
+              />
+              <TextField
+                containerStyle={$unitTypeNumericInput}
+                value={row.occupied > 0 ? String(row.occupied) : ""}
+                onChangeText={(v) => store?.hotel.updateUnitType(row.id, { occupied: parseInt(v) || 0 })}
+                keyboardType="numeric"
+                placeholder="0"
+              />
+              <TextField
+                containerStyle={$unitTypeNumericInput}
+                value={row.down > 0 ? String(row.down) : ""}
+                onChangeText={(v) => store?.hotel.updateUnitType(row.id, { down: parseInt(v) || 0 })}
+                keyboardType="numeric"
+                placeholder="0"
+              />
+              <TextField
+                containerStyle={$unitTypeNumericInput}
+                value={row.squareFoot > 0 ? String(row.squareFoot) : ""}
+                onChangeText={(v) => store?.hotel.updateUnitType(row.id, { squareFoot: parseFloat(v) || 0 })}
+                keyboardType="decimal-pad"
+                placeholder="0"
+              />
+            </View>
+          </View>
+        ))}
+        {(hotel?.unitTypes.length ?? 0) < 10 && (
+          <Button
+            text="+ Add Unit Type"
+            onPress={() => store?.hotel.addUnitType()}
+            style={$addUnitTypeBtn}
+          />
+        )}
+      </SectionAccordion>
+
+      {/* Units Observed */}
+      <SectionAccordion
+        title="Units Observed"
+        expanded={openKey === "hotel-units-observed"}
+        onToggle={(n) => setOpenKey(n ? "hotel-units-observed" : null)}
+      >
+        {hotel?.unitsObserved.map((row) => (
+          <View key={row.id} style={$unitObservedRow}>
+            <Text style={$unitObservedRowNum} text={String(row.rowNumber)} />
+            <TextField
+              containerStyle={$unitObservedUnitInput}
+              value={row.unitObserved}
+              onChangeText={(v) => store?.hotel.updateUnitObserved(row.id, { unitObserved: v })}
+              placeholder="Unit #"
+            />
+            <View style={$unitObservedStatusChips}>
+              {(["vacant", "occupied", "down"] as const).map((s) => (
+                <TouchableOpacity
+                  key={s}
+                  style={[
+                    $unitObservedChip,
+                    row.status === s && $unitObservedChipActive,
+                  ]}
+                  onPress={() =>
+                    store?.hotel.updateUnitObserved(row.id, { status: row.status === s ? "" : s })
+                  }
+                  accessibilityLabel={`Mark unit as ${s}`}
+                >
+                  <Text
+                    text={s[0].toUpperCase()}
+                    style={row.status === s ? $unitObservedChipTextActive : $unitObservedChipText}
+                  />
+                </TouchableOpacity>
+              ))}
+            </View>
+            <TextField
+              containerStyle={$unitObservedObsInput}
+              value={row.observation}
+              onChangeText={(v) => store?.hotel.updateUnitObserved(row.id, { observation: v })}
+              placeholder="Observation..."
+            />
+          </View>
+        ))}
+      </SectionAccordion>
+
       {/* 1. Unit Finishes */}
       <SectionAccordion
         title="Unit Finishes"
@@ -1139,6 +1265,131 @@ const ApartmentAccordions: FC<{
 
   return (
     <>
+      {/* Unit Types */}
+      <SectionAccordion
+        title="Unit Types"
+        expanded={openKey === "apt-unit-types"}
+        onToggle={(n) => setOpenKey(n ? "apt-unit-types" : null)}
+      >
+        <View style={$unitTypeNumericLabels}>
+          <Text style={$unitTypeNumericLabel} text="No." />
+          <Text style={$unitTypeNumericLabel} text="Vacant" />
+          <Text style={$unitTypeNumericLabel} text="Occupied" />
+          <Text style={$unitTypeNumericLabel} text="Down" />
+          <Text style={$unitTypeNumericLabel} text="Sq.Ft." />
+        </View>
+        {apt?.unitTypes.map((row) => (
+          <View key={row.id} style={$unitTypeRow}>
+            <View style={$unitTypeTopLine}>
+              <TextField
+                containerStyle={$unitTypeNameInput}
+                value={row.unitType}
+                onChangeText={(v) => store?.apartment.updateUnitType(row.id, { unitType: v })}
+                placeholder="Unit type (e.g. Studio)"
+              />
+              {(apt?.unitTypes.length ?? 0) > 1 && (
+                <TouchableOpacity
+                  style={$unitTypeDeleteBtn}
+                  onPress={() => store?.apartment.removeUnitType(row.id)}
+                  accessibilityLabel={`Remove ${row.unitType || "unit type"} row`}
+                >
+                  <Text text="✕" style={$unitTypeDeleteBtnText} />
+                </TouchableOpacity>
+              )}
+            </View>
+            <View style={$unitTypeNumericRow}>
+              <TextField
+                containerStyle={$unitTypeNumericInput}
+                value={row.number > 0 ? String(row.number) : ""}
+                onChangeText={(v) => store?.apartment.updateUnitType(row.id, { number: parseInt(v) || 0 })}
+                keyboardType="numeric"
+                placeholder="0"
+              />
+              <TextField
+                containerStyle={$unitTypeNumericInput}
+                value={row.vacant > 0 ? String(row.vacant) : ""}
+                onChangeText={(v) => store?.apartment.updateUnitType(row.id, { vacant: parseInt(v) || 0 })}
+                keyboardType="numeric"
+                placeholder="0"
+              />
+              <TextField
+                containerStyle={$unitTypeNumericInput}
+                value={row.occupied > 0 ? String(row.occupied) : ""}
+                onChangeText={(v) => store?.apartment.updateUnitType(row.id, { occupied: parseInt(v) || 0 })}
+                keyboardType="numeric"
+                placeholder="0"
+              />
+              <TextField
+                containerStyle={$unitTypeNumericInput}
+                value={row.down > 0 ? String(row.down) : ""}
+                onChangeText={(v) => store?.apartment.updateUnitType(row.id, { down: parseInt(v) || 0 })}
+                keyboardType="numeric"
+                placeholder="0"
+              />
+              <TextField
+                containerStyle={$unitTypeNumericInput}
+                value={row.squareFoot > 0 ? String(row.squareFoot) : ""}
+                onChangeText={(v) => store?.apartment.updateUnitType(row.id, { squareFoot: parseFloat(v) || 0 })}
+                keyboardType="decimal-pad"
+                placeholder="0"
+              />
+            </View>
+          </View>
+        ))}
+        {(apt?.unitTypes.length ?? 0) < 10 && (
+          <Button
+            text="+ Add Unit Type"
+            onPress={() => store?.apartment.addUnitType()}
+            style={$addUnitTypeBtn}
+          />
+        )}
+      </SectionAccordion>
+
+      {/* Units Observed */}
+      <SectionAccordion
+        title="Units Observed"
+        expanded={openKey === "apt-units-observed"}
+        onToggle={(n) => setOpenKey(n ? "apt-units-observed" : null)}
+      >
+        {apt?.unitsObserved.map((row) => (
+          <View key={row.id} style={$unitObservedRow}>
+            <Text style={$unitObservedRowNum} text={String(row.rowNumber)} />
+            <TextField
+              containerStyle={$unitObservedUnitInput}
+              value={row.unitObserved}
+              onChangeText={(v) => store?.apartment.updateUnitObserved(row.id, { unitObserved: v })}
+              placeholder="Unit #"
+            />
+            <View style={$unitObservedStatusChips}>
+              {(["vacant", "occupied", "down"] as const).map((s) => (
+                <TouchableOpacity
+                  key={s}
+                  style={[
+                    $unitObservedChip,
+                    row.status === s && $unitObservedChipActive,
+                  ]}
+                  onPress={() =>
+                    store?.apartment.updateUnitObserved(row.id, { status: row.status === s ? "" : s })
+                  }
+                  accessibilityLabel={`Mark unit as ${s}`}
+                >
+                  <Text
+                    text={s[0].toUpperCase()}
+                    style={row.status === s ? $unitObservedChipTextActive : $unitObservedChipText}
+                  />
+                </TouchableOpacity>
+              ))}
+            </View>
+            <TextField
+              containerStyle={$unitObservedObsInput}
+              value={row.observation}
+              onChangeText={(v) => store?.apartment.updateUnitObserved(row.id, { observation: v })}
+              placeholder="Observation..."
+            />
+          </View>
+        ))}
+      </SectionAccordion>
+
       {/* 1. Unit Finishes */}
       <StandardFinishesAccordion
         title="Unit Finishes"
@@ -2112,3 +2363,108 @@ const $naButtonText = (isActive: boolean): ThemedStyle<TextStyle> => ({ colors }
   fontSize: 12,
   fontWeight: "600",
 })
+
+// ============================================
+// UNIT TYPES TABLE STYLES
+// ============================================
+
+const $unitTypeRow: ViewStyle = {
+  marginBottom: 12,
+  borderBottomWidth: 1,
+  borderBottomColor: "#e5e5e5",
+  paddingBottom: 8,
+}
+
+const $unitTypeTopLine: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  gap: 6,
+}
+
+const $unitTypeNameInput: ViewStyle = { flex: 1 }
+
+const $unitTypeDeleteBtn: ViewStyle = {
+  width: 32,
+  height: 32,
+  justifyContent: "center",
+  alignItems: "center",
+}
+
+const $unitTypeDeleteBtnText: TextStyle = { fontSize: 16, color: "#cc0000" }
+
+const $unitTypeNumericLabels: ViewStyle = {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  paddingHorizontal: 2,
+  marginBottom: 2,
+}
+
+const $unitTypeNumericLabel: TextStyle = {
+  flex: 1,
+  fontSize: 10,
+  fontWeight: "600",
+  textAlign: "center",
+  color: "#666",
+}
+
+const $unitTypeNumericRow: ViewStyle = {
+  flexDirection: "row",
+  gap: 4,
+  marginTop: 4,
+}
+
+const $unitTypeNumericInput: ViewStyle = { flex: 1 }
+
+const $addUnitTypeBtn: ViewStyle = { marginTop: 8, alignSelf: "flex-start" }
+
+// ============================================
+// UNITS OBSERVED TABLE STYLES
+// ============================================
+
+const $unitObservedRow: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  gap: 6,
+  marginBottom: 6,
+}
+
+const $unitObservedRowNum: TextStyle = {
+  width: 20,
+  fontSize: 12,
+  color: "#666",
+  textAlign: "right",
+}
+
+const $unitObservedUnitInput: ViewStyle = { width: 64 }
+
+const $unitObservedStatusChips: ViewStyle = {
+  flexDirection: "row",
+  gap: 3,
+}
+
+const $unitObservedChip: ViewStyle = {
+  width: 26,
+  height: 26,
+  borderRadius: 13,
+  backgroundColor: "#e0e0e0",
+  justifyContent: "center",
+  alignItems: "center",
+}
+
+const $unitObservedChipActive: ViewStyle = {
+  backgroundColor: "#2563eb",
+}
+
+const $unitObservedChipText: TextStyle = {
+  fontSize: 10,
+  fontWeight: "700",
+  color: "#555",
+}
+
+const $unitObservedChipTextActive: TextStyle = {
+  fontSize: 10,
+  fontWeight: "700",
+  color: "#fff",
+}
+
+const $unitObservedObsInput: ViewStyle = { flex: 1 }

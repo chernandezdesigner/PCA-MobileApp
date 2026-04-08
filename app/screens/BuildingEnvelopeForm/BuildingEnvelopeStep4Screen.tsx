@@ -49,49 +49,49 @@ export const BuildingEnvelopeStep4Screen: FC<BuildingEnvelopeStep4ScreenProps> =
   const [openKey, setOpenKey] = useState<string | null>(null)
 
   // Transform data for checklist fields
-  const materialData = store?.material.materials ?? []
+  const materialData: string[] = store?.material.materials.slice() ?? []
   const materialItems: ChecklistItem[] = EXTERIOR_WALL_MATERIAL_OPTIONS.map((opt) => ({
     id: opt.id,
     label: opt.label,
     checked: materialData.includes(opt.id),
   }))
 
-  const sidingData = store?.siding.siding ?? []
+  const sidingData: string[] = store?.siding.siding.slice() ?? []
   const sidingItems: ChecklistItem[] = SIDING_OPTIONS.map((opt) => ({
     id: opt.id,
     label: opt.label,
     checked: sidingData.includes(opt.id),
   }))
 
-  const soffitData = store?.soffit.soffit ?? []
+  const soffitData: string[] = store?.soffit.soffit.slice() ?? []
   const soffitItems: ChecklistItem[] = SOFFIT_OPTIONS.map((opt) => ({
     id: opt.id,
     label: opt.label,
     checked: soffitData.includes(opt.id),
   }))
 
-  const sealantData = store?.sealant.sealant ?? []
+  const sealantData: string[] = store?.sealant.sealant.slice() ?? []
   const sealantItems: ChecklistItem[] = SEALANT_OPTIONS.map((opt) => ({
     id: opt.id,
     label: opt.label,
     checked: sealantData.includes(opt.id),
   }))
 
-  const glazingData = store?.curtainWall.glazing ?? []
+  const glazingData: string[] = store?.curtainWall.glazing.slice() ?? []
   const glazingItems: ChecklistItem[] = CURTAIN_WALL_GLAZING_OPTIONS.map((opt) => ({
     id: opt.id,
     label: opt.label,
     checked: glazingData.includes(opt.id),
   }))
 
-  const spandrelData = store?.curtainWall.spandrels ?? []
+  const spandrelData: string[] = store?.curtainWall.spandrels.slice() ?? []
   const spandrelItems: ChecklistItem[] = CURTAIN_WALL_SPANDREL_OPTIONS.map((opt) => ({
     id: opt.id,
     label: opt.label,
     checked: spandrelData.includes(opt.id),
   }))
 
-  const mullionData = store?.curtainWall.mullions ?? []
+  const mullionData: string[] = store?.curtainWall.mullions.slice() ?? []
   const mullionItems: ChecklistItem[] = CURTAIN_WALL_MULLION_OPTIONS.map((opt) => ({
     id: opt.id,
     label: opt.label,

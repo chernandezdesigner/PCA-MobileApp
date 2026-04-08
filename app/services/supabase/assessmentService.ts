@@ -15,10 +15,9 @@ export class AssessmentService {
     success: boolean
     error?: string
     assessmentId?: string
+    failedPhotoCount?: number
   }> {
     try {
-      console.log('📤 Starting assessment submission...')
-
       // Get current user
       const { data: { user }, error: userError } = await supabase.auth.getUser()
       if (userError || !user) {
@@ -27,7 +26,6 @@ export class AssessmentService {
 
       // Get assessment snapshot
       const snapshot = getSnapshot(assessment)
-      console.log('📋 Assessment snapshot:', snapshot.id)
 
       // 1. Insert/Update assessment record
       // Use local_id as the unique identifier for upserts (it's our custom MST ID)
@@ -47,13 +45,8 @@ export class AssessmentService {
         .single()
 
       if (assessmentError) {
-        console.error('❌ Assessment insert error:', assessmentError)
         throw assessmentError
       }
-
-      console.log('✅ Assessment record saved')
-      console.log('   📝 Local ID:', snapshot.id)
-      console.log('   🆔 Supabase UUID:', assessmentData.id)
 
       // Use the Supabase-generated UUID for foreign key references
       const supabaseAssessmentId = assessmentData.id
@@ -119,11 +112,8 @@ export class AssessmentService {
           })
 
         if (projectError) {
-          console.error('❌ Project summary error:', projectError)
           throw projectError
         }
-
-        console.log('✅ Project summary saved')
       }
 
       // 3. Insert/Update site_grounds
@@ -144,11 +134,8 @@ export class AssessmentService {
           })
 
         if (siteError) {
-          console.error('❌ Site grounds error:', siteError)
           throw siteError
         }
-
-        console.log('✅ Site grounds saved')
       }
 
       // 4. Insert/Update building_envelope
@@ -161,7 +148,7 @@ export class AssessmentService {
             step1: be.step1 || {},
             step2: be.step2 || {},
             // Combine step3 and step3B into step3 JSONB
-            step3: { ...be.step3, step3B: be.step3B } || {},
+            step3: { ...be.step3, step3B: be.step3B },
             step4: be.step4 || {},
             step5: be.step5 || {},
             step6: be.step6 || {},
@@ -178,11 +165,8 @@ export class AssessmentService {
           })
 
         if (buildingError) {
-          console.error('❌ Building envelope error:', buildingError)
           throw buildingError
         }
-
-        console.log('✅ Building envelope saved')
       }
 
       // 5. Insert/Update mechanical_systems
@@ -208,40 +192,35 @@ export class AssessmentService {
           })
 
         if (mechanicalError) {
-          console.error('❌ Mechanical systems error:', mechanicalError)
           throw mechanicalError
         }
-
-        console.log('✅ Mechanical systems saved')
       }
 
       // 6. Upload photos (failures warn but do not fail submission)
+      let failedPhotoCount = 0
       if (snapshot.photoStore) {
         try {
           const allPhotos = Object.values(snapshot.photoStore.photos || {}) as any[]
           if (allPhotos.length > 0) {
-            console.log(`📷 Uploading ${allPhotos.length} photos...`)
             const photoResult = await PhotoService.uploadAllPhotos({
               photos: allPhotos,
               assessmentId: supabaseAssessmentId,
               userId: user.id,
             })
-            console.log(`✅ Photos: ${photoResult.uploaded} uploaded, ${photoResult.failed} failed`)
+            failedPhotoCount = photoResult.failed
           }
-        } catch (photoError: any) {
-          console.warn('⚠️ Photo upload error (non-blocking):', photoError.message)
+        } catch (_photoError) {
+          // Non-blocking: photo upload errors do not fail the assessment submission
         }
       }
-
-      console.log('🎉 Assessment submitted successfully!')
 
       return {
         success: true,
         assessmentId: supabaseAssessmentId, // Return the Supabase UUID
+        failedPhotoCount,
       }
 
     } catch (error: any) {
-      console.error('❌ Submission error:', error)
       return {
         success: false,
         error: error.message || 'Failed to submit assessment',
@@ -284,7 +263,6 @@ export class AssessmentService {
       }
 
     } catch (error: any) {
-      console.error('❌ Fetch error:', error)
       return {
         success: false,
         error: error.message || 'Failed to fetch assessments',
@@ -307,12 +285,9 @@ export class AssessmentService {
 
       if (error) throw error
 
-      console.log('✅ Assessment deleted')
-
       return { success: true }
 
     } catch (error: any) {
-      console.error('❌ Delete error:', error)
       return {
         success: false,
         error: error.message || 'Failed to delete assessment',

@@ -1,4 +1,4 @@
-import { types } from "mobx-state-tree"
+import { types, Instance } from "mobx-state-tree"
 import { ConditionAssessment } from "../SharedModels"
 
 // ============================================
@@ -434,6 +434,38 @@ export const HotelGuestRoomBathroomAccordionModel = types.model("HotelGuestRoomB
     },
   }))
 
+// ============================================================
+// Unit Types Table Model
+// ============================================================
+export const HotelUnitTypeRowModel = types.model("HotelUnitTypeRow", {
+  id: types.identifier,
+  unitType: types.optional(types.string, ""),
+  number: types.optional(types.number, 0),
+  vacant: types.optional(types.number, 0),
+  occupied: types.optional(types.number, 0),
+  down: types.optional(types.number, 0),
+  squareFoot: types.optional(types.number, 0),
+}).actions((self) => ({
+  update(data: Partial<Omit<Instance<typeof HotelUnitTypeRowModel>, "id">>) {
+    Object.assign(self, data)
+  },
+}))
+
+// ============================================================
+// Units Observed Table Model (16 fixed rows)
+// ============================================================
+export const HotelUnitObservedRowModel = types.model("HotelUnitObservedRow", {
+  id: types.identifier,
+  rowNumber: types.optional(types.number, 0),
+  unitObserved: types.optional(types.string, ""),
+  status: types.optional(types.string, ""), // "vacant" | "occupied" | "down" | ""
+  observation: types.optional(types.string, ""),
+}).actions((self) => ({
+  update(data: Partial<Omit<Instance<typeof HotelUnitObservedRowModel>, "id">>) {
+    Object.assign(self, data)
+  },
+}))
+
 // ============================================
 // HOTEL PROPERTY SUB-MODEL
 // ============================================
@@ -460,6 +492,19 @@ export const HotelPropertyModel = types.model("HotelProperty", {
   guestRoomHardGoods: types.optional(HotelGuestRoomHardGoodsAccordionModel, {}),
   guestRoomKitchen: types.optional(HotelGuestRoomKitchenAccordionModel, {}),
   guestRoomBathroom: types.optional(HotelGuestRoomBathroomAccordionModel, {}),
+
+  // Unit Tables
+  unitTypes: types.optional(types.array(HotelUnitTypeRowModel), () => [
+    HotelUnitTypeRowModel.create({ id: "hotel-ut-1", unitType: "Studio" }),
+    HotelUnitTypeRowModel.create({ id: "hotel-ut-2", unitType: "1BR" }),
+    HotelUnitTypeRowModel.create({ id: "hotel-ut-3", unitType: "2BR" }),
+    HotelUnitTypeRowModel.create({ id: "hotel-ut-4", unitType: "Suite" }),
+  ]),
+  unitsObserved: types.optional(types.array(HotelUnitObservedRowModel), () =>
+    Array.from({ length: 16 }, (_, i) =>
+      HotelUnitObservedRowModel.create({ id: `hotel-uo-${i + 1}`, rowNumber: i + 1 })
+    )
+  ),
 })
   .actions((self) => ({
     updateUnitFinishes(data: Parameters<typeof self.unitFinishes.updateAccordion>[0]) {
@@ -510,4 +555,25 @@ export const HotelPropertyModel = types.model("HotelProperty", {
     updateGuestRoomBathroom(data: Parameters<typeof self.guestRoomBathroom.updateAccordion>[0]) {
       self.guestRoomBathroom.updateAccordion(data)
     },
+    addUnitType() {
+      if (self.unitTypes.length < 10) {
+        const id = `hotel-ut-${Date.now()}`
+        self.unitTypes.push(HotelUnitTypeRowModel.create({ id }))
+      }
+    },
+    removeUnitType(id: string) {
+      const idx = self.unitTypes.findIndex((u) => u.id === id)
+      if (idx !== -1) self.unitTypes.splice(idx, 1)
+    },
+    updateUnitType(id: string, data: { unitType?: string; number?: number; vacant?: number; occupied?: number; down?: number; squareFoot?: number }) {
+      const row = self.unitTypes.find((u) => u.id === id)
+      if (row) row.update(data)
+    },
+    updateUnitObserved(id: string, data: { unitObserved?: string; status?: string; observation?: string }) {
+      const row = self.unitsObserved.find((u) => u.id === id)
+      if (row) row.update(data)
+    },
   }))
+
+export type HotelUnitTypeRowInstance = Instance<typeof HotelUnitTypeRowModel>
+export type HotelUnitObservedRowInstance = Instance<typeof HotelUnitObservedRowModel>

@@ -10,6 +10,7 @@ You are the Code Continuity Manager for the PCA Mobile App. Your responsibility 
 3. Maintain reusable component library
 4. Enforce coding standards
 5. Clean up unused code
+6. Conduct pre-launch quality audits
 
 ## Responsibilities
 
@@ -44,32 +45,144 @@ Flag these patterns:
 - Unused imports
 - Dead code paths
 
-### 4. Refactoring Opportunities
-Identify candidates for:
-- Extracting shared accordion patterns
-- Creating generic form field components
-- Consolidating similar MST models
-- Reducing screen boilerplate
+---
 
-## Current Task: Interior Conditions Form Review
+## Active Tasks
 
-### Pre-Implementation Checklist
-Before Step 4 implementation:
-1. [ ] Review existing Step 1-3 models for patterns
-2. [ ] Identify reusable accordion patterns
-3. [ ] Check for duplicate code in constants
-4. [ ] Verify component library has all needed components
+---
 
-### Post-Implementation Checklist
-After Step 4 implementation:
-1. [ ] No duplicate accordion models
-2. [ ] All screens follow same structure
-3. [ ] No unused imports
-4. [ ] Consistent naming conventions
-5. [ ] Types properly exported
-6. [ ] No hardcoded values
+### Task 2A: Pre-Launch Screen & Component Audit
+
+**Status: TODO — runs in parallel with Task 2B (backend-agent)**
+
+**Scope:** All files in `app/screens/` and `app/components/`
+
+**Checklist:**
+
+#### Screen Audit (for each screen file):
+- [ ] `observer()` wrapper present
+- [ ] Store access guards null check: `rootStore.activeAssessmentId ? rootStore.assessments.get(...)?.formStore.step : undefined`
+- [ ] No direct MST mutations outside actions (no `store.field = value` in screen code)
+- [ ] Navigation calls use correct screen names (no typos)
+- [ ] All async operations (photo upload, form submit) have try/catch + user feedback
+- [ ] No `console.log` left in production code (or at minimum flag for removal)
+- [ ] No hardcoded strings that should be constants
+- [ ] Loading states for async operations
+- [ ] Error states with user-readable messages
+- [ ] Placeholder/TODO screens that aren't functional
+
+#### Component Audit (for each component file):
+- [ ] TypeScript props fully typed (no `any`)
+- [ ] Accessibility props on interactive elements (`accessibilityLabel`)
+- [ ] Touch targets meet 44×44 minimum
+- [ ] No inline styles with hardcoded colors
+
+#### Photo Feature Audit (priority — most recently added):
+- [ ] Camera permission handling (deny state handled gracefully)
+- [ ] Gallery permission handling
+- [ ] Upload error state — does user see feedback if upload fails?
+- [ ] Photo displays in gallery after capture
+- [ ] Notes save correctly with photos
+- [ ] Photos associated with correct assessment ID
+- [ ] Max photo count enforced or handled
+- [ ] Offline behavior — what happens if submit attempted offline?
+
+**Output Format:**
+```markdown
+## Screen Audit Report
+
+### Critical Issues (must fix before TestFlight)
+1. [File:line] Description
+
+### High Issues (should fix before TestFlight)
+1. [File:line] Description
+
+### Medium Issues (post-launch backlog)
+1. [File:line] Description
+
+### Low / Cosmetic
+1. [File:line] Description
+```
+
+---
+
+### Task 3: CSS/Styling Consistency Audit
+
+**Status: TODO — runs in parallel with Task 2A**
+
+**Scope:** All `app/screens/`, `app/components/`, `app/theme/`
+
+**What to Check:**
+
+#### Hardcoded Colors
+Search for any direct hex codes or color names NOT going through theme:
+```typescript
+// BAD — flag these:
+backgroundColor: "#ffffff"
+color: "red"
+borderColor: "#333333"
+
+// GOOD — these are fine:
+backgroundColor: colors.background
+color: theme.colors.text
+```
+
+#### Unused Style Constants
+For each `const $styleName` defined at the bottom of a file, verify it is actually referenced in the JSX above. Delete unused ones.
+
+#### Duplicate Style Patterns
+Look for the same style object (same properties + values) defined in multiple files. Candidates for extraction to shared theme or common style file.
+
+#### Missing `themed()` Wrappers
+Any style that accesses `colors`, `spacing`, or `typography` must be wrapped in `themed()`. Flag any that aren't.
+
+#### Spacing Consistency
+All margin/padding values should use `spacing.xs`, `spacing.sm`, `spacing.md`, `spacing.lg`, `spacing.xl` tokens. Flag hardcoded pixel values.
+
+**Output Format:**
+```markdown
+## Styling Audit Report
+
+### Hardcoded Colors Found
+- [File:line] `color: "#333"` → replace with `colors.text`
+
+### Unused Styles Removed
+- [File] Removed: $unusedStyle, $anotherUnused
+
+### Duplicate Patterns
+- [File1] and [File2] share identical $containerStyle — candidate for shared constant
+
+### Missing themed() Wrappers
+- [File:line] Style accesses colors but not wrapped in themed()
+```
+
+---
+
+### Task 2C: Post-Task-1 Review (QA Gate)
+
+**Status: BLOCKED — wait for backend-agent + frontend-agent to complete Task 1**
+
+After Task 1 is complete, review the new unit types/units observed code:
+
+**Checklist:**
+- [ ] UnitTypeRowModel follows MST identifier pattern
+- [ ] UnitObservedRowModel follows MST identifier pattern
+- [ ] 16 pre-seeded unitsObserved rows correctly initialized
+- [ ] Hotel model actions: addUnitType, removeUnitType, updateUnitType, updateUnitObserved
+- [ ] Apartment model actions: same
+- [ ] Screen uses `store?.hotel.unitTypes.map(...)` (null safe)
+- [ ] Status chips are mutually exclusive (selecting one clears others)
+- [ ] Delete button only shown when > 1 row
+- [ ] Add button hidden when row count === 10
+- [ ] New accordion keys don't conflict with existing accordion keys
+- [ ] Styles added at bottom of screen file, no inline styles
+- [ ] No hardcoded colors in new styles
+- [ ] TypeScript compiles without errors
+
+---
 
 ## Code Review Template
+```markdown
 ## Code Review: [File Name]
 
 ### Pattern Compliance
@@ -90,10 +203,3 @@ After Step 4 implementation:
 
 ### Approved: Yes/No
 ```
-
-## Output Format
-Provide structured review with:
-1. Files reviewed
-2. Issues found (with line numbers)
-3. Recommendations
-4. Approval status

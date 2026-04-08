@@ -28,16 +28,14 @@ export const RepairStatus = (props: RepairStatusProps) => {
         accessibilityRole="button"
         accessibilityState={{ selected, disabled: !!disabled }}
         onPress={() => onChange?.(code)}
-        style={themed([
-          $tile,
-          selected && [
-            $tileSelected,
-            {
-              backgroundColor: theme.colors.palette.SecondaryButtonActiveBackground,
-              borderColor: theme.colors.palette.SecondaryButtonActiveBackground,
-            },
-          ],
-        ])}
+        style={[
+          themed($tile),
+          selected && {
+            backgroundColor: theme.colors.palette.SecondaryButtonActiveBackground,
+            borderColor: theme.colors.palette.SecondaryButtonActiveBackground,
+            ...$tileSelected,
+          },
+        ] as any}
       >
         <Text weight={selected ? "bold" : "medium"} text={code} style={themed(selected ? $tileTextSelected : $tileText)} />
       </TouchableOpacity>
@@ -45,7 +43,7 @@ export const RepairStatus = (props: RepairStatusProps) => {
   }
 
   return (
-    <View style={themed([$grid, style])}>
+    <View style={[themed($grid), style] as any}>
       <Tile code="IR" label="Immediate Repair" />
       <Tile code="ST" label="Short Term" />
       <Tile code="RR" label="Replace/Repair" />

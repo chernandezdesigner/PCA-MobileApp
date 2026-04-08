@@ -7,7 +7,7 @@ import { generateUUID } from "@/utils/generateUUID"
 export const PhotoModel = types
   .model("PhotoModel", {
     id: types.identifier,
-    localUri: types.string,
+    localUri: types.optional(types.string, ""),
     thumbnailUri: types.optional(types.string, ""),
     formType: types.optional(types.string, ""),
     formStep: types.optional(types.number, 0),

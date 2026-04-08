@@ -36,6 +36,7 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
   const [submittedAssessments, setSubmittedAssessments] = useState<SupabaseAssessment[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [isRefreshing, setIsRefreshing] = useState(false)
+  const [loadError, setLoadError] = useState<string | null>(null)
 
   // Get draft assessments from MST
   const draftAssessments = Array.from(rootStore.assessments.values()).filter(
@@ -52,18 +53,17 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
       }
 
       const result = await AssessmentService.fetchUserAssessments()
-      
+
       if (result.success && result.assessments) {
         // Filter for submitted/synced assessments
         const submitted = result.assessments.filter(
           (a) => a.status === "submitted" || a.status === "synced"
         )
         setSubmittedAssessments(submitted)
-      } else if (result.error) {
-        console.error("Failed to load assessments:", result.error)
+        setLoadError(null)
       }
-    } catch (error) {
-      console.error("Error loading assessments:", error)
+    } catch (_error) {
+      setLoadError("Unable to load submitted assessments. Check your connection.")
     } finally {
       setIsLoading(false)
       setIsRefreshing(false)
@@ -94,14 +94,12 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
         {
           text: "Delete",
           style: "destructive",
-          onPress: () => {
+          onPress: async () => {
             const assessment = rootStore.assessments.get(assessmentId)
-            if (assessment) {
-              rootStore.assessments.delete(assessmentId)
-              if (rootStore.activeAssessmentId === assessmentId) {
-                rootStore.activeAssessmentId = undefined
-              }
+            if (assessment?.supabaseId) {
+              await AssessmentService.deleteAssessment(assessment.supabaseId)
             }
+            rootStore.deleteAssessment(assessmentId)
           },
         },
       ]
@@ -259,6 +257,12 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
               </>
             )}
 
+            {loadError && (
+              <View style={$offlineNotice}>
+                <Text style={$offlineNoticeText} text={loadError} />
+              </View>
+            )}
+
             {submittedAssessments.length > 0 && (
               <Text preset="subheading" style={themed($sectionTitle)}>
                 Submitted ({submittedAssessments.length})
@@ -345,7 +349,7 @@ const $projectNameText: ThemedStyle<TextStyle> = ({ colors }) => ({
 })
 
 const $statusBadge: ThemedStyle<ViewStyle> = ({ colors }) => ({
-  backgroundColor: colors.palette.warning,
+  backgroundColor: colors.palette.accent400,
   paddingHorizontal: 8,
   paddingVertical: 4,
   borderRadius: 4,
@@ -358,7 +362,7 @@ const $statusText: ThemedStyle<TextStyle> = ({ colors }) => ({
 })
 
 const $submittedBadge: ThemedStyle<ViewStyle> = ({ colors }) => ({
-  backgroundColor: colors.palette.success,
+  backgroundColor: colors.palette.conditionGoodBorder,
   paddingHorizontal: 8,
   paddingVertical: 4,
   borderRadius: 4,
@@ -417,3 +421,16 @@ const $emptySubtext: ThemedStyle<TextStyle> = ({ colors }) => ({
   color: colors.textDim,
 })
 
+const $offlineNotice: ViewStyle = {
+  backgroundColor: "#fff3cd",
+  borderRadius: 6,
+  paddingHorizontal: 12,
+  paddingVertical: 8,
+  marginHorizontal: 16,
+  marginBottom: 8,
+}
+
+const $offlineNoticeText: TextStyle = {
+  fontSize: 13,
+  color: "#856404",
+}

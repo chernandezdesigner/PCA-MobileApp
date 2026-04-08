@@ -214,45 +214,42 @@ export const SideDrawer = (props: SideDrawerProps) => {
   }
 
   const handleSubmit = async () => {
-    console.log('🔘 Submit button pressed!')
-    console.log('📋 Active Assessment ID:', rootStore.activeAssessmentId)
-    
     if (!rootStore.activeAssessmentId) {
-      console.log('❌ No active assessment ID')
       Alert.alert('No Assessment', 'No active assessment to submit')
       return
     }
 
     const assessment = rootStore.assessments.get(rootStore.activeAssessmentId)
-    console.log('📦 Assessment found:', !!assessment)
-    
+
     if (!assessment) {
-      console.log('❌ Assessment not found in store')
       Alert.alert('Error', 'Could not find assessment')
       return
     }
 
-    console.log('✅ Showing confirmation dialog')
-    
     // On web, Alert.alert with multiple buttons doesn't work properly
     // Use window.confirm as a fallback
     if (Platform.OS === 'web') {
       const confirmed = window.confirm('Are you sure you want to submit this assessment to Supabase?')
       if (!confirmed) {
-        console.log('🚫 User cancelled submission')
         return
       }
-      
-      console.log('🚀 Starting submission...')
+
       setIsSubmitting(true)
       const result = await AssessmentService.submitAssessment(assessment)
       setIsSubmitting(false)
 
       if (result.success) {
-        console.log('✅ Submission successful!')
-        window.alert('Success! Assessment submitted successfully')
+        if (result.assessmentId) {
+          assessment.setSupabaseId(result.assessmentId)
+        }
+        assessment.markAsSubmitted()
+        const failedCount = result.failedPhotoCount ?? 0
+        if (failedCount > 0) {
+          window.alert(`Assessment submitted. ${failedCount} photo(s) failed to upload and will need to be re-synced.`)
+        } else {
+          window.alert('Success! Assessment submitted successfully.')
+        }
       } else {
-        console.log('❌ Submission failed:', result.error)
         window.alert(`Error: ${result.error || 'Failed to submit assessment'}`)
       }
     } else {
@@ -265,16 +262,22 @@ export const SideDrawer = (props: SideDrawerProps) => {
           {
             text: 'Submit',
             onPress: async () => {
-              console.log('🚀 Starting submission...')
               setIsSubmitting(true)
               const result = await AssessmentService.submitAssessment(assessment)
               setIsSubmitting(false)
 
               if (result.success) {
-                console.log('✅ Submission successful!')
-                Alert.alert('Success!', 'Assessment submitted successfully')
+                if (result.assessmentId) {
+                  assessment.setSupabaseId(result.assessmentId)
+                }
+                assessment.markAsSubmitted()
+                const failedCount = result.failedPhotoCount ?? 0
+                if (failedCount > 0) {
+                  Alert.alert('Submitted', `Assessment submitted. ${failedCount} photo(s) failed to upload and will need to be re-synced.`)
+                } else {
+                  Alert.alert('Success!', 'Assessment submitted successfully.')
+                }
               } else {
-                console.log('❌ Submission failed:', result.error)
                 Alert.alert('Error', result.error || 'Failed to submit assessment')
               }
             },
@@ -285,32 +288,24 @@ export const SideDrawer = (props: SideDrawerProps) => {
   }
 
   const handleExitToHome = () => {
-    console.log('🏠 Exit to Home clicked')
-    console.log('🔍 Navigation ref ready?', navigationRef.isReady())
-    
     const performNavigation = () => {
-      console.log('🚀 Attempting navigation to Home')
       try {
         if (!navigationRef.isReady()) {
-          console.error('❌ Navigation ref not ready')
           return
         }
         resetRoot({ index: 0, routes: [{ name: "Home" }] })
-        console.log('✅ Navigation command sent')
-      } catch (error) {
-        console.error('❌ Navigation error:', error)
+      } catch (_error) {
+        // Navigation error — silently swallow, user remains on current screen
       }
     }
-    
+
     // Web platform needs different handling
     if (Platform.OS === 'web') {
       const confirmed = window.confirm('Return to the home screen? Your progress is automatically saved.')
       if (!confirmed) {
-        console.log('🚫 User cancelled')
         return
       }
-      
-      console.log('👍 User confirmed, closing drawer')
+
       onClose?.()
       // Small delay to let drawer close animation complete
       setTimeout(performNavigation, 100)
@@ -320,11 +315,10 @@ export const SideDrawer = (props: SideDrawerProps) => {
         'Exit to Home',
         'Return to the home screen? Your progress is automatically saved.',
         [
-          { text: 'Cancel', style: 'cancel', onPress: () => console.log('🚫 User cancelled') },
+          { text: 'Cancel', style: 'cancel' },
           {
             text: 'Exit to Home',
             onPress: () => {
-              console.log('👍 User confirmed, closing drawer')
               onClose?.()
               // Small delay to let drawer close animation complete
               setTimeout(performNavigation, 300)
