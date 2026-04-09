@@ -1,6 +1,7 @@
 import { StyleProp, Text as RNText, TextStyle, View, ViewStyle } from "react-native"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
+import { radii } from "@/theme/styles"
 import { Button } from "@/components/Button"
 import { PressableIcon } from "@/components/Icon"
 import { useSafeAreaInsetsStyle } from "@/utils/useSafeAreaInsetsStyle"
@@ -81,7 +82,7 @@ const $primaryBtn: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
 const $cameraBtn: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   width: 56,
   height: 56,
-  borderRadius: 12,
+  borderRadius: radii.md,
   marginHorizontal: spacing.xs,
   alignItems: "center",
   justifyContent: "center",
@@ -95,7 +96,7 @@ const $badge: ThemedStyle<ViewStyle> = ({ colors }) => ({
   top: -4,
   right: 2,
   backgroundColor: colors.palette.badgeDanger,
-  borderRadius: 10,
+  borderRadius: radii.full,
   minWidth: 20,
   height: 20,
   alignItems: "center",

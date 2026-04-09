@@ -1,5 +1,9 @@
+import { useEffect } from "react"
 import { StyleProp, View, ViewStyle } from "react-native"
+import Animated, { useSharedValue, useAnimatedStyle, withTiming } from "react-native-reanimated"
 import { useAppTheme } from "@/theme/context"
+import { radii } from "@/theme/styles"
+import { timing } from "@/theme/timing"
 import type { ThemedStyle } from "@/theme/types"
 
 export interface ProgressBarProps {
@@ -26,13 +30,23 @@ export const ProgressBar = (props: ProgressBarProps) => {
   const { themed } = useAppTheme()
   const progress = Math.max(0, Math.min(1, total > 0 ? current / total : 0))
 
+  const animatedProgress = useSharedValue(progress)
+
+  useEffect(() => {
+    animatedProgress.value = withTiming(progress, { duration: timing.normal })
+  }, [progress])
+
+  const animatedFillStyle = useAnimatedStyle(() => ({
+    width: `${animatedProgress.value * 100}%`,
+  }))
+
   return (
     <View
       style={[themed([$track, { height }]), style]}
       accessibilityRole="progressbar"
       accessibilityValue={{ min: 0, max: total, now: current }}
     >
-      <View style={themed([$fill, { width: `${progress * 100}%`, height }])} />
+      <Animated.View style={[themed([$fill, { height }]), animatedFillStyle]} />
     </View>
   )
 }
@@ -40,11 +54,11 @@ export const ProgressBar = (props: ProgressBarProps) => {
 const $track: ThemedStyle<ViewStyle> = ({ colors }) => ({
   width: "100%",
   backgroundColor: colors.palette.progressBarBackground,
-  borderRadius: 999,
+  borderRadius: radii.full,
   overflow: "hidden",
 })
 
 const $fill: ThemedStyle<ViewStyle> = ({ colors }) => ({
   backgroundColor: colors.palette.progressBarActive,
-  borderRadius: 999,
+  borderRadius: radii.full,
 })

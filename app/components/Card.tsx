@@ -1,16 +1,15 @@
-import { ComponentType, Fragment, ReactElement } from "react"
+import { Fragment, ReactElement } from "react"
 import {
   StyleProp,
   TextStyle,
-  TouchableOpacity,
   TouchableOpacityProps,
   View,
-  ViewProps,
   ViewStyle,
 } from "react-native"
 
+import { AnimatedPressable } from "@/components/AnimatedPressable"
 import { useAppTheme } from "@/theme/context"
-import { $styles } from "@/theme/styles"
+import { $styles, elevation, radii } from "@/theme/styles"
 import type { ThemedStyle, ThemedStyleArray } from "@/theme/types"
 
 import { Text, TextProps } from "./Text"
@@ -165,9 +164,6 @@ export function Card(props: CardProps) {
   const isContentPresent = !!(ContentComponent || content || contentTx)
   const isFooterPresent = !!(FooterComponent || footer || footerTx)
 
-  const Wrapper = (isPressable ? TouchableOpacity : View) as ComponentType<
-    TouchableOpacityProps | ViewProps
-  >
   const HeaderContentWrapper = verticalAlignment === "force-footer-bottom" ? View : Fragment
 
   const $containerStyle: StyleProp<ViewStyle> = [
@@ -200,13 +196,8 @@ export function Card(props: CardProps) {
     RightComponent && { marginEnd: spacing.md },
   ]
 
-  return (
-    <Wrapper
-      style={$containerStyle}
-      activeOpacity={0.8}
-      accessibilityRole={isPressable ? "button" : undefined}
-      {...WrapperProps}
-    >
+  const cardContent = (
+    <>
       {LeftComponent}
 
       <View style={$alignmentWrapperStyle}>
@@ -251,19 +242,30 @@ export function Card(props: CardProps) {
       </View>
 
       {RightComponent}
-    </Wrapper>
+    </>
   )
+
+  if (isPressable) {
+    return (
+      <AnimatedPressable
+        style={$containerStyle}
+        accessibilityRole="button"
+        onPress={WrapperProps.onPress}
+        onLongPress={WrapperProps.onLongPress}
+      >
+        {cardContent}
+      </AnimatedPressable>
+    )
+  }
+
+  return <View style={$containerStyle}>{cardContent}</View>
 }
 
 const $containerBase: ThemedStyle<ViewStyle> = (theme) => ({
-  borderRadius: theme.spacing.md,
+  borderRadius: radii.lg,
   padding: theme.spacing.sm, // Increased padding for better mobile spacing
   borderWidth: 1,
-  shadowColor: theme.colors.palette.neutral800,
-  shadowOffset: { width: 0, height: 2 },
-  shadowOpacity: 0.05,
-  shadowRadius: 3,
-  elevation: 2,
+  ...elevation.sm,
   // Remove fixed minHeight to allow dynamic content sizing
   // Cards will grow to fit their content naturally
 })

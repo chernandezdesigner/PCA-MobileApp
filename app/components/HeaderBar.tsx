@@ -1,6 +1,7 @@
 import { StyleProp, TextStyle, View, ViewStyle } from "react-native"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
+import { elevation } from "@/theme/styles"
 import { Text } from "@/components/Text"
 import { PressableIcon } from "@/components/Icon"
 import { useSafeAreaInsetsStyle } from "@/utils/useSafeAreaInsetsStyle"
@@ -51,12 +52,8 @@ const $container: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   borderBottomColor: colors.palette.gray3,
 })
 
-const $elevated: ThemedStyle<ViewStyle> = ({ colors }) => ({
-  shadowColor: colors.palette.shadowDefault,
-  shadowOpacity: 0.08,
-  shadowRadius: 8,
-  shadowOffset: { width: 0, height: 4 },
-  elevation: 2,
+const $elevated: ThemedStyle<ViewStyle> = () => ({
+  ...elevation.md,
 })
 
 const $title: ThemedStyle<TextStyle> = ({ colors }) => ({

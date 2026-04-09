@@ -1,8 +1,10 @@
 import { ReactNode } from "react"
-import { StyleProp, TextStyle, TouchableOpacity, View, ViewStyle } from "react-native"
+import { StyleProp, TextStyle, View, ViewStyle } from "react-native"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle, ThemedStyleArray } from "@/theme/types"
 import { Text } from "@/components/Text"
+import { AnimatedPressable } from "@/components/AnimatedPressable"
+import { elevation, radii } from "@/theme/styles"
 
 type ConditionValue = "good" | "fair" | "poor"
 
@@ -47,8 +49,7 @@ export const ConditionAssessment = (props: ConditionAssessmentProps) => {
   }) => {
     const selected = value === id
     return (
-      <TouchableOpacity
-        activeOpacity={0.85}
+      <AnimatedPressable
         disabled={disabled}
         accessibilityRole="button"
         accessibilityState={{ selected, disabled: !!disabled }}
@@ -57,7 +58,7 @@ export const ConditionAssessment = (props: ConditionAssessmentProps) => {
       >
         <Text size="sm" weight={selected ? "bold" : "medium"} text={label} style={themed(selected ? $tileLabelSelected : $tileLabel)} />
         {rightAdornment}
-      </TouchableOpacity>
+      </AnimatedPressable>
     )
   }
 
@@ -99,7 +100,7 @@ const $tile: ThemedStyleArray<ViewStyle> = [
     width: "31%",
     // Meets accessibility minimum for touch targets (slightly above 44x44)
     minHeight: 48,
-    borderRadius: theme.spacing.md, // 16px
+    borderRadius: radii.lg,
     borderWidth: 1,
     borderColor: theme.colors.palette.SecondaryButtonBorder,
     backgroundColor: theme.colors.palette.SecondaryButtonBackground,
@@ -112,11 +113,7 @@ const $tile: ThemedStyleArray<ViewStyle> = [
 ]
 
 const $tileSelected: ViewStyle = {
-  shadowColor: "#000000",
-  shadowOpacity: 0.08,
-  shadowRadius: 4,
-  shadowOffset: { width: 0, height: 2 },
-  elevation: 2,
+  ...elevation.sm,
 }
 
 const $tileLabel: ThemedStyle<TextStyle> = ({ colors }) => ({

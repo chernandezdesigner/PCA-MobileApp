@@ -1,9 +1,11 @@
-import { ReactNode, useMemo, useState } from "react"
-import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native"
+import { ReactNode, useEffect, useMemo, useState } from "react"
+import { StyleProp, View, ViewStyle } from "react-native"
+import Animated, { useSharedValue, useAnimatedStyle, withTiming } from "react-native-reanimated"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle, ThemedStyleArray } from "@/theme/types"
 import { Text } from "@/components/Text"
 import { Icon } from "@/components/Icon"
+import { AnimatedPressable } from "@/components/AnimatedPressable"
 
 export interface SectionAccordionProps {
   /**
@@ -68,10 +70,21 @@ export const SectionAccordion = (props: SectionAccordionProps) => {
   const isControlled = useMemo(() => expanded !== undefined, [expanded])
   const isExpanded = isControlled ? !!expanded : internalExpanded
 
+  const caretRotation = useSharedValue(isExpanded ? -90 : 90)
+
+  useEffect(() => {
+    caretRotation.value = withTiming(isExpanded ? -90 : 90, { duration: 200 })
+  }, [isExpanded])
+
+  const caretAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ rotate: `${caretRotation.value}deg` }],
+  }))
+
   function handleToggle() {
     const next = !isExpanded
     if (!isControlled) setInternalExpanded(next)
     onToggle?.(next)
+    caretRotation.value = withTiming(next ? -90 : 90, { duration: 200 })
   }
 
   const containerStyles = themed([$container])
@@ -80,7 +93,7 @@ export const SectionAccordion = (props: SectionAccordionProps) => {
 
   return (
     <View style={[containerStyles, style] as StyleProp<ViewStyle>}>
-      <TouchableOpacity
+      <AnimatedPressable
         accessibilityRole="button"
         accessibilityState={{ expanded: isExpanded }}
         onPress={handleToggle}
@@ -89,7 +102,6 @@ export const SectionAccordion = (props: SectionAccordionProps) => {
           { backgroundColor: isExpanded ? theme.colors.palette.accordionBackground : theme.colors.palette.gray1 },
           headerStyle,
         ] as StyleProp<ViewStyle>}
-        activeOpacity={0.8}
       >
         <Text
           preset="subheading"
@@ -104,11 +116,11 @@ export const SectionAccordion = (props: SectionAccordionProps) => {
 
         <View style={themed($headerRight)}>
           {RightComponent}
-          <View style={{ transform: [{ rotate: isExpanded ? "-90deg" : "90deg" }] }}>
+          <Animated.View style={caretAnimatedStyle}>
             <Icon icon="caretRight" size={18} color={theme.colors.textDim} />
-          </View>
+          </Animated.View>
         </View>
-      </TouchableOpacity>
+      </AnimatedPressable>
 
       {isExpanded && (
         <View

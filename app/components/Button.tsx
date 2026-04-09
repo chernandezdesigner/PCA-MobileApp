@@ -1,5 +1,6 @@
 import { ComponentType } from "react"
 import {
+  ActivityIndicator,
   Pressable,
   PressableProps,
   PressableStateCallbackType,
@@ -9,12 +10,15 @@ import {
 } from "react-native"
 
 import { useAppTheme } from "@/theme/context"
-import { $styles } from "@/theme/styles"
+import { spacing } from "@/theme/spacing"
+import { $styles, elevation, radii } from "@/theme/styles"
 import type { ThemedStyle, ThemedStyleArray } from "@/theme/types"
 
 import { Text, TextProps } from "./Text"
 
 type Presets = "default" | "filled" | "reversed"
+
+type ButtonSize = "sm" | "md" | "lg"
 
 export interface ButtonAccessoryProps {
   style: StyleProp<any>
@@ -60,6 +64,15 @@ export interface ButtonProps extends PressableProps {
    * One of the different types of button presets.
    */
   preset?: Presets
+  /**
+   * The size of the button. Controls minHeight, fontSize, and padding.
+   * @default "md"
+   */
+  size?: ButtonSize
+  /**
+   * When true, shows an ActivityIndicator instead of text and disables interaction.
+   */
+  loading?: boolean
   /**
    * An optional component to render on the right side of the text.
    * Example: `RightAccessory={(props) => <View {...props} />}`
@@ -114,12 +127,15 @@ export function Button(props: ButtonProps) {
     LeftAccessory,
     disabled,
     disabledStyle: $disabledViewStyleOverride,
+    loading,
+    size = "md",
     ...rest
   } = props
 
   const { themed } = useAppTheme()
 
   const preset: Presets = props.preset ?? "default"
+  const isDisabled = disabled || loading
   /**
    * @param {PressableStateCallbackType} root0 - The root object containing the pressed state.
    * @param {boolean} root0.pressed - The pressed state.
@@ -128,9 +144,10 @@ export function Button(props: ButtonProps) {
   function $viewStyle({ pressed }: PressableStateCallbackType): StyleProp<ViewStyle> {
     return [
       themed($viewPresets[preset]),
+      $sizeViewStyles[size],
       $viewStyleOverride,
       !!pressed && themed([$pressedViewPresets[preset], $pressedViewStyleOverride]),
-      !!disabled && $disabledViewStyleOverride,
+      !!isDisabled && $disabledViewStyleOverride,
     ]
   }
   /**
@@ -141,35 +158,56 @@ export function Button(props: ButtonProps) {
   function $textStyle({ pressed }: PressableStateCallbackType): StyleProp<TextStyle> {
     return [
       themed($textPresets[preset]),
+      $sizeTextStyles[size],
       $textStyleOverride,
       !!pressed && themed([$pressedTextPresets[preset], $pressedTextStyleOverride]),
-      !!disabled && $disabledTextStyleOverride,
+      !!isDisabled && $disabledTextStyleOverride,
     ]
+  }
+
+  /**
+   * Resolves the text color for the current preset to use on the loading indicator.
+   */
+  function getLoadingColor(): string | undefined {
+    const resolvedStyles = themed($textPresets[preset]) as TextStyle | TextStyle[]
+    if (Array.isArray(resolvedStyles)) {
+      for (let i = resolvedStyles.length - 1; i >= 0; i--) {
+        const s = resolvedStyles[i] as TextStyle | undefined
+        if (s?.color) return s.color as string
+      }
+    } else if (resolvedStyles && (resolvedStyles as TextStyle).color) {
+      return (resolvedStyles as TextStyle).color as string
+    }
+    return undefined
   }
 
   return (
     <Pressable
       style={$viewStyle}
       accessibilityRole="button"
-      accessibilityState={{ disabled: !!disabled }}
+      accessibilityState={{ disabled: !!isDisabled }}
       {...rest}
-      disabled={disabled}
+      disabled={isDisabled}
     >
       {(state) => (
         <>
-          {!!LeftAccessory && (
-            <LeftAccessory style={$leftAccessoryStyle} pressableState={state} disabled={disabled} />
+          {!!LeftAccessory && !loading && (
+            <LeftAccessory style={$leftAccessoryStyle} pressableState={state} disabled={isDisabled} />
           )}
 
-          <Text tx={tx} text={text} txOptions={txOptions} style={$textStyle(state)}>
-            {children}
-          </Text>
+          {loading ? (
+            <ActivityIndicator color={getLoadingColor()} />
+          ) : (
+            <Text tx={tx} text={text} txOptions={txOptions} style={$textStyle(state)}>
+              {children}
+            </Text>
+          )}
 
-          {!!RightAccessory && (
+          {!!RightAccessory && !loading && (
             <RightAccessory
               style={$rightAccessoryStyle}
               pressableState={state}
-              disabled={disabled}
+              disabled={isDisabled}
             />
           )}
         </>
@@ -179,18 +217,30 @@ export function Button(props: ButtonProps) {
 }
 
 const $baseViewStyle: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  minHeight: 56,
-  borderRadius: 12,
+  minHeight: 48,
+  borderRadius: radii.md,
   justifyContent: "center",
   alignItems: "center",
   paddingVertical: spacing.sm,
-  paddingHorizontal: spacing.sm,
+  paddingHorizontal: spacing.md,
   overflow: "hidden",
 })
 
+const $sizeViewStyles: Record<ButtonSize, ViewStyle> = {
+  sm: { minHeight: 36, paddingVertical: spacing.xs, paddingHorizontal: spacing.sm },
+  md: { minHeight: 48, paddingVertical: spacing.sm, paddingHorizontal: spacing.md },
+  lg: { minHeight: 56, paddingVertical: spacing.sm, paddingHorizontal: spacing.lg },
+}
+
+const $sizeTextStyles: Record<ButtonSize, TextStyle> = {
+  sm: { fontSize: 14, lineHeight: 14 },
+  md: { fontSize: 16, lineHeight: 16 },
+  lg: { fontSize: 20, lineHeight: 20 },
+}
+
 const $baseTextStyle: ThemedStyle<TextStyle> = ({ typography }) => ({
-  fontSize: 20,
-  lineHeight: 20,
+  fontSize: 16,
+  lineHeight: 16,
   fontFamily: typography.primary.medium,
   textAlign: "center",
   flexShrink: 1,
@@ -220,7 +270,7 @@ const $viewPresets: Record<Presets, ThemedStyleArray<ViewStyle>> = {
   filled: [
     $styles.row,
     $baseViewStyle,
-    ({ colors }) => ({ backgroundColor: colors.tint }),
+    ({ colors }) => ({ backgroundColor: colors.tint, ...elevation.sm }),
   ],
   reversed: [
     $styles.row,

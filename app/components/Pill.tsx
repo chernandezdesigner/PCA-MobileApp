@@ -1,7 +1,9 @@
 import { FC } from "react"
-import { TouchableOpacity, View, ViewStyle, TextStyle } from "react-native"
+import { View, ViewStyle, TextStyle } from "react-native"
+import { AnimatedPressable } from "@/components/AnimatedPressable"
 import { Text } from "@/components/Text"
 import { useAppTheme } from "@/theme/context"
+import { elevation, radii, opacity as opacityScale } from "@/theme/styles"
 import type { ThemedStyle } from "@/theme/types"
 
 export type PillVariant = "default" | "active" | "success" | "warning" | "error"
@@ -66,16 +68,15 @@ export const Pill: FC<PillProps> = ({
 
   if (isInteractive) {
     return (
-      <TouchableOpacity
+      <AnimatedPressable
         onPress={onPress}
         disabled={disabled}
-        activeOpacity={0.7}
         accessibilityRole="button"
         accessibilityState={{ disabled: !!disabled }}
         style={containerStyle}
       >
         <Text text={label} style={textStyle} />
-      </TouchableOpacity>
+      </AnimatedPressable>
     )
   }
 
@@ -93,7 +94,7 @@ const $container: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   minWidth: 68,
   paddingHorizontal: spacing.md, // 16px
   paddingVertical: 0, // Remove to maintain fixed height
-  borderRadius: 22, // Half of height for pill shape
+  borderRadius: radii.full, // Pill shape
   alignItems: "center",
   justifyContent: "center",
   alignSelf: "flex-start",
@@ -107,21 +108,17 @@ const $text: ThemedStyle<TextStyle> = () => ({
 })
 
 // Interactive state
-const $interactive: ThemedStyle<ViewStyle> = ({ colors }) => ({
-  shadowColor: colors.palette.shadowDefault,
-  shadowOpacity: 0.05,
-  shadowRadius: 2,
-  shadowOffset: { width: 0, height: 1 },
-  elevation: 1,
+const $interactive: ThemedStyle<ViewStyle> = () => ({
+  ...elevation.xs,
 })
 
 // Disabled state
 const $disabled: ThemedStyle<ViewStyle> = () => ({
-  opacity: 0.5,
+  opacity: opacityScale.disabled,
 })
 
 const $textDisabled: ThemedStyle<TextStyle> = () => ({
-  opacity: 0.6,
+  opacity: opacityScale.dimmed,
 })
 
 // Variant styles using existing color palette

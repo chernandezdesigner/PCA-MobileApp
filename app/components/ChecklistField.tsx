@@ -3,11 +3,12 @@ import {
   View,
   ViewStyle,
   TextStyle,
-  Pressable,
   StyleProp,
 } from "react-native"
 
+import { AnimatedPressable } from "@/components/AnimatedPressable"
 import { useAppTheme } from "@/theme/context"
+import { radii } from "@/theme/styles"
 import type { ThemedStyle } from "@/theme/types"
 
 import { Text } from "./Text"
@@ -142,16 +143,15 @@ export const ChecklistField: FC<ChecklistFieldProps> = (props) => {
           const isChecked = item.checked
 
           return (
-            <Pressable
+            <AnimatedPressable
               key={item.id}
               onPress={() => onToggle(item.id, !isChecked)}
               accessibilityRole="checkbox"
               accessibilityState={{ checked: isChecked }}
               accessibilityLabel={item.label}
-              style={({ pressed }) => [
+              style={[
                 themed($rowBase),
                 isAlt && themed($rowAlt),
-                pressed && themed($rowPressed),
                 rowStyle,
               ]}
             >
@@ -177,7 +177,7 @@ export const ChecklistField: FC<ChecklistFieldProps> = (props) => {
                   />
                 )}
               </View>
-            </Pressable>
+            </AnimatedPressable>
           )
         })}
       </View>
@@ -223,15 +223,15 @@ const $bulkActionButton: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
   backgroundColor: colors.palette.SecondaryButtonBackground,
   borderColor: colors.palette.SecondaryButtonBorder,
   borderWidth: 1,
-  borderRadius: spacing.xs,
+  borderRadius: radii.xs,
 })
 
 const $bulkActionButtonText: ThemedStyle<TextStyle> = () => ({
   fontSize: 14,
 })
 
-const $list: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  borderRadius: spacing.xs,
+const $list: ThemedStyle<ViewStyle> = () => ({
+  borderRadius: radii.xs,
   overflow: "hidden",
 })
 
@@ -249,13 +249,9 @@ const $rowAlt: ThemedStyle<ViewStyle> = ({ colors }) => ({
   backgroundColor: colors.palette.checklistAlternatingBackground,
 })
 
-const $rowPressed: ThemedStyle<ViewStyle> = ({ colors }) => ({
-  backgroundColor: colors.palette.gray2,
-})
-
-const $itemLabel: ThemedStyle<TextStyle> = ({ colors }) => ({
+const $itemLabel: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
   flex: 1,
-  marginRight: 12,
+  marginRight: spacing.sm,
   color: colors.palette.gray6,
 })
 

@@ -1,7 +1,9 @@
-import { StyleProp, TextStyle, TouchableOpacity, View, ViewStyle } from "react-native"
+import { StyleProp, TextStyle, View, ViewStyle } from "react-native"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle, ThemedStyleArray } from "@/theme/types"
 import { Text } from "@/components/Text"
+import { AnimatedPressable } from "@/components/AnimatedPressable"
+import { elevation, radii } from "@/theme/styles"
 
 type RepairCode = "IR" | "ST" | "RR" | "RM" | "INV" | "NA"
 
@@ -22,8 +24,7 @@ export const RepairStatus = (props: RepairStatusProps) => {
   function Tile({ code, label }: { code: RepairCode; label: string }) {
     const selected = value === code
     return (
-      <TouchableOpacity
-        activeOpacity={0.85}
+      <AnimatedPressable
         disabled={disabled}
         accessibilityRole="button"
         accessibilityState={{ selected, disabled: !!disabled }}
@@ -33,12 +34,12 @@ export const RepairStatus = (props: RepairStatusProps) => {
           selected && {
             backgroundColor: theme.colors.palette.SecondaryButtonActiveBackground,
             borderColor: theme.colors.palette.SecondaryButtonActiveBackground,
-            ...themed($tileSelected),
+            ...$tileSelected,
           },
         ]}
       >
         <Text weight={selected ? "bold" : "medium"} text={code} style={themed(selected ? $tileTextSelected : $tileText)} />
-      </TouchableOpacity>
+      </AnimatedPressable>
     )
   }
 
@@ -69,7 +70,7 @@ const $tile: ThemedStyleArray<ViewStyle> = [
     width: "31%",
     // Meets accessibility minimum for touch targets (slightly above 44x44)
     minHeight: 48,
-    borderRadius: theme.spacing.md, // 16px
+    borderRadius: radii.lg,
     borderWidth: 1,
     borderColor: theme.colors.palette.SecondaryButtonBorder,
     backgroundColor: theme.colors.palette.SecondaryButtonBackground,
@@ -81,13 +82,9 @@ const $tile: ThemedStyleArray<ViewStyle> = [
   }),
 ]
 
-const $tileSelected: ThemedStyle<ViewStyle> = ({ colors }) => ({
-  shadowColor: colors.palette.shadowDefault,
-  shadowOpacity: 0.08,
-  shadowRadius: 4,
-  shadowOffset: { width: 0, height: 2 },
-  elevation: 2,
-})
+const $tileSelected: ViewStyle = {
+  ...elevation.sm,
+}
 
 const $tileText: ThemedStyle<TextStyle> = ({ colors }) => ({
   color: colors.palette.gray6,

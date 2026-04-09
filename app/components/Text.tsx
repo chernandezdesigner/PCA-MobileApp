@@ -11,7 +11,7 @@ import { typography } from "@/theme/typography"
 
 type Sizes = keyof typeof $sizeStyles
 type Weights = keyof typeof typography.primary
-type Presets = "default" | "bold" | "heading" | "subheading" | "formLabel" | "formHelper"
+type Presets = "default" | "bold" | "heading" | "subheading" | "formLabel" | "formHelper" | "badge"
 
 export interface TextProps extends RNTextProps {
   /**
@@ -124,6 +124,16 @@ const $presets: Record<Presets, ThemedStyleArray<TextStyle>> = {
     $baseStyle,
     (theme) => ({ color: theme.colors.helper }),
     { ...$sizeStyles.sm, ...$fontWeightStyles.normal },
+  ],
+  badge: [
+    $baseStyle,
+    {
+      fontSize: 10,
+      lineHeight: 14,
+      ...$fontWeightStyles.semiBold,
+      textTransform: "uppercase",
+      letterSpacing: 0.5,
+    },
   ],
 }
 const $rtlStyle: TextStyle = isRTL ? { writingDirection: "rtl" } : {}

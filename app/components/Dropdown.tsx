@@ -1,4 +1,4 @@
-import React, { ComponentType, useState, useRef } from "react"
+import React, { ComponentType, useState, useRef, useEffect } from "react"
 import {
   StyleProp,
   TextStyle,
@@ -9,9 +9,10 @@ import {
   Platform,
   Dimensions,
 } from "react-native"
+import Animated, { useSharedValue, useAnimatedStyle, withTiming } from "react-native-reanimated"
 import { Text, TextProps } from "./Text"
 import { useAppTheme } from "@/theme/context"
-import { $styles } from "@/theme/styles"
+import { $styles, elevation, radii, zIndex as zIndexScale } from "@/theme/styles"
 import type { ThemedStyle, ThemedStyleArray } from "@/theme/types"
 import { Icon } from "./Icon"
 
@@ -83,6 +84,18 @@ export function Dropdown(props: DropdownProps) {
   const [shouldRenderAbove, setShouldRenderAbove] = useState(false)
   const inputRef = useRef<View>(null)
 
+  // Animated shared values
+  const caretRotation = useSharedValue(90)
+  const menuOpacity = useSharedValue(0)
+
+  const caretAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ rotate: `${caretRotation.value}deg` }],
+  }))
+
+  const menuAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: menuOpacity.value,
+  }))
+
   const {
     themed,
     theme: { colors },
@@ -142,40 +155,46 @@ export function Dropdown(props: DropdownProps) {
 
   function toggleDropdown() {
     if (disabled) return
-    
+
     // If closing, just close
     if (isOpen) {
+      caretRotation.value = withTiming(90, { duration: 200 })
+      menuOpacity.value = withTiming(0, { duration: 150 })
       setIsOpen(false)
       setIsFocused(false)
       return
     }
-    
+
     // If opening, calculate position first, then open
     if (inputRef.current) {
       inputRef.current.measure((x, y, width, height, pageX, pageY) => {
         // Get viewport height
-        const windowHeight = Platform.OS === 'web' 
-          ? window.innerHeight 
+        const windowHeight = Platform.OS === 'web'
+          ? window.innerHeight
           : Dimensions.get('window').height
-        
+
         // pageY is the absolute Y position on screen
         // Calculate space below the input
         const spaceBelow = windowHeight - (pageY + height)
-        
+
         // Menu max height is 300, plus generous padding for safe spacing
         const menuHeight = Math.min(options.length * 48, 300) + 32
-        
+
         // If not enough space below (with 50px buffer), render above
         const renderAbove = spaceBelow < (menuHeight + 50)
         setShouldRenderAbove(renderAbove)
         setInputHeight(height)
-        
+
         // NOW open the dropdown after positioning is calculated
+        caretRotation.value = withTiming(270, { duration: 200 })
+        menuOpacity.value = withTiming(1, { duration: 150 })
         setIsOpen(true)
         setIsFocused(true)
       })
     } else {
       // Fallback if ref is not ready
+      caretRotation.value = withTiming(270, { duration: 200 })
+      menuOpacity.value = withTiming(1, { duration: 150 })
       setIsOpen(true)
       setIsFocused(true)
     }
@@ -183,6 +202,8 @@ export function Dropdown(props: DropdownProps) {
 
   function selectOption(option: DropdownOption) {
     onValueChange?.(option.value)
+    caretRotation.value = withTiming(90, { duration: 200 })
+    menuOpacity.value = withTiming(0, { duration: 150 })
     setIsOpen(false)
     setIsFocused(false)
   }
@@ -216,16 +237,14 @@ export function Dropdown(props: DropdownProps) {
           style={themed($valueStyles)}
         />
 
-        <Icon
-          icon="caretRight"
-          size={20}
-          color={colors.textDim}
-          containerStyle={themed($caretStyle)}
-          style={[
-            // caretRight rotated 90deg = down; 270deg = up when open
-            { transform: [{ rotate: isOpen ? "270deg" : "90deg" }] },
-          ]}
-        />
+        <Animated.View style={caretAnimatedStyle}>
+          <Icon
+            icon="caretRight"
+            size={20}
+            color={colors.textDim}
+            containerStyle={themed($caretStyle)}
+          />
+        </Animated.View>
 
         {!!RightAccessory && (
           <RightAccessory
@@ -236,31 +255,26 @@ export function Dropdown(props: DropdownProps) {
       </TouchableOpacity>
 
       {isOpen && (
-        <View
-          style={themed([
-            $menuStyles,
-            shouldRenderAbove 
-              ? { 
-                  bottom: inputHeight + 4,
-                  top: undefined,
-                  borderTopLeftRadius: 12,
-                  borderTopRightRadius: 12,
-                  borderBottomLeftRadius: 12,
-                  borderBottomRightRadius: 12,
-                }
-              : { 
-                  top: inputHeight + 4,
-                  bottom: undefined,
-                  borderTopLeftRadius: 12,
-                  borderTopRightRadius: 12,
-                  borderBottomLeftRadius: 12,
-                  borderBottomRightRadius: 12,
-                },
-            isFocused && { borderColor: colors.tint },
-          ])}
+        <Animated.View
+          style={[
+            themed([
+              $menuStyles,
+              shouldRenderAbove
+                ? {
+                    bottom: inputHeight + 4,
+                    top: undefined,
+                  }
+                : {
+                    top: inputHeight + 4,
+                    bottom: undefined,
+                  },
+              isFocused && { borderColor: colors.tint },
+            ]),
+            menuAnimatedStyle,
+          ]}
         >
-          <ScrollView 
-            style={{ maxHeight: 300 }} 
+          <ScrollView
+            style={{ maxHeight: 300 }}
             nestedScrollEnabled={true}
             showsVerticalScrollIndicator={true}
           >
@@ -274,7 +288,7 @@ export function Dropdown(props: DropdownProps) {
               </TouchableOpacity>
             ))}
           </ScrollView>
-        </View>
+        </Animated.View>
       )}
     </View>
   )
@@ -285,10 +299,8 @@ const $containerStyle: ViewStyle = {
   position: "relative",
 }
 
-const DROPDOWN_Z_INDEX = 9999
-
 const $containerOpenStyle: ViewStyle = {
-  zIndex: DROPDOWN_Z_INDEX,
+  zIndex: zIndexScale.dropdown,
 }
 
 const $labelStyle: ThemedStyle<TextStyle> = ({ spacing, colors }) => ({
@@ -299,7 +311,7 @@ const $labelStyle: ThemedStyle<TextStyle> = ({ spacing, colors }) => ({
 const $inputWrapperStyle: ThemedStyle<ViewStyle> = ({ colors }) => ({
   alignItems: "center",
   borderWidth: 1,
-  borderRadius: 12,
+  borderRadius: radii.md,
   backgroundColor: colors.palette.neutral100,
   borderColor: colors.palette.neutral300,
   overflow: "visible",
@@ -342,21 +354,17 @@ const $caretStyle: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   alignItems: "center",
 })
 
-const $menuStyle: ThemedStyle<ViewStyle> = ({ colors }) => ({
+const $menuStyle: ThemedStyle<ViewStyle> = () => ({
   position: "absolute",
   left: 0,
   right: 0,
   width: "100%",
   maxHeight: 300,
-  borderRadius: 12,
+  borderRadius: radii.md,
   borderWidth: 1,
   overflow: "hidden",
-  shadowColor: colors.palette.shadowDefault,
-  shadowOpacity: 0.2,
-  shadowRadius: 12,
-  shadowOffset: { width: 0, height: 4 },
-  elevation: 10,
-  zIndex: DROPDOWN_Z_INDEX + 1,
+  ...elevation.lg,
+  zIndex: zIndexScale.dropdown + 1,
 })
 
 const $optionStyle: ThemedStyle<ViewStyle> = ({ spacing }) => ({
