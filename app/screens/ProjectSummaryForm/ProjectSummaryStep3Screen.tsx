@@ -21,6 +21,7 @@ import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
 import { useDrawerControl } from "@/context/DrawerContext"
 import { $formScreen, $stickyHeader, $stickyFooter } from "@/theme/styles"
+import { useResponsiveLayout } from "@/hooks/useResponsiveLayout"
 
 interface ProjectSummaryStep3ScreenProps extends NativeStackScreenProps<ProjectSummaryFormNavigatorParamList, "ProjectSummaryStep3"> {}
 
@@ -56,6 +57,7 @@ const DOCUMENTS = [
 export const ProjectSummaryStep3Screen: FC<ProjectSummaryStep3ScreenProps> = observer(() => {
   const navigation = useNavigation()
   const { themed } = useAppTheme()
+  const { contentMaxWidth } = useResponsiveLayout()
   const { openDrawer } = useDrawerControl()
   const { onCamera, photoCount } = usePhotoCapture("project_summary", 3)
   const rootStore = useStores()
@@ -119,7 +121,7 @@ export const ProjectSummaryStep3Screen: FC<ProjectSummaryStep3ScreenProps> = obs
       <View style={$stickyHeader}>
         <HeaderBar title="Project Summary" leftIcon="back" onLeftPress={() => navigation.goBack()} rightIcon="menu" onRightPress={openDrawer} />
       </View>
-      <ScrollView contentContainerStyle={$content} style={$scrollArea}>
+      <ScrollView contentContainerStyle={[$content, contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea}>
         <View style={$introBlock}>
           <Text preset="subheading" text="Documentation & Personnel" style={themed($titleStyle)} />
           <ProgressBar current={3} total={4} />

@@ -12,6 +12,7 @@ import { useStores } from "@/models/RootStoreProvider"
 import { observer } from "mobx-react-lite"
 import { useAppTheme } from "@/theme/context"
 import { $formScreen, $stickyHeader, $stickyFooter } from "@/theme/styles"
+import { useResponsiveLayout } from "@/hooks/useResponsiveLayout"
 import type { SiteGroundsFormNavigatorParamList } from "@/navigators/SiteGroundsFormNavigator"
 import type { ThemedStyle } from "@/theme/types"
 import { Controller, useForm, useWatch } from "react-hook-form"
@@ -30,6 +31,7 @@ interface SiteGroundsStep4ScreenProps
 
 export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(() => {
   const { themed, theme } = useAppTheme()
+  const { contentMaxWidth } = useResponsiveLayout()
   const navigation = useNavigation()
   const { openDrawer } = useDrawerControl()
   const { onCamera, photoCount } = usePhotoCapture("site_grounds", 4)
@@ -344,7 +346,7 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
       <View style={$stickyHeader}>
         <HeaderBar title="Site & Grounds" leftIcon="back" onLeftPress={() => navigation.goBack()} rightIcon="menu" onRightPress={openDrawer} />
       </View>
-      <ScrollView contentContainerStyle={themed($content)} style={$scrollArea}>
+      <ScrollView contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea}>
         <View style={themed($paddedBlock)}>
           <Text preset="subheading" text="Miscellaneous Structures" style={themed($titleStyle)} />
           <ProgressBar current={4} total={4} />

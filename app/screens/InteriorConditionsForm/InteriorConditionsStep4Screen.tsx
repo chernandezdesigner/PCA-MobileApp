@@ -5,6 +5,8 @@ import { Text } from "@/components/Text"
 import { TextField } from "@/components/TextField"
 import { ConditionAssessment } from "@/components/ConditionAssessment"
 import { RepairStatus } from "@/components/RepairStatus"
+import { AnimatedPressable } from "@/components/AnimatedPressable"
+import { Icon } from "@/components/Icon"
 import { SectionAccordion } from "@/components/SectionAccordion"
 import { Button } from "@/components/Button"
 import { ChecklistField } from "@/components/ChecklistField"
@@ -21,6 +23,7 @@ import { useDrawerControl } from "@/context/DrawerContext"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle, AllowedStylesT } from "@/theme/types"
 import { $formScreen, $stickyHeader, $stickyFooter } from "@/theme/styles"
+import { useResponsiveLayout } from "@/hooks/useResponsiveLayout"
 import type { Instance } from "mobx-state-tree"
 import type { InteriorConditionsStep4 } from "@/models/InteriorConditionsStepModels/step4"
 
@@ -126,7 +129,8 @@ type PropertyTypeKey = typeof PROPERTY_TYPES[number]["key"]
 // ============================================
 
 export const InteriorConditionsStep4Screen: FC = observer(() => {
-  const { themed } = useAppTheme()
+  const { themed, theme } = useAppTheme()
+  const { contentMaxWidth } = useResponsiveLayout()
   const navigation = useNavigation()
   const { openDrawer } = useDrawerControl()
   const { onCamera, photoCount } = usePhotoCapture("interior_conditions", 4)
@@ -182,7 +186,7 @@ export const InteriorConditionsStep4Screen: FC = observer(() => {
         />
       </View>
 
-      <ScrollView contentContainerStyle={themed($content)} style={$scrollArea}>
+      <ScrollView contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea}>
         <View style={$introBlock}>
           <Text preset="subheading" text="Alternate Properties" style={themed($titleStyle)} />
           <ProgressBar current={4} total={4} />
@@ -324,6 +328,7 @@ const HotelAccordions: FC<{
   setOpenKey: (key: string | null) => void
   themed: ThemedFn
 }> = observer(({ store, openKey, setOpenKey, themed }) => {
+  const { theme } = useAppTheme()
   const hotel = store?.hotel
 
   return (
@@ -351,13 +356,15 @@ const HotelAccordions: FC<{
                 placeholder="Unit type (e.g. Studio)"
               />
               {(hotel?.unitTypes.length ?? 0) > 1 && (
-                <TouchableOpacity
-                  style={$unitTypeDeleteBtn}
+                <AnimatedPressable
+                  scaleDown={0.9}
                   onPress={() => store?.hotel.removeUnitType(row.id)}
                   accessibilityLabel={`Remove ${row.unitType || "unit type"} row`}
+                  accessibilityRole="button"
+                  style={$unitTypeDeleteBtn}
                 >
-                  <Text text="✕" style={$unitTypeDeleteBtnText} />
-                </TouchableOpacity>
+                  <Icon icon="x" size={12} color={theme.colors.error} />
+                </AnimatedPressable>
               )}
             </View>
             <View style={$unitTypeNumericRow}>
@@ -1262,6 +1269,7 @@ const ApartmentAccordions: FC<{
   setOpenKey: (key: string | null) => void
   themed: ThemedFn
 }> = observer(({ store, openKey, setOpenKey, themed }) => {
+  const { theme } = useAppTheme()
   const apt = store?.apartment
 
   return (
@@ -1289,13 +1297,15 @@ const ApartmentAccordions: FC<{
                 placeholder="Unit type (e.g. Studio)"
               />
               {(apt?.unitTypes.length ?? 0) > 1 && (
-                <TouchableOpacity
-                  style={$unitTypeDeleteBtn}
+                <AnimatedPressable
+                  scaleDown={0.9}
                   onPress={() => store?.apartment.removeUnitType(row.id)}
                   accessibilityLabel={`Remove ${row.unitType || "unit type"} row`}
+                  accessibilityRole="button"
+                  style={$unitTypeDeleteBtn}
                 >
-                  <Text text="✕" style={$unitTypeDeleteBtnText} />
-                </TouchableOpacity>
+                  <Icon icon="x" size={12} color={theme.colors.error} />
+                </AnimatedPressable>
               )}
             </View>
             <View style={$unitTypeNumericRow}>
@@ -2361,13 +2371,12 @@ const $unitTypeTopLine: ViewStyle = {
 const $unitTypeNameInput: ViewStyle = { flex: 1 }
 
 const $unitTypeDeleteBtn: ViewStyle = {
-  width: 32,
-  height: 32,
-  justifyContent: "center",
+  width: 28,
+  height: 28,
   alignItems: "center",
+  justifyContent: "center",
+  borderRadius: 14,
 }
-
-const $unitTypeDeleteBtnText: TextStyle = { fontSize: 16, color: "#cc0000" }
 
 const $unitTypeNumericLabels: ViewStyle = {
   flexDirection: "row",

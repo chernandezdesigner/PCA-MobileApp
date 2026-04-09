@@ -32,12 +32,14 @@ import {
   STEPS_STAIRS_RAILING_OPTIONS,
 } from "@/constants/buildingEnvelopeOptions"
 import { $formScreen, $stickyHeader, $stickyFooter } from "@/theme/styles"
+import { useResponsiveLayout } from "@/hooks/useResponsiveLayout"
 
 interface BuildingEnvelopeStep5ScreenProps
   extends NativeStackScreenProps<BuildingEnvelopeFormNavigatorParamList, "BuildingEnvelopeStep5"> {}
 
 export const BuildingEnvelopeStep5Screen: FC<BuildingEnvelopeStep5ScreenProps> = observer(() => {
   const { themed } = useAppTheme()
+  const { contentMaxWidth } = useResponsiveLayout()
   const navigation = useNavigation()
   const { openDrawer } = useDrawerControl()
   const { onCamera, photoCount } = usePhotoCapture("building_envelope", 5)
@@ -222,7 +224,7 @@ export const BuildingEnvelopeStep5Screen: FC<BuildingEnvelopeStep5ScreenProps> =
           onRightPress={openDrawer}
         />
       </View>
-      <ScrollView contentContainerStyle={themed($content)} style={$scrollArea}>
+      <ScrollView contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea}>
         <View style={$introBlock}>
           <Text preset="subheading" text="Parking, Paving, Sidewalks" style={themed($titleStyle)} />
           <ProgressBar current={5} total={10} />

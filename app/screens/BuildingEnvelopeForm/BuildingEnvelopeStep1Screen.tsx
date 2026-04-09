@@ -23,12 +23,14 @@ import { Controller, useForm, useWatch } from "react-hook-form"
 import type { BuildingEnvelopeFormNavigatorParamList } from "@/navigators/BuildingEnvelopeFormNavigator"
 import { FOUNDATION_SUBSTRUCTURE_OPTIONS, BASMENT_OPTIONS } from "@/constants/buildingEnvelopeOptions"
 import { $formScreen, $stickyHeader, $stickyFooter } from "@/theme/styles"
+import { useResponsiveLayout } from "@/hooks/useResponsiveLayout"
 
 interface BuildingEnvelopeStep1ScreenProps 
   extends NativeStackScreenProps<BuildingEnvelopeFormNavigatorParamList, "BuildingEnvelopeStep1"> {}
 
 export const BuildingEnvelopeStep1Screen: FC<BuildingEnvelopeStep1ScreenProps> = observer(() => {
   const { themed } = useAppTheme()
+  const { contentMaxWidth } = useResponsiveLayout()
   const navigation = useNavigation()
   const { openDrawer } = useDrawerControl()
   const { onCamera, photoCount } = usePhotoCapture("building_envelope", 1)
@@ -179,7 +181,7 @@ export const BuildingEnvelopeStep1Screen: FC<BuildingEnvelopeStep1ScreenProps> =
           onRightPress={openDrawer}
         />
       </View>
-      <ScrollView contentContainerStyle={themed($content)} style={$scrollArea}>
+      <ScrollView contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea}>
         <View style={$introBlock}>
           <Text preset="subheading" text="Foundation & Substructure" style={themed($titleStyle)} />
           <ProgressBar current={1} total={10} />

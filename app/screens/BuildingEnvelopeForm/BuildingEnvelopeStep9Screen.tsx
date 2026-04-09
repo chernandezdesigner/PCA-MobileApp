@@ -20,6 +20,7 @@ import { useDrawerControl } from "@/context/DrawerContext"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
 import { $formScreen, $stickyHeader, $stickyFooter } from "@/theme/styles"
+import { useResponsiveLayout } from "@/hooks/useResponsiveLayout"
 import type { BuildingEnvelopeFormNavigatorParamList } from "@/navigators/BuildingEnvelopeFormNavigator"
 import {
   DOOR_TYPE_OPTIONS,
@@ -40,6 +41,7 @@ interface BuildingEnvelopeStep9ScreenProps
 
 export const BuildingEnvelopeStep9Screen: FC<BuildingEnvelopeStep9ScreenProps> = observer(() => {
   const { themed } = useAppTheme()
+  const { contentMaxWidth } = useResponsiveLayout()
   const navigation = useNavigation()
   const { openDrawer } = useDrawerControl()
   const { onCamera, photoCount } = usePhotoCapture("building_envelope", 9)
@@ -270,7 +272,7 @@ export const BuildingEnvelopeStep9Screen: FC<BuildingEnvelopeStep9ScreenProps> =
           onRightPress={openDrawer}
         />
       </View>
-      <ScrollView contentContainerStyle={themed($content)} style={$scrollArea}>
+      <ScrollView contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea}>
         <View style={$introBlock}>
           <Text preset="subheading" text="Doors" style={themed($titleStyle)} />
           <ProgressBar current={9} total={10} />

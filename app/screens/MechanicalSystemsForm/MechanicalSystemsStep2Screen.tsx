@@ -5,6 +5,8 @@ import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
 import { TextField } from "@/components/TextField"
 import { Button } from "@/components/Button"
+import { AnimatedPressable } from "@/components/AnimatedPressable"
+import { Icon } from "@/components/Icon"
 import { Card } from "@/components/Card"
 import { ConditionAssessment } from "@/components/ConditionAssessment"
 import { RepairStatus } from "@/components/RepairStatus"
@@ -21,6 +23,7 @@ import { useNavigation } from "@react-navigation/native"
 import { useDrawerControl } from "@/context/DrawerContext"
 import { useAppTheme } from "@/theme/context"
 import { $formScreen, $stickyHeader, $stickyFooter } from "@/theme/styles"
+import { useResponsiveLayout } from "@/hooks/useResponsiveLayout"
 import type { ThemedStyle } from "@/theme/types"
 import type { MechanicalSystemsFormNavigatorParamList } from "@/navigators/MechanicalSystemsFormNavigator"
 import { 
@@ -36,7 +39,8 @@ interface MechanicalSystemsStep2ScreenProps
   extends NativeStackScreenProps<MechanicalSystemsFormNavigatorParamList, "MechanicalSystemsStep2"> {}
 
 export const MechanicalSystemsStep2Screen: FC<MechanicalSystemsStep2ScreenProps> = observer(() => {
-  const { themed } = useAppTheme()
+  const { themed, theme } = useAppTheme()
+  const { contentMaxWidth } = useResponsiveLayout()
   const navigation = useNavigation()
   const { openDrawer } = useDrawerControl()
   const { onCamera, photoCount } = usePhotoCapture("mechanical_systems", 2)
@@ -93,7 +97,7 @@ export const MechanicalSystemsStep2Screen: FC<MechanicalSystemsStep2ScreenProps>
         />
       </View>
       
-      <ScrollView contentContainerStyle={themed($content)} style={$scrollArea}>
+      <ScrollView contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea}>
         <View style={$introBlock}>
           <Text preset="subheading" text="Misc Units" style={themed($titleStyle)} />
           <ProgressBar current={2} total={9} />
@@ -216,13 +220,16 @@ export const MechanicalSystemsStep2Screen: FC<MechanicalSystemsStep2ScreenProps>
                           })}
                         />
 
-                        <View style={$alignEnd}>
-                          <Button
-                            preset="reversed"
-                            text="Remove Unit"
-                            onPress={() => store?.removeUnitHeater(unit.id)}
-                          />
-                        </View>
+                        <AnimatedPressable
+                          scaleDown={0.9}
+                          onPress={() => store?.removeUnitHeater(unit.id)}
+                          accessibilityLabel="Remove"
+                          accessibilityRole="button"
+                          style={$removeRow}
+                        >
+                          <Icon icon="x" size={14} color={theme.colors.error} />
+                          <Text text="Remove" size="xs" weight="medium" style={{ color: theme.colors.error }} />
+                        </AnimatedPressable>
                       </View>
                     }
                   />
@@ -232,7 +239,7 @@ export const MechanicalSystemsStep2Screen: FC<MechanicalSystemsStep2ScreenProps>
               {/* Shared Fields */}
               <View style={themed($sharedFieldsSection)}>
                 <Text preset="formLabel" text="Shared Information" style={themed($subSectionHeader)} />
-                
+
                 <TextField
                   label="Observations/Issues"
                   placeholder="Enter observations or issues"
@@ -392,13 +399,16 @@ export const MechanicalSystemsStep2Screen: FC<MechanicalSystemsStep2ScreenProps>
                           })}
                         />
 
-                        <View style={$alignEnd}>
-                          <Button
-                            preset="reversed"
-                            text="Remove Unit"
-                            onPress={() => store?.removeAirHandlingUnit(unit.id)}
-                          />
-                        </View>
+                        <AnimatedPressable
+                          scaleDown={0.9}
+                          onPress={() => store?.removeAirHandlingUnit(unit.id)}
+                          accessibilityLabel="Remove"
+                          accessibilityRole="button"
+                          style={$removeRow}
+                        >
+                          <Icon icon="x" size={14} color={theme.colors.error} />
+                          <Text text="Remove" size="xs" weight="medium" style={{ color: theme.colors.error }} />
+                        </AnimatedPressable>
                       </View>
                     }
                   />
@@ -520,13 +530,16 @@ export const MechanicalSystemsStep2Screen: FC<MechanicalSystemsStep2ScreenProps>
                           )}
                         />
 
-                        <View style={$alignEnd}>
-                          <Button
-                            preset="reversed"
-                            text="Remove Unit"
-                            onPress={() => store?.removeExhaustFan(unit.id)}
-                          />
-                        </View>
+                        <AnimatedPressable
+                          scaleDown={0.9}
+                          onPress={() => store?.removeExhaustFan(unit.id)}
+                          accessibilityLabel="Remove"
+                          accessibilityRole="button"
+                          style={$removeRow}
+                        >
+                          <Icon icon="x" size={14} color={theme.colors.error} />
+                          <Text text="Remove" size="xs" weight="medium" style={{ color: theme.colors.error }} />
+                        </AnimatedPressable>
                       </View>
                     }
                   />
@@ -693,8 +706,13 @@ const $cardFields: ViewStyle = {
   gap: 12,
 }
 
-const $alignEnd: ViewStyle = {
-  alignItems: "flex-end",
+const $removeRow: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  alignSelf: "flex-end",
+  gap: 4,
+  paddingVertical: 6,
+  paddingHorizontal: 8,
 }
 
 const $row: ViewStyle = {

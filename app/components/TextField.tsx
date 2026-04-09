@@ -17,7 +17,7 @@ import {
 import { isRTL } from "@/i18n"
 import { translate } from "@/i18n/translate"
 import { useAppTheme } from "@/theme/context"
-import { $styles } from "@/theme/styles"
+import { $styles, radii } from "@/theme/styles"
 import type { ThemedStyle, ThemedStyleArray } from "@/theme/types"
 
 import { Text, TextProps } from "./Text"
@@ -187,18 +187,22 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
     $inputWrapperStyleOverride,
   ]
 
-  // On iOS: use state-based focus styling (works fine)
-  // On Android: will use Animated.View with interpolated styles
+  // Focus styles per platform
+  const $focusStyle = isFocused ? {
+    borderColor: status === "error" ? colors.error : colors.tint,
+    borderWidth: 2,
+    ...(Platform.OS !== "web" ? {
+      shadowColor: colors.tint,
+      shadowOpacity: 0.15,
+      shadowRadius: 6,
+      shadowOffset: { width: 0, height: 0 },
+      elevation: 2,
+    } : {}),
+  } : {}
+
   const $inputWrapperStyles = [
     ...$inputWrapperStylesBase,
-    Platform.OS === "ios" && isFocused && {
-      borderColor: colors.tint,
-      shadowColor: colors.tint,
-      shadowOpacity: 0.25,
-      shadowRadius: 8,
-      shadowOffset: { width: 0, height: 2 },
-      elevation: 4,
-    },
+    Platform.OS !== "android" && $focusStyle,
   ]
 
   // Animated styles for Android focus state
@@ -206,7 +210,7 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
     borderColor: animatedBorderColor,
     elevation: focusAnimValue.interpolate({
       inputRange: [0, 1],
-      outputRange: [0, 4],
+      outputRange: [0, 2],
     }),
   } : {}
 
@@ -286,25 +290,19 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
           editable={!disabled}
           multiline={TextInputProps.multiline}
           onFocus={(e) => {
-            if (Platform.OS === "ios") {
-              // iOS: Use state-based focus (works fine, no re-render issues)
-              setIsFocused(true)
-            } else {
-              // Android: Animate focus without state change (no re-renders)
+            setIsFocused(true)
+            if (Platform.OS === "android") {
               Animated.timing(focusAnimValue, {
                 toValue: 1,
                 duration: 150,
-                useNativeDriver: false, // Can't use native driver for borderColor/elevation
+                useNativeDriver: false,
               }).start()
             }
             TextInputProps.onFocus?.(e)
           }}
           onBlur={(e) => {
-            if (Platform.OS === "ios") {
-              // iOS: Use state-based unfocus
-              setIsFocused(false)
-            } else {
-              // Android: Animate unfocus without state change
+            setIsFocused(false)
+            if (Platform.OS === "android") {
               Animated.timing(focusAnimValue, {
                 toValue: 0,
                 duration: 150,
@@ -342,8 +340,8 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
     </>
   )
 
-  // On iOS, wrap in Pressable for enhanced touch target; on Android, use plain View to avoid touch conflicts
-  if (Platform.OS === "ios") {
+  // On iOS/web, wrap in Pressable for enhanced touch target; on Android, use plain View to avoid touch conflicts
+  if (Platform.OS !== "android") {
     return (
       <Pressable
         onPress={focusInput}
@@ -356,7 +354,6 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
     )
   }
 
-  // Android: Plain View with no touch handling
   return (
     <View style={$containerStyles}>
       {renderContent()}
@@ -372,7 +369,7 @@ const $labelStyle: ThemedStyle<TextStyle> = ({ spacing, colors }) => ({
 const $inputWrapperStyle: ThemedStyle<ViewStyle> = ({ colors }) => ({
   alignItems: "flex-start",
   borderWidth: 1,
-  borderRadius: 12,
+  borderRadius: radii.md,
   backgroundColor: colors.palette.neutral100,
   borderColor: colors.palette.neutral300,
   overflow: "visible",

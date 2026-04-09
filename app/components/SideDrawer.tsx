@@ -1,20 +1,22 @@
 import { useState, useMemo, useEffect } from "react"
-import { 
-  StyleProp, 
-  TextStyle, 
-  View, 
-  ViewStyle, 
-  ScrollView, 
+import {
+  StyleProp,
+  TextStyle,
+  View,
+  ViewStyle,
+  ScrollView,
   TouchableOpacity,
   Alert,
   Platform,
 } from "react-native"
+import Animated, { useSharedValue, useAnimatedStyle, withTiming } from "react-native-reanimated"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { useNavigationState } from "@react-navigation/native"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle, ThemedStyleArray } from "@/theme/types"
 import { Text } from "@/components/Text"
 import { Icon } from "@/components/Icon"
+import { AnimatedPressable } from "@/components/AnimatedPressable"
 import { TextField } from "@/components/TextField"
 import { Button } from "@/components/Button"
 import { navigate, resetRoot, navigationRef } from "@/navigators/navigationUtilities"
@@ -108,6 +110,25 @@ const NAVIGATION_STRUCTURE: NavigationItem[] = [
     ],
   },
 ]
+
+/** Animated caret that rotates between expanded / collapsed */
+function SectionCaret({ isExpanded, color }: { isExpanded: boolean; color: string }) {
+  const rotation = useSharedValue(isExpanded ? -90 : 90)
+
+  useEffect(() => {
+    rotation.value = withTiming(isExpanded ? -90 : 90, { duration: 200 })
+  }, [isExpanded])
+
+  const animStyle = useAnimatedStyle(() => ({
+    transform: [{ rotate: `${rotation.value}deg` }],
+  }))
+
+  return (
+    <Animated.View style={animStyle}>
+      <Icon icon="caretRight" size={16} color={color} />
+    </Animated.View>
+  )
+}
 
 /**
  * Side drawer navigation with search and accordion sections
@@ -389,27 +410,20 @@ export const SideDrawer = (props: SideDrawerProps) => {
           return (
             <View key={section.id} style={themed($sectionContainer)}>
               {/* Section Header */}
-              <TouchableOpacity
+              <AnimatedPressable
                 onPress={() => hasChildren && toggleSection(section.id)}
                 style={[themed($sectionHeader), isExpanded && themed($sectionHeaderExpanded)]}
                 disabled={!hasChildren}
               >
-                <Text 
-                  text={section.label} 
-                  style={themed($sectionLabel)} 
+                <Text
+                  text={section.label}
+                  style={themed($sectionLabel)}
                   weight="medium"
                 />
                 {hasChildren && (
-                  <View style={{ transform: [{ rotate: isExpanded ? "180deg" : "0deg" }] }}>
-                    <Icon 
-                      icon="caretRight" 
-                      size={16} 
-                      color={theme.colors.text}
-                      style={{ transform: [{ rotate: "90deg" }] }}
-                    />
-                  </View>
+                  <SectionCaret isExpanded={isExpanded} color={theme.colors.text} />
                 )}
-              </TouchableOpacity>
+              </AnimatedPressable>
 
               {/* Children/Steps */}
               {isExpanded && hasChildren && (
@@ -422,13 +436,10 @@ export const SideDrawer = (props: SideDrawerProps) => {
                         onPress={() => child.route && handleNavigate(child.route)}
                         style={[themed($childItem), isActive && themed($childItemActive)]}
                       >
-                        <Text 
-                          text={child.label} 
+                        <Text
+                          text={child.label}
                           style={[themed($childLabel), isActive ? themed($childLabelActive) : undefined]}
                         />
-                        {isActive && (
-                          <View style={themed($activeDot)} />
-                        )}
                       </TouchableOpacity>
                     )
                   })}
@@ -608,6 +619,8 @@ const $childItem: ThemedStyleArray<ViewStyle> = [
 const $childItemActive: ThemedStyleArray<ViewStyle> = [
   (theme) => ({
     backgroundColor: theme.colors.palette.overlayActive,
+    borderLeftWidth: 3,
+    borderLeftColor: theme.colors.tint,
   }),
 ]
 
@@ -623,16 +636,6 @@ const $childLabelActive: ThemedStyleArray<TextStyle> = [
   (theme) => ({
     color: theme.colors.palette.primary500,
     fontFamily: theme.typography.primary.medium,
-  }),
-]
-
-const $activeDot: ThemedStyleArray<ViewStyle> = [
-  (theme) => ({
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: theme.colors.palette.primary500,
-    marginLeft: theme.spacing.sm,
   }),
 ]
 

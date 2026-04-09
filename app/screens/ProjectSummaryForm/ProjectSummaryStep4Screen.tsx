@@ -18,6 +18,7 @@ import type { ThemedStyle } from "@/theme/types"
 import { ChecklistCard } from "@/components/ChecklistCard"
 import { useDrawerControl } from "@/context/DrawerContext"
 import { $formScreen, $stickyHeader, $stickyFooter } from "@/theme/styles"
+import { useResponsiveLayout } from "@/hooks/useResponsiveLayout"
 
 interface ProjectSummaryStep4ScreenProps extends NativeStackScreenProps<ProjectSummaryFormNavigatorParamList, "ProjectSummaryStep4"> {}
 
@@ -55,6 +56,7 @@ const PROBLEMATIC_MATERIALS = [
 export const ProjectSummaryStep4Screen: FC<ProjectSummaryStep4ScreenProps> = observer(() => {
   const navigation = useNavigation()
   const { themed } = useAppTheme()
+  const { contentMaxWidth } = useResponsiveLayout()
   const { openDrawer } = useDrawerControl()
   const { onCamera, photoCount } = usePhotoCapture("project_summary", 4)
   const rootStore = useStores()
@@ -125,7 +127,7 @@ export const ProjectSummaryStep4Screen: FC<ProjectSummaryStep4ScreenProps> = obs
       <View style={$stickyHeader}>
         <HeaderBar title="Project Summary" leftIcon="back" onLeftPress={() => navigation.goBack()} rightIcon="menu" onRightPress={openDrawer} />
       </View>
-      <ScrollView contentContainerStyle={$content} style={$scrollArea}>
+      <ScrollView contentContainerStyle={[$content, contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea}>
         <View style={$introBlock}>
           <Text preset="subheading" text="Problematic Materials & Utilities" style={themed($titleStyle)} />
           <ProgressBar current={4} total={4} />

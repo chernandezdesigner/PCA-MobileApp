@@ -20,6 +20,7 @@ import { useDrawerControl } from "@/context/DrawerContext"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
 import { $formScreen, $stickyHeader, $stickyFooter } from "@/theme/styles"
+import { useResponsiveLayout } from "@/hooks/useResponsiveLayout"
 import type { BuildingEnvelopeFormNavigatorParamList } from "@/navigators/BuildingEnvelopeFormNavigator"
 import {
   WINDOW_TYPE_OPTIONS,
@@ -33,6 +34,7 @@ interface BuildingEnvelopeStep8ScreenProps
 
 export const BuildingEnvelopeStep8Screen: FC<BuildingEnvelopeStep8ScreenProps> = observer(() => {
   const { themed } = useAppTheme()
+  const { contentMaxWidth } = useResponsiveLayout()
   const navigation = useNavigation()
   const { openDrawer } = useDrawerControl()
   const { onCamera, photoCount } = usePhotoCapture("building_envelope", 8)
@@ -113,7 +115,7 @@ export const BuildingEnvelopeStep8Screen: FC<BuildingEnvelopeStep8ScreenProps> =
           onRightPress={openDrawer}
         />
       </View>
-      <ScrollView contentContainerStyle={themed($content)} style={$scrollArea}>
+      <ScrollView contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea}>
         <View style={$introBlock}>
           <Text preset="subheading" text="Windows" style={themed($titleStyle)} />
           <ProgressBar current={8} total={10} />

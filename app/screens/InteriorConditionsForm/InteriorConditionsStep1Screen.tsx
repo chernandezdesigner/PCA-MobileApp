@@ -19,6 +19,7 @@ import { useDrawerControl } from "@/context/DrawerContext"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
 import { $formScreen, $stickyHeader, $stickyFooter } from "@/theme/styles"
+import { useResponsiveLayout } from "@/hooks/useResponsiveLayout"
 
 import {
   TENANT_FLOOR_OPTIONS,
@@ -58,6 +59,7 @@ const toggleItem = (storeData: string[], id: string, checked: boolean): string[]
 
 export const InteriorConditionsStep1Screen: FC = observer(() => {
   const { themed } = useAppTheme()
+  const { contentMaxWidth } = useResponsiveLayout()
   const navigation = useNavigation()
   const { openDrawer } = useDrawerControl()
   const { onCamera, photoCount } = usePhotoCapture("interior_conditions", 1)
@@ -92,7 +94,7 @@ export const InteriorConditionsStep1Screen: FC = observer(() => {
         />
       </View>
 
-      <ScrollView contentContainerStyle={themed($content)} style={$scrollArea}>
+      <ScrollView contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea}>
         <View style={$introBlock}>
           <Text preset="subheading" text="Commercial Tenant Unit Finishes" style={themed($titleStyle)} />
           <ProgressBar current={1} total={4} />

@@ -19,6 +19,7 @@ import { useDrawerControl } from "@/context/DrawerContext"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
 import { $formScreen, $stickyHeader, $stickyFooter } from "@/theme/styles"
+import { useResponsiveLayout } from "@/hooks/useResponsiveLayout"
 import {
   LOBBY_FLOOR_OPTIONS,
   LOBBY_WALL_OPTIONS,
@@ -45,6 +46,7 @@ import {
 
 export const InteriorConditionsStep2Screen: FC = observer(() => {
   const { themed } = useAppTheme()
+  const { contentMaxWidth } = useResponsiveLayout()
   const navigation = useNavigation()
   const { openDrawer } = useDrawerControl()
   const { onCamera, photoCount } = usePhotoCapture("interior_conditions", 2)
@@ -200,7 +202,7 @@ export const InteriorConditionsStep2Screen: FC = observer(() => {
         />
       </View>
 
-      <ScrollView contentContainerStyle={themed($content)} style={$scrollArea}>
+      <ScrollView contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea}>
         <View style={$introBlock}>
           <Text preset="subheading" text="Common Area Finishes" style={themed($titleStyle)} />
           <ProgressBar current={2} total={4} />

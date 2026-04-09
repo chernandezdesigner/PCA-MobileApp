@@ -32,12 +32,14 @@ import {
   sheathingOptions,
 } from "@/constants/buildingEnvelopeOptions"
 import { $formScreen, $stickyHeader, $stickyFooter } from "@/theme/styles"
+import { useResponsiveLayout } from "@/hooks/useResponsiveLayout"
 
 interface BuildingEnvelopeStep2ScreenProps
   extends NativeStackScreenProps<BuildingEnvelopeFormNavigatorParamList, "BuildingEnvelopeStep2"> {}
 
 export const BuildingEnvelopeStep2Screen: FC<BuildingEnvelopeStep2ScreenProps> = observer(() => {
   const { themed } = useAppTheme()
+  const { contentMaxWidth } = useResponsiveLayout()
   const navigation = useNavigation()
   const { openDrawer } = useDrawerControl()
   const { onCamera, photoCount } = usePhotoCapture("building_envelope", 2)
@@ -286,7 +288,7 @@ export const BuildingEnvelopeStep2Screen: FC<BuildingEnvelopeStep2ScreenProps> =
           onRightPress={openDrawer}
         />
       </View>
-      <ScrollView contentContainerStyle={themed($content)} style={$scrollArea}>
+      <ScrollView contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea}>
         <View style={$introBlock}>
           <Text preset="subheading" text="Superstructure" style={themed($titleStyle)} />
           <ProgressBar current={2} total={10} />

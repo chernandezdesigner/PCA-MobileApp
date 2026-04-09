@@ -6,6 +6,8 @@ import { Text } from "@/components/Text"
 import { TextField } from "@/components/TextField"
 import { ConditionAssessment } from "@/components/ConditionAssessment"
 import { RepairStatus } from "@/components/RepairStatus"
+import { AnimatedPressable } from "@/components/AnimatedPressable"
+import { Icon } from "@/components/Icon"
 import { SectionAccordion } from "@/components/SectionAccordion"
 import { ChecklistField } from "@/components/ChecklistField"
 import type { ChecklistItem } from "@/components/ChecklistCard"
@@ -35,12 +37,14 @@ import {
   INSULATION_OPTIONS,
 } from "@/constants/buildingEnvelopeOptions"
 import { $formScreen, $stickyHeader, $stickyFooter } from "@/theme/styles"
+import { useResponsiveLayout } from "@/hooks/useResponsiveLayout"
 
 interface BuildingEnvelopeStep3ScreenProps
   extends NativeStackScreenProps<BuildingEnvelopeFormNavigatorParamList, "BuildingEnvelopeStep3"> {}
 
 export const BuildingEnvelopeStep3Screen: FC<BuildingEnvelopeStep3ScreenProps> = observer(() => {
   const { themed, theme } = useAppTheme()
+  const { contentMaxWidth } = useResponsiveLayout()
   const navigation = useNavigation()
   const { openDrawer } = useDrawerControl()
   const { onCamera, photoCount } = usePhotoCapture("building_envelope", 3)
@@ -108,7 +112,7 @@ export const BuildingEnvelopeStep3Screen: FC<BuildingEnvelopeStep3ScreenProps> =
           onRightPress={openDrawer}
         />
       </View>
-      <ScrollView contentContainerStyle={themed($content)} style={$scrollArea}>
+      <ScrollView contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea}>
         <View style={$introBlock}>
           <Text preset="subheading" text="Primary Roofing" style={themed($titleStyle)} />
           <ProgressBar current={3} total={10} />
@@ -200,12 +204,16 @@ export const BuildingEnvelopeStep3Screen: FC<BuildingEnvelopeStep3ScreenProps> =
           <>
             <View style={themed($secondaryRoofHeader)}>
               <Text preset="subheading" text="Secondary Roofing" style={themed($titleStyle)} />
-              <TouchableOpacity
-                style={themed($removeButton)}
+              <AnimatedPressable
+                scaleDown={0.9}
                 onPress={handleRemoveSecondaryRoof}
+                accessibilityLabel="Remove"
+                accessibilityRole="button"
+                style={$removeRow}
               >
-                <Text text="Remove" style={themed($removeButtonText)} />
-              </TouchableOpacity>
+                <Icon icon="x" size={14} color={theme.colors.error} />
+                <Text text="Remove" size="xs" weight="medium" style={{ color: theme.colors.error }} />
+              </AnimatedPressable>
             </View>
 
             {/* SECONDARY ROOF - Top Level Fields */}
@@ -954,18 +962,14 @@ const $secondaryRoofHeader: ViewStyle = {
   alignItems: "center",
 }
 
-const $removeButton: ThemedStyle<ViewStyle> = ({ colors }) => ({
-  paddingHorizontal: 16,
-  paddingVertical: 8,
-  borderRadius: 8,
-  backgroundColor: colors.palette.angry100,
-})
-
-const $removeButtonText: ThemedStyle<any> = ({ colors }) => ({
-  color: colors.palette.angry500,
-  fontSize: 14,
-  fontWeight: "600",
-})
+const $removeRow: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  alignSelf: "flex-end",
+  gap: 4,
+  paddingVertical: 6,
+  paddingHorizontal: 8,
+}
 
 const $titleStyle: ThemedStyle<any> = ({ colors }) => ({
   color: colors.palette.primary2 as any,

@@ -6,6 +6,8 @@ import { Text } from "@/components/Text"
 import { TextField } from "@/components/TextField"
 import { Dropdown } from "@/components/Dropdown"
 import { Button } from "@/components/Button"
+import { AnimatedPressable } from "@/components/AnimatedPressable"
+import { Icon } from "@/components/Icon"
 import { Card } from "@/components/Card"
 import { ConditionAssessment } from "@/components/ConditionAssessment"
 import { RepairStatus } from "@/components/RepairStatus"
@@ -20,6 +22,7 @@ import { useNavigation } from "@react-navigation/native"
 import { useDrawerControl } from "@/context/DrawerContext"
 import { useAppTheme } from "@/theme/context"
 import { $formScreen, $stickyHeader, $stickyFooter } from "@/theme/styles"
+import { useResponsiveLayout } from "@/hooks/useResponsiveLayout"
 import type { ThemedStyle } from "@/theme/types"
 import type { MechanicalSystemsFormNavigatorParamList } from "@/navigators/MechanicalSystemsFormNavigator"
 import { 
@@ -33,7 +36,8 @@ interface MechanicalSystemsStep1ScreenProps
   extends NativeStackScreenProps<MechanicalSystemsFormNavigatorParamList, "MechanicalSystemsStep1"> {}
 
 export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps> = observer(() => {
-  const { themed } = useAppTheme()
+  const { themed, theme } = useAppTheme()
+  const { contentMaxWidth } = useResponsiveLayout()
   const navigation = useNavigation()
   const { openDrawer } = useDrawerControl()
   const { onCamera, photoCount } = usePhotoCapture("mechanical_systems", 1)
@@ -91,7 +95,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
         />
       </View>
       
-      <ScrollView contentContainerStyle={themed($content)} style={$scrollArea}>
+      <ScrollView contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea}>
         <View style={$introBlock}>
           <Text preset="subheading" text="HVAC Individual Units" style={themed($titleStyle)} />
           <ProgressBar current={1} total={9} />
@@ -1440,13 +1444,16 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
                       value={item.type}
                       onValueChange={(val) => store?.updateUnitManufacturerSpecific(item.id, { type: val })}
                     />
-                    <View style={$alignEnd}>
-                      <Button
-                        preset="reversed"
-                        text="Remove"
-                        onPress={() => store?.removeUnitManufacturerSpecific(item.id)}
-                      />
-                    </View>
+                    <AnimatedPressable
+                      scaleDown={0.9}
+                      onPress={() => store?.removeUnitManufacturerSpecific(item.id)}
+                      accessibilityLabel="Remove"
+                      accessibilityRole="button"
+                      style={$removeRow}
+                    >
+                      <Icon icon="x" size={14} color={theme.colors.error} />
+                      <Text text="Remove" size="xs" weight="medium" style={{ color: theme.colors.error }} />
+                    </AnimatedPressable>
                   </View>
                 }
               />
@@ -1560,8 +1567,13 @@ const $cardFields: ViewStyle = {
   gap: 12,
 }
 
-const $alignEnd: ViewStyle = {
-  alignItems: "flex-end",
+const $removeRow: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  alignSelf: "flex-end",
+  gap: 4,
+  paddingVertical: 6,
+  paddingHorizontal: 8,
 }
 
 const $row: ViewStyle = {

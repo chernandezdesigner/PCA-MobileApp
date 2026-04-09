@@ -22,6 +22,7 @@ import { useNavigation } from "@react-navigation/native"
 import { useDrawerControl } from "@/context/DrawerContext"
 import { useAppTheme } from "@/theme/context"
 import { $formScreen, $stickyHeader, $stickyFooter } from "@/theme/styles"
+import { useResponsiveLayout } from "@/hooks/useResponsiveLayout"
 import type { ThemedStyle } from "@/theme/types"
 import type { MechanicalSystemsFormNavigatorParamList } from "@/navigators/MechanicalSystemsFormNavigator"
 import { 
@@ -36,6 +37,7 @@ interface MechanicalSystemsStep3ScreenProps
 
 export const MechanicalSystemsStep3Screen: FC<MechanicalSystemsStep3ScreenProps> = observer(() => {
   const { themed } = useAppTheme()
+  const { contentMaxWidth } = useResponsiveLayout()
   const navigation = useNavigation()
   const { openDrawer } = useDrawerControl()
   const { onCamera, photoCount } = usePhotoCapture("mechanical_systems", 3)
@@ -91,7 +93,7 @@ export const MechanicalSystemsStep3Screen: FC<MechanicalSystemsStep3ScreenProps>
         />
       </View>
       
-      <ScrollView contentContainerStyle={themed($content)} style={$scrollArea}>
+      <ScrollView contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea}>
         <View style={$introBlock}>
           <Text preset="subheading" text="Chillers & Cooling Towers" style={themed($titleStyle)} />
           <ProgressBar current={3} total={9} />

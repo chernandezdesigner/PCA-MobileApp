@@ -118,7 +118,7 @@ export const $formContent: ViewStyle = {
   padding: spacing.md,
   paddingTop: 88, // 72 (header height) + 16 (spacing)
   paddingBottom: 112, // 96 (footer height) + 16 (spacing)
-  gap: spacing.md,
+  gap: spacing.lg, // 24px breathing room between sections
 }
 
 export const $fieldRow: ViewStyle = {

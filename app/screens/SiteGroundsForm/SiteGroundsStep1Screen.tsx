@@ -19,6 +19,7 @@ import { useDrawerControl } from "@/context/DrawerContext"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
 import { $formScreen, $stickyHeader, $stickyFooter } from "@/theme/styles"
+import { useResponsiveLayout } from "@/hooks/useResponsiveLayout"
 import { Controller, useForm, useWatch } from "react-hook-form"
 import type { SiteGroundsFormNavigatorParamList } from "@/navigators/SiteGroundsFormNavigator"
 import { SURFACE_TO_OPTIONS, DRAINAGE_FEATURES_OPTIONS } from "@/constants/siteGroundsOptions"
@@ -27,6 +28,7 @@ interface SiteGroundsStep1ScreenProps extends NativeStackScreenProps<SiteGrounds
 
 export const SiteGroundsStep1Screen: FC<SiteGroundsStep1ScreenProps> = observer(() => {
   const { themed } = useAppTheme()
+  const { contentMaxWidth } = useResponsiveLayout()
   const navigation = useNavigation()
   const { openDrawer } = useDrawerControl()
   const { onCamera, photoCount } = usePhotoCapture("site_grounds", 1)
@@ -152,7 +154,7 @@ export const SiteGroundsStep1Screen: FC<SiteGroundsStep1ScreenProps> = observer(
           onRightPress={openDrawer}
         />
       </View>
-      <ScrollView contentContainerStyle={$content} style={$scrollArea}>
+      <ScrollView contentContainerStyle={[$content, contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea}>
         <View style={$introBlock}>
           <Text preset="subheading" text="Drainage & Erosion" style={themed($titleStyle)} />
           <ProgressBar current={1} total={4} />

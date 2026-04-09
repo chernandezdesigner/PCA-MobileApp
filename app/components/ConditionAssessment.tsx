@@ -1,4 +1,3 @@
-import { ReactNode } from "react"
 import { StyleProp, TextStyle, View, ViewStyle } from "react-native"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle, ThemedStyleArray } from "@/theme/types"
@@ -9,55 +8,60 @@ import { elevation, radii } from "@/theme/styles"
 type ConditionValue = "good" | "fair" | "poor"
 
 export interface ConditionAssessmentProps {
-  /**
-   * Selected value.
-   */
   value?: ConditionValue
-  /**
-   * Called when user selects a different condition.
-   */
   onChange?: (value: ConditionValue) => void
-  /**
-   * Disable interaction.
-   */
   disabled?: boolean
-  /**
-   * Container style override.
-   */
   style?: StyleProp<ViewStyle>
 }
 
-/**
- * Describe your component here
- */
+const CONDITION_CONFIG: Record<ConditionValue, { label: string; face: string }> = {
+  good: { label: "Good", face: "\u{1F60A}" },
+  fair: { label: "Fair", face: "\u{1F610}" },
+  poor: { label: "Poor", face: "\u{2639}\u{FE0F}" },
+}
+
 export const ConditionAssessment = (props: ConditionAssessmentProps) => {
   const { style, value, onChange, disabled } = props
   const { themed, theme } = useAppTheme()
 
   const Option = ({
     id,
-    label,
     accentColor,
     fillColor,
-    rightAdornment,
   }: {
     id: ConditionValue
-    label: string
     accentColor: string
     fillColor: string
-    rightAdornment?: ReactNode
   }) => {
     const selected = value === id
+    const config = CONDITION_CONFIG[id]
+
     return (
       <AnimatedPressable
         disabled={disabled}
         accessibilityRole="button"
+        accessibilityLabel={`${config.label} condition`}
         accessibilityState={{ selected, disabled: !!disabled }}
         onPress={() => onChange?.(id)}
-        style={[themed($tile), selected && $tileSelected, selected && { borderColor: accentColor, backgroundColor: fillColor }]}
+        style={[
+          themed($tile),
+          selected && $tileSelected,
+          selected && { borderColor: accentColor, backgroundColor: fillColor },
+        ]}
       >
-        <Text size="sm" weight={selected ? "bold" : "medium"} text={label} style={themed(selected ? $tileLabelSelected : $tileLabel)} />
-        {rightAdornment}
+        <Text
+          text={config.face}
+          style={[
+            $faceIcon,
+            !selected && { opacity: 0.4 },
+          ]}
+        />
+        <Text
+          size="xs"
+          weight={selected ? "bold" : "medium"}
+          text={config.label}
+          style={themed(selected ? $tileLabelSelected : $tileLabel)}
+        />
       </AnimatedPressable>
     )
   }
@@ -66,19 +70,16 @@ export const ConditionAssessment = (props: ConditionAssessmentProps) => {
     <View style={[themed($container), style]}>
       <Option
         id="good"
-        label="Good"
         accentColor={theme.colors.palette.conditionGoodBorder}
         fillColor={theme.colors.palette.conditionGoodBackground}
       />
       <Option
         id="fair"
-        label="Fair"
         accentColor={theme.colors.palette.conditionFairBorder}
         fillColor={theme.colors.palette.conditionFairBackground}
       />
       <Option
         id="poor"
-        label="Poor"
         accentColor={theme.colors.palette.conditionPoorBorder}
         fillColor={theme.colors.palette.conditionPoorBackground}
       />
@@ -87,33 +88,38 @@ export const ConditionAssessment = (props: ConditionAssessmentProps) => {
 }
 
 const $container: ThemedStyleArray<ViewStyle> = [
-  ({ spacing }) => ({
+  () => ({
     flexDirection: "row",
-    flexWrap: "nowrap", // Don't wrap - keep in one row
-    justifyContent: "space-between", // Space items evenly
+    flexWrap: "nowrap",
+    justifyContent: "space-between",
   }),
 ]
 
 const $tile: ThemedStyleArray<ViewStyle> = [
   (theme) => ({
-    // 31% width with space-between creates proper gaps
     width: "31%",
-    // Meets accessibility minimum for touch targets (slightly above 44x44)
-    minHeight: 48,
+    minHeight: 64,
     borderRadius: radii.lg,
     borderWidth: 1,
     borderColor: theme.colors.palette.SecondaryButtonBorder,
     backgroundColor: theme.colors.palette.SecondaryButtonBackground,
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: theme.spacing.xs, // 8px
-    paddingHorizontal: theme.spacing.sm, // 12px - better text padding
-    flexShrink: 0, // Prevent shrinking
+    flexDirection: "column",
+    gap: 4,
+    paddingVertical: theme.spacing.sm,
+    paddingHorizontal: theme.spacing.xs,
+    flexShrink: 0,
   }),
 ]
 
 const $tileSelected: ViewStyle = {
   ...elevation.sm,
+}
+
+const $faceIcon: TextStyle = {
+  fontSize: 22,
+  lineHeight: 26,
 }
 
 const $tileLabel: ThemedStyle<TextStyle> = ({ colors }) => ({

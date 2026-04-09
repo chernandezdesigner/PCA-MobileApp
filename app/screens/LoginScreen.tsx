@@ -1,6 +1,6 @@
 import { ComponentType, FC, useEffect, useMemo, useRef, useState } from "react"
 // eslint-disable-next-line no-restricted-imports
-import { TextInput, TextStyle, ViewStyle } from "react-native"
+import { TextInput, TextStyle, View, ViewStyle } from "react-native"
 
 import { Button } from "@/components/Button"
 import { PressableIcon } from "@/components/Icon"
@@ -8,8 +8,10 @@ import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
 import { TextField, type TextFieldAccessoryProps } from "@/components/TextField"
 import { useAuth } from "@/context/AuthContext"
+import { useResponsiveLayout } from "@/hooks/useResponsiveLayout"
 import type { AppStackScreenProps } from "@/navigators/navigationTypes"
 import { useAppTheme } from "@/theme/context"
+import { radii } from "@/theme/styles"
 import type { ThemedStyle } from "@/theme/types"
 
 interface LoginScreenProps extends AppStackScreenProps<"Login"> {}
@@ -29,6 +31,7 @@ export const LoginScreen: FC<LoginScreenProps> = () => {
     themed,
     theme: { colors },
   } = useAppTheme()
+  const { contentMaxWidth } = useResponsiveLayout()
 
   const validationError = 
     !authEmail ? "Email can't be blank" :
@@ -82,75 +85,107 @@ export const LoginScreen: FC<LoginScreenProps> = () => {
   return (
     <Screen
       preset="scroll"
-      contentContainerStyle={themed($screenContentContainer)}
+      contentContainerStyle={[
+        themed($screenContentContainer),
+        contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined,
+      ]}
       safeAreaEdges={["top", "bottom"]}
       keyboardShouldPersistTaps="handled"
     >
-      <Text 
-        testID="login-heading" 
-        text={mode === "signin" ? "Sign In" : "Create Account"} 
-        preset="heading" 
-        style={themed($logIn)} 
-      />
-      <Text 
-        text={mode === "signin" ? "Sign in to continue" : "Create your account"} 
-        preset="subheading" 
-        style={themed($enterDetails)} 
-      />
-      {authError && (
-        <Text text={authError} size="sm" style={themed($errorText)} />
-      )}
+      {/* Branded header block */}
+      <View style={themed($brandedHeader)}>
+        <Text
+          text="PCA Mobile"
+          preset="heading"
+          style={$brandedHeaderText}
+        />
+      </View>
 
-      <TextField
-        value={authEmail}
-        onChangeText={setAuthEmail}
-        containerStyle={themed($textField)}
-        autoCapitalize="none"
-        autoComplete="email"
-        autoCorrect={false}
-        keyboardType="email-address"
-        label="Email"
-        placeholder="Enter your email"
-        helper={error}
-        status={error ? "error" : undefined}
-        returnKeyType="next"
-      />
+      <View style={themed($formBody)}>
+        <Text
+          testID="login-heading"
+          text={mode === "signin" ? "Sign In" : "Create Account"}
+          preset="heading"
+          style={themed($logIn)}
+        />
+        <Text
+          text={mode === "signin" ? "Sign in to continue" : "Create your account"}
+          preset="subheading"
+          style={themed($enterDetails)}
+        />
+        {authError && (
+          <View style={themed($errorContainer)}>
+            <Text text={authError} size="sm" style={themed($errorText)} />
+          </View>
+        )}
 
-      <TextField
-        ref={authPasswordInput}
-        value={authPassword}
-        onChangeText={setAuthPassword}
-        containerStyle={themed($textField)}
-        autoCapitalize="none"
-        autoComplete="password"
-        autoCorrect={false}
-        secureTextEntry={isAuthPasswordHidden}
-        label="Password"
-        placeholder="Enter your password"
-        returnKeyType="done"
-        RightAccessory={PasswordRightAccessory}
-      />
+        <TextField
+          value={authEmail}
+          onChangeText={setAuthEmail}
+          containerStyle={themed($textField)}
+          autoCapitalize="none"
+          autoComplete="email"
+          autoCorrect={false}
+          keyboardType="email-address"
+          label="Email"
+          placeholder="Enter your email"
+          helper={error}
+          status={error ? "error" : undefined}
+          returnKeyType="next"
+        />
 
-      <Button
-        testID="login-button"
-        text={mode === "signin" ? "Sign In" : "Sign Up"}
-        style={themed($tapButton)}
-        preset="reversed"
-        onPress={handleAuth}
-        disabled={isLoading}
-      />
+        <TextField
+          ref={authPasswordInput}
+          value={authPassword}
+          onChangeText={setAuthPassword}
+          containerStyle={themed($textField)}
+          autoCapitalize="none"
+          autoComplete="password"
+          autoCorrect={false}
+          secureTextEntry={isAuthPasswordHidden}
+          label="Password"
+          placeholder="Enter your password"
+          returnKeyType="done"
+          RightAccessory={PasswordRightAccessory}
+        />
 
-      <Button
-        text={mode === "signin" ? "Need an account? Sign up" : "Already have an account? Sign in"}
-        style={themed($toggleButton)}
-        preset="default"
-        onPress={toggleMode}
-      />
+        <Button
+          testID="login-button"
+          text={mode === "signin" ? "Sign In" : "Sign Up"}
+          style={themed($tapButton)}
+          preset="filled"
+          onPress={handleAuth}
+          loading={isLoading}
+        />
+
+        <Button
+          text={mode === "signin" ? "Need an account? Sign up" : "Already have an account? Sign in"}
+          style={themed($toggleButton)}
+          preset="default"
+          onPress={toggleMode}
+        />
+      </View>
     </Screen>
   )
 }
 
-const $screenContentContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+const $screenContentContainer: ThemedStyle<ViewStyle> = () => ({})
+
+const $brandedHeader: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+  backgroundColor: colors.palette.primary1,
+  paddingVertical: spacing.xxl,
+  paddingHorizontal: spacing.lg,
+  alignItems: "center",
+  justifyContent: "center",
+  borderBottomLeftRadius: radii.md,
+  borderBottomRightRadius: radii.md,
+})
+
+const $brandedHeaderText: TextStyle = {
+  color: "#FFFFFF",
+}
+
+const $formBody: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   paddingVertical: spacing.xxl,
   paddingHorizontal: spacing.lg,
 })
@@ -163,6 +198,16 @@ const $enterDetails: ThemedStyle<TextStyle> = ({ spacing }) => ({
   marginBottom: spacing.lg,
 })
 
+const $errorContainer: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+  borderLeftWidth: 3,
+  borderLeftColor: colors.error,
+  paddingLeft: spacing.sm,
+  backgroundColor: colors.palette.conditionPoorBackground,
+  borderRadius: radii.sm,
+  paddingVertical: spacing.sm,
+  paddingRight: spacing.sm,
+  marginBottom: spacing.md,
+})
 
 const $textField: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginBottom: spacing.lg,
@@ -170,13 +215,13 @@ const $textField: ThemedStyle<ViewStyle> = ({ spacing }) => ({
 
 const $tapButton: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginTop: spacing.xs,
+  borderRadius: radii.sm,
 })
 
 const $toggleButton: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginTop: spacing.md,
 })
 
-const $errorText: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
+const $errorText: ThemedStyle<TextStyle> = ({ colors }) => ({
   color: colors.error,
-  marginBottom: spacing.md,
 })

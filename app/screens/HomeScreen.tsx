@@ -1,16 +1,19 @@
 import { FC, useEffect, useState } from "react"
-import { View, ViewStyle, TextStyle, FlatList, TouchableOpacity, Alert, RefreshControl } from "react-native"
+import { View, ViewStyle, TextStyle, FlatList, Alert, RefreshControl } from "react-native"
 import { observer } from "mobx-react-lite"
 import { format as formatDateFns } from "date-fns/format"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
 import { Button } from "@/components/Button"
-import { Card } from "@/components/Card"
+import { Icon } from "@/components/Icon"
+import { AnimatedPressable } from "@/components/AnimatedPressable"
 import { useStores } from "@/models/RootStoreProvider"
 import { useAuth } from "@/context/AuthContext"
 import { AssessmentService } from "@/services/supabase/assessmentService"
+import { useResponsiveLayout } from "@/hooks/useResponsiveLayout"
 import type { AppStackScreenProps } from "@/navigators/navigationTypes"
 import { useAppTheme } from "@/theme/context"
+import { elevation, radii, opacity } from "@/theme/styles"
 import type { ThemedStyle } from "@/theme/types"
 
 interface HomeScreenProps extends AppStackScreenProps<"Home"> {}
@@ -32,6 +35,7 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
   const { themed, theme } = useAppTheme()
   const { logout } = useAuth()
   const rootStore = useStores()
+  const { contentMaxWidth } = useResponsiveLayout()
 
   const [submittedAssessments, setSubmittedAssessments] = useState<SupabaseAssessment[]>([])
   const [isLoading, setIsLoading] = useState(false)
@@ -55,7 +59,6 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
       const result = await AssessmentService.fetchUserAssessments()
 
       if (result.success && result.assessments) {
-        // Filter for submitted/synced assessments
         const submitted = result.assessments.filter(
           (a) => a.status === "submitted" || a.status === "synced"
         )
@@ -107,12 +110,14 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
   }
 
   const handleViewSubmitted = (assessment: SupabaseAssessment) => {
-    // TODO: Implement view/edit for submitted assessments
     Alert.alert(
       "View Assessment",
       "Viewing submitted assessments will be available in a future update."
     )
   }
+
+  const draftCount = draftAssessments.length
+  const submittedCount = submittedAssessments.length
 
   const renderDraftItem = ({ item }: { item: any }) => {
     const projectName = item.projectSummary.projectName || "Untitled Assessment"
@@ -120,51 +125,54 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
     const created = formatDateFns(item.createdAt, "MMM dd, yyyy")
 
     return (
-      <Card
-        style={themed($cardStyle)}
-        ContentComponent={
-          <View>
-            <View style={themed($cardHeader)}>
-              <Text preset="subheading" style={themed($projectNameText)}>
-                {projectName}
-              </Text>
-              <View style={themed($statusBadge)}>
-                <Text style={themed($statusText)}>DRAFT</Text>
-              </View>
-            </View>
-            
-            {item.projectSummary.projectNumber && (
-              <Text size="sm" style={themed($detailText)}>
-                Project #: {item.projectSummary.projectNumber}
-              </Text>
-            )}
-            
-            <Text size="sm" style={themed($detailText)}>
-              Created: {created}
+      <AnimatedPressable
+        onPress={() => handleContinueDraft(item.id)}
+        accessibilityLabel={`Continue ${projectName}`}
+        accessibilityHint="Opens this draft assessment"
+        style={themed($card)}
+      >
+        <View style={themed($cardInner)}>
+          {/* Top row: name + badge */}
+          <View style={themed($cardTopRow)}>
+            <Text preset="subheading" style={themed($projectNameText)} numberOfLines={2}>
+              {projectName}
             </Text>
-            
-            <Text size="xs" style={themed($metaText)}>
-              Last modified: {lastModified}
-            </Text>
-
-            <View style={themed($buttonRow)}>
-              <Button
-                text="Continue"
-                preset="default"
-                style={$continueButton}
-                onPress={() => handleContinueDraft(item.id)}
-              />
-              <Button
-                text="Delete"
-                preset="default"
-                style={themed($deleteButton)}
-                textStyle={themed($deleteButtonText)}
-                onPress={() => handleDeleteDraft(item.id)}
-              />
-            </View>
+            <Text preset="badge" style={themed($draftBadge)}>DRAFT</Text>
           </View>
-        }
-      />
+
+          {/* Metadata */}
+          {item.projectSummary.projectNumber ? (
+            <Text size="sm" style={themed($detailText)}>
+              Project #: {item.projectSummary.projectNumber}
+            </Text>
+          ) : null}
+          <Text size="sm" style={themed($detailText)}>Created: {created}</Text>
+          <Text size="xs" style={themed($metaText)}>Last modified: {lastModified}</Text>
+
+          {/* Footer: continue hint + delete */}
+          <View style={themed($cardFooter)}>
+            <View style={themed($continueHint)}>
+              <Text size="sm" style={themed($continueText)}>Continue</Text>
+              <Icon icon="caretRight" size={14} color={theme.colors.tint} />
+            </View>
+
+            <AnimatedPressable
+              onPress={(e) => {
+                e?.stopPropagation?.()
+                handleDeleteDraft(item.id)
+              }}
+              hitSlop={12}
+              style={themed($deleteBtn)}
+              accessibilityLabel={`Delete ${projectName}`}
+              accessibilityRole="button"
+              scaleDown={0.9}
+            >
+              <Icon icon="x" size={14} color={theme.colors.palette.angry500} />
+              <Text size="xs" style={themed($deleteBtnText)}>Delete</Text>
+            </AnimatedPressable>
+          </View>
+        </View>
+      </AnimatedPressable>
     )
   }
 
@@ -172,149 +180,214 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
     const projectName = item.project_summaries?.project_name || "Untitled Assessment"
     const projectNumber = item.project_summaries?.project_number
     const address = item.project_summaries?.property_address
-    const submittedDate = formatDateFns(new Date(item.updated_at), "MMM dd, yyyy h:mm a")
+    const submittedDate = formatDateFns(new Date(item.updated_at), "MMM dd, yyyy")
 
     return (
-      <TouchableOpacity onPress={() => handleViewSubmitted(item)}>
-        <Card
-          style={themed($cardStyle)}
-          ContentComponent={
-            <View>
-              <View style={themed($cardHeader)}>
-                <Text preset="subheading" style={themed($projectNameText)}>
-                  {projectName}
-                </Text>
-                <View style={themed($submittedBadge)}>
-                  <Text style={themed($submittedText)}>SUBMITTED</Text>
-                </View>
-              </View>
-              
-              {projectNumber && (
-                <Text size="sm" style={themed($detailText)}>
-                  Project #: {projectNumber}
-                </Text>
-              )}
-              
-              {address && (
-                <Text size="sm" style={themed($detailText)}>
-                  {address}
-                </Text>
-              )}
-              
-              <Text size="xs" style={themed($metaText)}>
-                Submitted: {submittedDate}
-              </Text>
+      <AnimatedPressable
+        onPress={() => handleViewSubmitted(item)}
+        accessibilityLabel={`View ${projectName}`}
+        style={themed($card)}
+      >
+        <View style={themed($cardInner)}>
+          <View style={themed($cardTopRow)}>
+            <Text preset="subheading" style={themed($projectNameText)} numberOfLines={2}>
+              {projectName}
+            </Text>
+            <Text preset="badge" style={themed($submittedBadge)}>SUBMITTED</Text>
+          </View>
+
+          {projectNumber ? (
+            <Text size="sm" style={themed($detailText)}>Project #: {projectNumber}</Text>
+          ) : null}
+          {address ? (
+            <Text size="sm" style={themed($detailText)}>{address}</Text>
+          ) : null}
+
+          {/* Footer: view hint + date */}
+          <View style={themed($cardFooter)}>
+            <View style={themed($continueHint)}>
+              <Text size="sm" style={themed($continueText)}>View</Text>
+              <Icon icon="caretRight" size={14} color={theme.colors.tint} />
             </View>
-          }
-        />
-      </TouchableOpacity>
+            <Text size="xs" style={themed($metaText)}>{submittedDate}</Text>
+          </View>
+        </View>
+      </AnimatedPressable>
     )
   }
 
+  const isEmpty = draftCount === 0 && submittedCount === 0 && !isLoading
+
   return (
     <Screen preset="fixed" contentContainerStyle={themed($container)}>
-      <View style={themed($header)}>
-        <Text preset="heading" text="Property Assessments" />
+      <View style={[themed($contentWrapper), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]}>
+        {/* Header */}
+        <View style={themed($header)}>
+          <Text preset="heading" text="Property Assessments" />
+          <Text
+            size="sm"
+            style={themed($signOutLink)}
+            onPress={logout}
+          >
+            Sign Out
+          </Text>
+        </View>
+
+        {/* Quick Stats */}
+        <View style={themed($statsRow)}>
+          <View style={[themed($statCard), draftCount === 0 && { opacity: opacity.dimmed }]}>
+            <Text style={themed($statCountDraft)}>{draftCount}</Text>
+            <Text size="xs" style={themed($statLabel)}>Drafts</Text>
+          </View>
+          <View style={[themed($statCard), submittedCount === 0 && { opacity: opacity.dimmed }]}>
+            <Text style={themed($statCountSubmitted)}>{submittedCount}</Text>
+            <Text size="xs" style={themed($statLabel)}>Submitted</Text>
+          </View>
+        </View>
+
+        {/* Primary CTA */}
         <Button
-          text="Sign Out"
-          preset="default"
-          style={themed($signOutButton)}
-          textStyle={themed($signOutButtonText)}
-          onPress={logout}
+          text="+ Start New Assessment"
+          preset="filled"
+          size="lg"
+          style={themed($newAssessmentButton)}
+          onPress={handleStartNewAssessment}
+        />
+
+        {/* Assessment List */}
+        <FlatList
+          style={$listContainer}
+          contentContainerStyle={themed($listContent)}
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefreshing}
+              onRefresh={() => loadSubmittedAssessments(true)}
+              tintColor={theme.colors.tint}
+            />
+          }
+          ListHeaderComponent={
+            <View>
+              {draftCount > 0 && (
+                <>
+                  <Text preset="subheading" style={themed($sectionTitle)}>
+                    Drafts ({draftCount})
+                  </Text>
+                  <FlatList
+                    data={draftAssessments}
+                    renderItem={renderDraftItem}
+                    keyExtractor={(item) => item.id}
+                    scrollEnabled={false}
+                  />
+                </>
+              )}
+
+              {loadError && (
+                <View style={themed($offlineNotice)}>
+                  <Text style={themed($offlineNoticeText)} text={loadError} />
+                </View>
+              )}
+
+              {submittedCount > 0 && (
+                <Text preset="subheading" style={themed($sectionTitle)}>
+                  Submitted ({submittedCount})
+                </Text>
+              )}
+
+              {isEmpty && (
+                <View style={themed($emptyState)}>
+                  <Text style={themed($emptyText)}>No assessments yet</Text>
+                  <Text size="sm" style={themed($emptySubtext)}>
+                    Start your first property assessment to get going
+                  </Text>
+                  <Button
+                    text="Start Assessment"
+                    preset="filled"
+                    style={themed($emptyCtaButton)}
+                    onPress={handleStartNewAssessment}
+                  />
+                </View>
+              )}
+            </View>
+          }
+          data={submittedAssessments}
+          renderItem={renderSubmittedItem}
+          keyExtractor={(item) => item.id}
         />
       </View>
-
-      <Button
-        text="+ Start New Assessment"
-        preset="reversed"
-        style={themed($newAssessmentButton)}
-        onPress={handleStartNewAssessment}
-      />
-
-      <FlatList
-        style={$listContainer}
-        contentContainerStyle={themed($listContent)}
-        refreshControl={
-          <RefreshControl
-            refreshing={isRefreshing}
-            onRefresh={() => loadSubmittedAssessments(true)}
-            tintColor={theme.colors.tint}
-          />
-        }
-        ListHeaderComponent={
-          <View>
-            {draftAssessments.length > 0 && (
-              <>
-                <Text preset="subheading" style={themed($sectionTitle)}>
-                  Drafts ({draftAssessments.length})
-                </Text>
-                <FlatList
-                  data={draftAssessments}
-                  renderItem={renderDraftItem}
-                  keyExtractor={(item) => item.id}
-                  scrollEnabled={false}
-                />
-              </>
-            )}
-
-            {loadError && (
-              <View style={themed($offlineNotice)}>
-                <Text style={themed($offlineNoticeText)} text={loadError} />
-              </View>
-            )}
-
-            {submittedAssessments.length > 0 && (
-              <Text preset="subheading" style={themed($sectionTitle)}>
-                Submitted ({submittedAssessments.length})
-              </Text>
-            )}
-
-            {draftAssessments.length === 0 && submittedAssessments.length === 0 && !isLoading && (
-              <View style={themed($emptyState)}>
-                <Text style={themed($emptyText)}>No assessments yet</Text>
-                <Text size="sm" style={themed($emptySubtext)}>
-                  Tap "Start New Assessment" to begin
-                </Text>
-              </View>
-            )}
-          </View>
-        }
-        data={submittedAssessments}
-        renderItem={renderSubmittedItem}
-        keyExtractor={(item) => item.id}
-      />
     </Screen>
   )
 })
+
+/* ── Styles ─────────────────────────────────────────────── */
 
 const $container: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   flex: 1,
   padding: spacing.lg,
 })
 
-const $header: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+const $contentWrapper: ThemedStyle<ViewStyle> = () => ({
+  flex: 1,
+})
+
+// ── Header ──
+
+const $header: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
   flexDirection: "row",
   justifyContent: "space-between",
   alignItems: "center",
+  paddingBottom: spacing.md,
+  marginBottom: spacing.md,
+  borderBottomWidth: 1,
+  borderBottomColor: colors.separator,
+})
+
+const $signOutLink: ThemedStyle<TextStyle> = ({ colors }) => ({
+  color: colors.textDim,
+  textDecorationLine: "underline",
+})
+
+// ── Stats Row ──
+
+const $statsRow: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  flexDirection: "row",
+  gap: spacing.md,
   marginBottom: spacing.lg,
 })
 
-const $signOutButton: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
-  backgroundColor: colors.palette.neutral300,
-  borderRadius: spacing.xs,
-  paddingHorizontal: spacing.md,
-  paddingVertical: spacing.xs,
-  minHeight: 0,
+const $statCard: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
+  flex: 1,
+  backgroundColor: colors.palette.neutral100,
+  borderRadius: radii.md,
+  borderWidth: 1,
+  borderColor: colors.palette.gray3,
+  padding: spacing.md,
+  ...elevation.xs,
 })
 
-const $signOutButtonText: ThemedStyle<TextStyle> = ({ colors }) => ({
-  color: colors.palette.neutral800,
-  fontSize: 14,
+const $statCountDraft: ThemedStyle<TextStyle> = ({ colors }) => ({
+  fontSize: 28,
+  fontWeight: "700",
+  color: colors.palette.conditionFairBorder,
 })
+
+const $statCountSubmitted: ThemedStyle<TextStyle> = ({ colors }) => ({
+  fontSize: 28,
+  fontWeight: "700",
+  color: colors.palette.conditionGoodBorder,
+})
+
+const $statLabel: ThemedStyle<TextStyle> = ({ colors }) => ({
+  color: colors.textDim,
+  marginTop: 2,
+})
+
+// ── CTA ──
 
 const $newAssessmentButton: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginBottom: spacing.lg,
 })
+
+// ── List ──
 
 const $listContainer: ViewStyle = {
   flex: 1,
@@ -322,20 +395,31 @@ const $listContainer: ViewStyle = {
 
 const $listContent: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   gap: spacing.md,
-  paddingBottom: spacing.xl, // Add bottom padding for safe area and scrolling comfort
+  paddingBottom: spacing.xl,
 })
 
 const $sectionTitle: ThemedStyle<TextStyle> = ({ spacing, colors }) => ({
-  marginTop: spacing.md,
+  marginTop: spacing.sm,
   marginBottom: spacing.sm,
   color: colors.text,
 })
 
-const $cardStyle: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+// ── Card (shared) ──
+
+const $card: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+  backgroundColor: colors.palette.neutral100,
+  borderRadius: radii.md,
+  borderWidth: 1,
+  borderColor: colors.palette.gray3,
   marginBottom: spacing.sm,
+  ...elevation.sm,
 })
 
-const $cardHeader: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+const $cardInner: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  padding: spacing.md,
+})
+
+const $cardTopRow: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   flexDirection: "row",
   justifyContent: "space-between",
   alignItems: "flex-start",
@@ -345,33 +429,7 @@ const $cardHeader: ThemedStyle<ViewStyle> = ({ spacing }) => ({
 const $projectNameText: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
   color: colors.text,
   flex: 1,
-  marginRight: spacing.xs,
-})
-
-const $statusBadge: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
-  backgroundColor: colors.palette.accent400,
-  paddingHorizontal: spacing.xs,
-  paddingVertical: spacing.xxs,
-  borderRadius: spacing.xxs,
-})
-
-const $statusText: ThemedStyle<TextStyle> = ({ colors }) => ({
-  color: colors.palette.neutral100,
-  fontSize: 10,
-  fontWeight: "600",
-})
-
-const $submittedBadge: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
-  backgroundColor: colors.palette.conditionGoodBorder,
-  paddingHorizontal: spacing.xs,
-  paddingVertical: spacing.xxs,
-  borderRadius: spacing.xxs,
-})
-
-const $submittedText: ThemedStyle<TextStyle> = ({ colors }) => ({
-  color: colors.palette.neutral100,
-  fontSize: 10,
-  fontWeight: "600",
+  marginRight: spacing.sm,
 })
 
 const $detailText: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
@@ -379,54 +437,103 @@ const $detailText: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
   marginBottom: spacing.xxs,
 })
 
-const $metaText: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
+const $metaText: ThemedStyle<TextStyle> = ({ colors }) => ({
   color: colors.textDim,
-  marginTop: spacing.xs,
 })
 
-const $buttonRow: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+// Card footer: action hint left, secondary action right
+const $cardFooter: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
   flexDirection: "row",
-  gap: spacing.xs,
-  marginTop: spacing.sm,
+  justifyContent: "space-between",
+  alignItems: "center",
+  marginTop: spacing.md,
+  paddingTop: spacing.sm,
+  borderTopWidth: 1,
+  borderTopColor: colors.palette.gray2,
 })
 
-const $continueButton: ViewStyle = {
-  flex: 1,
-  minHeight: 40,
-}
-
-const $deleteButton: ThemedStyle<ViewStyle> = ({ colors }) => ({
-  flex: 1,
-  minHeight: 40,
-  backgroundColor: colors.palette.neutral300,
+const $continueHint: ThemedStyle<ViewStyle> = () => ({
+  flexDirection: "row",
+  alignItems: "center",
+  gap: 4,
 })
 
-const $deleteButtonText: ThemedStyle<TextStyle> = ({ colors }) => ({
+const $continueText: ThemedStyle<TextStyle> = ({ colors }) => ({
+  color: colors.tint,
+  fontWeight: "600",
+})
+
+// ── Draft badge ──
+
+const $draftBadge: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
+  color: colors.palette.neutral100,
+  backgroundColor: colors.palette.accent400,
+  paddingHorizontal: spacing.xs,
+  paddingVertical: spacing.xxs,
+  borderRadius: radii.xs,
+  overflow: "hidden",
+})
+
+// ── Delete button (inside draft card) ──
+
+const $deleteBtn: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  flexDirection: "row",
+  alignItems: "center",
+  gap: spacing.xxs,
+  paddingVertical: spacing.xxs,
+  paddingHorizontal: spacing.xs,
+  borderRadius: radii.sm,
+})
+
+const $deleteBtnText: ThemedStyle<TextStyle> = ({ colors }) => ({
   color: colors.palette.angry500,
+  fontWeight: "500",
 })
+
+// ── Submitted badge ──
+
+const $submittedBadge: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
+  color: colors.palette.neutral100,
+  backgroundColor: colors.palette.conditionGoodBorder,
+  paddingHorizontal: spacing.xs,
+  paddingVertical: spacing.xxs,
+  borderRadius: radii.xs,
+  overflow: "hidden",
+})
+
+// ── Empty State ──
 
 const $emptyState: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   alignItems: "center",
   justifyContent: "center",
   paddingVertical: spacing.xxxl,
+  paddingHorizontal: spacing.lg,
 })
 
 const $emptyText: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
   color: colors.textDim,
-  fontSize: 18,
+  fontSize: 22,
+  fontWeight: "600",
   marginBottom: spacing.xs,
 })
 
-const $emptySubtext: ThemedStyle<TextStyle> = ({ colors }) => ({
+const $emptySubtext: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
   color: colors.textDim,
+  textAlign: "center",
+  marginBottom: spacing.lg,
 })
+
+const $emptyCtaButton: ThemedStyle<ViewStyle> = () => ({
+  minWidth: 200,
+})
+
+// ── Offline Notice ──
 
 const $offlineNotice: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   backgroundColor: colors.palette.noticeBg,
-  borderRadius: 6,
+  borderRadius: radii.sm,
   paddingHorizontal: spacing.sm,
   paddingVertical: spacing.xs,
-  marginHorizontal: spacing.md,
   marginBottom: spacing.xs,
 })
 
