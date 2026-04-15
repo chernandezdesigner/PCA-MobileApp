@@ -28,6 +28,7 @@
     "icon": "./assets/images/app-icon-ios.png",
     "supportsTablet": true,
     "bundleIdentifier": "com.pcamobileapp",
+    "buildNumber": "1",
     "privacyManifests": {
       "NSPrivacyAccessedAPITypes": [
         {

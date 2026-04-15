@@ -83,6 +83,14 @@ npm-debug.*
 *.orig.*
 web-build/
 
+# Environment variables — never commit keys
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+.env*.local
+
 # Configurations
 !env.js
 

@@ -196,7 +196,29 @@ export class AssessmentService {
         }
       }
 
-      // 6. Upload photos (failures warn but do not fail submission)
+      // 6. Insert/Update interior_conditions
+      if (snapshot.interiorConditions) {
+        const ic = snapshot.interiorConditions
+        const { error: interiorError } = await supabase
+          .from('interior_conditions')
+          .upsert({
+            assessment_id: supabaseAssessmentId,
+            step1: ic.step1 || {},
+            step2: ic.step2 || {},
+            step3: ic.step3 || {},
+            step4: ic.step4 || {},
+            current_step: ic.currentStep,
+            last_modified: new Date(ic.lastModified).toISOString(),
+          }, {
+            onConflict: 'assessment_id'
+          })
+
+        if (interiorError) {
+          throw interiorError
+        }
+      }
+
+      // 7. Upload photos (failures warn but do not fail submission)
       let failedPhotoCount = 0
       if (snapshot.photoStore) {
         try {
@@ -250,6 +272,7 @@ export class AssessmentService {
           site_grounds (*),
           building_envelope (*),
           mechanical_systems (*),
+          interior_conditions (*),
           photos (*)
         `)
         .eq('user_id', user.id)

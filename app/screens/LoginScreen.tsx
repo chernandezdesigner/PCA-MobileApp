@@ -24,8 +24,7 @@ export const LoginScreen: FC<LoginScreenProps> = () => {
   const [isAuthPasswordHidden, setIsAuthPasswordHidden] = useState(true)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [attemptsCount, setAttemptsCount] = useState(0)
-  const [mode, setMode] = useState<"signin" | "signup">("signin")
-  const { signIn, signUp, error: authError, isLoading } = useAuth()
+  const { signIn, error: authError, isLoading } = useAuth()
 
   const {
     themed,
@@ -48,22 +47,14 @@ export const LoginScreen: FC<LoginScreenProps> = () => {
 
     if (validationError) return
 
-    const result = mode === "signin" 
-      ? await signIn(authEmail, authPassword)
-      : await signUp(authEmail, authPassword)
+    const result = await signIn(authEmail, authPassword)
 
     if (result.error) {
       // Error is already set in context
     } else {
-      // Success! Auth context will handle navigation
       setIsSubmitted(false)
       setAuthPassword("")
     }
-  }
-
-  function toggleMode() {
-    setMode(mode === "signin" ? "signup" : "signin")
-    setIsSubmitted(false)
   }
 
   const PasswordRightAccessory: ComponentType<TextFieldAccessoryProps> = useMemo(
@@ -104,12 +95,12 @@ export const LoginScreen: FC<LoginScreenProps> = () => {
       <View style={themed($formBody)}>
         <Text
           testID="login-heading"
-          text={mode === "signin" ? "Sign In" : "Create Account"}
+          text="Sign In"
           preset="heading"
           style={themed($logIn)}
         />
         <Text
-          text={mode === "signin" ? "Sign in to continue" : "Create your account"}
+          text="Sign in to continue"
           preset="subheading"
           style={themed($enterDetails)}
         />
@@ -151,18 +142,11 @@ export const LoginScreen: FC<LoginScreenProps> = () => {
 
         <Button
           testID="login-button"
-          text={mode === "signin" ? "Sign In" : "Sign Up"}
+          text="Sign In"
           style={themed($tapButton)}
           preset="filled"
           onPress={handleAuth}
           loading={isLoading}
-        />
-
-        <Button
-          text={mode === "signin" ? "Need an account? Sign up" : "Already have an account? Sign in"}
-          style={themed($toggleButton)}
-          preset="default"
-          onPress={toggleMode}
         />
       </View>
     </Screen>
@@ -216,10 +200,6 @@ const $textField: ThemedStyle<ViewStyle> = ({ spacing }) => ({
 const $tapButton: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginTop: spacing.xs,
   borderRadius: radii.sm,
-})
-
-const $toggleButton: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  marginTop: spacing.md,
 })
 
 const $errorText: ThemedStyle<TextStyle> = ({ colors }) => ({
