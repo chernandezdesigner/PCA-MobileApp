@@ -22,7 +22,7 @@ import { observer } from "mobx-react-lite"
 import { useNavigation } from "@react-navigation/native"
 import { useDrawerControl } from "@/context/DrawerContext"
 import { useAppTheme } from "@/theme/context"
-import { $formScreen, $stickyHeader, $stickyFooter } from "@/theme/styles"
+import { $formScreen, $stickyHeader, $stickyFooter, radii } from "@/theme/styles"
 import { useResponsiveLayout } from "@/hooks/useResponsiveLayout"
 import type { ThemedStyle } from "@/theme/types"
 import type { MechanicalSystemsFormNavigatorParamList } from "@/navigators/MechanicalSystemsFormNavigator"
@@ -225,7 +225,7 @@ export const MechanicalSystemsStep2Screen: FC<MechanicalSystemsStep2ScreenProps>
                           onPress={() => store?.removeUnitHeater(unit.id)}
                           accessibilityLabel="Remove"
                           accessibilityRole="button"
-                          style={$removeRow}
+                          style={themed($removeRow)}
                         >
                           <Icon icon="x" size={14} color={theme.colors.error} />
                           <Text text="Remove" size="xs" weight="medium" style={{ color: theme.colors.error }} />
@@ -404,7 +404,7 @@ export const MechanicalSystemsStep2Screen: FC<MechanicalSystemsStep2ScreenProps>
                           onPress={() => store?.removeAirHandlingUnit(unit.id)}
                           accessibilityLabel="Remove"
                           accessibilityRole="button"
-                          style={$removeRow}
+                          style={themed($removeRow)}
                         >
                           <Icon icon="x" size={14} color={theme.colors.error} />
                           <Text text="Remove" size="xs" weight="medium" style={{ color: theme.colors.error }} />
@@ -535,7 +535,7 @@ export const MechanicalSystemsStep2Screen: FC<MechanicalSystemsStep2ScreenProps>
                           onPress={() => store?.removeExhaustFan(unit.id)}
                           accessibilityLabel="Remove"
                           accessibilityRole="button"
-                          style={$removeRow}
+                          style={themed($removeRow)}
                         >
                           <Icon icon="x" size={14} color={theme.colors.error} />
                           <Text text="Remove" size="xs" weight="medium" style={{ color: theme.colors.error }} />
@@ -706,14 +706,18 @@ const $cardFields: ViewStyle = {
   gap: 12,
 }
 
-const $removeRow: ViewStyle = {
+const $removeRow: ThemedStyle<ViewStyle> = ({ colors }) => ({
   flexDirection: "row",
   alignItems: "center",
   alignSelf: "flex-end",
   gap: 4,
   paddingVertical: 6,
-  paddingHorizontal: 8,
-}
+  paddingHorizontal: 12,
+  borderRadius: radii.sm,
+  borderWidth: 1,
+  borderColor: colors.error + "30",
+  backgroundColor: colors.error + "08",
+})
 
 const $row: ViewStyle = {
   flexDirection: "row",

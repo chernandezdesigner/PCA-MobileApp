@@ -168,7 +168,7 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
               scaleDown={0.9}
             >
               <Icon icon="x" size={14} color={theme.colors.palette.angry500} />
-              <Text size="xs" style={themed($deleteBtnText)}>Delete</Text>
+              <Text size="sm" style={themed($deleteBtnText)}>Delete</Text>
             </AnimatedPressable>
           </View>
         </View>
@@ -452,10 +452,17 @@ const $cardFooter: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
   borderTopColor: colors.palette.gray2,
 })
 
-const $continueHint: ThemedStyle<ViewStyle> = () => ({
+const $continueHint: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   flexDirection: "row",
   alignItems: "center",
   gap: 4,
+  minHeight: 36,
+  backgroundColor: colors.tint + "12",
+  borderWidth: 1,
+  borderColor: colors.tint + "30",
+  borderRadius: radii.sm,
+  paddingVertical: spacing.xxs,
+  paddingHorizontal: spacing.sm,
 })
 
 const $continueText: ThemedStyle<TextStyle> = ({ colors }) => ({
@@ -476,18 +483,22 @@ const $draftBadge: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
 
 // ── Delete button (inside draft card) ──
 
-const $deleteBtn: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+const $deleteBtn: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
   flexDirection: "row",
   alignItems: "center",
   gap: spacing.xxs,
+  minHeight: 36,
   paddingVertical: spacing.xxs,
-  paddingHorizontal: spacing.xs,
+  paddingHorizontal: spacing.sm,
   borderRadius: radii.sm,
+  borderWidth: 1,
+  borderColor: colors.palette.angry500 + "30",
+  backgroundColor: colors.palette.angry500 + "08",
 })
 
 const $deleteBtnText: ThemedStyle<TextStyle> = ({ colors }) => ({
   color: colors.palette.angry500,
-  fontWeight: "500",
+  fontWeight: "600",
 })
 
 // ── Submitted badge ──

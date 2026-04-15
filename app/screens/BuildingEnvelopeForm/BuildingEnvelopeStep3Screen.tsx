@@ -36,7 +36,7 @@ import {
   DRAINAGE_OPTIONS,
   INSULATION_OPTIONS,
 } from "@/constants/buildingEnvelopeOptions"
-import { $formScreen, $stickyHeader, $stickyFooter } from "@/theme/styles"
+import { $formScreen, $stickyHeader, $stickyFooter, radii } from "@/theme/styles"
 import { useResponsiveLayout } from "@/hooks/useResponsiveLayout"
 
 interface BuildingEnvelopeStep3ScreenProps
@@ -209,7 +209,7 @@ export const BuildingEnvelopeStep3Screen: FC<BuildingEnvelopeStep3ScreenProps> =
                 onPress={handleRemoveSecondaryRoof}
                 accessibilityLabel="Remove"
                 accessibilityRole="button"
-                style={$removeRow}
+                style={themed($removeRow)}
               >
                 <Icon icon="x" size={14} color={theme.colors.error} />
                 <Text text="Remove" size="xs" weight="medium" style={{ color: theme.colors.error }} />
@@ -962,14 +962,18 @@ const $secondaryRoofHeader: ViewStyle = {
   alignItems: "center",
 }
 
-const $removeRow: ViewStyle = {
+const $removeRow: ThemedStyle<ViewStyle> = ({ colors }) => ({
   flexDirection: "row",
   alignItems: "center",
   alignSelf: "flex-end",
   gap: 4,
   paddingVertical: 6,
-  paddingHorizontal: 8,
-}
+  paddingHorizontal: 12,
+  borderRadius: radii.sm,
+  borderWidth: 1,
+  borderColor: colors.error + "30",
+  backgroundColor: colors.error + "08",
+})
 
 const $titleStyle: ThemedStyle<any> = ({ colors }) => ({
   color: colors.palette.primary2 as any,

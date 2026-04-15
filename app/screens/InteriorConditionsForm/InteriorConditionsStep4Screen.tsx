@@ -361,7 +361,7 @@ const HotelAccordions: FC<{
                   onPress={() => store?.hotel.removeUnitType(row.id)}
                   accessibilityLabel={`Remove ${row.unitType || "unit type"} row`}
                   accessibilityRole="button"
-                  style={$unitTypeDeleteBtn}
+                  style={themed($unitTypeDeleteBtn)}
                 >
                   <Icon icon="x" size={12} color={theme.colors.error} />
                 </AnimatedPressable>
@@ -1302,7 +1302,7 @@ const ApartmentAccordions: FC<{
                   onPress={() => store?.apartment.removeUnitType(row.id)}
                   accessibilityLabel={`Remove ${row.unitType || "unit type"} row`}
                   accessibilityRole="button"
-                  style={$unitTypeDeleteBtn}
+                  style={themed($unitTypeDeleteBtn)}
                 >
                   <Icon icon="x" size={12} color={theme.colors.error} />
                 </AnimatedPressable>
@@ -2370,13 +2370,16 @@ const $unitTypeTopLine: ViewStyle = {
 
 const $unitTypeNameInput: ViewStyle = { flex: 1 }
 
-const $unitTypeDeleteBtn: ViewStyle = {
+const $unitTypeDeleteBtn: ThemedStyle<ViewStyle> = ({ colors }) => ({
   width: 28,
   height: 28,
   alignItems: "center",
   justifyContent: "center",
   borderRadius: 14,
-}
+  borderWidth: 1,
+  borderColor: colors.error + "30",
+  backgroundColor: colors.error + "0A",
+})
 
 const $unitTypeNumericLabels: ViewStyle = {
   flexDirection: "row",
