@@ -28,7 +28,7 @@
     "icon": "./assets/images/app-icon-ios.png",
     "supportsTablet": true,
     "bundleIdentifier": "com.pcamobileapp",
-    "buildNumber": "1",
+    "buildNumber": "2",
     "privacyManifests": {
       "NSPrivacyAccessedAPITypes": [
         {
@@ -41,7 +41,8 @@
     },
     "infoPlist": {
       "ITSAppUsesNonExemptEncryption": false,
-      "NSCameraUsageDescription": "This app uses the camera to capture photos during property condition assessments."
+      "NSCameraUsageDescription": "This app uses the camera to capture photos during property condition assessments.",
+      "NSLocationWhenInUseUsageDescription": "Location may be recorded with photos during property condition assessments."
     }
   },
   "web": {
