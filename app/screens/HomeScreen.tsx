@@ -272,12 +272,9 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
                   <Text preset="subheading" style={themed($sectionTitle)}>
                     Drafts ({draftCount})
                   </Text>
-                  <FlatList
-                    data={draftAssessments}
-                    renderItem={renderDraftItem}
-                    keyExtractor={(item) => item.id}
-                    scrollEnabled={false}
-                  />
+                  {draftAssessments.map((item) => (
+                    <View key={item.id}>{renderDraftItem({ item })}</View>
+                  ))}
                 </>
               )}
 

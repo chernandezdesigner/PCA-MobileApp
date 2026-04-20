@@ -280,8 +280,11 @@ export function Screen(props: ScreenProps) {
         {...SystemBarsProps}
       />
 
+      {/* KeyboardAwareScrollView (used for scroll/auto presets) handles its own keyboard
+          avoidance natively. Only apply KAV behavior for fixed/non-scrolling presets to
+          avoid double-stacking two keyboard handlers on real devices with New Architecture. */}
       <KeyboardAvoidingView
-        behavior={isIos ? "padding" : undefined}
+        behavior={isIos && isNonScrolling(props.preset) ? "padding" : undefined}
         keyboardVerticalOffset={keyboardOffset}
         {...KeyboardAvoidingViewProps}
         style={[$styles.flex1, KeyboardAvoidingViewProps?.style]}

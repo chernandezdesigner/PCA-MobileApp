@@ -68,7 +68,7 @@ export class AssessmentService {
             property_zip: ps.propertyZip,
             weather: ps.weather,
             temperature: ps.temperature,
-            inspection_date: new Date(ps.inspectionDate).toISOString(),
+            inspection_date: ps.inspectionDate ? new Date(ps.inspectionDate).toISOString() : null,
             inspection_time: ps.inspectionTime,
             inspector_name: ps.inspectorName,
             inspector_number: ps.inspectorNumber,
@@ -106,7 +106,7 @@ export class AssessmentService {
             wastewater_treatment_plant: ps.wastewaterTreatmentPlant,
             
             current_step: ps.currentStep,
-            last_modified: new Date(ps.lastModified).toISOString(),
+            last_modified: ps.lastModified ? new Date(ps.lastModified).toISOString() : new Date().toISOString(),
           }, {
             onConflict: 'assessment_id' // Upsert based on assessment_id (which is UNIQUE)
           })
@@ -128,7 +128,7 @@ export class AssessmentService {
             step3: sg.step3 || {},
             step4: sg.step4 || {},
             current_step: sg.currentStep,
-            last_modified: new Date(sg.lastModified).toISOString(),
+            last_modified: sg.lastModified ? new Date(sg.lastModified).toISOString() : new Date().toISOString(),
           }, {
             onConflict: 'assessment_id'
           })
@@ -159,7 +159,7 @@ export class AssessmentService {
             current_step: typeof be.currentStep === 'string' 
               ? parseInt(be.currentStep.replace('step', '')) || 1 
               : be.currentStep,
-            last_modified: new Date(be.lastModified).toISOString(),
+            last_modified: be.lastModified ? new Date(be.lastModified).toISOString() : new Date().toISOString(),
           }, {
             onConflict: 'assessment_id'
           })
@@ -186,7 +186,7 @@ export class AssessmentService {
             step8: ms.step8 || {},
             step9: ms.step9 || {},
             current_step: ms.currentStep,
-            last_modified: new Date(ms.lastModified).toISOString(),
+            last_modified: ms.lastModified ? new Date(ms.lastModified).toISOString() : new Date().toISOString(),
           }, {
             onConflict: 'assessment_id'
           })
@@ -208,7 +208,7 @@ export class AssessmentService {
             step3: ic.step3 || {},
             step4: ic.step4 || {},
             current_step: ic.currentStep,
-            last_modified: new Date(ic.lastModified).toISOString(),
+            last_modified: ic.lastModified ? new Date(ic.lastModified).toISOString() : new Date().toISOString(),
           }, {
             onConflict: 'assessment_id'
           })
