@@ -153,14 +153,15 @@ export const CameraScreen: FC = observer(() => {
     try {
       const result = await requestPermission()
 
-      // If still not granted after request, the user denied or
-      // the permission isn't in the manifest. Offer to open settings.
+      // If still not granted after request, the user denied or the permission
+      // isn't in the manifest. On iOS 17+, openSettings() must be deferred
+      // until after the permission sheet's dismiss animation completes (~400ms).
       if (!result) {
-        Linking.openSettings()
+        setTimeout(() => Linking.openSettings(), 400)
       }
     } catch (_error) {
       // Fallback: open app settings so user can manually grant
-      Linking.openSettings()
+      setTimeout(() => Linking.openSettings(), 400)
     }
   }, [requestPermission])
 

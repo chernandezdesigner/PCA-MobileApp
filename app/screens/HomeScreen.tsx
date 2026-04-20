@@ -109,12 +109,6 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
     )
   }
 
-  const handleViewSubmitted = (assessment: SupabaseAssessment) => {
-    Alert.alert(
-      "View Assessment",
-      "Viewing submitted assessments will be available in a future update."
-    )
-  }
 
   const draftCount = draftAssessments.length
   const submittedCount = submittedAssessments.length
@@ -183,11 +177,7 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
     const submittedDate = formatDateFns(new Date(item.updated_at), "MMM dd, yyyy")
 
     return (
-      <AnimatedPressable
-        onPress={() => handleViewSubmitted(item)}
-        accessibilityLabel={`View ${projectName}`}
-        style={themed($card)}
-      >
+      <View style={themed($card)}>
         <View style={themed($cardInner)}>
           <View style={themed($cardTopRow)}>
             <Text preset="subheading" style={themed($projectNameText)} numberOfLines={2}>
@@ -203,16 +193,9 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
             <Text size="sm" style={themed($detailText)}>{address}</Text>
           ) : null}
 
-          {/* Footer: view hint + date */}
-          <View style={themed($cardFooter)}>
-            <View style={themed($continueHint)}>
-              <Text size="sm" style={themed($continueText)}>View</Text>
-              <Icon icon="caretRight" size={14} color={theme.colors.tint} />
-            </View>
-            <Text size="xs" style={themed($metaText)}>{submittedDate}</Text>
-          </View>
+          <Text size="xs" style={themed($metaText)}>{submittedDate}</Text>
         </View>
-      </AnimatedPressable>
+      </View>
     )
   }
 

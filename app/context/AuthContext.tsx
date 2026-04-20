@@ -112,6 +112,10 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({ childre
       setUser(null)
     } catch (err: any) {
       setError(err.message)
+      // Clear local state even if the server call fails (e.g. expired token).
+      // Without this, the user is stuck on HomeScreen with no way to sign out.
+      setSession(null)
+      setUser(null)
     } finally {
       setIsLoading(false)
     }

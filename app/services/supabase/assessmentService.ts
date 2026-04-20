@@ -267,13 +267,16 @@ export class AssessmentService {
       const { data, error } = await supabase
         .from('assessments')
         .select(`
-          *,
-          project_summaries (*),
-          site_grounds (*),
-          building_envelope (*),
-          mechanical_systems (*),
-          interior_conditions (*),
-          photos (*)
+          id,
+          status,
+          created_at,
+          updated_at,
+          project_summaries (
+            project_name,
+            project_number,
+            property_address,
+            inspection_date
+          )
         `)
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })

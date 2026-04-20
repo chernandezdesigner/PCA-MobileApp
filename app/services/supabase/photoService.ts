@@ -3,6 +3,9 @@ import { FileSystem, Dirs } from "react-native-file-access"
 import * as ImageManipulator from "expo-image-manipulator"
 import type { PhotoModelSnapshot } from "@/models/PhotoStore"
 
+// Max concurrent uploads — enough to saturate LTE without hitting rate limits
+const CONCURRENT_UPLOADS = 4
+
 /**
  * Service for managing photo storage locally and uploading to Supabase
  */
@@ -52,7 +55,9 @@ export class PhotoService {
   }
 
   /**
-   * Upload a single photo to Supabase Storage and upsert metadata to the photos table
+   * Upload a single photo to Supabase Storage and upsert metadata to the photos table.
+   * Uses native Blob via fetch(file://) to avoid loading the full image as a base64
+   * string in the JS heap — critical for memory on 20-60 photo assessments.
    */
   static async uploadPhoto(params: {
     photo: PhotoModelSnapshot
@@ -69,8 +74,10 @@ export class PhotoService {
         { compress: 0.8, format: ImageManipulator.SaveFormat.JPEG },
       )
 
-      // Read the file as base64
-      const base64Data = await FileSystem.readFile(compressed.uri, "base64")
+      // Fetch the compressed file as a native Blob — the data stays in the native
+      // layer and is never copied into the JS heap as a string.
+      const response = await fetch(compressed.uri)
+      const blob = await response.blob()
 
       // Build storage path
       const storagePath = `${userId}/${assessmentId}/${photo.filename || photo.id + ".jpg"}`
@@ -78,8 +85,8 @@ export class PhotoService {
       // Upload to Supabase Storage
       const { error: uploadError } = await supabase.storage
         .from("assessment-photos")
-        .upload(storagePath, decode(base64Data), {
-          contentType: photo.mimeType || "image/jpeg",
+        .upload(storagePath, blob, {
+          contentType: "image/jpeg",
           upsert: true,
         })
 
@@ -96,7 +103,7 @@ export class PhotoService {
           user_id: userId,
           storage_path: storagePath,
           filename: photo.filename || photo.id + ".jpg",
-          mime_type: photo.mimeType || "image/jpeg",
+          mime_type: "image/jpeg",
           file_size: photo.fileSize || 0,
           width: photo.width || 0,
           height: photo.height || 0,
@@ -126,7 +133,9 @@ export class PhotoService {
   }
 
   /**
-   * Upload all pending photos for an assessment
+   * Upload all pending photos for an assessment.
+   * Processes CONCURRENT_UPLOADS photos at a time via Promise.allSettled so that
+   * one failure never blocks the rest of the batch.
    */
   static async uploadAllPhotos(params: {
     photos: PhotoModelSnapshot[]
@@ -150,19 +159,29 @@ export class PhotoService {
       error?: string
     }> = []
 
-    for (let i = 0; i < pendingPhotos.length; i++) {
-      const photo = pendingPhotos[i]
-      const result = await PhotoService.uploadPhoto({ photo, assessmentId, userId })
+    for (let i = 0; i < pendingPhotos.length; i += CONCURRENT_UPLOADS) {
+      const batch = pendingPhotos.slice(i, i + CONCURRENT_UPLOADS)
 
-      results.push({ photoId: photo.id, ...result })
+      const batchResults = await Promise.allSettled(
+        batch.map((photo) => PhotoService.uploadPhoto({ photo, assessmentId, userId })),
+      )
 
-      if (result.success) {
-        uploaded++
-      } else {
-        failed++
+      for (let j = 0; j < batchResults.length; j++) {
+        const r = batchResults[j]
+        const photo = batch[j]
+
+        if (r.status === "fulfilled" && r.value.success) {
+          results.push({ photoId: photo.id, success: true, storagePath: r.value.storagePath })
+          uploaded++
+        } else {
+          const errMsg =
+            r.status === "rejected" ? String(r.reason?.message ?? r.reason) : r.value.error
+          results.push({ photoId: photo.id, success: false, error: errMsg })
+          failed++
+        }
+
+        onProgress?.(i + j + 1, pendingPhotos.length)
       }
-
-      onProgress?.(i + 1, pendingPhotos.length)
     }
 
     return { uploaded, failed, results }
@@ -196,11 +215,4 @@ export class PhotoService {
       console.warn("Failed to cleanup local photos:", error.message)
     }
   }
-}
-
-/**
- * Decode a base64 string to a Uint8Array for Supabase storage upload
- */
-function decode(base64: string): Uint8Array {
-  return new Uint8Array(Buffer.from(base64, "base64"))
 }
