@@ -85,7 +85,7 @@ export const MechanicalSystemsStep7Screen: FC<MechanicalSystemsStep7ScreenProps>
         />
       </View>
 
-      <ScrollView contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea}>
+      <ScrollView contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
         <View style={$introBlock}>
           <Text preset="subheading" text="Electrical" style={themed($titleStyle)} />
           <ProgressBar current={7} total={9} />

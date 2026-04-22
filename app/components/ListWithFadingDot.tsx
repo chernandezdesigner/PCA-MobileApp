@@ -1,4 +1,4 @@
-import { FC, useMemo, useRef, useState } from "react"
+import { FC, useEffect, useMemo, useRef, useState } from "react"
 import { Animated, FlatList, View, ViewProps } from "react-native"
 import { useAppTheme } from "@/theme/context"
 
@@ -18,6 +18,12 @@ export const ListWithFadingDot: FC<Props> = (props) => {
   const scrollY = useRef(new Animated.Value(0)).current
   const opacity = useRef(new Animated.Value(0)).current
   const fadeTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (fadeTimeout.current) clearTimeout(fadeTimeout.current)
+    }
+  }, [])
 
   function handleScroll(e: any) {
     const y = e.nativeEvent.contentOffset.y || 0

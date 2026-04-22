@@ -237,12 +237,14 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
     HelperTextProps?.style,
   ]
 
-  /**
-   *
-   */
   function focusInput() {
     if (disabled) return
-
+    // Guard against calling focus() on an already-focused input.
+    // On New Architecture (Fabric), imperative focus() on an already-focused
+    // TextInput triggers a blur → refocus cycle that dismisses the keyboard.
+    // Use the synchronous native isFocused() rather than React state (isFocused)
+    // because state may not have committed yet when Pressable.onPress fires.
+    if (input.current?.isFocused()) return
     input.current?.focus()
   }
 

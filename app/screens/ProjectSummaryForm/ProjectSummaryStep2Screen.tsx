@@ -112,7 +112,7 @@ export const ProjectSummaryStep2Screen: FC<ProjectSummaryStep2ScreenProps> = obs
       <View style={$stickyHeader}>
         <HeaderBar title="Project Summary" leftIcon="back" onLeftPress={() => navigation.goBack()} rightIcon="menu" onRightPress={openDrawer} />
       </View>
-      <ScrollView contentContainerStyle={[$content, contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea}>
+      <ScrollView contentContainerStyle={[$content, contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
         <View style={$introBlock}>
           <Text preset="subheading" text="Unit Info" style={themed($titleStyle)} />
           <ProgressBar current={2} total={4} />

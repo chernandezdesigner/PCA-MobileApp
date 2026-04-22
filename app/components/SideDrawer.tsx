@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react"
+import { useState, useMemo, useEffect, useRef } from "react"
 import {
   StyleProp,
   TextStyle,
@@ -139,6 +139,13 @@ export const SideDrawer = (props: SideDrawerProps) => {
   const { user, signOut } = useAuth()
   const rootStore = useStores()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const navTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (navTimeoutRef.current) clearTimeout(navTimeoutRef.current)
+    }
+  }, [])
   
   // Determine the deepest active route inside the Assessment navigator
   const activeChildRoute = useNavigationState((state) => {
@@ -329,7 +336,7 @@ export const SideDrawer = (props: SideDrawerProps) => {
 
       onClose?.()
       // Small delay to let drawer close animation complete
-      setTimeout(performNavigation, 100)
+      navTimeoutRef.current = setTimeout(performNavigation, 100)
     } else {
       // Native platforms
       Alert.alert(
@@ -342,7 +349,7 @@ export const SideDrawer = (props: SideDrawerProps) => {
             onPress: () => {
               onClose?.()
               // Small delay to let drawer close animation complete
-              setTimeout(performNavigation, 300)
+              navTimeoutRef.current = setTimeout(performNavigation, 300)
             },
           },
         ]

@@ -109,7 +109,7 @@ export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = obs
       <View style={$stickyHeader}>
         <HeaderBar title="Project Summary" leftIcon="back" onLeftPress={onBack} rightIcon="menu" onRightPress={openDrawer} />
       </View>
-      <ScrollView contentContainerStyle={[$content, contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea}>
+      <ScrollView contentContainerStyle={[$content, contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
         <View style={$introBlock}>
           <Text preset="subheading" text="Basic Info" style={themed($titleStyle)} />
           <ProgressBar current={1} total={4} />
@@ -277,9 +277,11 @@ export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = obs
                 <DateTimePicker
                   value={value}
                   mode="date"
-                  display={Platform.OS === "ios" ? "spinner" : "default"}
+                  display={Platform.OS === "ios" ? "compact" : "default"}
                   onChange={(event: DateTimePickerEvent, selectedDate?: Date) => {
+                    // compact mode on iOS fires once on confirm/dismiss (not on every scroll tick)
                     if (Platform.OS === "android") setShowDatePicker(false)
+                    if (Platform.OS === "ios") setShowDatePicker(false)
                     if (event.type === "dismissed") return
                     if (selectedDate) {
                       onChange(selectedDate)
@@ -312,9 +314,10 @@ export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = obs
                 <DateTimePicker
                   value={value ? new Date(`1970-01-01T${value}:00`) : new Date()}
                   mode="time"
-                  display={Platform.OS === "ios" ? "spinner" : "default"}
+                  display={Platform.OS === "ios" ? "compact" : "default"}
                   onChange={(event: DateTimePickerEvent, selectedDate?: Date) => {
                     if (Platform.OS === "android") setShowTimePicker(false)
+                    if (Platform.OS === "ios") setShowTimePicker(false)
                     if (event.type === "dismissed") return
                     if (selectedDate) {
                       const formatted = formatDateFns(selectedDate, "HH:mm")

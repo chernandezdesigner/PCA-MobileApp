@@ -1,4 +1,4 @@
-import { FC, useCallback, useRef, useState } from "react"
+import { FC, useCallback, useEffect, useRef, useState } from "react"
 import {
   View,
   ViewStyle,
@@ -33,7 +33,7 @@ if (Platform.OS !== "web") {
   try {
     VisionCamera = require("react-native-vision-camera")
   } catch (e) {
-    console.warn("react-native-vision-camera not available:", e)
+    if (__DEV__) console.warn("react-native-vision-camera not available:", e)
   }
 }
 
@@ -68,6 +68,13 @@ export const CameraScreen: FC = observer(() => {
   const { hasPermission, requestPermission } = cameraPermission
   const [flash, setFlash] = useState<"off" | "on">("off")
   const [isCapturing, setIsCapturing] = useState(false)
+  const settingsTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (settingsTimeoutRef.current) clearTimeout(settingsTimeoutRef.current)
+    }
+  }, [])
 
   // Flash animation
   const flashOpacity = useSharedValue(0)
@@ -108,7 +115,7 @@ export const CameraScreen: FC = observer(() => {
       })
 
       if (!saveResult.success || !saveResult.localUri) {
-        console.warn("Photo save failed:", saveResult.error)
+        if (__DEV__) console.warn("Photo save failed:", saveResult.error)
         return
       }
 
@@ -125,7 +132,7 @@ export const CameraScreen: FC = observer(() => {
         height: photo.height,
       })
     } catch (error) {
-      console.warn("Photo capture failed:", error)
+      if (__DEV__) console.warn("Photo capture failed:", error)
     } finally {
       setIsCapturing(false)
     }
@@ -157,7 +164,7 @@ export const CameraScreen: FC = observer(() => {
       // isn't in the manifest. On iOS 17+, openSettings() must be deferred
       // until after the permission sheet's dismiss animation completes (~400ms).
       if (!result) {
-        setTimeout(() => Linking.openSettings(), 400)
+        settingsTimeoutRef.current = setTimeout(() => Linking.openSettings(), 400)
       }
     } catch (_error) {
       // Fallback: open app settings so user can manually grant

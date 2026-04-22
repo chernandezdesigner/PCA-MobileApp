@@ -4,7 +4,7 @@
  * Generally speaking, it will contain an auth flow (registration, login, forgot password)
  * and a "main" flow which the user will use once logged in.
  */
-import { ActivityIndicator, View } from "react-native"
+import { useEffect, useRef } from "react"
 import { NavigationContainer } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 
@@ -29,20 +29,28 @@ const exitRoutes = Config.exitRoutes
 const Stack = createNativeStackNavigator<AppStackParamList>()
 
 const AppStack = () => {
-  const { isAuthenticated, isLoading } = useAuth()
+  const { isAuthenticated } = useAuth()
+  const didMountRef = useRef(false)
 
   const {
     theme: { colors },
   } = useAppTheme()
 
-  // Prevent flashing Login on cold launch while session is being restored
-  if (isLoading) {
-    return (
-      <View style={{ flex: 1, backgroundColor: colors.background, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator color={colors.tint} />
-      </View>
-    )
-  }
+  // After the initial mount, drive navigation imperatively when auth state
+  // changes (sign in → Home, sign out → Login). Using navigationRef.reset()
+  // clears the back stack so the user can't swipe back to Login after sign in.
+  // We skip the first render because initialRouteName already handles it.
+  useEffect(() => {
+    if (!didMountRef.current) {
+      didMountRef.current = true
+      return
+    }
+    if (!navigationRef.isReady()) return
+    navigationRef.reset({
+      index: 0,
+      routes: [{ name: isAuthenticated ? "Home" : "Login" }],
+    })
+  }, [isAuthenticated])
 
   return (
     <Stack.Navigator
@@ -53,18 +61,13 @@ const AppStack = () => {
           backgroundColor: colors.background,
         },
       }}
+      // All screens always registered — prevents Login from unmounting during
+      // Supabase stale-session refresh cycles on iOS Keychain.
       initialRouteName={isAuthenticated ? "Home" : "Login"}
     >
-      {isAuthenticated ? (
-        <>
-          <Stack.Screen name="Home" component={HomeScreen} />
-          <Stack.Screen name="Assessment" component={AssessmentNavigator} />
-        </>
-      ) : (
-        <>
-          <Stack.Screen name="Login" component={LoginScreen} />
-        </>
-      )}
+      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="Assessment" component={AssessmentNavigator} />
 
       {/** 🔥 Your screens go here */}
       {/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
@@ -72,13 +75,21 @@ const AppStack = () => {
   )
 }
 
-export const AppNavigator = (props: NavigationProps) => {
+export const AppNavigator = ({ initialState, ...rest }: NavigationProps) => {
+  const { isAuthenticated } = useAuth()
   const { navigationTheme } = useAppTheme()
+
+  // Never restore a persisted navigation state for an unauthenticated user.
+  // iOS Keychain retains the Supabase session across app reinstalls, so a
+  // stale/expired session can leave navigation state pointing at protected
+  // screens (Assessment, Home). Passing that state while logged-out would
+  // crash any screen that accesses the MST store or auth context.
+  const safeInitialState = isAuthenticated ? initialState : undefined
 
   useBackButtonHandler((routeName) => exitRoutes.includes(routeName))
 
   return (
-    <NavigationContainer ref={navigationRef} theme={navigationTheme} {...props}>
+    <NavigationContainer ref={navigationRef} theme={navigationTheme} initialState={safeInitialState} {...rest}>
       <ErrorBoundary catchErrors={Config.catchErrors}>
         <AppStack />
       </ErrorBoundary>

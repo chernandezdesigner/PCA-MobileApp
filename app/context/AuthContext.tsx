@@ -21,24 +21,19 @@ export interface AuthProviderProps {}
 export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null)
   const [session, setSession] = useState<Session | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    // Check for existing session on mount
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-      setUser(session?.user ?? null)
-      setIsLoading(false)
-    })
-
-    // Listen for auth state changes
+    // onAuthStateChange fires synchronously on subscribe with the current
+    // session (INITIAL_SESSION event), so we don't need a separate getSession()
+    // call. Using only onAuthStateChange avoids the race where both resolve
+    // near-simultaneously and trigger two rapid re-renders.
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session)
       setUser(session?.user ?? null)
-      setIsLoading(false)
     })
 
     return () => subscription.unsubscribe()

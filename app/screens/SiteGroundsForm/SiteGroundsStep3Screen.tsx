@@ -358,7 +358,7 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
       <View style={$stickyHeader}>
         <HeaderBar title="Site & Grounds" leftIcon="back" onLeftPress={() => navigation.goBack()} rightIcon="menu" onRightPress={openDrawer} />
       </View>
-      <ScrollView contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea}>
+      <ScrollView contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
         <View style={themed($paddedBlock)}>
           <Text preset="subheading" text="Site Elements" style={themed($titleStyle)} />
           <ProgressBar current={3} total={4} />
