@@ -91,7 +91,7 @@ export class PhotoService {
         })
 
       if (uploadError) {
-        console.warn("Photo upload failed:", uploadError.message)
+        if (__DEV__) console.warn("Photo upload failed:", uploadError.message)
         return { success: false, error: uploadError.message }
       }
 
@@ -121,13 +121,13 @@ export class PhotoService {
       )
 
       if (dbError) {
-        console.warn("Photo metadata upsert failed:", dbError.message)
+        if (__DEV__) console.warn("Photo metadata upsert failed:", dbError.message)
         return { success: false, error: dbError.message }
       }
 
       return { success: true, storagePath }
     } catch (error: any) {
-      console.warn("Photo upload error:", error.message)
+      if (__DEV__) console.warn("Photo upload error:", error.message)
       return { success: false, error: error.message }
     }
   }
@@ -197,7 +197,7 @@ export class PhotoService {
         await FileSystem.unlink(localUri)
       }
     } catch (error: any) {
-      console.warn("Failed to delete local photo:", error.message)
+      if (__DEV__) console.warn("Failed to delete local photo:", error.message)
     }
   }
 
@@ -212,7 +212,7 @@ export class PhotoService {
         await FileSystem.unlink(dir)
       }
     } catch (error: any) {
-      console.warn("Failed to cleanup local photos:", error.message)
+      if (__DEV__) console.warn("Failed to cleanup local photos:", error.message)
     }
   }
 }

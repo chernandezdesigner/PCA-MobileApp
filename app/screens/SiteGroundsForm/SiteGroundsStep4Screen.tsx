@@ -225,7 +225,10 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         }
       }, 300)
     })
-    return () => subscription.unsubscribe()
+    return () => {
+      subscription.unsubscribe()
+      if (debounceRef.current) clearTimeout(debounceRef.current)
+    }
   }, [watch, store])
 
   // Transform data for checklist cards

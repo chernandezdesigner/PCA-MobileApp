@@ -211,7 +211,10 @@ export const BuildingEnvelopeStep2Screen: FC<BuildingEnvelopeStep2ScreenProps> =
         }
       }, 300)
     })
-    return () => subscription.unsubscribe()
+    return () => {
+      subscription.unsubscribe()
+      if (debounceRef.current) clearTimeout(debounceRef.current)
+    }
   }, [watch, store])
 
   // Transform data for checklist fields

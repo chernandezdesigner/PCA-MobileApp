@@ -119,7 +119,10 @@ export const ProjectSummaryStep4Screen: FC<ProjectSummaryStep4ScreenProps> = obs
       if (debounceRef.current) clearTimeout(debounceRef.current)
       debounceRef.current = setTimeout(() => projectSummaryStore?.updateStep4Utilities(values), 300)
     })
-    return () => sub.unsubscribe()
+    return () => {
+      sub.unsubscribe()
+      if (debounceRef.current) clearTimeout(debounceRef.current)
+    }
   }, [watch, projectSummaryStore])
 
   return (

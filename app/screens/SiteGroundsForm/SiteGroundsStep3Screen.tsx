@@ -273,7 +273,10 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
         }
       }, 300)
     })
-    return () => subscription.unsubscribe()
+    return () => {
+      subscription.unsubscribe()
+      if (debounceRef.current) clearTimeout(debounceRef.current)
+    }
   }, [watch, store])
 
   // Transform data for checklist cards

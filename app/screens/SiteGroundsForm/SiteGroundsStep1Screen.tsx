@@ -98,7 +98,10 @@ export const SiteGroundsStep1Screen: FC<SiteGroundsStep1ScreenProps> = observer(
         })
       }, 300)
     })
-    return () => subscription.unsubscribe()
+    return () => {
+      subscription.unsubscribe()
+      if (debounceRef.current) clearTimeout(debounceRef.current)
+    }
   }, [watch, store])
 
   // Transform checklist data for ChecklistCard components

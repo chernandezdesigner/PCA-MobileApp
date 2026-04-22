@@ -91,7 +91,10 @@ export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = obs
         projectSummaryStore?.updateStep1(values)
       }, 300)
     })
-    return () => subscription.unsubscribe()
+    return () => {
+      subscription.unsubscribe()
+      if (debounceRef.current) clearTimeout(debounceRef.current)
+    }
   }, [watch, projectSummaryStore])
 
   const onNext = handleSubmit(() => {

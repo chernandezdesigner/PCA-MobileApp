@@ -10,7 +10,10 @@ import {
   TextStyle,
   Alert,
   Dimensions,
+  Keyboard,
+  KeyboardAvoidingView,
   Modal,
+  Platform,
 } from "react-native"
 import { observer } from "mobx-react-lite"
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native"
@@ -77,6 +80,7 @@ export const PhotoGalleryScreen: FC = observer(() => {
   }, [])
 
   const handleClosePreview = useCallback(() => {
+    Keyboard.dismiss()
     // Save notes if changed
     if (selectedPhoto && editNotes !== selectedPhoto.notes) {
       photoStore?.updatePhotoNotes(selectedPhoto.id, editNotes)
@@ -196,10 +200,14 @@ export const PhotoGalleryScreen: FC = observer(() => {
         visible={selectedPhoto !== null}
         animationType="fade"
         transparent={false}
+        presentationStyle="fullScreen"
         onRequestClose={handleClosePreview}
       >
         {selectedPhoto && (
-          <View style={[$previewContainer, { paddingTop: insets.top }]}>
+          <KeyboardAvoidingView
+            style={[$previewContainer, { paddingTop: insets.top }]}
+            behavior={Platform.OS === "ios" ? "padding" : undefined}
+          >
             {/* Preview header */}
             <View style={$previewHeader}>
               <TouchableOpacity onPress={handleClosePreview} style={$previewBackButton}>
@@ -253,7 +261,7 @@ export const PhotoGalleryScreen: FC = observer(() => {
                 }}
               />
             </View>
-          </View>
+          </KeyboardAvoidingView>
         )}
       </Modal>
     </Screen>
