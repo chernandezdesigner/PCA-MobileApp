@@ -220,6 +220,10 @@ export function Dropdown(props: DropdownProps) {
         style={themed([$inputWrapperStyles])}
         onPress={toggleDropdown}
         disabled={disabled}
+        accessibilityRole="combobox"
+        accessibilityLabel={typeof label === "string" ? label : "Select option"}
+        accessibilityState={{ expanded: isOpen, disabled: !!disabled }}
+        accessibilityHint={selectedOption ? `Currently: ${selectedOption.label}` : "Nothing selected"}
         onLayout={(e) => {
           const { height } = e.nativeEvent.layout
           setInputHeight(Math.round(height) || 44)
@@ -283,6 +287,8 @@ export function Dropdown(props: DropdownProps) {
                 key={item.value}
                 style={themed($optionStyles)}
                 onPress={() => selectOption(item)}
+                accessibilityRole="menuitem"
+                accessibilityState={{ selected: item.value === value }}
               >
                 <Text text={item.label} style={themed($optionTextStyles)} />
               </TouchableOpacity>

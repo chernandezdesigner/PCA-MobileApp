@@ -95,6 +95,7 @@ export const SectionAccordion = (props: SectionAccordionProps) => {
     <View style={[containerStyles, style] as StyleProp<ViewStyle>}>
       <AnimatedPressable
         accessibilityRole="button"
+        accessibilityLabel={title ? `${title}, ${isExpanded ? "expanded" : "collapsed"}` : undefined}
         accessibilityState={{ expanded: isExpanded }}
         onPress={handleToggle}
         style={[

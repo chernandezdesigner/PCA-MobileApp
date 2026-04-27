@@ -728,10 +728,10 @@ const $halfWidth: ViewStyle = {
   flex: 1,
 }
 
-const $sharedFieldsSection: ViewStyle = {
+const $sharedFieldsSection: ThemedStyle<ViewStyle> = ({ colors }) => ({
   gap: 16,
   marginTop: 24,
   paddingTop: 16,
   borderTopWidth: 2,
-  borderTopColor: "#E0E0E0",
-}
+  borderTopColor: colors.separator,
+})

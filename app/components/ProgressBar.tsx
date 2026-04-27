@@ -23,10 +23,14 @@ export interface ProgressBarProps {
    * Optional container style.
    */
   style?: StyleProp<ViewStyle>
+  /**
+   * Accessibility label describing what progress is measured. Defaults to "Form progress".
+   */
+  accessibilityLabel?: string
 }
 
 export const ProgressBar = (props: ProgressBarProps) => {
-  const { current, total, height = 8, style } = props
+  const { current, total, height = 8, style, accessibilityLabel = "Form progress" } = props
   const { themed } = useAppTheme()
   const progress = Math.max(0, Math.min(1, total > 0 ? current / total : 0))
 
@@ -44,6 +48,7 @@ export const ProgressBar = (props: ProgressBarProps) => {
     <View
       style={[themed([$track, { height }]), style]}
       accessibilityRole="progressbar"
+      accessibilityLabel={accessibilityLabel}
       accessibilityValue={{ min: 0, max: total, now: current }}
     >
       <Animated.View style={[themed([$fill, { height }]), animatedFillStyle]} />

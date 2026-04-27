@@ -365,6 +365,8 @@ export const SideDrawer = (props: SideDrawerProps) => {
           onPress={onClose}
           style={themed($closeButton)}
           hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          accessibilityRole="button"
+          accessibilityLabel="Close menu"
         >
           <Icon icon="x" size={24} color={theme.colors.text} />
         </TouchableOpacity>
@@ -421,6 +423,9 @@ export const SideDrawer = (props: SideDrawerProps) => {
                 onPress={() => hasChildren && toggleSection(section.id)}
                 style={[themed($sectionHeader), isExpanded && themed($sectionHeaderExpanded)]}
                 disabled={!hasChildren}
+                accessibilityRole="button"
+                accessibilityLabel={`${section.label}, ${isExpanded ? "expanded" : "collapsed"}`}
+                accessibilityState={{ expanded: isExpanded }}
               >
                 <Text
                   text={section.label}
@@ -442,6 +447,9 @@ export const SideDrawer = (props: SideDrawerProps) => {
                         key={child.id}
                         onPress={() => child.route && handleNavigate(child.route)}
                         style={[themed($childItem), isActive && themed($childItemActive)]}
+                        accessibilityRole="menuitem"
+                        accessibilityLabel={child.label}
+                        accessibilityState={{ selected: isActive }}
                       >
                         <Text
                           text={child.label}
@@ -641,7 +649,7 @@ const $childLabel: ThemedStyleArray<TextStyle> = [
 
 const $childLabelActive: ThemedStyleArray<TextStyle> = [
   (theme) => ({
-    color: theme.colors.palette.primary500,
+    color: theme.colors.tint,
     fontFamily: theme.typography.primary.medium,
   }),
 ]

@@ -27,6 +27,19 @@ import { Button } from "@/components/Button"
 import { useStores } from "@/models/RootStoreProvider"
 import { PhotoService } from "@/services/supabase/photoService"
 
+// Camera overlay colors — always dark by design regardless of system theme.
+// Camera viewfinders are universally dark; white UI on black is the industry standard.
+const CAM = {
+  bg: "#000000",
+  fallbackBg: "#1a1a1a",
+  icon: "#FFFFFF",
+  iconDim: "rgba(255,255,255,0.6)",
+  overlayDark: "rgba(0,0,0,0.4)",
+  galleryBorder: "rgba(255,255,255,0.6)",
+  galleryBg: "rgba(255,255,255,0.15)",
+  buttonBorder: "rgba(255,255,255,0.3)",
+} as const
+
 // Conditionally import vision-camera (native only, crashes on web)
 let VisionCamera: any = null
 if (Platform.OS !== "web") {
@@ -185,7 +198,7 @@ export const CameraScreen: FC = observer(() => {
     return (
       <View style={$fallbackRoot}>
         <View style={[$fallbackContent, { paddingTop: insets.top + 16 }]}>
-          <Ionicons name="camera-outline" size={64} color="rgba(255,255,255,0.6)" />
+          <Ionicons name="camera-outline" size={64} color={CAM.iconDim} />
           <Text text="Camera is only available on a physical device" style={$fallbackTitle} />
           <Text
             text="Please test camera features using an iOS or Android device."
@@ -202,7 +215,7 @@ export const CameraScreen: FC = observer(() => {
     return (
       <View style={$fallbackRoot}>
         <View style={[$fallbackContent, { paddingTop: insets.top + 16 }]}>
-          <Ionicons name="camera-outline" size={64} color="rgba(255,255,255,0.6)" />
+          <Ionicons name="camera-outline" size={64} color={CAM.iconDim} />
           <Text text="Camera Permission Required" style={$fallbackTitle} />
           <Text
             text="This app needs camera access to capture photos during property assessments."
@@ -225,7 +238,7 @@ export const CameraScreen: FC = observer(() => {
     return (
       <View style={$fallbackRoot}>
         <View style={[$fallbackContent, { paddingTop: insets.top + 16 }]}>
-          <Ionicons name="alert-circle-outline" size={64} color="rgba(255,255,255,0.6)" />
+          <Ionicons name="alert-circle-outline" size={64} color={CAM.iconDim} />
           <Text text="No Camera Found" style={$fallbackTitle} />
           <Text text="Could not detect a camera device." style={$fallbackSubtext} />
           <Button text="Go Back" preset="default" onPress={handleClose} style={$fallbackButtonSecondary} />
@@ -255,28 +268,43 @@ export const CameraScreen: FC = observer(() => {
 
       {/* Top bar */}
       <View style={[$topBar, { paddingTop: insets.top + 8 }]}>
-        <TouchableOpacity onPress={handleToggleFlash} style={$iconButton}>
+        <TouchableOpacity
+          onPress={handleToggleFlash}
+          style={$iconButton}
+          accessibilityRole="button"
+          accessibilityLabel={flash === "on" ? "Flash on, tap to turn off" : "Flash off, tap to turn on"}
+        >
           <Ionicons
             name={flash === "on" ? "flash" : "flash-off"}
             size={24}
-            color="white"
+            color={CAM.icon}
           />
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={handleClose} style={$iconButton}>
-          <Ionicons name="close" size={28} color="white" />
+        <TouchableOpacity
+          onPress={handleClose}
+          style={$iconButton}
+          accessibilityRole="button"
+          accessibilityLabel="Close camera"
+        >
+          <Ionicons name="close" size={28} color={CAM.icon} />
         </TouchableOpacity>
       </View>
 
       {/* Bottom bar */}
       <View style={[$bottomBar, { paddingBottom: insets.bottom + 16 }]}>
         {/* Gallery thumbnail */}
-        <TouchableOpacity onPress={handleOpenGallery} style={$galleryButton}>
+        <TouchableOpacity
+          onPress={handleOpenGallery}
+          style={$galleryButton}
+          accessibilityRole="button"
+          accessibilityLabel={photoStore && photoStore.totalCount > 0 ? `Open photo gallery, ${photoStore.totalCount} photo${photoStore.totalCount !== 1 ? "s" : ""}` : "Open photo gallery"}
+        >
           {latestPhoto ? (
             <Image source={{ uri: latestPhoto.localUri }} style={$galleryThumbnail} />
           ) : (
             <View style={$galleryPlaceholder}>
-              <Ionicons name="images-outline" size={24} color="white" />
+              <Ionicons name="images-outline" size={24} color={CAM.icon} />
             </View>
           )}
           {photoStore && photoStore.totalCount > 0 && (
@@ -292,6 +320,9 @@ export const CameraScreen: FC = observer(() => {
           disabled={isCapturing}
           style={$shutterOuter}
           activeOpacity={0.7}
+          accessibilityRole="button"
+          accessibilityLabel={isCapturing ? "Capturing photo" : "Take photo"}
+          accessibilityState={{ disabled: isCapturing }}
         >
           <View style={$shutterInner}>
             {isCapturing && (
@@ -301,8 +332,13 @@ export const CameraScreen: FC = observer(() => {
         </TouchableOpacity>
 
         {/* Flip camera */}
-        <TouchableOpacity onPress={handleFlipCamera} style={$iconButton}>
-          <Ionicons name="camera-reverse-outline" size={28} color="white" />
+        <TouchableOpacity
+          onPress={handleFlipCamera}
+          style={$iconButton}
+          accessibilityRole="button"
+          accessibilityLabel={`Switch to ${cameraPosition === "back" ? "front" : "back"} camera`}
+        >
+          <Ionicons name="camera-reverse-outline" size={28} color={CAM.icon} />
         </TouchableOpacity>
       </View>
     </View>
@@ -313,7 +349,7 @@ export const CameraScreen: FC = observer(() => {
 
 const $fallbackRoot: ViewStyle = {
   flex: 1,
-  backgroundColor: "#1a1a1a",
+  backgroundColor: CAM.fallbackBg,
 }
 
 const $fallbackContent: ViewStyle = {
@@ -325,14 +361,14 @@ const $fallbackContent: ViewStyle = {
 }
 
 const $fallbackTitle: TextStyle = {
-  color: "white",
+  color: CAM.icon,
   textAlign: "center",
   fontSize: 20,
   fontWeight: "600",
 }
 
 const $fallbackSubtext: TextStyle = {
-  color: "rgba(255,255,255,0.6)",
+  color: CAM.iconDim,
   textAlign: "center",
   fontSize: 15,
   lineHeight: 22,
@@ -346,14 +382,14 @@ const $fallbackButton: ViewStyle = {
 const $fallbackButtonSecondary: ViewStyle = {
   width: "80%",
   marginTop: 4,
-  borderColor: "rgba(255,255,255,0.3)",
+  borderColor: CAM.buttonBorder,
 }
 
 // ─── Camera viewfinder styles ────────────────────────────────────────────────
 
 const $cameraRoot: ViewStyle = {
   flex: 1,
-  backgroundColor: "#000",
+  backgroundColor: CAM.bg,
 }
 
 const $topBar: ViewStyle = {
@@ -385,7 +421,7 @@ const $iconButton: ViewStyle = {
   width: 48,
   height: 48,
   borderRadius: 24,
-  backgroundColor: "rgba(0,0,0,0.4)",
+  backgroundColor: CAM.overlayDark,
   justifyContent: "center",
   alignItems: "center",
 }
@@ -395,7 +431,7 @@ const $shutterOuter: ViewStyle = {
   height: 72,
   borderRadius: 36,
   borderWidth: 4,
-  borderColor: "white",
+  borderColor: CAM.icon,
   justifyContent: "center",
   alignItems: "center",
 }
@@ -404,7 +440,7 @@ const $shutterInner: ViewStyle = {
   width: 58,
   height: 58,
   borderRadius: 29,
-  backgroundColor: "white",
+  backgroundColor: CAM.icon,
   justifyContent: "center",
   alignItems: "center",
 }
@@ -419,7 +455,7 @@ const $galleryButton: ViewStyle = {
   borderRadius: 8,
   overflow: "hidden",
   borderWidth: 2,
-  borderColor: "rgba(255,255,255,0.6)",
+  borderColor: CAM.galleryBorder,
 }
 
 const $galleryThumbnail: ImageStyle = {
@@ -430,7 +466,7 @@ const $galleryThumbnail: ImageStyle = {
 const $galleryPlaceholder: ViewStyle = {
   width: "100%",
   height: "100%",
-  backgroundColor: "rgba(255,255,255,0.15)",
+  backgroundColor: CAM.galleryBg,
   justifyContent: "center",
   alignItems: "center",
 }

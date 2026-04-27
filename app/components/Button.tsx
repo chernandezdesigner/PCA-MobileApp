@@ -227,7 +227,7 @@ const $baseViewStyle: ThemedStyle<ViewStyle> = ({ spacing }) => ({
 })
 
 const $sizeViewStyles: Record<ButtonSize, ViewStyle> = {
-  sm: { minHeight: 36, paddingVertical: spacing.xs, paddingHorizontal: spacing.sm },
+  sm: { minHeight: 44, paddingVertical: spacing.xs, paddingHorizontal: spacing.sm },
   md: { minHeight: 48, paddingVertical: spacing.sm, paddingHorizontal: spacing.md },
   lg: { minHeight: 56, paddingVertical: spacing.sm, paddingHorizontal: spacing.lg },
 }

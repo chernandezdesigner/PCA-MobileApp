@@ -36,6 +36,19 @@ type PhotoGalleryRouteParams = {
 
 type FilterTab = "step" | "all"
 
+// Photo preview overlay colors — always dark by design (full-screen black preview).
+const PREVIEW = {
+  bg: "#000000",
+  icon: "#FFFFFF",
+  deleteIcon: "#FF3B30",
+  metaText: "rgba(255,255,255,0.7)",
+  tagBg: "rgba(255,255,255,0.15)",
+  tagText: "rgba(255,255,255,0.8)",
+  inputText: "#FFFFFF",
+  inputBorder: "rgba(255,255,255,0.2)",
+  inputPlaceholder: "rgba(255,255,255,0.5)",
+} as const
+
 const SCREEN_WIDTH = Dimensions.get("window").width
 const GRID_SPACING = 2
 const NUM_COLUMNS = 3
@@ -122,6 +135,8 @@ export const PhotoGalleryScreen: FC = observer(() => {
         onPress={() => handleSelectPhoto(item)}
         style={$photoTile}
         activeOpacity={0.8}
+        accessibilityRole="button"
+        accessibilityLabel={`Photo from ${new Date(item.capturedAt).toLocaleDateString()}`}
       >
         <Image source={{ uri: item.localUri }} style={$tileImage} />
       </TouchableOpacity>
@@ -135,7 +150,12 @@ export const PhotoGalleryScreen: FC = observer(() => {
     <Screen style={$root} preset="fixed">
       {/* Header */}
       <View style={[$header, { paddingTop: insets.top + 8 }]}>
-        <TouchableOpacity onPress={handleBack} style={$backButton}>
+        <TouchableOpacity
+          onPress={handleBack}
+          style={$backButton}
+          accessibilityRole="button"
+          accessibilityLabel="Go back"
+        >
           <Ionicons name="arrow-back" size={24} color={theme.colors.text} />
         </TouchableOpacity>
         <Text text="Photos" style={themed($headerTitle)} />
@@ -151,6 +171,9 @@ export const PhotoGalleryScreen: FC = observer(() => {
               themed($filterTab),
               activeFilter === "step" && themed($filterTabActive),
             ]}
+            accessibilityRole="tab"
+            accessibilityLabel="This step"
+            accessibilityState={{ selected: activeFilter === "step" }}
           >
             <Text
               text="This Step"
@@ -166,6 +189,9 @@ export const PhotoGalleryScreen: FC = observer(() => {
               themed($filterTab),
               activeFilter === "all" && themed($filterTabActive),
             ]}
+            accessibilityRole="tab"
+            accessibilityLabel="All photos"
+            accessibilityState={{ selected: activeFilter === "all" }}
           >
             <Text
               text="All Photos"
@@ -210,11 +236,21 @@ export const PhotoGalleryScreen: FC = observer(() => {
           >
             {/* Preview header */}
             <View style={$previewHeader}>
-              <TouchableOpacity onPress={handleClosePreview} style={$previewBackButton}>
-                <Ionicons name="arrow-back" size={24} color="white" />
+              <TouchableOpacity
+                onPress={handleClosePreview}
+                style={$previewBackButton}
+                accessibilityRole="button"
+                accessibilityLabel="Close preview"
+              >
+                <Ionicons name="arrow-back" size={24} color={PREVIEW.icon} />
               </TouchableOpacity>
-              <TouchableOpacity onPress={handleDeletePhoto} style={$deleteButton}>
-                <Ionicons name="trash-outline" size={22} color="#FF3B30" />
+              <TouchableOpacity
+                onPress={handleDeletePhoto}
+                style={$deleteButton}
+                accessibilityRole="button"
+                accessibilityLabel="Delete photo"
+              >
+                <Ionicons name="trash-outline" size={22} color={PREVIEW.deleteIcon} />
               </TouchableOpacity>
             </View>
 
@@ -248,7 +284,7 @@ export const PhotoGalleryScreen: FC = observer(() => {
                 value={editNotes}
                 onChangeText={setEditNotes}
                 placeholder="Add notes..."
-                placeholderTextColor="rgba(255,255,255,0.5)"
+                placeholderTextColor={PREVIEW.inputPlaceholder}
                 style={$notesInput}
                 multiline
                 numberOfLines={2}
@@ -365,7 +401,7 @@ const $tileImage: ImageStyle = {
 // Preview modal styles
 const $previewContainer: ViewStyle = {
   flex: 1,
-  backgroundColor: "#000",
+  backgroundColor: PREVIEW.bg,
 }
 
 const $previewHeader: ViewStyle = {
@@ -410,27 +446,27 @@ const $metadataRow: ViewStyle = {
 }
 
 const $metadataText: TextStyle = {
-  color: "rgba(255,255,255,0.7)",
+  color: PREVIEW.metaText,
   fontSize: 13,
 }
 
 const $tag: ViewStyle = {
-  backgroundColor: "rgba(255,255,255,0.15)",
+  backgroundColor: PREVIEW.tagBg,
   borderRadius: 4,
   paddingHorizontal: 8,
   paddingVertical: 3,
 }
 
 const $tagText: TextStyle = {
-  color: "rgba(255,255,255,0.8)",
+  color: PREVIEW.tagText,
   fontSize: 12,
 }
 
 const $notesInput: TextStyle = {
-  color: "white",
+  color: PREVIEW.inputText,
   fontSize: 15,
   borderWidth: 1,
-  borderColor: "rgba(255,255,255,0.2)",
+  borderColor: PREVIEW.inputBorder,
   borderRadius: 8,
   paddingHorizontal: 12,
   paddingVertical: 10,

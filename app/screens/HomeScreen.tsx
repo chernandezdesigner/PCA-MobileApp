@@ -202,7 +202,7 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
   const isEmpty = draftCount === 0 && submittedCount === 0 && !isLoading
 
   return (
-    <Screen preset="fixed" contentContainerStyle={themed($container)}>
+    <Screen preset="fixed" safeAreaEdges={["top", "bottom"]} contentContainerStyle={themed($container)}>
       <View style={[themed($contentWrapper), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]}>
         {/* Header */}
         <View style={themed($header)}>
@@ -232,7 +232,7 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
         <Button
           text="+ Start New Assessment"
           preset="filled"
-          size="lg"
+          size="md"
           style={themed($newAssessmentButton)}
           onPress={handleStartNewAssessment}
         />
@@ -302,7 +302,8 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
 
 const $container: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   flex: 1,
-  padding: spacing.lg,
+  paddingHorizontal: spacing.md,
+  paddingTop: spacing.md,
 })
 
 const $contentWrapper: ThemedStyle<ViewStyle> = () => ({
@@ -315,8 +316,8 @@ const $header: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
   flexDirection: "row",
   justifyContent: "space-between",
   alignItems: "center",
-  paddingBottom: spacing.md,
-  marginBottom: spacing.md,
+  paddingBottom: spacing.sm,
+  marginBottom: spacing.sm,
   borderBottomWidth: 1,
   borderBottomColor: colors.separator,
 })
@@ -331,7 +332,7 @@ const $signOutLink: ThemedStyle<TextStyle> = ({ colors }) => ({
 const $statsRow: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   flexDirection: "row",
   gap: spacing.md,
-  marginBottom: spacing.lg,
+  marginBottom: spacing.md,
 })
 
 const $statCard: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
@@ -340,18 +341,18 @@ const $statCard: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
   borderRadius: radii.md,
   borderWidth: 1,
   borderColor: colors.palette.gray3,
-  padding: spacing.md,
+  padding: spacing.sm,
   ...elevation.xs,
 })
 
 const $statCountDraft: ThemedStyle<TextStyle> = ({ colors }) => ({
-  fontSize: 28,
+  fontSize: 22,
   fontWeight: "700",
   color: colors.palette.conditionFairBorder,
 })
 
 const $statCountSubmitted: ThemedStyle<TextStyle> = ({ colors }) => ({
-  fontSize: 28,
+  fontSize: 22,
   fontWeight: "700",
   color: colors.palette.conditionGoodBorder,
 })
@@ -364,7 +365,7 @@ const $statLabel: ThemedStyle<TextStyle> = ({ colors }) => ({
 // ── CTA ──
 
 const $newAssessmentButton: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  marginBottom: spacing.lg,
+  marginBottom: spacing.md,
 })
 
 // ── List ──
@@ -467,7 +468,8 @@ const $deleteBtn: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
   flexDirection: "row",
   alignItems: "center",
   gap: spacing.xxs,
-  minHeight: 36,
+  minHeight: 44,
+  minWidth: 44,
   paddingVertical: spacing.xxs,
   paddingHorizontal: spacing.sm,
   borderRadius: radii.sm,

@@ -123,7 +123,7 @@ export const colors = {
   /**
    * Secondary text information.
    */
-  textDim: palette.neutral600,
+  textDim: palette.neutral700,
   /**
    * Semantic text roles for easy global adjustments.
    */
