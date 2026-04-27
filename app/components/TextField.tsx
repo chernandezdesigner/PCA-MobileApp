@@ -1,4 +1,4 @@
-import { ComponentType, forwardRef, Ref, useImperativeHandle, useRef, useState } from "react"
+import { ComponentType, forwardRef, Ref, useImperativeHandle, useRef } from "react"
 import {
   ImageStyle,
   StyleProp,
@@ -141,9 +141,10 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
     ...TextInputProps
   } = props
   const input = useRef<TextInput>(null)
-  // Use Animated value for focus state on Android to avoid re-renders
-  // On iOS, use state as normal (better for accessibility and doesn't cause issues)
-  const [isFocused, setIsFocused] = useState(false)
+  // Use Animated value for focus state on ALL platforms — never useState.
+  // On Fabric (New Architecture), setState() inside onFocus triggers a synchronous
+  // re-render + layout pass that resets the iOS first-responder chain, causing the
+  // TextInput to blur immediately after focus. Animated avoids any re-render.
   const focusAnimValue = useRef(new Animated.Value(0)).current
 
   const {
@@ -170,49 +171,45 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
     return Math.max(rows * line + 32, 96)
   })()
 
-  // Animated border color for Android (no re-renders)
+  // Animated border color for all platforms — handles both normal and error states
   const animatedBorderColor = focusAnimValue.interpolate({
     inputRange: [0, 1],
-    outputRange: [colors.palette.neutral300, colors.tint],
+    outputRange: [
+      status === "error" ? colors.error : colors.palette.neutral300,
+      status === "error" ? colors.error : colors.tint,
+    ],
   })
 
-  // Base styles (non-animated)
+  // Animated shadow opacity for iOS focus glow (avoids re-render)
+  const animatedShadowOpacity = focusAnimValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 0.15],
+  })
+
+  // Base styles — borderColor handled entirely by animatedBorderColor below
   const $inputWrapperStylesBase = [
     $styles.row,
     $inputWrapperStyle,
-    status === "error" && { borderColor: colors.error },
     TextInputProps.multiline && { minHeight: computedWrapperMinHeight },
     LeftAccessory && { paddingStart: 0 },
     RightAccessory && { paddingEnd: 0 },
     $inputWrapperStyleOverride,
   ]
 
-  // Focus styles per platform
-  const $focusStyle = isFocused ? {
-    borderColor: status === "error" ? colors.error : colors.tint,
-    borderWidth: 2,
-    ...(Platform.OS !== "web" ? {
+  const $inputWrapperStyles = [...$inputWrapperStylesBase]
+
+  // Animated focus styles for all platforms — no React state, no re-renders on focus
+  const $inputWrapperAnimatedStyles = {
+    borderColor: animatedBorderColor,
+    ...(Platform.OS === "android" ? {
+      elevation: focusAnimValue.interpolate({ inputRange: [0, 1], outputRange: [0, 2] }),
+    } : Platform.OS === "ios" ? {
       shadowColor: colors.tint,
-      shadowOpacity: 0.15,
+      shadowOpacity: animatedShadowOpacity,
       shadowRadius: 6,
       shadowOffset: { width: 0, height: 0 },
-      elevation: 2,
     } : {}),
-  } : {}
-
-  const $inputWrapperStyles = [
-    ...$inputWrapperStylesBase,
-    Platform.OS !== "android" && $focusStyle,
-  ]
-
-  // Animated styles for Android focus state
-  const $inputWrapperAnimatedStyles = Platform.OS === "android" ? {
-    borderColor: animatedBorderColor,
-    elevation: focusAnimValue.interpolate({
-      inputRange: [0, 1],
-      outputRange: [0, 2],
-    }),
-  } : {}
+  }
 
   // Compute a min height when multiline is enabled
   const computedMinHeight = (() => {
@@ -239,11 +236,6 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
 
   function focusInput() {
     if (disabled) return
-    // Guard against calling focus() on an already-focused input.
-    // On New Architecture (Fabric), imperative focus() on an already-focused
-    // TextInput triggers a blur → refocus cycle that dismisses the keyboard.
-    // Use the synchronous native isFocused() rather than React state (isFocused)
-    // because state may not have committed yet when Pressable.onPress fires.
     if (input.current?.isFocused()) return
     input.current?.focus()
   }
@@ -251,8 +243,8 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
   useImperativeHandle(ref, () => input.current as TextInput)
 
   // Render function for the content (used by both wrapped and unwrapped versions)
-  // Use Animated.View on Android for focus animation, regular View on iOS
-  const InputWrapperComponent = Platform.OS === "android" ? Animated.View : View
+  // Always use Animated.View — drives focus animation on all platforms without re-renders
+  const InputWrapperComponent = Animated.View
 
   const renderContent = () => (
     <>
@@ -270,7 +262,7 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
       <InputWrapperComponent
         style={[
           themed($inputWrapperStyles),
-          Platform.OS === "android" && $inputWrapperAnimatedStyles,
+          $inputWrapperAnimatedStyles,
         ] as any}
       >
         {!!LeftAccessory && (
@@ -292,25 +284,19 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
           editable={!disabled}
           multiline={TextInputProps.multiline}
           onFocus={(e) => {
-            setIsFocused(true)
-            if (Platform.OS === "android") {
-              Animated.timing(focusAnimValue, {
-                toValue: 1,
-                duration: 150,
-                useNativeDriver: false,
-              }).start()
-            }
+            Animated.timing(focusAnimValue, {
+              toValue: 1,
+              duration: 150,
+              useNativeDriver: false,
+            }).start()
             TextInputProps.onFocus?.(e)
           }}
           onBlur={(e) => {
-            setIsFocused(false)
-            if (Platform.OS === "android") {
-              Animated.timing(focusAnimValue, {
-                toValue: 0,
-                duration: 150,
-                useNativeDriver: false,
-              }).start()
-            }
+            Animated.timing(focusAnimValue, {
+              toValue: 0,
+              duration: 150,
+              useNativeDriver: false,
+            }).start()
             TextInputProps.onBlur?.(e)
           }}
           style={themed([
