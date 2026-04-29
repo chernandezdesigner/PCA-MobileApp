@@ -257,7 +257,7 @@ export const SideDrawer = (props: SideDrawerProps) => {
     // On web, Alert.alert with multiple buttons doesn't work properly
     // Use window.confirm as a fallback
     if (Platform.OS === 'web') {
-      const confirmed = window.confirm('Are you sure you want to submit this assessment to Supabase?')
+      const confirmed = window.confirm('Are you ready to submit? Once submitted, this assessment cannot be edited.')
       if (!confirmed) {
         return
       }
@@ -283,8 +283,8 @@ export const SideDrawer = (props: SideDrawerProps) => {
     } else {
       // Native platform - use Alert.alert
       Alert.alert(
-        'Submit Assessment',
-        'Are you sure you want to submit this assessment to Supabase?',
+        'Ready to Submit?',
+        'Once submitted, this assessment cannot be edited. Make sure everything looks correct before continuing.',
         [
           { text: 'Cancel', style: 'cancel' },
           {

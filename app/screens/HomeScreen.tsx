@@ -206,7 +206,7 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
       <View style={[themed($contentWrapper), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]}>
         {/* Header */}
         <View style={themed($header)}>
-          <Text preset="heading" text="Property Assessments" />
+          <Text preset="heading" text="Property Assessments" style={$headerTitle} />
           <Text
             size="sm"
             style={themed($signOutLink)}
@@ -322,9 +322,16 @@ const $header: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
   borderBottomColor: colors.separator,
 })
 
+const $headerTitle: TextStyle = {
+  flex: 1,
+  flexShrink: 1,
+}
+
 const $signOutLink: ThemedStyle<TextStyle> = ({ colors }) => ({
   color: colors.textDim,
   textDecorationLine: "underline",
+  flexShrink: 0,
+  marginLeft: 8,
 })
 
 // ── Stats Row ──
