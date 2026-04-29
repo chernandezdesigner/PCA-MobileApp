@@ -7,44 +7,156 @@ import { ApartmentPropertyModel } from "./step4-apartment"
 // ============================================
 
 // ============================================
-// PLACEHOLDER PROPERTY MODELS
-// (Storage, Mobile Homes, Nursing Homes, Multi-Family)
-// These will be expanded when constants are defined.
+// SHARED AMENITIES MODEL
+// Used by Mobile Homes, Nursing Homes, Multi-Family
+// ============================================
+
+export const AmenitiesModel = types.model("Amenities", {
+  sportsCourts: types.optional(types.number, 0),
+  businessCenter: types.optional(types.boolean, false),
+  kitchenCafe: types.optional(types.boolean, false),
+  restaurantSeats: types.optional(types.number, 0),
+  retailShop: types.optional(types.boolean, false),
+  barSeats: types.optional(types.number, 0),
+  commercialKitchen: types.optional(types.boolean, false),
+  playgrounds: types.optional(types.number, 0),
+  meetingRoomsSeats: types.optional(types.number, 0),
+  gazebos: types.optional(types.number, 0),
+  lounges: types.optional(types.number, 0),
+  fitnessCenterCount: types.optional(types.number, 0),
+  fitnessCenterEquipment: types.optional(types.string, ""),
+  laundryRooms: types.optional(types.number, 0),
+  other: types.optional(types.string, ""),
+})
+  .actions((self) => ({
+    update(data: {
+      sportsCourts?: number
+      businessCenter?: boolean
+      kitchenCafe?: boolean
+      restaurantSeats?: number
+      retailShop?: boolean
+      barSeats?: number
+      commercialKitchen?: boolean
+      playgrounds?: number
+      meetingRoomsSeats?: number
+      gazebos?: number
+      lounges?: number
+      fitnessCenterCount?: number
+      fitnessCenterEquipment?: string
+      laundryRooms?: number
+      other?: string
+    }) {
+      Object.assign(self, data)
+    },
+  }))
+
+// ============================================
+// STORAGE PROPERTY MODEL
 // ============================================
 
 export const StoragePropertyModel = types.model("StorageProperty", {
-  comments: types.optional(types.string, ""),
+  climateControlledUnits: types.optional(types.number, 0),
+  onSiteManagerApartment: types.optional(types.boolean, false),
 })
   .actions((self) => ({
-    updateComments(value: string) {
-      self.comments = value
+    update(data: { climateControlledUnits?: number; onSiteManagerApartment?: boolean }) {
+      if (data.climateControlledUnits !== undefined) self.climateControlledUnits = data.climateControlledUnits
+      if (data.onSiteManagerApartment !== undefined) self.onSiteManagerApartment = data.onSiteManagerApartment
     },
   }))
+
+// ============================================
+// MOBILE HOMES PROPERTY MODEL
+// ============================================
 
 export const MobileHomesPropertyModel = types.model("MobileHomesProperty", {
-  comments: types.optional(types.string, ""),
+  padSitesTotal: types.optional(types.number, 0),
+  leasedPadSites: types.optional(types.number, 0),
+  propertyOwnedPadSites: types.optional(types.number, 0),
+  onSiteManagerApartment: types.optional(types.boolean, false),
+  washingMachines: types.optional(types.number, 0),
+  dryers: types.optional(types.number, 0),
+  laundryOwnership: types.optional(types.string, ""),
+  amenities: types.optional(AmenitiesModel, {}),
 })
   .actions((self) => ({
-    updateComments(value: string) {
-      self.comments = value
+    update(data: {
+      padSitesTotal?: number
+      leasedPadSites?: number
+      propertyOwnedPadSites?: number
+      onSiteManagerApartment?: boolean
+      washingMachines?: number
+      dryers?: number
+      laundryOwnership?: string
+    }) {
+      Object.assign(self, data)
+    },
+    updateAmenities(data: Parameters<typeof self.amenities.update>[0]) {
+      self.amenities.update(data)
     },
   }))
+
+// ============================================
+// NURSING HOMES PROPERTY MODEL
+// ============================================
 
 export const NursingHomesPropertyModel = types.model("NursingHomesProperty", {
-  comments: types.optional(types.string, ""),
+  licensedBeds: types.optional(types.number, 0),
+  totalBeds: types.optional(types.number, 0),
+  diningRooms: types.optional(types.number, 0),
+  residentKitchens: types.optional(types.number, 0),
+  activityRooms: types.optional(types.number, 0),
+  ptRooms: types.optional(types.number, 0),
+  hairSalons: types.optional(types.number, 0),
+  nurseStations: types.optional(types.number, 0),
+  washingMachines: types.optional(types.number, 0),
+  dryers: types.optional(types.number, 0),
+  laundryOwnership: types.optional(types.string, ""),
+  amenities: types.optional(AmenitiesModel, {}),
 })
   .actions((self) => ({
-    updateComments(value: string) {
-      self.comments = value
+    update(data: {
+      licensedBeds?: number
+      totalBeds?: number
+      diningRooms?: number
+      residentKitchens?: number
+      activityRooms?: number
+      ptRooms?: number
+      hairSalons?: number
+      nurseStations?: number
+      washingMachines?: number
+      dryers?: number
+      laundryOwnership?: string
+    }) {
+      Object.assign(self, data)
+    },
+    updateAmenities(data: Parameters<typeof self.amenities.update>[0]) {
+      self.amenities.update(data)
     },
   }))
 
+// ============================================
+// MULTI-FAMILY PROPERTY MODEL
+// ============================================
+
 export const MultiFamilyPropertyModel = types.model("MultiFamilyProperty", {
-  comments: types.optional(types.string, ""),
+  onSiteManagerApartment: types.optional(types.boolean, false),
+  washingMachines: types.optional(types.number, 0),
+  dryers: types.optional(types.number, 0),
+  laundryOwnership: types.optional(types.string, ""),
+  amenities: types.optional(AmenitiesModel, {}),
 })
   .actions((self) => ({
-    updateComments(value: string) {
-      self.comments = value
+    update(data: {
+      onSiteManagerApartment?: boolean
+      washingMachines?: number
+      dryers?: number
+      laundryOwnership?: string
+    }) {
+      Object.assign(self, data)
+    },
+    updateAmenities(data: Parameters<typeof self.amenities.update>[0]) {
+      self.amenities.update(data)
     },
   }))
 
@@ -279,23 +391,50 @@ export const InteriorConditionsStep4 = types.model("InteriorConditionsStep4", {
     },
 
     // ============================================
-    // PLACEHOLDER PROPERTY UPDATE ACTIONS
+    // STORAGE UPDATE ACTIONS
     // ============================================
 
-    updateStorageComments(value: string) {
-      self.storage.updateComments(value)
+    updateStorage(data: Parameters<typeof self.storage.update>[0]) {
+      self.storage.update(data)
       self.lastModified = new Date()
     },
-    updateMobileHomesComments(value: string) {
-      self.mobileHomes.updateComments(value)
+
+    // ============================================
+    // MOBILE HOMES UPDATE ACTIONS
+    // ============================================
+
+    updateMobileHomes(data: Parameters<typeof self.mobileHomes.update>[0]) {
+      self.mobileHomes.update(data)
       self.lastModified = new Date()
     },
-    updateNursingHomesComments(value: string) {
-      self.nursingHomes.updateComments(value)
+    updateMobileHomesAmenities(data: Parameters<typeof self.mobileHomes.amenities.update>[0]) {
+      self.mobileHomes.updateAmenities(data)
       self.lastModified = new Date()
     },
-    updateMultiFamilyComments(value: string) {
-      self.multiFamily.updateComments(value)
+
+    // ============================================
+    // NURSING HOMES UPDATE ACTIONS
+    // ============================================
+
+    updateNursingHomes(data: Parameters<typeof self.nursingHomes.update>[0]) {
+      self.nursingHomes.update(data)
+      self.lastModified = new Date()
+    },
+    updateNursingHomesAmenities(data: Parameters<typeof self.nursingHomes.amenities.update>[0]) {
+      self.nursingHomes.updateAmenities(data)
+      self.lastModified = new Date()
+    },
+
+    // ============================================
+    // MULTI-FAMILY UPDATE ACTIONS
+    // ============================================
+
+    updateMultiFamily(data: Parameters<typeof self.multiFamily.update>[0]) {
+      self.multiFamily.update(data)
+      self.lastModified = new Date()
+    },
+    updateMultiFamilyAmenities(data: Parameters<typeof self.multiFamily.amenities.update>[0]) {
+      self.multiFamily.updateAmenities(data)
       self.lastModified = new Date()
     },
 

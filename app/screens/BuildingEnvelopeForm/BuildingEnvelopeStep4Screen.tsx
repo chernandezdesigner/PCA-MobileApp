@@ -604,14 +604,14 @@ const $naButton = (active: boolean): ThemedStyle<ViewStyle> => ({ colors }) => (
   paddingHorizontal: 12,
   paddingVertical: 6,
   borderRadius: 6,
-  backgroundColor: active ? colors.palette.primary1 : colors.palette.neutral300,
+  backgroundColor: active ? colors.tint : colors.palette.neutral300,
   minWidth: 50,
   alignItems: "center",
   justifyContent: "center",
 })
 
 const $naButtonText = (active: boolean): ThemedStyle<any> => ({ colors }) => ({
-  color: active ? colors.palette.neutral100 : colors.palette.neutral600,
+  color: active ? "#FFFFFF" : colors.textDim,
   fontSize: 12,
   fontWeight: "600",
 })

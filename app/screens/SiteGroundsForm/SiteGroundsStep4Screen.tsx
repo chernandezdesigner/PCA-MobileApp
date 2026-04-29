@@ -1052,13 +1052,13 @@ const $naButton = (isActive: boolean): ThemedStyle<ViewStyle> => ({ colors }) =>
   alignItems: "center",
   justifyContent: "center",
   marginRight: 16,
-  backgroundColor: isActive ? colors.palette.gray6 : "transparent",
+  backgroundColor: isActive ? colors.tint : "transparent",
   borderWidth: 1,
-  borderColor: isActive ? colors.palette.gray6 : colors.palette.gray4,
+  borderColor: isActive ? colors.tint : colors.palette.gray4,
 })
 
 const $naButtonText = (isActive: boolean): ThemedStyle<any> => ({ colors }) => ({
-  color: isActive ? "#FFFFFF" : colors.palette.gray5,
+  color: isActive ? "#FFFFFF" : colors.textDim,
   fontSize: 14,
   fontWeight: "600",
 })

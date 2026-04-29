@@ -108,7 +108,11 @@ export const SectionAccordion = (props: SectionAccordionProps) => {
           preset="subheading"
           text={title}
           tx={titleTx}
+          numberOfLines={1}
+          ellipsizeMode="tail"
           style={{
+            flex: 1,
+            marginRight: 8,
             color: isExpanded
               ? theme.colors.palette.accordionHeaderActiveText
               : theme.colors.palette.accordionHeaderInactiveText,

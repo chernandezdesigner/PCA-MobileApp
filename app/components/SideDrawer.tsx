@@ -384,6 +384,11 @@ export const SideDrawer = (props: SideDrawerProps) => {
           containerStyle={themed($searchFieldContainer)}
           inputWrapperStyle={themed($searchInputWrapper)}
           style={$searchInput}
+          LeftAccessory={() => (
+            <View style={$searchAccessory}>
+              <Ionicons name="search-outline" size={16} color={theme.colors.textDim} />
+            </View>
+          )}
           RightAccessory={() =>
             searchQuery.length > 0 ? (
               <TouchableOpacity
@@ -392,11 +397,7 @@ export const SideDrawer = (props: SideDrawerProps) => {
               >
                 <Icon icon="x" size={16} color={theme.colors.textDim} />
               </TouchableOpacity>
-            ) : (
-              <View style={$searchAccessory}>
-                <Ionicons name="hourglass-outline" size={16} color={theme.colors.textDim} />
-              </View>
-            )
+            ) : null
           }
         />
       </View>

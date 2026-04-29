@@ -29,7 +29,11 @@ export const HeaderBar = (props: HeaderBarProps) => {
 
   return (
     <View style={[themed([$container, elevated && $elevated]), safe, style]}>
-      <PressableIcon icon={leftIcon} size={24} onPress={onLeftPress} containerStyle={themed($iconBtn)} accessibilityLabel={leftLabel} />
+      {leftIcon === "back" ? (
+        <View style={themed($iconBtn)} />
+      ) : (
+        <PressableIcon icon={leftIcon} size={24} onPress={onLeftPress} containerStyle={themed($iconBtn)} accessibilityLabel={leftLabel} />
+      )}
       <Text preset="subheading" weight="medium" style={themed($title)} text={title} />
       {rightIcon ? (
         <PressableIcon icon={rightIcon} size={24} onPress={onRightPress} containerStyle={themed($iconBtn)} accessibilityLabel={rightLabel} />

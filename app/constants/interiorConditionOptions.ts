@@ -934,3 +934,12 @@ export type ApartmentBathroomId = typeof ApartmentBathroomOptions[number]["id"]
 export type ApartmentFurnishedApartmentItemsId = typeof ApartmentFurnishedApartmentItemsOptions[number]["id"]
 export type ApartmentFurnishedApartmentTVId = typeof ApartmentFurnishedApartmentTVOptions[number]["id"]
 
+// ============================================
+// SHARED OPTIONS
+// ============================================
+
+export const LaundryOwnershipOptions = [
+  { id: "owned", label: "Owned" },
+  { id: "leased", label: "Leased" },
+] as const
+

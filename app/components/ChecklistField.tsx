@@ -62,6 +62,18 @@ export interface ChecklistFieldProps {
   showYesNoPill?: boolean
 
   /**
+   * Label shown in the pill when the single-item compact row is checked.
+   * Defaults to "Present" (more descriptive than "Yes" for single questions).
+   */
+  checkedPillLabel?: string
+
+  /**
+   * Label shown in the pill when the single-item compact row is unchecked.
+   * Defaults to "Not Present".
+   */
+  uncheckedPillLabel?: string
+
+  /**
    * Optional style overrides.
    */
   containerStyle?: StyleProp<ViewStyle>
@@ -87,6 +99,8 @@ export const ChecklistField: FC<ChecklistFieldProps> = (props) => {
     onClearAll,
     showAlternatingRows = true,
     showYesNoPill = true,
+    checkedPillLabel = "Present",
+    uncheckedPillLabel = "Not Present",
     containerStyle,
     rowStyle,
   } = props
@@ -137,11 +151,11 @@ export const ChecklistField: FC<ChecklistFieldProps> = (props) => {
         )}
       </View>
 
-      <View style={themed($list)}>
-        {items.map((item, index) => {
-          const isAlt = showAlternatingRows && index % 2 === 1
+      {items.length === 1 ? (
+        // Compact inline layout for single-item fields
+        (() => {
+          const item = items[0]
           const isChecked = item.checked
-
           return (
             <AnimatedPressable
               key={item.id}
@@ -149,16 +163,12 @@ export const ChecklistField: FC<ChecklistFieldProps> = (props) => {
               accessibilityRole="checkbox"
               accessibilityState={{ checked: isChecked }}
               accessibilityLabel={item.label}
-              style={[
-                themed($rowBase),
-                isAlt && themed($rowAlt),
-                rowStyle,
-              ]}
+              style={[themed($compactRow), rowStyle]}
             >
               <Text
                 size="sm"
                 weight="medium"
-                style={themed($itemLabel)}
+                style={themed($compactLabel)}
                 text={item.label}
               />
 
@@ -172,15 +182,60 @@ export const ChecklistField: FC<ChecklistFieldProps> = (props) => {
 
                 {showYesNoPill && (
                   <Pill
-                    label={isChecked ? "Yes" : "No"}
+                    label={isChecked ? checkedPillLabel : uncheckedPillLabel}
                     variant={isChecked ? "active" : "default"}
                   />
                 )}
               </View>
             </AnimatedPressable>
           )
-        })}
-      </View>
+        })()
+      ) : (
+        <View style={themed($list)}>
+          {items.map((item, index) => {
+            const isAlt = showAlternatingRows && index % 2 === 1
+            const isChecked = item.checked
+
+            return (
+              <AnimatedPressable
+                key={item.id}
+                onPress={() => onToggle(item.id, !isChecked)}
+                accessibilityRole="checkbox"
+                accessibilityState={{ checked: isChecked }}
+                accessibilityLabel={item.label}
+                style={[
+                  themed($rowBase),
+                  isAlt && themed($rowAlt),
+                  rowStyle,
+                ]}
+              >
+                <Text
+                  size="sm"
+                  weight="medium"
+                  style={themed($itemLabel)}
+                  text={item.label}
+                />
+
+                <View style={themed($controlsRow)}>
+                  <View style={themed($checkboxWrapper)}>
+                    <Checkbox
+                      value={isChecked}
+                      onValueChange={(v) => onToggle(item.id, v)}
+                    />
+                  </View>
+
+                  {showYesNoPill && (
+                    <Pill
+                      label={isChecked ? "Yes" : "No"}
+                      variant={isChecked ? "active" : "default"}
+                    />
+                  )}
+                </View>
+              </AnimatedPressable>
+            )
+          })}
+        </View>
+      )}
     </View>
   )
 }
@@ -243,6 +298,25 @@ const $rowBase: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
   paddingVertical: spacing.xs,
   minHeight: 56, // 44px minimum touch target + padding
   backgroundColor: colors.palette.checklistBackground,
+  borderBottomWidth: 1,
+  borderBottomColor: colors.separator,
+})
+
+const $compactRow: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  paddingHorizontal: spacing.md,
+  paddingVertical: spacing.xs,
+  minHeight: 44,
+  backgroundColor: colors.palette.checklistBackground,
+  borderRadius: radii.xs,
+})
+
+const $compactLabel: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
+  flex: 1,
+  marginRight: spacing.sm,
+  color: colors.palette.gray6,
 })
 
 const $rowAlt: ThemedStyle<ViewStyle> = ({ colors }) => ({

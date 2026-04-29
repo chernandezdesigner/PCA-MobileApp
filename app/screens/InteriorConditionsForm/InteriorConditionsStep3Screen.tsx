@@ -230,12 +230,12 @@ const $naToggle = (isActive: boolean): ThemedStyle<ViewStyle> => ({ colors }) =>
   paddingHorizontal: 16,
   paddingVertical: 10,
   borderRadius: 6,
-  backgroundColor: isActive ? colors.palette.primary2 : colors.palette.neutral300,
+  backgroundColor: isActive ? colors.tint : colors.palette.neutral300,
   alignSelf: "flex-start",
 })
 
 const $naToggleText = (isActive: boolean): ThemedStyle<TextStyle> => ({ colors }) => ({
-  color: isActive ? colors.palette.neutral100 : colors.text,
+  color: isActive ? "#FFFFFF" : colors.textDim,
   fontSize: 14,
   fontWeight: "600",
 })

@@ -1,5 +1,6 @@
 import { FC, useState } from "react"
 import { View, ViewStyle, ScrollView, TouchableOpacity, TextStyle } from "react-native"
+import { Ionicons } from "@expo/vector-icons"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
 import { TextField } from "@/components/TextField"
@@ -58,6 +59,9 @@ import {
   HotelGuestRoomShowersOptions,
   HotelGuestRoomBathroomOptions,
 } from "@/constants/interiorConditionOptions"
+
+// Shared Options
+import { LaundryOwnershipOptions } from "@/constants/interiorConditionOptions"
 
 // Apartment Options
 import {
@@ -209,10 +213,15 @@ export const InteriorConditionsStep4Screen: FC = observer(() => {
                   accessibilityRole="button"
                   accessibilityState={{ selected: isSelected }}
                 >
-                  <Text
-                    text={pt.label}
-                    style={themed($toggleChipText(isSelected))}
-                  />
+                  <View style={$chipContent}>
+                    {isSelected && (
+                      <Ionicons name="checkmark" size={14} color="#FFFFFF" style={$chipCheckmark} />
+                    )}
+                    <Text
+                      text={pt.label}
+                      style={themed($toggleChipText(isSelected))}
+                    />
+                  </View>
                 </TouchableOpacity>
               )
             })}
@@ -255,36 +264,28 @@ export const InteriorConditionsStep4Screen: FC = observer(() => {
         {store?.isStorageSelected && (
           <View style={themed($propertyTypeSection)}>
             <Text preset="subheading" text="Storage" style={themed($propertySectionTitle)} />
-            <View style={themed($placeholderBlock)}>
-              <Text text="Coming soon" style={themed($placeholderText)} />
-            </View>
+            <StorageSection store={store} themed={themed} />
           </View>
         )}
 
         {store?.isMobileHomesSelected && (
           <View style={themed($propertyTypeSection)}>
             <Text preset="subheading" text="Mobile Homes" style={themed($propertySectionTitle)} />
-            <View style={themed($placeholderBlock)}>
-              <Text text="Coming soon" style={themed($placeholderText)} />
-            </View>
+            <MobileHomesSection store={store} themed={themed} />
           </View>
         )}
 
         {store?.isNursingHomesSelected && (
           <View style={themed($propertyTypeSection)}>
             <Text preset="subheading" text="Nursing Homes" style={themed($propertySectionTitle)} />
-            <View style={themed($placeholderBlock)}>
-              <Text text="Coming soon" style={themed($placeholderText)} />
-            </View>
+            <NursingHomesSection store={store} themed={themed} />
           </View>
         )}
 
         {store?.isMultiFamilySelected && (
           <View style={themed($propertyTypeSection)}>
             <Text preset="subheading" text="Multi-Family" style={themed($propertySectionTitle)} />
-            <View style={themed($placeholderBlock)}>
-              <Text text="Coming soon" style={themed($placeholderText)} />
-            </View>
+            <MultiFamilySection store={store} themed={themed} />
           </View>
         )}
 
@@ -363,7 +364,7 @@ const HotelAccordions: FC<{
                   accessibilityRole="button"
                   style={themed($unitTypeDeleteBtn)}
                 >
-                  <Icon icon="x" size={12} color={theme.colors.error} />
+                  <Ionicons name="close" size={16} color="#FFFFFF" />
                 </AnimatedPressable>
               )}
             </View>
@@ -1304,7 +1305,7 @@ const ApartmentAccordions: FC<{
                   accessibilityRole="button"
                   style={themed($unitTypeDeleteBtn)}
                 >
-                  <Icon icon="x" size={12} color={theme.colors.error} />
+                  <Ionicons name="close" size={16} color="#FFFFFF" />
                 </AnimatedPressable>
               )}
             </View>
@@ -2221,6 +2222,487 @@ const StandardFinishesAccordion: FC<{
 })
 
 // ============================================
+// STORAGE SECTION
+// ============================================
+
+const StorageSection: FC<{ store: Step4Store | undefined; themed: ThemedFn }> = observer(({ store, themed }) => {
+  const storage = store?.storage
+  return (
+    <View style={themed($simpleSection)}>
+      <TextField
+        label="# of Climate Controlled Units"
+        placeholder="0"
+        keyboardType="numeric"
+        value={storage?.climateControlledUnits ? String(storage.climateControlledUnits) : ""}
+        onChangeText={(v) => store?.updateStorage({ climateControlledUnits: parseInt(v) || 0 })}
+      />
+      <View style={themed($yesNoRow)}>
+        <Text preset="formLabel" text="On-site Manager's Apartment" style={$yesNoLabel} />
+        <View style={$yesNoChips}>
+          {(["Yes", "No"] as const).map((opt) => {
+            const isActive = opt === "Yes" ? (storage?.onSiteManagerApartment ?? false) : !(storage?.onSiteManagerApartment ?? false)
+            return (
+              <TouchableOpacity
+                key={opt}
+                style={themed($yesNoChip(isActive))}
+                onPress={() => store?.updateStorage({ onSiteManagerApartment: opt === "Yes" })}
+                accessibilityRole="button"
+                accessibilityLabel={opt}
+                accessibilityState={{ selected: isActive }}
+              >
+                <Text text={opt} style={themed($yesNoChipText(isActive))} />
+              </TouchableOpacity>
+            )
+          })}
+        </View>
+      </View>
+    </View>
+  )
+})
+
+// ============================================
+// MOBILE HOMES SECTION
+// ============================================
+
+const MobileHomesSection: FC<{ store: Step4Store | undefined; themed: ThemedFn }> = observer(({ store, themed }) => {
+  const [openKey, setOpenKey] = useState<string | null>(null)
+  const mh = store?.mobileHomes
+  return (
+    <>
+      <View style={themed($simpleSection)}>
+        <TextField
+          label="# of Pad Sites (Total)"
+          placeholder="0"
+          keyboardType="numeric"
+          value={mh?.padSitesTotal ? String(mh.padSitesTotal) : ""}
+          onChangeText={(v) => store?.updateMobileHomes({ padSitesTotal: parseInt(v) || 0 })}
+        />
+        <TextField
+          label="# of Leased Pad Sites"
+          placeholder="0"
+          keyboardType="numeric"
+          value={mh?.leasedPadSites ? String(mh.leasedPadSites) : ""}
+          onChangeText={(v) => store?.updateMobileHomes({ leasedPadSites: parseInt(v) || 0 })}
+        />
+        <TextField
+          label="# of Property-owned Pad Sites"
+          placeholder="0"
+          keyboardType="numeric"
+          value={mh?.propertyOwnedPadSites ? String(mh.propertyOwnedPadSites) : ""}
+          onChangeText={(v) => store?.updateMobileHomes({ propertyOwnedPadSites: parseInt(v) || 0 })}
+        />
+        <View style={themed($yesNoRow)}>
+          <Text preset="formLabel" text="On-site Manager's Apartment" style={$yesNoLabel} />
+          <View style={$yesNoChips}>
+            {(["Yes", "No"] as const).map((opt) => {
+              const isActive = opt === "Yes" ? (mh?.onSiteManagerApartment ?? false) : !(mh?.onSiteManagerApartment ?? false)
+              return (
+                <TouchableOpacity
+                  key={opt}
+                  style={themed($yesNoChip(isActive))}
+                  onPress={() => store?.updateMobileHomes({ onSiteManagerApartment: opt === "Yes" })}
+                  accessibilityRole="button"
+                  accessibilityLabel={opt}
+                  accessibilityState={{ selected: isActive }}
+                >
+                  <Text text={opt} style={themed($yesNoChipText(isActive))} />
+                </TouchableOpacity>
+              )
+            })}
+          </View>
+        </View>
+      </View>
+      <SectionAccordion
+        title="Laundry"
+        expanded={openKey === "mh-laundry"}
+        onToggle={(n) => setOpenKey(n ? "mh-laundry" : null)}
+      >
+        <View style={themed($sectionBody)}>
+          <View style={$laundryCountRow}>
+            <TextField
+              containerStyle={$laundryCountInput}
+              label="# of Washing Machines"
+              placeholder="0"
+              keyboardType="numeric"
+              value={mh?.washingMachines ? String(mh.washingMachines) : ""}
+              onChangeText={(v) => store?.updateMobileHomes({ washingMachines: parseInt(v) || 0 })}
+            />
+            <TextField
+              containerStyle={$laundryCountInput}
+              label="# of Dryers"
+              placeholder="0"
+              keyboardType="numeric"
+              value={mh?.dryers ? String(mh.dryers) : ""}
+              onChangeText={(v) => store?.updateMobileHomes({ dryers: parseInt(v) || 0 })}
+            />
+          </View>
+          <Dropdown
+            label="Owned or Leased"
+            value={mh?.laundryOwnership ?? ""}
+            onValueChange={(val) => store?.updateMobileHomes({ laundryOwnership: val })}
+            options={LaundryOwnershipOptions.map((o) => ({ label: o.label, value: o.id }))}
+          />
+        </View>
+      </SectionAccordion>
+      <SectionAccordion
+        title="Amenities"
+        expanded={openKey === "mh-amenities"}
+        onToggle={(n) => setOpenKey(n ? "mh-amenities" : null)}
+      >
+        <AmenitiesFields
+          amenities={mh?.amenities}
+          onUpdate={(data) => store?.updateMobileHomesAmenities(data)}
+          themed={themed}
+        />
+      </SectionAccordion>
+    </>
+  )
+})
+
+// ============================================
+// NURSING HOMES SECTION
+// ============================================
+
+const NursingHomesSection: FC<{ store: Step4Store | undefined; themed: ThemedFn }> = observer(({ store, themed }) => {
+  const [openKey, setOpenKey] = useState<string | null>(null)
+  const nh = store?.nursingHomes
+  return (
+    <>
+      <View style={themed($simpleSection)}>
+        <View style={$twoColRow}>
+          <TextField
+            containerStyle={$twoColInput}
+            label="# of Licensed Beds"
+            placeholder="0"
+            keyboardType="numeric"
+            value={nh?.licensedBeds ? String(nh.licensedBeds) : ""}
+            onChangeText={(v) => store?.updateNursingHomes({ licensedBeds: parseInt(v) || 0 })}
+          />
+          <TextField
+            containerStyle={$twoColInput}
+            label="# of Total Beds"
+            placeholder="0"
+            keyboardType="numeric"
+            value={nh?.totalBeds ? String(nh.totalBeds) : ""}
+            onChangeText={(v) => store?.updateNursingHomes({ totalBeds: parseInt(v) || 0 })}
+          />
+        </View>
+        <View style={$twoColRow}>
+          <TextField
+            containerStyle={$twoColInput}
+            label="# of Dining Rooms"
+            placeholder="0"
+            keyboardType="numeric"
+            value={nh?.diningRooms ? String(nh.diningRooms) : ""}
+            onChangeText={(v) => store?.updateNursingHomes({ diningRooms: parseInt(v) || 0 })}
+          />
+          <TextField
+            containerStyle={$twoColInput}
+            label="# of Resident Kitchens"
+            placeholder="0"
+            keyboardType="numeric"
+            value={nh?.residentKitchens ? String(nh.residentKitchens) : ""}
+            onChangeText={(v) => store?.updateNursingHomes({ residentKitchens: parseInt(v) || 0 })}
+          />
+        </View>
+        <View style={$twoColRow}>
+          <TextField
+            containerStyle={$twoColInput}
+            label="# of Activity Rooms"
+            placeholder="0"
+            keyboardType="numeric"
+            value={nh?.activityRooms ? String(nh.activityRooms) : ""}
+            onChangeText={(v) => store?.updateNursingHomes({ activityRooms: parseInt(v) || 0 })}
+          />
+          <TextField
+            containerStyle={$twoColInput}
+            label="# of PT Rooms"
+            placeholder="0"
+            keyboardType="numeric"
+            value={nh?.ptRooms ? String(nh.ptRooms) : ""}
+            onChangeText={(v) => store?.updateNursingHomes({ ptRooms: parseInt(v) || 0 })}
+          />
+        </View>
+        <View style={$twoColRow}>
+          <TextField
+            containerStyle={$twoColInput}
+            label="# of Hair Salons"
+            placeholder="0"
+            keyboardType="numeric"
+            value={nh?.hairSalons ? String(nh.hairSalons) : ""}
+            onChangeText={(v) => store?.updateNursingHomes({ hairSalons: parseInt(v) || 0 })}
+          />
+          <TextField
+            containerStyle={$twoColInput}
+            label="# of Nurse Stations"
+            placeholder="0"
+            keyboardType="numeric"
+            value={nh?.nurseStations ? String(nh.nurseStations) : ""}
+            onChangeText={(v) => store?.updateNursingHomes({ nurseStations: parseInt(v) || 0 })}
+          />
+        </View>
+      </View>
+      <SectionAccordion
+        title="Laundry"
+        expanded={openKey === "nh-laundry"}
+        onToggle={(n) => setOpenKey(n ? "nh-laundry" : null)}
+      >
+        <View style={themed($sectionBody)}>
+          <View style={$laundryCountRow}>
+            <TextField
+              containerStyle={$laundryCountInput}
+              label="# of Washing Machines"
+              placeholder="0"
+              keyboardType="numeric"
+              value={nh?.washingMachines ? String(nh.washingMachines) : ""}
+              onChangeText={(v) => store?.updateNursingHomes({ washingMachines: parseInt(v) || 0 })}
+            />
+            <TextField
+              containerStyle={$laundryCountInput}
+              label="# of Dryers"
+              placeholder="0"
+              keyboardType="numeric"
+              value={nh?.dryers ? String(nh.dryers) : ""}
+              onChangeText={(v) => store?.updateNursingHomes({ dryers: parseInt(v) || 0 })}
+            />
+          </View>
+          <Dropdown
+            label="Owned or Leased"
+            value={nh?.laundryOwnership ?? ""}
+            onValueChange={(val) => store?.updateNursingHomes({ laundryOwnership: val })}
+            options={LaundryOwnershipOptions.map((o) => ({ label: o.label, value: o.id }))}
+          />
+        </View>
+      </SectionAccordion>
+      <SectionAccordion
+        title="Amenities"
+        expanded={openKey === "nh-amenities"}
+        onToggle={(n) => setOpenKey(n ? "nh-amenities" : null)}
+      >
+        <AmenitiesFields
+          amenities={nh?.amenities}
+          onUpdate={(data) => store?.updateNursingHomesAmenities(data)}
+          themed={themed}
+        />
+      </SectionAccordion>
+    </>
+  )
+})
+
+// ============================================
+// MULTI-FAMILY SECTION
+// ============================================
+
+const MultiFamilySection: FC<{ store: Step4Store | undefined; themed: ThemedFn }> = observer(({ store, themed }) => {
+  const [openKey, setOpenKey] = useState<string | null>(null)
+  const mf = store?.multiFamily
+  return (
+    <>
+      <View style={themed($simpleSection)}>
+        <View style={themed($yesNoRow)}>
+          <Text preset="formLabel" text="On-site Manager's Apartment" style={$yesNoLabel} />
+          <View style={$yesNoChips}>
+            {(["Yes", "No"] as const).map((opt) => {
+              const isActive = opt === "Yes" ? (mf?.onSiteManagerApartment ?? false) : !(mf?.onSiteManagerApartment ?? false)
+              return (
+                <TouchableOpacity
+                  key={opt}
+                  style={themed($yesNoChip(isActive))}
+                  onPress={() => store?.updateMultiFamily({ onSiteManagerApartment: opt === "Yes" })}
+                  accessibilityRole="button"
+                  accessibilityLabel={opt}
+                  accessibilityState={{ selected: isActive }}
+                >
+                  <Text text={opt} style={themed($yesNoChipText(isActive))} />
+                </TouchableOpacity>
+              )
+            })}
+          </View>
+        </View>
+      </View>
+      <SectionAccordion
+        title="Laundry"
+        expanded={openKey === "mf-laundry"}
+        onToggle={(n) => setOpenKey(n ? "mf-laundry" : null)}
+      >
+        <View style={themed($sectionBody)}>
+          <View style={$laundryCountRow}>
+            <TextField
+              containerStyle={$laundryCountInput}
+              label="# of Washing Machines"
+              placeholder="0"
+              keyboardType="numeric"
+              value={mf?.washingMachines ? String(mf.washingMachines) : ""}
+              onChangeText={(v) => store?.updateMultiFamily({ washingMachines: parseInt(v) || 0 })}
+            />
+            <TextField
+              containerStyle={$laundryCountInput}
+              label="# of Dryers"
+              placeholder="0"
+              keyboardType="numeric"
+              value={mf?.dryers ? String(mf.dryers) : ""}
+              onChangeText={(v) => store?.updateMultiFamily({ dryers: parseInt(v) || 0 })}
+            />
+          </View>
+          <Dropdown
+            label="Owned or Leased"
+            value={mf?.laundryOwnership ?? ""}
+            onValueChange={(val) => store?.updateMultiFamily({ laundryOwnership: val })}
+            options={LaundryOwnershipOptions.map((o) => ({ label: o.label, value: o.id }))}
+          />
+        </View>
+      </SectionAccordion>
+      <SectionAccordion
+        title="Amenities"
+        expanded={openKey === "mf-amenities"}
+        onToggle={(n) => setOpenKey(n ? "mf-amenities" : null)}
+      >
+        <AmenitiesFields
+          amenities={mf?.amenities}
+          onUpdate={(data) => store?.updateMultiFamilyAmenities(data)}
+          themed={themed}
+        />
+      </SectionAccordion>
+    </>
+  )
+})
+
+// ============================================
+// AMENITIES FIELDS (shared by MobileHomes, NursingHomes, MultiFamily)
+// ============================================
+
+type AmenitiesData = {
+  sportsCourts?: number; businessCenter?: boolean; kitchenCafe?: boolean
+  restaurantSeats?: number; retailShop?: boolean; barSeats?: number
+  commercialKitchen?: boolean; playgrounds?: number; meetingRoomsSeats?: number
+  gazebos?: number; lounges?: number; fitnessCenterCount?: number
+  fitnessCenterEquipment?: string; laundryRooms?: number; other?: string
+}
+
+const AmenitiesFields: FC<{
+  amenities: { [K in keyof AmenitiesData]: any } | undefined
+  onUpdate: (data: AmenitiesData) => void
+  themed: ThemedFn
+}> = observer(({ amenities, onUpdate, themed }) => (
+  <View style={themed($sectionBody)}>
+    <View style={$twoColRow}>
+      <TextField
+        containerStyle={$twoColInput}
+        label="Sports Courts"
+        placeholder="0"
+        keyboardType="numeric"
+        value={amenities?.sportsCourts ? String(amenities.sportsCourts) : ""}
+        onChangeText={(v) => onUpdate({ sportsCourts: parseInt(v) || 0 })}
+      />
+      <TextField
+        containerStyle={$twoColInput}
+        label="Restaurant # Seats"
+        placeholder="0"
+        keyboardType="numeric"
+        value={amenities?.restaurantSeats ? String(amenities.restaurantSeats) : ""}
+        onChangeText={(v) => onUpdate({ restaurantSeats: parseInt(v) || 0 })}
+      />
+    </View>
+    <View style={$twoColRow}>
+      <TextField
+        containerStyle={$twoColInput}
+        label="Bar # Seats"
+        placeholder="0"
+        keyboardType="numeric"
+        value={amenities?.barSeats ? String(amenities.barSeats) : ""}
+        onChangeText={(v) => onUpdate({ barSeats: parseInt(v) || 0 })}
+      />
+      <TextField
+        containerStyle={$twoColInput}
+        label="Playgrounds"
+        placeholder="0"
+        keyboardType="numeric"
+        value={amenities?.playgrounds ? String(amenities.playgrounds) : ""}
+        onChangeText={(v) => onUpdate({ playgrounds: parseInt(v) || 0 })}
+      />
+    </View>
+    <View style={$twoColRow}>
+      <TextField
+        containerStyle={$twoColInput}
+        label="Meeting Rooms # Seats"
+        placeholder="0"
+        keyboardType="numeric"
+        value={amenities?.meetingRoomsSeats ? String(amenities.meetingRoomsSeats) : ""}
+        onChangeText={(v) => onUpdate({ meetingRoomsSeats: parseInt(v) || 0 })}
+      />
+      <TextField
+        containerStyle={$twoColInput}
+        label="Gazebos"
+        placeholder="0"
+        keyboardType="numeric"
+        value={amenities?.gazebos ? String(amenities.gazebos) : ""}
+        onChangeText={(v) => onUpdate({ gazebos: parseInt(v) || 0 })}
+      />
+    </View>
+    <View style={$twoColRow}>
+      <TextField
+        containerStyle={$twoColInput}
+        label="Lounges"
+        placeholder="0"
+        keyboardType="numeric"
+        value={amenities?.lounges ? String(amenities.lounges) : ""}
+        onChangeText={(v) => onUpdate({ lounges: parseInt(v) || 0 })}
+      />
+      <TextField
+        containerStyle={$twoColInput}
+        label="Fitness Center #"
+        placeholder="0"
+        keyboardType="numeric"
+        value={amenities?.fitnessCenterCount ? String(amenities.fitnessCenterCount) : ""}
+        onChangeText={(v) => onUpdate({ fitnessCenterCount: parseInt(v) || 0 })}
+      />
+    </View>
+    <TextField
+      label="Laundry Rooms #"
+      placeholder="0"
+      keyboardType="numeric"
+      value={amenities?.laundryRooms ? String(amenities.laundryRooms) : ""}
+      onChangeText={(v) => onUpdate({ laundryRooms: parseInt(v) || 0 })}
+    />
+    <TextField
+      label="Fitness Center Equipment List"
+      placeholder="List equipment..."
+      value={amenities?.fitnessCenterEquipment ?? ""}
+      onChangeText={(v) => onUpdate({ fitnessCenterEquipment: v })}
+    />
+    <View style={themed($checkRow)}>
+      {([
+        { key: "businessCenter", label: "Business Center" },
+        { key: "kitchenCafe", label: "Kitchen/Café" },
+        { key: "retailShop", label: "Retail Shop" },
+        { key: "commercialKitchen", label: "Commercial Kitchen" },
+      ] as const).map((item) => {
+        const isActive = amenities?.[item.key] ?? false
+        return (
+          <TouchableOpacity
+            key={item.key}
+            style={themed($checkChip(isActive))}
+            onPress={() => onUpdate({ [item.key]: !isActive } as AmenitiesData)}
+            accessibilityRole="checkbox"
+            accessibilityLabel={item.label}
+            accessibilityState={{ checked: isActive }}
+          >
+            {isActive && <Ionicons name="checkmark" size={12} color="#FFFFFF" />}
+            <Text text={item.label} style={themed($checkChipText(isActive))} />
+          </TouchableOpacity>
+        )
+      })}
+    </View>
+    <TextField
+      label="Other"
+      placeholder="Describe other amenities..."
+      value={amenities?.other ?? ""}
+      onChangeText={(v) => onUpdate({ other: v })}
+    />
+  </View>
+))
+
+// ============================================
 // STYLES
 // ============================================
 
@@ -2300,18 +2782,21 @@ const $toggleChipText = (isSelected: boolean): ThemedStyle<TextStyle> => ({ colo
   fontWeight: "600",
 })
 
-const $propertyTypeSection: ThemedStyle<ViewStyle> = ({ colors }) => ({
-  borderTopWidth: 2,
+const $propertyTypeSection: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+  borderTopWidth: 3,
   borderTopColor: colors.palette.primary1,
-  marginTop: 16,
+  marginTop: spacing.lg,
+  backgroundColor: colors.palette.headerFooterBackground,
 })
 
-const $propertySectionTitle: ThemedStyle<TextStyle> = ({ colors }) => ({
-  color: colors.palette.primary2,
-  fontSize: 20,
-  paddingHorizontal: 16,
-  paddingTop: 16,
-  paddingBottom: 8,
+const $propertySectionTitle: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
+  color: colors.palette.primary1,
+  fontSize: 22,
+  fontWeight: "700",
+  paddingHorizontal: spacing.md,
+  paddingTop: spacing.md,
+  paddingBottom: spacing.sm,
+  letterSpacing: 0.3,
 })
 
 const $placeholderBlock: ThemedStyle<ViewStyle> = ({ colors }) => ({
@@ -2339,14 +2824,14 @@ const $naButton = (isActive: boolean): ThemedStyle<ViewStyle> => ({ colors }) =>
   paddingHorizontal: 12,
   paddingVertical: 6,
   borderRadius: 6,
-  backgroundColor: isActive ? colors.palette.primary1 : colors.palette.neutral300,
+  backgroundColor: isActive ? colors.tint : colors.palette.neutral300,
   minWidth: 50,
   alignItems: "center",
   justifyContent: "center",
 })
 
 const $naButtonText = (isActive: boolean): ThemedStyle<TextStyle> => ({ colors }) => ({
-  color: isActive ? colors.palette.neutral100 : colors.palette.neutral600,
+  color: isActive ? "#FFFFFF" : colors.textDim,
   fontSize: 12,
   fontWeight: "600",
 })
@@ -2358,7 +2843,7 @@ const $naButtonText = (isActive: boolean): ThemedStyle<TextStyle> => ({ colors }
 const $unitTypeRow: ViewStyle = {
   marginBottom: 12,
   borderBottomWidth: 1,
-  borderBottomColor: "#e5e5e5",
+  borderBottomColor: "#374151",
   paddingBottom: 8,
 }
 
@@ -2371,14 +2856,12 @@ const $unitTypeTopLine: ViewStyle = {
 const $unitTypeNameInput: ViewStyle = { flex: 1 }
 
 const $unitTypeDeleteBtn: ThemedStyle<ViewStyle> = ({ colors }) => ({
-  width: 28,
-  height: 28,
+  width: 32,
+  height: 32,
   alignItems: "center",
   justifyContent: "center",
-  borderRadius: 14,
-  borderWidth: 1,
-  borderColor: colors.error + "30",
-  backgroundColor: colors.error + "0A",
+  borderRadius: 16,
+  backgroundColor: colors.error,
 })
 
 const $unitTypeNumericLabels: ViewStyle = {
@@ -2393,7 +2876,7 @@ const $unitTypeNumericLabel: TextStyle = {
   fontSize: 10,
   fontWeight: "600",
   textAlign: "center",
-  color: "#666",
+  color: "#9CA3AF",
 }
 
 const $unitTypeNumericRow: ViewStyle = {
@@ -2420,7 +2903,7 @@ const $unitObservedRow: ViewStyle = {
 const $unitObservedRowNum: TextStyle = {
   width: 20,
   fontSize: 12,
-  color: "#666",
+  color: "#9CA3AF",
   textAlign: "right",
 }
 
@@ -2435,25 +2918,110 @@ const $unitObservedChip: ViewStyle = {
   width: 26,
   height: 26,
   borderRadius: 13,
-  backgroundColor: "#e0e0e0",
+  backgroundColor: "#374151",
   justifyContent: "center",
   alignItems: "center",
 }
 
 const $unitObservedChipActive: ViewStyle = {
-  backgroundColor: "#2563eb",
+  backgroundColor: "#0EA5E9",
 }
 
 const $unitObservedChipText: TextStyle = {
   fontSize: 10,
   fontWeight: "700",
-  color: "#555",
+  color: "#9CA3AF",
 }
 
 const $unitObservedChipTextActive: TextStyle = {
   fontSize: 10,
   fontWeight: "700",
-  color: "#fff",
+  color: "#FFFFFF",
 }
 
 const $unitObservedObsInput: ViewStyle = { flex: 1 }
+
+const $chipContent: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  gap: 4,
+}
+
+const $chipCheckmark: ViewStyle = {
+  // empty — just for layout
+}
+
+// ============================================
+// SIMPLE SECTION STYLES (Storage, MobileHomes, NursingHomes, MultiFamily)
+// ============================================
+
+const $simpleSection: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  paddingHorizontal: spacing.md,
+  paddingVertical: spacing.md,
+  gap: 12,
+})
+
+const $yesNoRow: ThemedStyle<ViewStyle> = () => ({
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  gap: 8,
+})
+
+const $yesNoLabel: TextStyle = { flex: 1 }
+
+const $yesNoChips: ViewStyle = {
+  flexDirection: "row",
+  gap: 6,
+}
+
+const $yesNoChip = (isActive: boolean): ThemedStyle<ViewStyle> => ({ colors }) => ({
+  paddingHorizontal: 18,
+  paddingVertical: 8,
+  borderRadius: 6,
+  backgroundColor: isActive ? colors.palette.primary1 : colors.palette.neutral300,
+  minWidth: 52,
+  alignItems: "center",
+})
+
+const $yesNoChipText = (isActive: boolean): ThemedStyle<TextStyle> => ({ colors }) => ({
+  color: isActive ? colors.palette.neutral100 : colors.palette.neutral700,
+  fontSize: 14,
+  fontWeight: "600",
+})
+
+const $twoColRow: ViewStyle = {
+  flexDirection: "row",
+  gap: 8,
+}
+
+const $twoColInput: ViewStyle = { flex: 1 }
+
+const $laundryCountRow: ViewStyle = {
+  flexDirection: "row",
+  gap: 8,
+}
+
+const $laundryCountInput: ViewStyle = { flex: 1 }
+
+const $checkRow: ViewStyle = {
+  flexDirection: "row",
+  flexWrap: "wrap",
+  gap: 6,
+}
+
+const $checkChip = (isActive: boolean): ThemedStyle<ViewStyle> => ({ colors }) => ({
+  flexDirection: "row",
+  alignItems: "center",
+  gap: 4,
+  paddingHorizontal: 10,
+  paddingVertical: 7,
+  borderRadius: 6,
+  backgroundColor: isActive ? colors.palette.primary1 : colors.palette.neutral300,
+})
+
+const $checkChipText = (isActive: boolean): ThemedStyle<TextStyle> => ({ colors }) => ({
+  color: isActive ? colors.palette.neutral100 : colors.palette.neutral700,
+  fontSize: 13,
+  fontWeight: "500",
+})

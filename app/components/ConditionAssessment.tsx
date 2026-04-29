@@ -1,4 +1,5 @@
 import { StyleProp, TextStyle, View, ViewStyle } from "react-native"
+import { Ionicons } from "@expo/vector-icons"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle, ThemedStyleArray } from "@/theme/types"
 import { Text } from "@/components/Text"
@@ -14,10 +15,10 @@ export interface ConditionAssessmentProps {
   style?: StyleProp<ViewStyle>
 }
 
-const CONDITION_CONFIG: Record<ConditionValue, { label: string; face: string }> = {
-  good: { label: "Good", face: "\u{1F60A}" },
-  fair: { label: "Fair", face: "\u{1F610}" },
-  poor: { label: "Poor", face: "\u{2639}\u{FE0F}" },
+const CONDITION_CONFIG: Record<ConditionValue, { label: string; iconName: string }> = {
+  good: { label: "Good", iconName: "happy-outline" },
+  fair: { label: "Fair", iconName: "remove-circle-outline" },
+  poor: { label: "Poor", iconName: "sad-outline" },
 }
 
 export const ConditionAssessment = (props: ConditionAssessmentProps) => {
@@ -49,12 +50,10 @@ export const ConditionAssessment = (props: ConditionAssessmentProps) => {
           selected && { borderColor: accentColor, backgroundColor: fillColor },
         ]}
       >
-        <Text
-          text={config.face}
-          style={[
-            $faceIcon,
-            !selected && { opacity: 0.4 },
-          ]}
+        <Ionicons
+          name={config.iconName as any}
+          size={26}
+          color={theme.colors.text}
         />
         <Text
           size="xs"
@@ -115,11 +114,6 @@ const $tile: ThemedStyleArray<ViewStyle> = [
 
 const $tileSelected: ViewStyle = {
   ...elevation.sm,
-}
-
-const $faceIcon: TextStyle = {
-  fontSize: 22,
-  lineHeight: 26,
 }
 
 const $tileLabel: ThemedStyle<TextStyle> = ({ colors }) => ({

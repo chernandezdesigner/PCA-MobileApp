@@ -963,13 +963,13 @@ const $naButton =
     paddingHorizontal: spacing.sm,
     paddingVertical: spacing.xs,
     borderRadius: 4,
-    backgroundColor: isActive ? colors.palette.angry500 : colors.palette.neutral300,
+    backgroundColor: isActive ? colors.tint : colors.palette.neutral300,
   })
 
 const $naButtonText =
   (isActive: boolean): ThemedStyle<TextStyle> =>
   ({ colors }) => ({
-    color: isActive ? colors.palette.neutral100 : colors.palette.neutral700,
+    color: isActive ? "#FFFFFF" : colors.textDim,
     fontWeight: "600",
     fontSize: 12,
   })

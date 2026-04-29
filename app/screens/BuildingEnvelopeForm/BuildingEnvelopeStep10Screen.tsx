@@ -580,13 +580,13 @@ const $naButton: (isActive: boolean) => ThemedStyle<ViewStyle> =
     paddingHorizontal: spacing.sm,
     paddingVertical: spacing.xxs,
     borderRadius: 4,
-    backgroundColor: isActive ? colors.palette.angry500 : colors.palette.neutral300,
+    backgroundColor: isActive ? colors.tint : colors.palette.neutral300,
   })
 
 const $naButtonText: (isActive: boolean) => ThemedStyle<TextStyle> =
   (isActive) =>
   ({ colors }) => ({
-    color: isActive ? colors.palette.neutral100 : colors.text,
+    color: isActive ? "#FFFFFF" : colors.textDim,
     fontSize: 12,
     fontWeight: "600",
   })

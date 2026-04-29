@@ -894,11 +894,11 @@ const $naButton = (isActive: boolean): ThemedStyle<ViewStyle> => ({ colors }) =>
   paddingHorizontal: 12,
   paddingVertical: 6,
   borderRadius: 4,
-  backgroundColor: isActive ? colors.palette.primary2 : colors.palette.neutral300,
+  backgroundColor: isActive ? colors.tint : colors.palette.neutral300,
 })
 
 const $naButtonText = (isActive: boolean): ThemedStyle<TextStyle> => ({ colors }) => ({
-  color: isActive ? colors.palette.neutral100 : colors.text,
+  color: isActive ? "#FFFFFF" : colors.textDim,
   fontSize: 12,
   fontWeight: "600",
 })
@@ -907,12 +907,12 @@ const $topNaButton = (isActive: boolean): ThemedStyle<ViewStyle> => ({ colors })
   paddingHorizontal: 16,
   paddingVertical: 12,
   borderRadius: 8,
-  backgroundColor: isActive ? colors.palette.primary2 : colors.palette.neutral300,
+  backgroundColor: isActive ? colors.tint : colors.palette.neutral300,
   alignItems: "center",
 })
 
 const $topNaButtonText = (isActive: boolean): ThemedStyle<TextStyle> => ({ colors }) => ({
-  color: isActive ? colors.palette.neutral100 : colors.text,
+  color: isActive ? "#FFFFFF" : colors.textDim,
   fontSize: 14,
   fontWeight: "600",
 })
