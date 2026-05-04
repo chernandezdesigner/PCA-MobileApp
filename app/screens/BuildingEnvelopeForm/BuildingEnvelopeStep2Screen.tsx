@@ -51,6 +51,7 @@ export const BuildingEnvelopeStep2Screen: FC<BuildingEnvelopeStep2ScreenProps> =
 
   // Local accordion control: only one open at a time
   const [openKey, setOpenKey] = useState<string | null>(null)
+  const scrollViewRef = useRef<ScrollView>(null)
 
   // Form types
   type ConditionT = "good" | "fair" | "poor"
@@ -291,7 +292,7 @@ export const BuildingEnvelopeStep2Screen: FC<BuildingEnvelopeStep2ScreenProps> =
           onRightPress={openDrawer}
         />
       </View>
-      <ScrollView contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
+      <ScrollView ref={scrollViewRef} contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
         <View style={$introBlock}>
           <Text preset="subheading" text="Superstructure" style={themed($titleStyle)} />
           <ProgressBar current={2} total={10} />
@@ -301,6 +302,7 @@ export const BuildingEnvelopeStep2Screen: FC<BuildingEnvelopeStep2ScreenProps> =
           title="Walls (Lateral)"
           expanded={openKey === "wallsLateral"}
           onToggle={(n) => setOpenKey(n ? "wallsLateral" : null)}
+          scrollViewRef={scrollViewRef}
         >
           <View style={themed($sectionBody)}>
             <ChecklistField
@@ -357,6 +359,7 @@ export const BuildingEnvelopeStep2Screen: FC<BuildingEnvelopeStep2ScreenProps> =
           title="Ground Floor Decking"
           expanded={openKey === "groundFloor"}
           onToggle={(n) => setOpenKey(n ? "groundFloor" : null)}
+          scrollViewRef={scrollViewRef}
         >
           <View style={themed($sectionBody)}>
             <ChecklistField
@@ -402,6 +405,7 @@ export const BuildingEnvelopeStep2Screen: FC<BuildingEnvelopeStep2ScreenProps> =
           title="Upper Floor Decking"
           expanded={openKey === "upperFloor"}
           onToggle={(n) => setOpenKey(n ? "upperFloor" : null)}
+          scrollViewRef={scrollViewRef}
         >
           <View style={themed($sectionBody)}>
             <ChecklistField
@@ -447,6 +451,7 @@ export const BuildingEnvelopeStep2Screen: FC<BuildingEnvelopeStep2ScreenProps> =
           title="Mezzanine"
           expanded={openKey === "mezzanine"}
           onToggle={(n) => setOpenKey(n ? "mezzanine" : null)}
+          scrollViewRef={scrollViewRef}
         >
           <View style={themed($sectionBody)}>
             <ChecklistField
@@ -492,6 +497,7 @@ export const BuildingEnvelopeStep2Screen: FC<BuildingEnvelopeStep2ScreenProps> =
           title="Roof Framing"
           expanded={openKey === "roofFraming"}
           onToggle={(n) => setOpenKey(n ? "roofFraming" : null)}
+          scrollViewRef={scrollViewRef}
         >
           <View style={themed($sectionBody)}>
             <ChecklistField
@@ -554,6 +560,7 @@ export const BuildingEnvelopeStep2Screen: FC<BuildingEnvelopeStep2ScreenProps> =
           title="Sheathing"
           expanded={openKey === "sheathing"}
           onToggle={(n) => setOpenKey(n ? "sheathing" : null)}
+          scrollViewRef={scrollViewRef}
         >
           <View style={themed($sectionBody)}>
             <ChecklistField

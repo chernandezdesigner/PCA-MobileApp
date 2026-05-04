@@ -14,14 +14,40 @@ export const RootStoreProvider: FC<PropsWithChildren<{}>> = ({ children }) => {
   const [isHydrated, setIsHydrated] = useState(false)
 
   useEffect(() => {
-    // Safely hydrate — a corrupt or schema-mismatched snapshot should never crash cold start
+    // Safely hydrate — a corrupt or schema-mismatched snapshot should never crash cold start.
+    // Two-stage recovery:
+    //   Stage 1 — try with the full migrated snapshot (normal path)
+    //   Stage 2 — if Stage 1 throws (e.g. unknown MST field from an old app version),
+    //             drop the assessments map (the likely source of stale fields) and keep
+    //             other root-level state rather than wiping everything.
+    //   Stage 3 — if Stage 2 also throws, start completely fresh.
     try {
       const snapshot = storage.load<RootStoreSnapshot>(STORE_KEY)
       const migrated = migrateSnapshot(snapshot)
       storeRef.current = RootStore.create(migrated ?? {})
     } catch (e) {
-      if (__DEV__) console.warn("RootStore hydration failed, starting fresh:", e)
-      storeRef.current = RootStore.create({})
+      if (__DEV__) console.warn("RootStore hydration failed, attempting partial recovery:", e)
+      try {
+        const snapshot = storage.load<RootStoreSnapshot>(STORE_KEY)
+        const migrated = migrateSnapshot(snapshot)
+        // Attempt to recover without the assessments map — iterate assessments one-by-one
+        // and silently drop any whose shape is incompatible with the current model.
+        const safeAssessments: Record<string, any> = {}
+        const rawAssessments = (migrated as any)?.assessments ?? {}
+        for (const [id, data] of Object.entries(rawAssessments)) {
+          try {
+            // Dry-run: create a throw-away store with just this one assessment
+            RootStore.create({ assessments: { [id]: data as any } })
+            safeAssessments[id] = data
+          } catch {
+            if (__DEV__) console.warn(`Dropping corrupt assessment "${id}" from snapshot`)
+          }
+        }
+        storeRef.current = RootStore.create({ ...(migrated as any), assessments: safeAssessments })
+      } catch (e2) {
+        if (__DEV__) console.warn("RootStore partial recovery failed, starting fresh:", e2)
+        storeRef.current = RootStore.create({})
+      }
     }
 
     const saveThrottled = throttle((snap: RootStoreSnapshot) => storage.save(STORE_KEY, snap), 750, { leading: true, trailing: true })

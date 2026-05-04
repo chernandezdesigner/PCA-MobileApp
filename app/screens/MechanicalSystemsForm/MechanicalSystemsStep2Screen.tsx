@@ -1,4 +1,4 @@
-import { FC, useState } from "react"
+import { FC, useState, useRef } from "react"
 import { View, ViewStyle, ScrollView, TouchableOpacity, TextStyle } from "react-native"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import { Screen } from "@/components/Screen"
@@ -52,6 +52,7 @@ export const MechanicalSystemsStep2Screen: FC<MechanicalSystemsStep2ScreenProps>
 
   // Local accordion control: only one open at a time
   const [openKey, setOpenKey] = useState<string | null>(null)
+  const scrollViewRef = useRef<ScrollView>(null)
 
   const onNext = () => {
     // @ts-expect-error route params for animation
@@ -97,7 +98,7 @@ export const MechanicalSystemsStep2Screen: FC<MechanicalSystemsStep2ScreenProps>
         />
       </View>
       
-      <ScrollView contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
+      <ScrollView ref={scrollViewRef} contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
         <View style={$introBlock}>
           <Text preset="subheading" text="Misc Units" style={themed($titleStyle)} />
           <ProgressBar current={2} total={9} />
@@ -107,6 +108,7 @@ export const MechanicalSystemsStep2Screen: FC<MechanicalSystemsStep2ScreenProps>
         {/* UNIT HEATERS */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Unit Heaters"
           expanded={!store?.unitHeaters.NotApplicable && openKey === "unitHeaters"}
           onToggle={(n) => {
@@ -290,6 +292,7 @@ export const MechanicalSystemsStep2Screen: FC<MechanicalSystemsStep2ScreenProps>
         {/* AIR HANDLING UNITS */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Air Handling Units"
           expanded={!store?.airHandlingUnits.NotApplicable && openKey === "airHandlingUnits"}
           onToggle={(n) => {
@@ -469,6 +472,7 @@ export const MechanicalSystemsStep2Screen: FC<MechanicalSystemsStep2ScreenProps>
         {/* EXHAUST FANS */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Exhaust Fans"
           expanded={!store?.exhaustFans.NotApplicable && openKey === "exhaustFans"}
           onToggle={(n) => {

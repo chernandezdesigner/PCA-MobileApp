@@ -50,6 +50,7 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
     ? rootStore.assessments.get(rootStore.activeAssessmentId)
     : undefined
   const store = activeAssessment?.siteGrounds.step3
+  const scrollViewRef = useRef<ScrollView>(null)
 
   // local accordion control: only one open at a time, default all closed
   const [openKey, setOpenKey] = useState<string | null>(null)
@@ -358,13 +359,13 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
       <View style={$stickyHeader}>
         <HeaderBar title="Site & Grounds" leftIcon="back" onLeftPress={() => navigation.goBack()} rightIcon="menu" onRightPress={openDrawer} />
       </View>
-      <ScrollView contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
+      <ScrollView ref={scrollViewRef} contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
         <View style={themed($paddedBlock)}>
           <Text preset="subheading" text="Site Elements" style={themed($titleStyle)} />
           <ProgressBar current={3} total={4} />
         </View>
 
-        <SectionAccordion
+        <SectionAccordion scrollViewRef={scrollViewRef}
           title="Signage"
           expanded={!store?.signage.NotApplicable && openKey === "signage"}
           onToggle={(n) => {
@@ -428,7 +429,7 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
           )}
         </SectionAccordion>
 
-        <SectionAccordion
+        <SectionAccordion scrollViewRef={scrollViewRef}
           title="Lot Lighting"
           expanded={!store?.lotLighting.NotApplicable && openKey === "lotLighting"}
           onToggle={(n) => {
@@ -492,7 +493,7 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
           )}
         </SectionAccordion>
 
-        <SectionAccordion
+        <SectionAccordion scrollViewRef={scrollViewRef}
           title="Building Lighting"
           expanded={!store?.bldgLighting.NotApplicable && openKey === "bldgLighting"}
           onToggle={(n) => {
@@ -556,7 +557,7 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
           )}
         </SectionAccordion>
 
-        <SectionAccordion
+        <SectionAccordion scrollViewRef={scrollViewRef}
           title="Site Fencing"
           expanded={!store?.siteFencing.NotApplicable && openKey === "siteFencing"}
           onToggle={(n) => {
@@ -628,7 +629,7 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
           )}
         </SectionAccordion>
 
-        <SectionAccordion
+        <SectionAccordion scrollViewRef={scrollViewRef}
           title="Dumpster Enclosure"
           expanded={!store?.dumpster.NotApplicable && openKey === "dumpster"}
           onToggle={(n) => {
@@ -724,7 +725,7 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
           )}
         </SectionAccordion>
 
-        <SectionAccordion
+        <SectionAccordion scrollViewRef={scrollViewRef}
           title="Recreational Facilities"
           expanded={!store?.recreationalFacilities.NotApplicable && openKey === "recreationalFacilities"}
           onToggle={(n) => {
@@ -803,7 +804,7 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
           )}
         </SectionAccordion>
 
-        <SectionAccordion
+        <SectionAccordion scrollViewRef={scrollViewRef}
           title="Compactors"
           expanded={!store?.compactors.NotApplicable && openKey === "compactors"}
           onToggle={(n) => {
@@ -886,7 +887,7 @@ export const SiteGroundsStep3Screen: FC<SiteGroundsStep3ScreenProps> = observer(
           )}
         </SectionAccordion>
 
-        <SectionAccordion
+        <SectionAccordion scrollViewRef={scrollViewRef}
           title="Bridges"
           expanded={!store?.bridges.NotApplicable && openKey === "bridges"}
           onToggle={(n) => {

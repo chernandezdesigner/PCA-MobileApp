@@ -299,6 +299,12 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
             }).start()
             TextInputProps.onBlur?.(e)
           }}
+          onSubmitEditing={(e) => {
+            if (!TextInputProps.onSubmitEditing) {
+              input.current?.blur()
+            }
+            TextInputProps.onSubmitEditing?.(e)
+          }}
           style={themed([
             $inputStyles,
             Platform.OS === "web" && ({ outlineWidth: 0, outlineColor: "transparent", outlineStyle: "none" } as any),

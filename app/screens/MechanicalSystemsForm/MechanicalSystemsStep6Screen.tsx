@@ -1,4 +1,4 @@
-import { FC, useState } from "react"
+import { FC, useState, useRef } from "react"
 import { View, ViewStyle, ScrollView, TextStyle } from "react-native"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import { Screen } from "@/components/Screen"
@@ -43,6 +43,7 @@ export const MechanicalSystemsStep6Screen: FC<MechanicalSystemsStep6ScreenProps>
 
   // Local accordion control: only one open at a time
   const [openKey, setOpenKey] = useState<string | null>(null)
+  const scrollViewRef = useRef<ScrollView>(null)
 
   const onNext = () => {
     // @ts-expect-error route params for animation
@@ -83,7 +84,7 @@ export const MechanicalSystemsStep6Screen: FC<MechanicalSystemsStep6ScreenProps>
         />
       </View>
       
-      <ScrollView contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
+      <ScrollView ref={scrollViewRef} contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
         <View style={$introBlock}>
           <Text preset="subheading" text="Water Heaters" style={themed($titleStyle)} />
           <ProgressBar current={6} total={9} />
@@ -93,6 +94,7 @@ export const MechanicalSystemsStep6Screen: FC<MechanicalSystemsStep6ScreenProps>
         {/* COMMON AREA WATER HEATER */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Water Heater - Common Area"
           expanded={openKey === "commonAreaWaterHeater"}
           onToggle={(n) => setOpenKey(n ? "commonAreaWaterHeater" : null)}
@@ -194,6 +196,7 @@ export const MechanicalSystemsStep6Screen: FC<MechanicalSystemsStep6ScreenProps>
         {/* HEATED WATER PUMPS - COMMON AREA */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Heated Water Pumps - Common Area"
           expanded={openKey === "commonAreaHeatedWaterPumps"}
           onToggle={(n) => setOpenKey(n ? "commonAreaHeatedWaterPumps" : null)}
@@ -240,6 +243,7 @@ export const MechanicalSystemsStep6Screen: FC<MechanicalSystemsStep6ScreenProps>
         {/* WATER STORAGE TANKS - COMMON AREA */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Water Storage Tanks - Common Area"
           expanded={openKey === "commonAreaWaterStorageTanks"}
           onToggle={(n) => setOpenKey(n ? "commonAreaWaterStorageTanks" : null)}
@@ -310,6 +314,7 @@ export const MechanicalSystemsStep6Screen: FC<MechanicalSystemsStep6ScreenProps>
         {/* TENANT SPACES WATER HEATER */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Water Heater - Tenant Spaces"
           expanded={openKey === "tenantSpacesWaterHeater"}
           onToggle={(n) => setOpenKey(n ? "tenantSpacesWaterHeater" : null)}
@@ -411,6 +416,7 @@ export const MechanicalSystemsStep6Screen: FC<MechanicalSystemsStep6ScreenProps>
         {/* HEATED WATER PUMPS - TENANT SPACES */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Heated Water Pumps - Tenant Spaces"
           expanded={openKey === "tenantSpacesHeatedWaterPumps"}
           onToggle={(n) => setOpenKey(n ? "tenantSpacesHeatedWaterPumps" : null)}
@@ -457,6 +463,7 @@ export const MechanicalSystemsStep6Screen: FC<MechanicalSystemsStep6ScreenProps>
         {/* WATER STORAGE TANKS - TENANT SPACES */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Water Storage Tanks - Tenant Spaces"
           expanded={openKey === "tenantSpacesWaterStorageTanks"}
           onToggle={(n) => setOpenKey(n ? "tenantSpacesWaterStorageTanks" : null)}

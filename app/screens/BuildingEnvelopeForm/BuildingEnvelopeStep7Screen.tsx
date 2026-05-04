@@ -1,4 +1,4 @@
-import { FC, useState } from "react"
+import { FC, useRef, useState } from "react"
 import { View, ViewStyle, TextStyle, ScrollView, TouchableOpacity } from "react-native"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import { Screen } from "@/components/Screen"
@@ -49,6 +49,7 @@ export const BuildingEnvelopeStep7Screen: FC<BuildingEnvelopeStep7ScreenProps> =
 
   // Local accordion control: only one open at a time
   const [openKey, setOpenKey] = useState<string | null>(null)
+  const scrollViewRef = useRef<ScrollView>(null)
 
   // Stairs Exterior data
   const stairsExteriorData = store?.stairsExterior.materials ?? []
@@ -191,7 +192,7 @@ export const BuildingEnvelopeStep7Screen: FC<BuildingEnvelopeStep7ScreenProps> =
           onRightPress={openDrawer}
         />
       </View>
-      <ScrollView contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
+      <ScrollView ref={scrollViewRef} contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
         <View style={$introBlock}>
           <Text preset="subheading" text="Building Stairs, Balconies, Patios" style={themed($titleStyle)} />
           <ProgressBar current={7} total={10} />
@@ -199,6 +200,7 @@ export const BuildingEnvelopeStep7Screen: FC<BuildingEnvelopeStep7ScreenProps> =
 
         {/* Stairs Exterior */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Stairs (Exterior)"
           expanded={!store?.stairsExterior.NotApplicable && openKey === "stairsExterior"}
           onToggle={(n) => {
@@ -307,6 +309,7 @@ export const BuildingEnvelopeStep7Screen: FC<BuildingEnvelopeStep7ScreenProps> =
 
         {/* Stairs Interior */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Stairs (Interior)"
           expanded={!store?.stairsInterior.NotApplicable && openKey === "stairsInterior"}
           onToggle={(n) => {
@@ -415,6 +418,7 @@ export const BuildingEnvelopeStep7Screen: FC<BuildingEnvelopeStep7ScreenProps> =
 
         {/* Balconies - Dynamic Materials */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Balconies"
           expanded={!store?.balconies.NotApplicable && openKey === "balconies"}
           onToggle={(n) => {
@@ -554,6 +558,7 @@ export const BuildingEnvelopeStep7Screen: FC<BuildingEnvelopeStep7ScreenProps> =
 
         {/* Patios/Plaza - Dynamic Materials */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Patios/Plaza"
           expanded={!store?.patiosPlaza.NotApplicable && openKey === "patiosPlaza"}
           onToggle={(n) => {

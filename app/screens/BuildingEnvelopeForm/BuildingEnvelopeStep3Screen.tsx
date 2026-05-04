@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useRef, useState } from "react"
+import { FC, RefObject, useEffect, useMemo, useRef, useState } from "react"
 import { View, ViewStyle, ScrollView, TouchableOpacity } from "react-native"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import { Screen } from "@/components/Screen"
@@ -57,7 +57,8 @@ export const BuildingEnvelopeStep3Screen: FC<BuildingEnvelopeStep3ScreenProps> =
 
   // Local accordion control: only one open at a time
   const [openKey, setOpenKey] = useState<string | null>(null)
-  
+  const scrollViewRef = useRef<ScrollView>(null)
+
   // Show/hide secondary roofing
   const [showSecondaryRoof, setShowSecondaryRoof] = useState(
     secondaryStore && !secondaryStore.stepNotApplicable && 
@@ -112,7 +113,7 @@ export const BuildingEnvelopeStep3Screen: FC<BuildingEnvelopeStep3ScreenProps> =
           onRightPress={openDrawer}
         />
       </View>
-      <ScrollView contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
+      <ScrollView ref={scrollViewRef} contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
         <View style={$introBlock}>
           <Text preset="subheading" text="Primary Roofing" style={themed($titleStyle)} />
           <ProgressBar current={3} total={10} />
@@ -175,6 +176,7 @@ export const BuildingEnvelopeStep3Screen: FC<BuildingEnvelopeStep3ScreenProps> =
           setOpenKey={setOpenKey}
           prefix="primary"
           themed={themed}
+          scrollViewRef={scrollViewRef}
         />
 
         {/* Comments for Primary Roof */}
@@ -273,6 +275,7 @@ export const BuildingEnvelopeStep3Screen: FC<BuildingEnvelopeStep3ScreenProps> =
               setOpenKey={setOpenKey}
               prefix="secondary"
               themed={themed}
+              scrollViewRef={scrollViewRef}
             />
 
             {/* Comments for Secondary Roof */}
@@ -310,7 +313,8 @@ const RoofAccordions: FC<{
   setOpenKey: (key: string | null) => void
   prefix: string
   themed: any
-}> = observer(({ store, openKey, setOpenKey, prefix, themed }) => {
+  scrollViewRef: RefObject<ScrollView>
+}> = observer(({ store, openKey, setOpenKey, prefix, themed, scrollViewRef }) => {
   // Material accordion
   const materialData = store?.material.materials ?? []
   const materialItems: ChecklistItem[] = ROOFING_MATERIAL_OPTIONS.map((opt) => ({
@@ -429,6 +433,7 @@ const RoofAccordions: FC<{
         title="Material"
         expanded={openKey === `${prefix}-material`}
         onToggle={(n) => setOpenKey(n ? `${prefix}-material` : null)}
+        scrollViewRef={scrollViewRef}
       >
         <View style={themed($sectionBody)}>
           <ChecklistField label="Materials" items={materialItems} onToggle={toggleMaterial} />
@@ -463,6 +468,7 @@ const RoofAccordions: FC<{
         title="Shingles"
         expanded={openKey === `${prefix}-shingles`}
         onToggle={(n) => setOpenKey(n ? `${prefix}-shingles` : null)}
+        scrollViewRef={scrollViewRef}
       >
         <View style={themed($sectionBody)}>
           <ChecklistField label="Shingle Types" items={shinglesItems} onToggle={toggleShingles} />
@@ -528,6 +534,7 @@ const RoofAccordions: FC<{
             />
           </TouchableOpacity>
         }
+        scrollViewRef={scrollViewRef}
       >
         {!store?.secondaryRoof.NotApplicable && (
           <View style={themed($sectionBody)}>
@@ -584,6 +591,7 @@ const RoofAccordions: FC<{
             />
           </TouchableOpacity>
         }
+        scrollViewRef={scrollViewRef}
       >
         {!store?.parapets.NotApplicable && (
           <View style={themed($sectionBody)}>
@@ -619,6 +627,7 @@ const RoofAccordions: FC<{
         title="Roof Leaks"
         expanded={openKey === `${prefix}-roofLeaks`}
         onToggle={(n) => setOpenKey(n ? `${prefix}-roofLeaks` : null)}
+        scrollViewRef={scrollViewRef}
       >
         <View style={themed($sectionBody)}>
           <TextField
@@ -652,6 +661,7 @@ const RoofAccordions: FC<{
         title="Flashing"
         expanded={openKey === `${prefix}-flashing`}
         onToggle={(n) => setOpenKey(n ? `${prefix}-flashing` : null)}
+        scrollViewRef={scrollViewRef}
       >
         <View style={themed($sectionBody)}>
           <ChecklistField label="Flashing Types" items={flashingItems} onToggle={toggleFlashing} />
@@ -686,6 +696,7 @@ const RoofAccordions: FC<{
         title="Curb Mounted"
         expanded={openKey === `${prefix}-curbMounted`}
         onToggle={(n) => setOpenKey(n ? `${prefix}-curbMounted` : null)}
+        scrollViewRef={scrollViewRef}
       >
         <View style={themed($sectionBody)}>
           <ChecklistField label="Curb Mounted Features" items={curbMountedItems} onToggle={toggleCurbMounted} />
@@ -720,6 +731,7 @@ const RoofAccordions: FC<{
         title="Roof Structures"
         expanded={openKey === `${prefix}-roofStructures`}
         onToggle={(n) => setOpenKey(n ? `${prefix}-roofStructures` : null)}
+        scrollViewRef={scrollViewRef}
       >
         <View style={themed($sectionBody)}>
           <ChecklistField label="Structure Types" items={roofStructuresItems} onToggle={toggleRoofStructures} />
@@ -785,6 +797,7 @@ const RoofAccordions: FC<{
             />
           </TouchableOpacity>
         }
+        scrollViewRef={scrollViewRef}
       >
         {!store?.mechScreen.NotApplicable && (
           <View style={themed($sectionBody)}>
@@ -819,6 +832,7 @@ const RoofAccordions: FC<{
         title="Drainage"
         expanded={openKey === `${prefix}-drainage`}
         onToggle={(n) => setOpenKey(n ? `${prefix}-drainage` : null)}
+        scrollViewRef={scrollViewRef}
       >
         <View style={themed($sectionBody)}>
           <ChecklistField label="Drainage Types" items={drainageItems} onToggle={toggleDrainage} />
@@ -853,6 +867,7 @@ const RoofAccordions: FC<{
         title="Insulation"
         expanded={openKey === `${prefix}-insulation`}
         onToggle={(n) => setOpenKey(n ? `${prefix}-insulation` : null)}
+        scrollViewRef={scrollViewRef}
       >
         <View style={themed($sectionBody)}>
           <ChecklistField label="Insulation Types" items={insulationItems} onToggle={toggleInsulation} />

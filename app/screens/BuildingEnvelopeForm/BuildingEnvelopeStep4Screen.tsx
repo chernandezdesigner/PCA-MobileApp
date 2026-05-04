@@ -1,4 +1,4 @@
-import { FC, useState } from "react"
+import { FC, useRef, useState } from "react"
 import { View, ViewStyle, ScrollView, TouchableOpacity } from "react-native"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import { Screen } from "@/components/Screen"
@@ -50,6 +50,7 @@ export const BuildingEnvelopeStep4Screen: FC<BuildingEnvelopeStep4ScreenProps> =
 
   // Local accordion control: only one open at a time
   const [openKey, setOpenKey] = useState<string | null>(null)
+  const scrollViewRef = useRef<ScrollView>(null)
 
   // Transform data for checklist fields
   const materialData: string[] = store?.material.materials.slice() ?? []
@@ -158,7 +159,7 @@ export const BuildingEnvelopeStep4Screen: FC<BuildingEnvelopeStep4ScreenProps> =
           onRightPress={openDrawer}
         />
       </View>
-      <ScrollView contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
+      <ScrollView ref={scrollViewRef} contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
         <View style={$introBlock}>
           <Text preset="subheading" text="Exterior Walls" style={themed($titleStyle)} />
           <ProgressBar current={4} total={10} />
@@ -181,6 +182,7 @@ export const BuildingEnvelopeStep4Screen: FC<BuildingEnvelopeStep4ScreenProps> =
         </View>
 
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Material"
           expanded={openKey === "material"}
           onToggle={(n) => setOpenKey(n ? "material" : null)}
@@ -226,6 +228,7 @@ export const BuildingEnvelopeStep4Screen: FC<BuildingEnvelopeStep4ScreenProps> =
         </SectionAccordion>
 
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Siding"
           expanded={openKey === "siding"}
           onToggle={(n) => setOpenKey(n ? "siding" : null)}
@@ -260,6 +263,7 @@ export const BuildingEnvelopeStep4Screen: FC<BuildingEnvelopeStep4ScreenProps> =
         </SectionAccordion>
 
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Soffit"
           expanded={openKey === "soffit"}
           onToggle={(n) => setOpenKey(n ? "soffit" : null)}
@@ -305,6 +309,7 @@ export const BuildingEnvelopeStep4Screen: FC<BuildingEnvelopeStep4ScreenProps> =
         </SectionAccordion>
 
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Sealant"
           expanded={!store?.sealant.NotApplicable && openKey === "sealant"}
           onToggle={(n) => {
@@ -361,6 +366,7 @@ export const BuildingEnvelopeStep4Screen: FC<BuildingEnvelopeStep4ScreenProps> =
         </SectionAccordion>
 
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Curtain Wall"
           expanded={!store?.curtainWall.NotApplicable && openKey === "curtainWall"}
           onToggle={(n) => {
@@ -421,6 +427,7 @@ export const BuildingEnvelopeStep4Screen: FC<BuildingEnvelopeStep4ScreenProps> =
         </SectionAccordion>
 
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Facade Ordinance"
           expanded={!store?.facadeOrdinance.NotApplicable && openKey === "facadeOrdinance"}
           onToggle={(n) => {

@@ -1,4 +1,4 @@
-import { FC, useState } from "react"
+import { FC, useState, useRef } from "react"
 import { View, ViewStyle, ScrollView, TouchableOpacity, TextStyle } from "react-native"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import { Screen } from "@/components/Screen"
@@ -49,7 +49,8 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
 
   // Local accordion control: only one open at a time
   const [openKey, setOpenKey] = useState<string | null>(null)
-  
+  const scrollViewRef = useRef<ScrollView>(null)
+
   // Local state for mounting location selection
   const [packagedUnitsLocation, setPackagedUnitsLocation] = useState<"gradeMountedRooftop" | "rooftop">("gradeMountedRooftop")
   const [condenserLocation, setCondenserLocation] = useState<"padMountedRooftop" | "rooftop">("padMountedRooftop")
@@ -95,7 +96,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
         />
       </View>
       
-      <ScrollView contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
+      <ScrollView ref={scrollViewRef} contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
         <View style={$introBlock}>
           <Text preset="subheading" text="HVAC Individual Units" style={themed($titleStyle)} />
           <ProgressBar current={1} total={9} />
@@ -105,6 +106,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
         {/* PACKAGED UNITS */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Packaged Units"
           expanded={!store?.packagedUnits.NotApplicable && openKey === "packagedUnits"}
           onToggle={(n) => {
@@ -289,6 +291,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
         {/* SPLIT SYSTEM - CONDENSER COOLING */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Split System - Condenser Cooling"
           expanded={!store?.splitSystemCondenser.NotApplicable && openKey === "splitSystemCondenser"}
           onToggle={(n) => {
@@ -465,6 +468,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
         {/* FURNACES */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Furnaces"
           expanded={!store?.furnace.NotApplicable && openKey === "furnace"}
           onToggle={(n) => {
@@ -548,6 +552,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
         {/* SPLIT SYSTEM - HEAT PUMP */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Split System - Heat Pump"
           expanded={!store?.splitSystemHeatPump.NotApplicable && openKey === "splitSystemHeatPump"}
           onToggle={(n) => {
@@ -732,6 +737,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
         {/* AIR HANDLER (CFM System) */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Air Handler"
           expanded={!store?.airHandler.NotApplicable && openKey === "airHandler"}
           onToggle={(n) => {
@@ -861,6 +867,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
         {/* PTACS (OWNER) */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="PTACs (Owner)"
           expanded={!store?.ownerPTACs.NotApplicable && openKey === "ownerPTACs"}
           onToggle={(n) => {
@@ -990,6 +997,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
         {/* PTACS (TENANT) */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="PTACs (Tenant)"
           expanded={!store?.tenantPTACs.NotApplicable && openKey === "tenantPTACs"}
           onToggle={(n) => {
@@ -1119,6 +1127,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
         {/* WINDOW UNITS (OWNER) */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Window Units (Owner)"
           expanded={!store?.windowUnitsOwner.NotApplicable && openKey === "windowUnitsOwner"}
           onToggle={(n) => {
@@ -1248,6 +1257,7 @@ export const MechanicalSystemsStep1Screen: FC<MechanicalSystemsStep1ScreenProps>
         {/* WINDOW UNITS (TENANT) */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Window Units (Tenant)"
           expanded={!store?.windowUnitsTenant.NotApplicable && openKey === "windowUnitsTenant"}
           onToggle={(n) => {

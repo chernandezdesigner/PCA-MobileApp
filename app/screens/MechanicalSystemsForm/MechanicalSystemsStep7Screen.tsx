@@ -1,4 +1,4 @@
-import { FC, useState, useMemo } from "react"
+import { FC, useState, useMemo, useRef } from "react"
 import { View, ViewStyle, ScrollView, TextStyle, TouchableOpacity } from "react-native"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import { Screen } from "@/components/Screen"
@@ -44,6 +44,7 @@ export const MechanicalSystemsStep7Screen: FC<MechanicalSystemsStep7ScreenProps>
 
   // Local accordion control: only one open at a time
   const [openKey, setOpenKey] = useState<string | null>(null)
+  const scrollViewRef = useRef<ScrollView>(null)
 
   // Options for checkboxes
   const voltageItems = useMemo(
@@ -85,7 +86,7 @@ export const MechanicalSystemsStep7Screen: FC<MechanicalSystemsStep7ScreenProps>
         />
       </View>
 
-      <ScrollView contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
+      <ScrollView ref={scrollViewRef} contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
         <View style={$introBlock}>
           <Text preset="subheading" text="Electrical" style={themed($titleStyle)} />
           <ProgressBar current={7} total={9} />
@@ -95,6 +96,7 @@ export const MechanicalSystemsStep7Screen: FC<MechanicalSystemsStep7ScreenProps>
         {/* TRANSFORMERS */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Transformers"
           expanded={openKey === "transformers"}
           onToggle={(n) => setOpenKey(n ? "transformers" : null)}
@@ -206,6 +208,7 @@ export const MechanicalSystemsStep7Screen: FC<MechanicalSystemsStep7ScreenProps>
         {/* MAIN */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Main"
           expanded={openKey === "main"}
           onToggle={(n) => setOpenKey(n ? "main" : null)}
@@ -275,6 +278,7 @@ export const MechanicalSystemsStep7Screen: FC<MechanicalSystemsStep7ScreenProps>
         {/* TENANT/APT */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Tenant/Apt"
           expanded={openKey === "tenantApt"}
           onToggle={(n) => setOpenKey(n ? "tenantApt" : null)}
@@ -344,6 +348,7 @@ export const MechanicalSystemsStep7Screen: FC<MechanicalSystemsStep7ScreenProps>
         {/* EMERGENCY GENERATOR 1 */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Emergency Generator 1"
           expanded={openKey === "emergencyGenerator1"}
           onToggle={(n) => setOpenKey(n ? "emergencyGenerator1" : null)}
@@ -428,6 +433,7 @@ export const MechanicalSystemsStep7Screen: FC<MechanicalSystemsStep7ScreenProps>
         {/* TANK 1 */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Tank 1"
           expanded={openKey === "tank1"}
           onToggle={(n) => setOpenKey(n ? "tank1" : null)}
@@ -475,6 +481,7 @@ export const MechanicalSystemsStep7Screen: FC<MechanicalSystemsStep7ScreenProps>
         {/* EMERGENCY GENERATOR 2 */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Emergency Generator 2"
           expanded={openKey === "emergencyGenerator2"}
           onToggle={(n) => setOpenKey(n ? "emergencyGenerator2" : null)}
@@ -559,6 +566,7 @@ export const MechanicalSystemsStep7Screen: FC<MechanicalSystemsStep7ScreenProps>
         {/* TANK 2 */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Tank 2"
           expanded={openKey === "tank2"}
           onToggle={(n) => setOpenKey(n ? "tank2" : null)}

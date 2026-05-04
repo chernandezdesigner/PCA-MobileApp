@@ -1,4 +1,4 @@
-import { FC, useState } from "react"
+import { FC, useRef, useState } from "react"
 import { View, ViewStyle, ScrollView, TouchableOpacity, TextStyle } from "react-native"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
@@ -54,6 +54,7 @@ export const InteriorConditionsStep2Screen: FC = observer(() => {
   const store = rootStore.activeAssessmentId
     ? rootStore.assessments.get(rootStore.activeAssessmentId)?.interiorConditions?.step2
     : undefined
+  const scrollViewRef = useRef<ScrollView>(null)
 
   const [openKey, setOpenKey] = useState<string | null>(null)
 
@@ -202,7 +203,7 @@ export const InteriorConditionsStep2Screen: FC = observer(() => {
         />
       </View>
 
-      <ScrollView contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
+      <ScrollView ref={scrollViewRef} contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
         <View style={$introBlock}>
           <Text preset="subheading" text="Common Area Finishes" style={themed($titleStyle)} />
           <ProgressBar current={2} total={4} />
@@ -262,7 +263,7 @@ export const InteriorConditionsStep2Screen: FC = observer(() => {
             {/* ============================================ */}
             {/* LOBBY / OFFICE / MISC FINISHES */}
             {/* ============================================ */}
-            <SectionAccordion
+            <SectionAccordion scrollViewRef={scrollViewRef}
               title="Lobby / Office / Misc Finishes"
               expanded={!store?.lobbyOfficeFinishes.NotApplicable && openKey === "lobbyOfficeFinishes"}
               onToggle={(n) => {
@@ -360,7 +361,7 @@ export const InteriorConditionsStep2Screen: FC = observer(() => {
             {/* ============================================ */}
             {/* BACK OF HOUSE / CORRIDOR / MECHANICAL ROOMS */}
             {/* ============================================ */}
-            <SectionAccordion
+            <SectionAccordion scrollViewRef={scrollViewRef}
               title="Back of House / Corridor / Mechanical Rooms"
               expanded={!store?.backOfHouseFinishes.NotApplicable && openKey === "backOfHouseFinishes"}
               onToggle={(n) => {
@@ -458,7 +459,7 @@ export const InteriorConditionsStep2Screen: FC = observer(() => {
             {/* ============================================ */}
             {/* COMMON AREA RESTROOMS */}
             {/* ============================================ */}
-            <SectionAccordion
+            <SectionAccordion scrollViewRef={scrollViewRef}
               title="Common Area Restrooms"
               expanded={!store?.commonAreaRestrooms.NotApplicable && openKey === "commonAreaRestrooms"}
               onToggle={(n) => {
@@ -563,7 +564,7 @@ export const InteriorConditionsStep2Screen: FC = observer(() => {
             {/* ============================================ */}
             {/* FURNITURE, FIXTURES & EQUIPMENT */}
             {/* ============================================ */}
-            <SectionAccordion
+            <SectionAccordion scrollViewRef={scrollViewRef}
               title="Furniture, Fixtures & Equipment"
               expanded={!store?.furnitureFixturesEquipment.NotApplicable && openKey === "furnitureFixturesEquipment"}
               onToggle={(n) => {
@@ -637,7 +638,7 @@ export const InteriorConditionsStep2Screen: FC = observer(() => {
             {/* ============================================ */}
             {/* EXERCISE ROOM */}
             {/* ============================================ */}
-            <SectionAccordion
+            <SectionAccordion scrollViewRef={scrollViewRef}
               title="Exercise Room"
               expanded={!store?.exerciseRoom.NotApplicable && openKey === "exerciseRoom"}
               onToggle={(n) => {
@@ -735,7 +736,7 @@ export const InteriorConditionsStep2Screen: FC = observer(() => {
             {/* ============================================ */}
             {/* COMMON KITCHEN */}
             {/* ============================================ */}
-            <SectionAccordion
+            <SectionAccordion scrollViewRef={scrollViewRef}
               title="Common Kitchen"
               expanded={!store?.commonKitchen.NotApplicable && openKey === "commonKitchen"}
               onToggle={(n) => {

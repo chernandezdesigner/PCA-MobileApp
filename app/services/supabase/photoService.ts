@@ -86,14 +86,35 @@ export class PhotoService {
 
     for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
       try {
-        // Fetch the compressed file as a native Blob — data stays in native layer,
-        // never copied into the JS heap as a string (critical for 20-60 photo batches).
-        const response = await fetch(compressed.uri)
-        const blob = await response.blob()
+        // Attempt 1: fetch(file://) → Blob.  This is memory-efficient because the data
+        // stays in the native layer.  However, on some device/OS combinations the native
+        // fetch handler returns a zero-byte Blob for file:// URIs without throwing, so
+        // we validate the size and fall back to a direct FileSystem read when needed.
+        let uploadData: Blob | Uint8Array
+        try {
+          const response = await fetch(compressed.uri)
+          const blob = await response.blob()
+          if (blob.size > 0) {
+            uploadData = blob
+          } else {
+            throw new Error("empty blob")
+          }
+        } catch (_fetchErr) {
+          // Fallback: read the file as base64 and decode into a Uint8Array.
+          // This is slightly more memory-intensive but works across all platforms.
+          const pathStr = compressed.uri.replace(/^file:\/\//, "")
+          const b64 = await FileSystem.readFile(pathStr, "base64")
+          const binaryStr = atob(b64)
+          const bytes = new Uint8Array(binaryStr.length)
+          for (let i = 0; i < binaryStr.length; i++) {
+            bytes[i] = binaryStr.charCodeAt(i)
+          }
+          uploadData = bytes
+        }
 
         const { error: uploadError } = await supabase.storage
           .from("assessment-photos")
-          .upload(storagePath, blob, {
+          .upload(storagePath, uploadData, {
             contentType: "image/jpeg",
             upsert: true,
           })

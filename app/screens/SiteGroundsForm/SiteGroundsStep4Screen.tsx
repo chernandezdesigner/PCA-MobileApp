@@ -40,6 +40,7 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
     ? rootStore.assessments.get(rootStore.activeAssessmentId)
     : undefined
   const store = activeAssessment?.siteGrounds.step4
+  const scrollViewRef = useRef<ScrollView>(null)
 
   // local accordion control: only one open at a time, default all closed
   const [openKey, setOpenKey] = useState<string | null>(null)
@@ -349,14 +350,14 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
       <View style={$stickyHeader}>
         <HeaderBar title="Site & Grounds" leftIcon="back" onLeftPress={() => navigation.goBack()} rightIcon="menu" onRightPress={openDrawer} />
       </View>
-      <ScrollView contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
+      <ScrollView ref={scrollViewRef} contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
         <View style={themed($paddedBlock)}>
           <Text preset="subheading" text="Miscellaneous Structures" style={themed($titleStyle)} />
           <ProgressBar current={4} total={4} />
         </View>
 
         {/* Carports */}
-        <SectionAccordion
+        <SectionAccordion scrollViewRef={scrollViewRef}
           title="Carports"
           expanded={!store?.carports.NotApplicable && openKey === "carports"}
           onToggle={(n) => {
@@ -426,7 +427,7 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         </SectionAccordion>
 
         {/* Maintenance Building */}
-        <SectionAccordion
+        <SectionAccordion scrollViewRef={scrollViewRef}
           title="Maintenance Building"
           expanded={!store?.maintenanceBldg.NotApplicable && openKey === "maintenanceBldg"}
           onToggle={(n) => {
@@ -496,7 +497,7 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         </SectionAccordion>
 
         {/* Fire Pump Building */}
-        <SectionAccordion
+        <SectionAccordion scrollViewRef={scrollViewRef}
           title="Fire Pump Building"
           expanded={!store?.firePumpBldg.NotApplicable && openKey === "firePumpBldg"}
           onToggle={(n) => {
@@ -566,7 +567,7 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         </SectionAccordion>
 
         {/* Residential Garages */}
-        <SectionAccordion
+        <SectionAccordion scrollViewRef={scrollViewRef}
           title="Residential Garages"
           expanded={!store?.residentialGarages.NotApplicable && openKey === "residentialGarages"}
           onToggle={(n) => {
@@ -636,7 +637,7 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         </SectionAccordion>
 
         {/* Gazebo/Pavilion */}
-        <SectionAccordion
+        <SectionAccordion scrollViewRef={scrollViewRef}
           title="Gazebo/Pavilion"
           expanded={!store?.gazeboPavilion.NotApplicable && openKey === "gazeboPavilion"}
           onToggle={(n) => {
@@ -706,7 +707,7 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         </SectionAccordion>
 
         {/* Greenhouses */}
-        <SectionAccordion
+        <SectionAccordion scrollViewRef={scrollViewRef}
           title="Greenhouses"
           expanded={!store?.greenhouses.NotApplicable && openKey === "greenhouses"}
           onToggle={(n) => {
@@ -776,7 +777,7 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         </SectionAccordion>
 
         {/* Laundry Building */}
-        <SectionAccordion
+        <SectionAccordion scrollViewRef={scrollViewRef}
           title="Laundry Building"
           expanded={!store?.laundryBldg.NotApplicable && openKey === "laundryBldg"}
           onToggle={(n) => {
@@ -846,7 +847,7 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         </SectionAccordion>
 
         {/* Well Pump House */}
-        <SectionAccordion
+        <SectionAccordion scrollViewRef={scrollViewRef}
           title="Well Pump House"
           expanded={!store?.wellPumpHouse.NotApplicable && openKey === "wellPumpHouse"}
           onToggle={(n) => {
@@ -916,7 +917,7 @@ export const SiteGroundsStep4Screen: FC<SiteGroundsStep4ScreenProps> = observer(
         </SectionAccordion>
 
         {/* Sewer Pump House */}
-        <SectionAccordion
+        <SectionAccordion scrollViewRef={scrollViewRef}
           title="Sewer Pump House"
           expanded={!store?.sewerPumpHouse.NotApplicable && openKey === "sewerPumpHouse"}
           onToggle={(n) => {

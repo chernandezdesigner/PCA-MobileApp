@@ -273,12 +273,14 @@ export const SideDrawer = (props: SideDrawerProps) => {
         assessment.markAsSubmitted()
         const failedCount = result.failedPhotoCount ?? 0
         if (failedCount > 0) {
-          window.alert(`Assessment submitted. ${failedCount} photo(s) failed to upload and will need to be re-synced.`)
+          window.alert(`Assessment submitted! ${failedCount} photo(s) couldn't upload. Open this menu and tap Submit again to retry the photos.`)
         } else {
-          window.alert('Success! Assessment submitted successfully.')
+          window.alert('Assessment submitted successfully!')
         }
+      } else if (result.error === 'OFFLINE') {
+        window.alert('No internet connection. Your assessment is saved locally — reconnect and tap Submit again.')
       } else {
-        window.alert(`Error: ${result.error || 'Failed to submit assessment'}`)
+        window.alert(`Submit failed: ${result.error || 'Unknown error'}`)
       }
     } else {
       // Native platform - use Alert.alert
@@ -301,12 +303,20 @@ export const SideDrawer = (props: SideDrawerProps) => {
                 assessment.markAsSubmitted()
                 const failedCount = result.failedPhotoCount ?? 0
                 if (failedCount > 0) {
-                  Alert.alert('Submitted', `Assessment submitted. ${failedCount} photo(s) failed to upload and will need to be re-synced.`)
+                  Alert.alert(
+                    'Submitted',
+                    `Assessment submitted! ${failedCount} photo(s) couldn't upload. Open this menu and tap Submit again to retry the photos.`
+                  )
                 } else {
-                  Alert.alert('Success!', 'Assessment submitted successfully.')
+                  Alert.alert('Submitted', 'Assessment submitted successfully.')
                 }
+              } else if (result.error === 'OFFLINE') {
+                Alert.alert(
+                  'No Internet Connection',
+                  'Your assessment is saved locally. Reconnect and tap Submit again to send it.'
+                )
               } else {
-                Alert.alert('Error', result.error || 'Failed to submit assessment')
+                Alert.alert('Submit Failed', result.error || 'Something went wrong. Please try again.')
               }
             },
           },

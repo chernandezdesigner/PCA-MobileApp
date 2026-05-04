@@ -42,6 +42,7 @@ export const BuildingEnvelopeStep1Screen: FC<BuildingEnvelopeStep1ScreenProps> =
 
   // Local accordion control: only one open at a time
   const [openKey, setOpenKey] = useState<string | null>(null)
+  const scrollViewRef = useRef<ScrollView>(null)
 
   // Form types
   type ConditionT = "good" | "fair" | "poor"
@@ -184,7 +185,7 @@ export const BuildingEnvelopeStep1Screen: FC<BuildingEnvelopeStep1ScreenProps> =
           onRightPress={openDrawer}
         />
       </View>
-      <ScrollView contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
+      <ScrollView ref={scrollViewRef} contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
         <View style={$introBlock}>
           <Text preset="subheading" text="Foundation & Substructure" style={themed($titleStyle)} />
           <ProgressBar current={1} total={10} />
@@ -194,6 +195,7 @@ export const BuildingEnvelopeStep1Screen: FC<BuildingEnvelopeStep1ScreenProps> =
           title="Foundation/Substructure"
           expanded={openKey === "foundation"}
           onToggle={(n) => setOpenKey(n ? "foundation" : null)}
+          scrollViewRef={scrollViewRef}
         >
           <View style={themed($sectionBody)}>
             <ChecklistField
@@ -239,6 +241,7 @@ export const BuildingEnvelopeStep1Screen: FC<BuildingEnvelopeStep1ScreenProps> =
           title="Basement"
           expanded={openKey === "basement"}
           onToggle={(n) => setOpenKey(n ? "basement" : null)}
+          scrollViewRef={scrollViewRef}
         >
           <View style={themed($sectionBody)}>
             <ChecklistField

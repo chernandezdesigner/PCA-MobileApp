@@ -18,11 +18,15 @@ export class AssessmentService {
     failedPhotoCount?: number
   }> {
     try {
-      // Get current user
-      const { data: { user }, error: userError } = await supabase.auth.getUser()
-      if (userError || !user) {
+      // Use getSession() instead of getUser() — getSession reads from local AsyncStorage
+      // cache and does NOT require a network request, making it safe for offline use.
+      // getUser() hits the Auth server every time and throws "Not authenticated" in
+      // airplane mode even though the user is legitimately signed in.
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+      if (sessionError || !session?.user) {
         throw new Error('Not authenticated')
       }
+      const user = session.user
 
       // Get assessment snapshot
       const snapshot = getSnapshot(assessment)
@@ -254,9 +258,21 @@ export class AssessmentService {
       }
 
     } catch (error: any) {
+      // Classify network / connectivity failures so the UI can show a human-friendly
+      // message instead of raw fetch/auth error strings.
+      const msg: string = error.message || ''
+      const isOffline =
+        msg === 'Not authenticated' ||
+        msg.toLowerCase().includes('network request failed') ||
+        msg.toLowerCase().includes('fetch failed') ||
+        msg.toLowerCase().includes('failed to fetch') ||
+        msg.toLowerCase().includes('network error')
+
       return {
         success: false,
-        error: error.message || 'Failed to submit assessment',
+        error: isOffline
+          ? 'OFFLINE'
+          : msg || 'Failed to submit assessment',
       }
     }
   }

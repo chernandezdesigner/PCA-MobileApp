@@ -241,7 +241,7 @@ export function Dropdown(props: DropdownProps) {
           style={themed($valueStyles)}
         />
 
-        <Animated.View style={caretAnimatedStyle}>
+        <Animated.View style={[caretAnimatedStyle, $caretGap]}>
           <Icon
             icon="caretRight"
             size={20}
@@ -353,8 +353,10 @@ const $leftAccessoryStyle: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   alignItems: "center",
 })
 
-const $caretStyle: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  marginEnd: spacing.sm,
+const $caretGap: ViewStyle = { marginEnd: 12 }
+
+const $caretStyle: ThemedStyle<ViewStyle> = () => ({
+  width: 24,
   height: 40,
   justifyContent: "center",
   alignItems: "center",

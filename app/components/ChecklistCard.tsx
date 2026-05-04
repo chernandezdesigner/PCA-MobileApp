@@ -79,7 +79,7 @@ export const ChecklistCard: FC<Props> = (props) => {
                               name="chatbubble-outline"
                               size={18}
                               color={expanded[item.id] ? theme.colors.tint : theme.colors.textDim}
-                              style={style}
+                              style={[style, { marginEnd: 0 }]}
                             />
                           )}
                           accessibilityLabel="Toggle comment"

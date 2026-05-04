@@ -1,10 +1,12 @@
-import { FC, useState, useMemo } from "react"
+import { FC, useState, useMemo, useRef } from "react"
 import { View, ViewStyle, ScrollView, TextStyle, TouchableOpacity } from "react-native"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
 import { TextField } from "@/components/TextField"
 import { Button } from "@/components/Button"
+import { AnimatedPressable } from "@/components/AnimatedPressable"
+import { Icon } from "@/components/Icon"
 import { Card } from "@/components/Card"
 import { Dropdown } from "@/components/Dropdown"
 import { ConditionAssessment } from "@/components/ConditionAssessment"
@@ -20,7 +22,7 @@ import { observer } from "mobx-react-lite"
 import { useNavigation } from "@react-navigation/native"
 import { useDrawerControl } from "@/context/DrawerContext"
 import { useAppTheme } from "@/theme/context"
-import { $formScreen, $stickyHeader, $stickyFooter } from "@/theme/styles"
+import { $formScreen, $stickyHeader, $stickyFooter, radii } from "@/theme/styles"
 import { useResponsiveLayout } from "@/hooks/useResponsiveLayout"
 import type { ThemedStyle } from "@/theme/types"
 import type { MechanicalSystemsFormNavigatorParamList } from "@/navigators/MechanicalSystemsFormNavigator"
@@ -38,7 +40,7 @@ interface MechanicalSystemsStep8ScreenProps
   extends NativeStackScreenProps<MechanicalSystemsFormNavigatorParamList, "MechanicalSystemsStep8"> {}
 
 export const MechanicalSystemsStep8Screen: FC<MechanicalSystemsStep8ScreenProps> = observer(() => {
-  const { themed } = useAppTheme()
+  const { themed, theme } = useAppTheme()
   const { contentMaxWidth } = useResponsiveLayout()
   const navigation = useNavigation()
   const { openDrawer } = useDrawerControl()
@@ -51,6 +53,7 @@ export const MechanicalSystemsStep8Screen: FC<MechanicalSystemsStep8ScreenProps>
 
   // Local accordion control: only one open at a time
   const [openKey, setOpenKey] = useState<string | null>(null)
+  const scrollViewRef = useRef<ScrollView>(null)
 
   // Dropdown options for elevator type
   const elevatorTypeDropdownOptions = useMemo(
@@ -93,7 +96,7 @@ export const MechanicalSystemsStep8Screen: FC<MechanicalSystemsStep8ScreenProps>
         />
       </View>
 
-      <ScrollView contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
+      <ScrollView ref={scrollViewRef} contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
         <View style={$introBlock}>
           <Text preset="subheading" text="Elevators & Conveying Systems" style={themed($titleStyle)} />
           <ProgressBar current={8} total={9} />
@@ -103,6 +106,7 @@ export const MechanicalSystemsStep8Screen: FC<MechanicalSystemsStep8ScreenProps>
         {/* PASSENGER ELEVATORS */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Passenger Elevators"
           expanded={!store?.passengerElevators.NotApplicable && openKey === "passengerElevators"}
           onToggle={(n) => {
@@ -239,11 +243,16 @@ export const MechanicalSystemsStep8Screen: FC<MechanicalSystemsStep8ScreenProps>
                     }
                     FooterComponent={
                       passengerElevatorsList.length > 1 ? (
-                        <Button
-                          text="Remove"
-                          preset="default"
+                        <AnimatedPressable
+                          scaleDown={0.9}
                           onPress={() => store?.removePassengerElevator(elevator.id)}
-                        />
+                          accessibilityLabel="Remove Elevator"
+                          accessibilityRole="button"
+                          style={themed($removeRow)}
+                        >
+                          <Icon icon="x" size={14} color={theme.colors.error} />
+                          <Text text="Remove Elevator" size="xs" weight="medium" style={{ color: theme.colors.error }} />
+                        </AnimatedPressable>
                       ) : undefined
                     }
                     style={$unitCard}
@@ -258,6 +267,7 @@ export const MechanicalSystemsStep8Screen: FC<MechanicalSystemsStep8ScreenProps>
         {/* SERVICE ELEVATORS */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Service Elevators"
           expanded={!store?.serviceElevators.NotApplicable && openKey === "serviceElevators"}
           onToggle={(n) => {
@@ -394,11 +404,16 @@ export const MechanicalSystemsStep8Screen: FC<MechanicalSystemsStep8ScreenProps>
                     }
                     FooterComponent={
                       serviceElevatorsList.length > 1 ? (
-                        <Button
-                          text="Remove"
-                          preset="default"
+                        <AnimatedPressable
+                          scaleDown={0.9}
                           onPress={() => store?.removeServiceElevator(elevator.id)}
-                        />
+                          accessibilityLabel="Remove Elevator"
+                          accessibilityRole="button"
+                          style={themed($removeRow)}
+                        >
+                          <Icon icon="x" size={14} color={theme.colors.error} />
+                          <Text text="Remove Elevator" size="xs" weight="medium" style={{ color: theme.colors.error }} />
+                        </AnimatedPressable>
                       ) : undefined
                     }
                     style={$unitCard}
@@ -413,6 +428,7 @@ export const MechanicalSystemsStep8Screen: FC<MechanicalSystemsStep8ScreenProps>
         {/* ESCALATORS */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Escalators"
           expanded={!store?.escalators.NotApplicable && openKey === "escalators"}
           onToggle={(n) => {
@@ -508,6 +524,7 @@ export const MechanicalSystemsStep8Screen: FC<MechanicalSystemsStep8ScreenProps>
         {/* CAB FINISHES */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Cab Finishes"
           expanded={!store?.cabFinishes.NotApplicable && openKey === "cabFinishes"}
           onToggle={(n) => {
@@ -750,6 +767,19 @@ const $unitCard: ViewStyle = {
 const $cardFields: ViewStyle = {
   gap: 12,
 }
+
+const $removeRow: ThemedStyle<ViewStyle> = ({ colors }) => ({
+  flexDirection: "row",
+  alignItems: "center",
+  alignSelf: "flex-end",
+  gap: 4,
+  paddingVertical: 6,
+  paddingHorizontal: 12,
+  borderRadius: radii.sm,
+  borderWidth: 1,
+  borderColor: colors.error + "30",
+  backgroundColor: colors.error + "08",
+})
 
 const $naHeaderStyle: ThemedStyle<ViewStyle> = ({ colors }) => ({
   backgroundColor: colors.palette.neutral200,

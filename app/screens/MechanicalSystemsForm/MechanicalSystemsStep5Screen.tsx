@@ -1,4 +1,4 @@
-import { FC, useState } from "react"
+import { FC, useState, useRef } from "react"
 import { View, ViewStyle, ScrollView, TextStyle } from "react-native"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import { Screen } from "@/components/Screen"
@@ -46,6 +46,7 @@ export const MechanicalSystemsStep5Screen: FC<MechanicalSystemsStep5ScreenProps>
 
   // Local accordion control: only one open at a time
   const [openKey, setOpenKey] = useState<string | null>(null)
+  const scrollViewRef = useRef<ScrollView>(null)
 
   const onNext = () => {
     // @ts-expect-error route params for animation
@@ -86,7 +87,7 @@ export const MechanicalSystemsStep5Screen: FC<MechanicalSystemsStep5ScreenProps>
         />
       </View>
       
-      <ScrollView contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
+      <ScrollView ref={scrollViewRef} contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
         <View style={$introBlock}>
           <Text preset="subheading" text="Plumbing Systems" style={themed($titleStyle)} />
           <ProgressBar current={5} total={9} />
@@ -96,6 +97,7 @@ export const MechanicalSystemsStep5Screen: FC<MechanicalSystemsStep5ScreenProps>
         {/* DOMESTIC PIPING */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Domestic Piping"
           expanded={openKey === "domesticPiping"}
           onToggle={(n) => setOpenKey(n ? "domesticPiping" : null)}
@@ -151,6 +153,7 @@ export const MechanicalSystemsStep5Screen: FC<MechanicalSystemsStep5ScreenProps>
         {/* WATER METER */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Water Meter"
           expanded={openKey === "waterMeter"}
           onToggle={(n) => setOpenKey(n ? "waterMeter" : null)}
@@ -248,6 +251,7 @@ export const MechanicalSystemsStep5Screen: FC<MechanicalSystemsStep5ScreenProps>
         {/* WASTE PIPING */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Waste Piping"
           expanded={openKey === "wastePiping"}
           onToggle={(n) => setOpenKey(n ? "wastePiping" : null)}
@@ -329,6 +333,7 @@ export const MechanicalSystemsStep5Screen: FC<MechanicalSystemsStep5ScreenProps>
         {/* NATURAL GAS PIPE */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Natural Gas Pipe"
           expanded={openKey === "naturalGasPipe"}
           onToggle={(n) => setOpenKey(n ? "naturalGasPipe" : null)}

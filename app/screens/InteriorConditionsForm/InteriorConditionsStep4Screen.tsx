@@ -1,4 +1,4 @@
-import { FC, useState } from "react"
+import { FC, useRef, useState } from "react"
 import { View, ViewStyle, ScrollView, TouchableOpacity, TextStyle } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
 import { Screen } from "@/components/Screen"
@@ -143,6 +143,7 @@ export const InteriorConditionsStep4Screen: FC = observer(() => {
     ? rootStore.assessments.get(rootStore.activeAssessmentId)
     : undefined
   const store = activeAssessment?.interiorConditions?.step4
+  const scrollViewRef = useRef<ScrollView>(null)
 
   // Separate openKey state per property type section
   const [hotelOpenKey, setHotelOpenKey] = useState<string | null>(null)
@@ -190,7 +191,7 @@ export const InteriorConditionsStep4Screen: FC = observer(() => {
         />
       </View>
 
-      <ScrollView contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
+      <ScrollView ref={scrollViewRef} contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
         <View style={$introBlock}>
           <Text preset="subheading" text="Alternate Properties" style={themed($titleStyle)} />
           <ProgressBar current={4} total={4} />
@@ -335,7 +336,7 @@ const HotelAccordions: FC<{
   return (
     <>
       {/* Unit Types */}
-      <SectionAccordion
+      <SectionAccordion scrollViewRef={scrollViewRef}
         title="Unit Types"
         expanded={openKey === "hotel-unit-types"}
         onToggle={(n) => setOpenKey(n ? "hotel-unit-types" : null)}
@@ -417,7 +418,7 @@ const HotelAccordions: FC<{
       </SectionAccordion>
 
       {/* Units Observed */}
-      <SectionAccordion
+      <SectionAccordion scrollViewRef={scrollViewRef}
         title="Units Observed"
         expanded={openKey === "hotel-units-observed"}
         onToggle={(n) => setOpenKey(n ? "hotel-units-observed" : null)}
@@ -462,7 +463,7 @@ const HotelAccordions: FC<{
       </SectionAccordion>
 
       {/* 1. Unit Finishes */}
-      <SectionAccordion
+      <SectionAccordion scrollViewRef={scrollViewRef}
         title="Unit Finishes"
         expanded={!hotel?.unitFinishes.NotApplicable && openKey === "hotel-unitFinishes"}
         onToggle={(n) => {
@@ -528,7 +529,7 @@ const HotelAccordions: FC<{
       </SectionAccordion>
 
       {/* 2. Common Area Lists */}
-      <SectionAccordion
+      <SectionAccordion scrollViewRef={scrollViewRef}
         title="Common Area Lists"
         expanded={!hotel?.commonAreaLists.NotApplicable && openKey === "hotel-commonAreaLists"}
         onToggle={(n) => {
@@ -614,7 +615,7 @@ const HotelAccordions: FC<{
       />
 
       {/* 7. Guest Laundry */}
-      <SectionAccordion
+      <SectionAccordion scrollViewRef={scrollViewRef}
         title="Guest Laundry"
         expanded={!hotel?.guestLaundry.NotApplicable && openKey === "hotel-guestLaundry"}
         onToggle={(n) => {
@@ -686,7 +687,7 @@ const HotelAccordions: FC<{
       </SectionAccordion>
 
       {/* 8. Commercial Laundry */}
-      <SectionAccordion
+      <SectionAccordion scrollViewRef={scrollViewRef}
         title="Commercial Laundry"
         expanded={!hotel?.commercialLaundry.NotApplicable && openKey === "hotel-commercialLaundry"}
         onToggle={(n) => {
@@ -744,7 +745,7 @@ const HotelAccordions: FC<{
       </SectionAccordion>
 
       {/* 9. Lobby FF&E */}
-      <SectionAccordion
+      <SectionAccordion scrollViewRef={scrollViewRef}
         title="Lobby FF&E"
         expanded={!hotel?.lobbyFFE.NotApplicable && openKey === "hotel-lobbyFFE"}
         onToggle={(n) => {
@@ -803,7 +804,7 @@ const HotelAccordions: FC<{
       </SectionAccordion>
 
       {/* 10. Commercial Laundry Equipment */}
-      <SectionAccordion
+      <SectionAccordion scrollViewRef={scrollViewRef}
         title="Commercial Laundry Equipment"
         expanded={!hotel?.commercialLaundryEquipment.NotApplicable && openKey === "hotel-commercialLaundryEquipment"}
         onToggle={(n) => {
@@ -854,7 +855,7 @@ const HotelAccordions: FC<{
       </SectionAccordion>
 
       {/* 11. Guest Laundry Equipment */}
-      <SectionAccordion
+      <SectionAccordion scrollViewRef={scrollViewRef}
         title="Guest Laundry Equipment"
         expanded={!hotel?.guestLaundryEquipment.NotApplicable && openKey === "hotel-guestLaundryEquipment"}
         onToggle={(n) => {
@@ -911,7 +912,7 @@ const HotelAccordions: FC<{
       </SectionAccordion>
 
       {/* 12. Commercial Kitchen Equipment */}
-      <SectionAccordion
+      <SectionAccordion scrollViewRef={scrollViewRef}
         title="Commercial Kitchen Equipment"
         expanded={!hotel?.commercialKitchenEquipment.NotApplicable && openKey === "hotel-commercialKitchenEquipment"}
         onToggle={(n) => {
@@ -968,7 +969,7 @@ const HotelAccordions: FC<{
       </SectionAccordion>
 
       {/* 13. Guest Room Soft Goods */}
-      <SectionAccordion
+      <SectionAccordion scrollViewRef={scrollViewRef}
         title="Guest Room Soft Goods"
         expanded={!hotel?.guestRoomSoftGoods.NotApplicable && openKey === "hotel-guestRoomSoftGoods"}
         onToggle={(n) => {
@@ -1027,7 +1028,7 @@ const HotelAccordions: FC<{
       </SectionAccordion>
 
       {/* 14. Guest Room Hard Goods */}
-      <SectionAccordion
+      <SectionAccordion scrollViewRef={scrollViewRef}
         title="Guest Room Hard Goods"
         expanded={!hotel?.guestRoomHardGoods.NotApplicable && openKey === "hotel-guestRoomHardGoods"}
         onToggle={(n) => {
@@ -1098,7 +1099,7 @@ const HotelAccordions: FC<{
       </SectionAccordion>
 
       {/* 15. Guest Room Kitchen */}
-      <SectionAccordion
+      <SectionAccordion scrollViewRef={scrollViewRef}
         title="Guest Room Kitchen"
         expanded={!hotel?.guestRoomKitchen.NotApplicable && openKey === "hotel-guestRoomKitchen"}
         onToggle={(n) => {
@@ -1181,7 +1182,7 @@ const HotelAccordions: FC<{
       </SectionAccordion>
 
       {/* 16. Guest Room Bathroom */}
-      <SectionAccordion
+      <SectionAccordion scrollViewRef={scrollViewRef}
         title="Guest Room Bathroom"
         expanded={!hotel?.guestRoomBathroom.NotApplicable && openKey === "hotel-guestRoomBathroom"}
         onToggle={(n) => {
@@ -1276,7 +1277,7 @@ const ApartmentAccordions: FC<{
   return (
     <>
       {/* Unit Types */}
-      <SectionAccordion
+      <SectionAccordion scrollViewRef={scrollViewRef}
         title="Unit Types"
         expanded={openKey === "apt-unit-types"}
         onToggle={(n) => setOpenKey(n ? "apt-unit-types" : null)}
@@ -1358,7 +1359,7 @@ const ApartmentAccordions: FC<{
       </SectionAccordion>
 
       {/* Units Observed */}
-      <SectionAccordion
+      <SectionAccordion scrollViewRef={scrollViewRef}
         title="Units Observed"
         expanded={openKey === "apt-units-observed"}
         onToggle={(n) => setOpenKey(n ? "apt-units-observed" : null)}
@@ -1445,7 +1446,7 @@ const ApartmentAccordions: FC<{
       />
 
       {/* 4. Interior Doors */}
-      <SectionAccordion
+      <SectionAccordion scrollViewRef={scrollViewRef}
         title="Interior Doors"
         expanded={!apt?.interiorDoors.NotApplicable && openKey === "apt-interiorDoors"}
         onToggle={(n) => {
@@ -1545,7 +1546,7 @@ const ApartmentAccordions: FC<{
       />
 
       {/* 7. Common Restrooms Finishes */}
-      <SectionAccordion
+      <SectionAccordion scrollViewRef={scrollViewRef}
         title="Common Restrooms Finishes"
         expanded={!apt?.commonRestroomsFinishes.NotApplicable && openKey === "apt-commonRestroomsFinishes"}
         onToggle={(n) => {
@@ -1617,7 +1618,7 @@ const ApartmentAccordions: FC<{
       />
 
       {/* 9. Common Kitchen Finishes */}
-      <SectionAccordion
+      <SectionAccordion scrollViewRef={scrollViewRef}
         title="Common Kitchen Finishes"
         expanded={!apt?.commonKitchenFinishes.NotApplicable && openKey === "apt-commonKitchenFinishes"}
         onToggle={(n) => {
@@ -1668,7 +1669,7 @@ const ApartmentAccordions: FC<{
       </SectionAccordion>
 
       {/* 10. Laundry Room Finishes */}
-      <SectionAccordion
+      <SectionAccordion scrollViewRef={scrollViewRef}
         title="Laundry Room Finishes"
         expanded={!apt?.laundryRoomFinishes.NotApplicable && openKey === "apt-laundryRoomFinishes"}
         onToggle={(n) => {
@@ -1733,7 +1734,7 @@ const ApartmentAccordions: FC<{
       />
 
       {/* 12. Lobby FF&E */}
-      <SectionAccordion
+      <SectionAccordion scrollViewRef={scrollViewRef}
         title="Lobby FF&E"
         expanded={!apt?.lobbyFFE.NotApplicable && openKey === "apt-lobbyFFE"}
         onToggle={(n) => {
@@ -1792,7 +1793,7 @@ const ApartmentAccordions: FC<{
       </SectionAccordion>
 
       {/* 13. Business Center */}
-      <SectionAccordion
+      <SectionAccordion scrollViewRef={scrollViewRef}
         title="Business Center"
         expanded={!apt?.businessCenter.NotApplicable && openKey === "apt-businessCenter"}
         onToggle={(n) => {
@@ -1843,7 +1844,7 @@ const ApartmentAccordions: FC<{
       </SectionAccordion>
 
       {/* 14. Common Area Laundry Equipment */}
-      <SectionAccordion
+      <SectionAccordion scrollViewRef={scrollViewRef}
         title="Common Area Laundry Equipment"
         expanded={!apt?.commonAreaLaundryEquipment.NotApplicable && openKey === "apt-commonAreaLaundryEquipment"}
         onToggle={(n) => {
@@ -1912,7 +1913,7 @@ const ApartmentAccordions: FC<{
       </SectionAccordion>
 
       {/* 15. Kitchen Equipment */}
-      <SectionAccordion
+      <SectionAccordion scrollViewRef={scrollViewRef}
         title="Kitchen Equipment"
         expanded={!apt?.kitchenEquipment.NotApplicable && openKey === "apt-kitchenEquipment"}
         onToggle={(n) => {
@@ -1995,7 +1996,7 @@ const ApartmentAccordions: FC<{
       </SectionAccordion>
 
       {/* 16. Bathroom */}
-      <SectionAccordion
+      <SectionAccordion scrollViewRef={scrollViewRef}
         title="Bathroom"
         expanded={!apt?.bathroom.NotApplicable && openKey === "apt-bathroom"}
         onToggle={(n) => {
@@ -2072,7 +2073,7 @@ const ApartmentAccordions: FC<{
       </SectionAccordion>
 
       {/* 17. Furnished Items */}
-      <SectionAccordion
+      <SectionAccordion scrollViewRef={scrollViewRef}
         title="Furnished Items"
         expanded={!apt?.furnishedItems.NotApplicable && openKey === "apt-furnishedItems"}
         onToggle={(n) => {
@@ -2152,7 +2153,7 @@ const StandardFinishesAccordion: FC<{
   const storeItems = subStore?.items?.slice() ?? []
 
   return (
-    <SectionAccordion
+    <SectionAccordion scrollViewRef={scrollViewRef}
       title={title}
       expanded={!subStore?.NotApplicable && openKey === accordionKey}
       onToggle={(n) => {
@@ -2312,7 +2313,7 @@ const MobileHomesSection: FC<{ store: Step4Store | undefined; themed: ThemedFn }
           </View>
         </View>
       </View>
-      <SectionAccordion
+      <SectionAccordion scrollViewRef={scrollViewRef}
         title="Laundry"
         expanded={openKey === "mh-laundry"}
         onToggle={(n) => setOpenKey(n ? "mh-laundry" : null)}
@@ -2344,7 +2345,7 @@ const MobileHomesSection: FC<{ store: Step4Store | undefined; themed: ThemedFn }
           />
         </View>
       </SectionAccordion>
-      <SectionAccordion
+      <SectionAccordion scrollViewRef={scrollViewRef}
         title="Amenities"
         expanded={openKey === "mh-amenities"}
         onToggle={(n) => setOpenKey(n ? "mh-amenities" : null)}
@@ -2442,7 +2443,7 @@ const NursingHomesSection: FC<{ store: Step4Store | undefined; themed: ThemedFn 
           />
         </View>
       </View>
-      <SectionAccordion
+      <SectionAccordion scrollViewRef={scrollViewRef}
         title="Laundry"
         expanded={openKey === "nh-laundry"}
         onToggle={(n) => setOpenKey(n ? "nh-laundry" : null)}
@@ -2474,7 +2475,7 @@ const NursingHomesSection: FC<{ store: Step4Store | undefined; themed: ThemedFn 
           />
         </View>
       </SectionAccordion>
-      <SectionAccordion
+      <SectionAccordion scrollViewRef={scrollViewRef}
         title="Amenities"
         expanded={openKey === "nh-amenities"}
         onToggle={(n) => setOpenKey(n ? "nh-amenities" : null)}
@@ -2520,7 +2521,7 @@ const MultiFamilySection: FC<{ store: Step4Store | undefined; themed: ThemedFn }
           </View>
         </View>
       </View>
-      <SectionAccordion
+      <SectionAccordion scrollViewRef={scrollViewRef}
         title="Laundry"
         expanded={openKey === "mf-laundry"}
         onToggle={(n) => setOpenKey(n ? "mf-laundry" : null)}
@@ -2552,7 +2553,7 @@ const MultiFamilySection: FC<{ store: Step4Store | undefined; themed: ThemedFn }
           />
         </View>
       </SectionAccordion>
-      <SectionAccordion
+      <SectionAccordion scrollViewRef={scrollViewRef}
         title="Amenities"
         expanded={openKey === "mf-amenities"}
         onToggle={(n) => setOpenKey(n ? "mf-amenities" : null)}

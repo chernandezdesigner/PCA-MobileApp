@@ -1,4 +1,4 @@
-import { FC, useState } from "react"
+import { FC, useRef, useState } from "react"
 import { View, ViewStyle, ScrollView } from "react-native"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import { Screen } from "@/components/Screen"
@@ -46,6 +46,7 @@ export const BuildingEnvelopeStep8Screen: FC<BuildingEnvelopeStep8ScreenProps> =
 
   // Local accordion control: only one open at a time
   const [openKey, setOpenKey] = useState<string | null>(null)
+  const scrollViewRef = useRef<ScrollView>(null)
 
   // Transform data for checklist fields
   const windowTypeData = store?.windowsType.windowTypes ?? []
@@ -115,13 +116,14 @@ export const BuildingEnvelopeStep8Screen: FC<BuildingEnvelopeStep8ScreenProps> =
           onRightPress={openDrawer}
         />
       </View>
-      <ScrollView contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
+      <ScrollView ref={scrollViewRef} contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
         <View style={$introBlock}>
           <Text preset="subheading" text="Windows" style={themed($titleStyle)} />
           <ProgressBar current={8} total={10} />
         </View>
 
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Windows Type"
           expanded={openKey === "windowsType"}
           onToggle={(n) => setOpenKey(n ? "windowsType" : null)}
@@ -156,6 +158,7 @@ export const BuildingEnvelopeStep8Screen: FC<BuildingEnvelopeStep8ScreenProps> =
         </SectionAccordion>
 
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Glazing and Panes"
           expanded={openKey === "glazingAndPanes"}
           onToggle={(n) => setOpenKey(n ? "glazingAndPanes" : null)}
@@ -192,6 +195,7 @@ export const BuildingEnvelopeStep8Screen: FC<BuildingEnvelopeStep8ScreenProps> =
         </SectionAccordion>
 
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Frame Type"
           expanded={openKey === "frameType"}
           onToggle={(n) => setOpenKey(n ? "frameType" : null)}

@@ -1,4 +1,4 @@
-import { FC, useState } from "react"
+import { FC, useState, useRef } from "react"
 import { View, ViewStyle, ScrollView, TextStyle, TouchableOpacity } from "react-native"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import { Screen } from "@/components/Screen"
@@ -50,6 +50,7 @@ export const MechanicalSystemsStep9Screen: FC<MechanicalSystemsStep9ScreenProps>
 
   // Local accordion control: only one open at a time
   const [openKey, setOpenKey] = useState<string | null>(null)
+  const scrollViewRef = useRef<ScrollView>(null)
 
   // Helper for array toggle
   const createArrayToggleHandler = (currentArray: string[] | undefined, onChange: (newArray: string[]) => void) => {
@@ -80,7 +81,7 @@ export const MechanicalSystemsStep9Screen: FC<MechanicalSystemsStep9ScreenProps>
         />
       </View>
 
-      <ScrollView contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
+      <ScrollView ref={scrollViewRef} contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
         <View style={$introBlock}>
           <Text preset="subheading" text="Fire Protection" style={themed($titleStyle)} />
           <ProgressBar current={9} total={9} />
@@ -90,6 +91,7 @@ export const MechanicalSystemsStep9Screen: FC<MechanicalSystemsStep9ScreenProps>
         {/* SMOKE DETECTORS */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Smoke Detectors"
           expanded={!store?.smokeDetectors?.NotApplicable && openKey === "smokeDetectors"}
           onToggle={(n) => {
@@ -162,6 +164,7 @@ export const MechanicalSystemsStep9Screen: FC<MechanicalSystemsStep9ScreenProps>
         {/* FIRE ALARM PANEL */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Fire Alarm Panel"
           expanded={!store?.fireAlarmPanel?.NotApplicable && openKey === "fireAlarmPanel"}
           onToggle={(n) => {
@@ -241,6 +244,7 @@ export const MechanicalSystemsStep9Screen: FC<MechanicalSystemsStep9ScreenProps>
         {/* FIRE EXTINGUISHERS */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Fire Extinguishers"
           expanded={!store?.fireExtinguishers?.NotApplicable && openKey === "fireExtinguishers"}
           onToggle={(n) => {
@@ -307,6 +311,7 @@ export const MechanicalSystemsStep9Screen: FC<MechanicalSystemsStep9ScreenProps>
         {/* FIXTURES */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Fixtures"
           expanded={!store?.fixtures?.NotApplicable && openKey === "fixtures"}
           onToggle={(n) => {
@@ -379,6 +384,7 @@ export const MechanicalSystemsStep9Screen: FC<MechanicalSystemsStep9ScreenProps>
         {/* SPRINKLERS */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Sprinklers"
           expanded={!store?.sprinklers?.NotApplicable && openKey === "sprinklers"}
           onToggle={(n) => {
@@ -473,6 +479,7 @@ export const MechanicalSystemsStep9Screen: FC<MechanicalSystemsStep9ScreenProps>
         {/* FIRE PUMP */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Fire Pump"
           expanded={!store?.firePump?.NotApplicable && openKey === "firePump"}
           onToggle={(n) => {
@@ -584,6 +591,7 @@ export const MechanicalSystemsStep9Screen: FC<MechanicalSystemsStep9ScreenProps>
         {/* SMOKE EVAC SYSTEM */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Smoke Evac System"
           expanded={!store?.smokeEvacSystem?.NotApplicable && openKey === "smokeEvacSystem"}
           onToggle={(n) => {
@@ -662,6 +670,7 @@ export const MechanicalSystemsStep9Screen: FC<MechanicalSystemsStep9ScreenProps>
         {/* FIRE EXIT STAIRWELL */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Fire Exit Stairwell"
           expanded={!store?.fireExitStairwell?.NotApplicable && openKey === "fireExitStairwell"}
           onToggle={(n) => {
@@ -742,6 +751,7 @@ export const MechanicalSystemsStep9Screen: FC<MechanicalSystemsStep9ScreenProps>
         {/* ANSUL SYSTEM */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Ansul System"
           expanded={!store?.ansulSystem?.NotApplicable && openKey === "ansulSystem"}
           onToggle={(n) => {

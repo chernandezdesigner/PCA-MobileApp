@@ -1,5 +1,5 @@
-import { ReactNode, useEffect, useMemo, useState } from "react"
-import { StyleProp, View, ViewStyle } from "react-native"
+import { ReactNode, useEffect, useMemo, useRef, useState } from "react"
+import { findNodeHandle, ScrollView, StyleProp, View, ViewStyle } from "react-native"
 import Animated, { useSharedValue, useAnimatedStyle, withTiming } from "react-native-reanimated"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle, ThemedStyleArray } from "@/theme/types"
@@ -46,6 +46,11 @@ export interface SectionAccordionProps {
    * Accordion children rendered inside the body.
    */
   children?: ReactNode
+  /**
+   * Optional ref to the parent ScrollView. When provided, opening the accordion
+   * scrolls its header into view so the user doesn't have to hunt for it.
+   */
+  scrollViewRef?: React.RefObject<ScrollView>
 }
 
 /**
@@ -63,9 +68,11 @@ export const SectionAccordion = (props: SectionAccordionProps) => {
     defaultExpanded = true,
     onToggle,
     children,
+    scrollViewRef,
   } = props
 
   const { themed, theme } = useAppTheme()
+  const viewRef = useRef<View>(null)
   const [internalExpanded, setInternalExpanded] = useState<boolean>(defaultExpanded)
   const isControlled = useMemo(() => expanded !== undefined, [expanded])
   const isExpanded = isControlled ? !!expanded : internalExpanded
@@ -85,6 +92,18 @@ export const SectionAccordion = (props: SectionAccordionProps) => {
     if (!isControlled) setInternalExpanded(next)
     onToggle?.(next)
     caretRotation.value = withTiming(next ? -90 : 90, { duration: 200 })
+
+    if (next && scrollViewRef?.current && viewRef.current) {
+      setTimeout(() => {
+        const scrollNode = findNodeHandle(scrollViewRef.current)
+        if (!scrollNode) return
+        viewRef.current?.measureLayout(
+          scrollNode,
+          (_x, y) => scrollViewRef.current?.scrollTo({ y, animated: true }),
+          () => {}, // noop on error
+        )
+      }, 50)
+    }
   }
 
   const containerStyles = themed([$container])
@@ -92,7 +111,7 @@ export const SectionAccordion = (props: SectionAccordionProps) => {
   const headerStyles = themed([$header])
 
   return (
-    <View style={[containerStyles, style] as StyleProp<ViewStyle>}>
+    <View ref={viewRef} style={[containerStyles, style] as StyleProp<ViewStyle>}>
       <AnimatedPressable
         accessibilityRole="button"
         accessibilityLabel={title ? `${title}, ${isExpanded ? "expanded" : "collapsed"}` : undefined}

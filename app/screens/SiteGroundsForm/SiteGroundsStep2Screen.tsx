@@ -48,6 +48,7 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
     ? rootStore.assessments.get(rootStore.activeAssessmentId)
     : undefined
   const store = activeAssessment?.siteGrounds.step2
+  const scrollViewRef = useRef<ScrollView>(null)
 
   // local accordion control: only one open at a time, default all closed
   const [openKey, setOpenKey] = useState<string | null>(null)
@@ -322,7 +323,7 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
       <View style={$stickyHeader}>
         <HeaderBar title="Site & Grounds" leftIcon="back" onLeftPress={() => navigation.goBack()} rightIcon="menu" onRightPress={openDrawer} />
       </View>
-      <ScrollView contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
+      <ScrollView ref={scrollViewRef} contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
         <View style={themed($paddedBlock)}>
           <Text preset="subheading" text="Topography" style={themed($titleStyle)} />
           <ProgressBar current={2} total={4} />
@@ -332,6 +333,7 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
           title="Topography Slope"
           expanded={openKey === "topography"}
           onToggle={(n) => setOpenKey(n ? "topography" : null)}
+          scrollViewRef={scrollViewRef}
         >
           <View style={themed($sectionBody)}>
             <ChecklistField
@@ -340,35 +342,36 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
               onToggle={createArrayToggleHandler("topographySlope.topographySlopes", topographySlopesData)}
             />
 
-            <View style={themed($controlGroup)}>
-              <Text preset="formLabel" text="Condition" />
-              <ConditionAssessment
-                value={store?.topographySlope.assessment.condition as any}
-                onChange={(v) => store?.updateTopographySlope({ assessment: { condition: v } })}
+            <View style={themed($assessmentBlock)}>
+              <View style={themed($controlGroup)}>
+                <Text preset="formLabel" text="Condition" />
+                <ConditionAssessment
+                  value={store?.topographySlope.assessment.condition as any}
+                  onChange={(v) => store?.updateTopographySlope({ assessment: { condition: v } })}
+                />
+              </View>
+              <View style={themed($controlGroup)}>
+                <Text preset="formLabel" text="Repair Status" />
+                <RepairStatus
+                  value={store?.topographySlope.assessment.repairStatus as any}
+                  onChange={(v) => store?.updateTopographySlope({ assessment: { repairStatus: v } })}
+                />
+              </View>
+              <Controller
+                control={control}
+                name="topographySlope.assessment.amountToRepair"
+                render={({ field: { value, onChange, onBlur } }) => (
+                  <TextField
+                    label="Amount to Repair ($)"
+                    placeholder="Dollar amount"
+                    keyboardType="decimal-pad"
+                    value={value}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                  />
+                )}
               />
             </View>
-
-          <View style={themed($controlGroup)}>
-            <Text preset="formLabel" text="Repair Status" />
-            <RepairStatus
-              value={store?.topographySlope.assessment.repairStatus as any}
-              onChange={(v) => store?.updateTopographySlope({ assessment: { repairStatus: v } })}
-            />
-          </View>
-          <Controller
-            control={control}
-            name="topographySlope.assessment.amountToRepair"
-            render={({ field: { value, onChange, onBlur } }) => (
-              <TextField
-                label="Amount to Repair ($)"
-                placeholder="Dollar amount"
-                keyboardType="decimal-pad"
-                value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
-              />
-            )}
-          />
           </View>
         </SectionAccordion>
 
@@ -376,6 +379,7 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
           title="Landscaping"
           expanded={openKey === "landscaping"}
           onToggle={(n) => setOpenKey(n ? "landscaping" : null)}
+          scrollViewRef={scrollViewRef}
         >
           <View style={themed($sectionBody)}>
             <ChecklistField
@@ -383,40 +387,43 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
               items={landscapingItems}
               onToggle={createArrayToggleHandler("landscaping.landscaping", landscapingData)}
             />
-          <View style={themed($controlGroup)}>
-            <Text preset="formLabel" text="Condition" />
-            <ConditionAssessment
-              value={store?.landscaping.assessment.condition as any}
-              onChange={(v) => store?.updateLandscaping({ assessment: { condition: v } })}
-            />
-          </View>
-          <View style={themed($controlGroup)}>
-            <Text preset="formLabel" text="Repair Status" />
-            <RepairStatus
-              value={store?.landscaping.assessment.repairStatus as any}
-              onChange={(v) => store?.updateLandscaping({ assessment: { repairStatus: v } })}
-            />
-          </View>
-          <Controller
-            control={control}
-            name="landscaping.assessment.amountToRepair"
-            render={({ field: { value, onChange, onBlur } }) => (
-              <TextField
-                label="Amount to Repair ($)"
-                placeholder="Dollar amount"
-                keyboardType="decimal-pad"
-                value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
+          <View style={themed($assessmentBlock)}>
+            <View style={themed($controlGroup)}>
+              <Text preset="formLabel" text="Condition" />
+              <ConditionAssessment
+                value={store?.landscaping.assessment.condition as any}
+                onChange={(v) => store?.updateLandscaping({ assessment: { condition: v } })}
               />
-            )}
-          />
+            </View>
+            <View style={themed($controlGroup)}>
+              <Text preset="formLabel" text="Repair Status" />
+              <RepairStatus
+                value={store?.landscaping.assessment.repairStatus as any}
+                onChange={(v) => store?.updateLandscaping({ assessment: { repairStatus: v } })}
+              />
+            </View>
+            <Controller
+              control={control}
+              name="landscaping.assessment.amountToRepair"
+              render={({ field: { value, onChange, onBlur } }) => (
+                <TextField
+                  label="Amount to Repair ($)"
+                  placeholder="Dollar amount"
+                  keyboardType="decimal-pad"
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                />
+              )}
+            />
+          </View>
           </View>
         </SectionAccordion>
 
         <SectionAccordion
           title="Retaining Walls"
           expanded={!store?.retainingWalls.NotApplicable && openKey === "retainingWalls"}
+          scrollViewRef={scrollViewRef}
           onToggle={(n) => {
             if (!store?.retainingWalls.NotApplicable) {
               setOpenKey(n ? "retainingWalls" : null)
@@ -489,49 +496,50 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
             </View>
           </View>
           {store?.retainingWalls.railing === "yes" && (
-            <View style={themed($nestedList)}>
-              <Text preset="subheading" text="Railing" />
-              <View style={themed($nestedCard)}>
+            <SectionAccordion title="Railing" defaultExpanded={true} scrollViewRef={scrollViewRef}>
+              <View style={themed($sectionBody)}>
                 <ChecklistField
                   label="Railing Materials"
                   items={retainingWallRailingItems}
                   onToggle={createArrayToggleHandler("retainingWalls.railingDetails.railingMaterials", retainingWallRailingMaterialsData)}
                 />
-                <View style={themed($controlGroup)}>
-                  <Text preset="formLabel" text="Condition" />
-                  <ConditionAssessment
-                    value={store?.retainingWalls.railingDetails?.assessment.condition as any}
-                    onChange={(v) =>
+                <View style={themed($assessmentBlock)}>
+                  <View style={themed($controlGroup)}>
+                    <Text preset="formLabel" text="Condition" />
+                    <ConditionAssessment
+                      value={store?.retainingWalls.railingDetails?.assessment.condition as any}
+                      onChange={(v) =>
+                        store?.retainingWalls.railingDetails
+                          ? store?.retainingWalls.railingDetails.update({ assessment: { condition: v } })
+                          : store?.updateRetainingWalls({ railingDetails: { assessment: { condition: v } } as any })
+                      }
+                    />
+                  </View>
+                  <View style={themed($controlGroup)}>
+                    <Text preset="formLabel" text="Repair Status" />
+                    <RepairStatus
+                      value={store?.retainingWalls.railingDetails?.assessment.repairStatus as any}
+                      onChange={(v) =>
+                        store?.retainingWalls.railingDetails
+                          ? store?.retainingWalls.railingDetails.update({ assessment: { repairStatus: v } })
+                          : store?.updateRetainingWalls({ railingDetails: { assessment: { repairStatus: v } } as any })
+                      }
+                    />
+                  </View>
+                  <TextField
+                    label="Amount to Repair ($)"
+                    placeholder="Dollar amount"
+                    keyboardType="decimal-pad"
+                    value={store?.retainingWalls.railingDetails?.assessment.amountToRepair ?? ""}
+                    onChangeText={(t) =>
                       store?.retainingWalls.railingDetails
-                        ? store?.retainingWalls.railingDetails.update({ assessment: { condition: v } })
-                        : store?.updateRetainingWalls({ railingDetails: { assessment: { condition: v } } as any })
+                        ? store?.retainingWalls.railingDetails.update({ assessment: { amountToRepair: t } })
+                        : store?.updateRetainingWalls({ railingDetails: { assessment: { amountToRepair: t } } as any })
                     }
                   />
                 </View>
-                <View style={themed($controlGroup)}>
-                  <Text preset="formLabel" text="Repair Status" />
-                  <RepairStatus
-                    value={store?.retainingWalls.railingDetails?.assessment.repairStatus as any}
-                    onChange={(v) =>
-                      store?.retainingWalls.railingDetails
-                        ? store?.retainingWalls.railingDetails.update({ assessment: { repairStatus: v } })
-                        : store?.updateRetainingWalls({ railingDetails: { assessment: { repairStatus: v } } as any })
-                    }
-                  />
-                </View>
-                <TextField
-                  label="Amount to Repair ($)"
-                  placeholder="Dollar amount"
-                  keyboardType="decimal-pad"
-                  value={store?.retainingWalls.railingDetails?.assessment.amountToRepair ?? ""}
-                  onChangeText={(t) =>
-                    store?.retainingWalls.railingDetails
-                      ? store?.retainingWalls.railingDetails.update({ assessment: { amountToRepair: t } })
-                      : store?.updateRetainingWalls({ railingDetails: { assessment: { amountToRepair: t } } as any })
-                  }
-                />
-               </View>
-             </View>
+              </View>
+            </SectionAccordion>
            )}
              </View>
            )}
@@ -540,6 +548,7 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
         <SectionAccordion
           title="Screen Walls"
           expanded={!store?.screenWalls.NotApplicable && openKey === "screenWalls"}
+          scrollViewRef={scrollViewRef}
           onToggle={(n) => {
             if (!store?.screenWalls.NotApplicable) {
               setOpenKey(n ? "screenWalls" : null)
@@ -612,49 +621,50 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
             </View>
           </View>
           {store?.screenWalls.railing === "yes" && (
-            <View style={themed($nestedList)}>
-              <Text preset="subheading" text="Railing" />
-              <View style={themed($nestedCard)}>
+            <SectionAccordion title="Railing" defaultExpanded={true} scrollViewRef={scrollViewRef}>
+              <View style={themed($sectionBody)}>
                 <ChecklistField
                   label="Railing Materials"
                   items={screenWallRailingItems}
                   onToggle={createArrayToggleHandler("screenWalls.railingDetails.railingMaterials", screenWallRailingMaterialsData)}
                 />
-                <View style={themed($controlGroup)}>
-                  <Text preset="formLabel" text="Condition" />
-                  <ConditionAssessment
-                    value={store?.screenWalls.railingDetails?.assessment.condition as any}
-                    onChange={(v) =>
+                <View style={themed($assessmentBlock)}>
+                  <View style={themed($controlGroup)}>
+                    <Text preset="formLabel" text="Condition" />
+                    <ConditionAssessment
+                      value={store?.screenWalls.railingDetails?.assessment.condition as any}
+                      onChange={(v) =>
+                        store?.screenWalls.railingDetails
+                          ? store?.screenWalls.railingDetails.update({ assessment: { condition: v } })
+                          : store?.updateScreenWalls({ railingDetails: { assessment: { condition: v } } as any })
+                      }
+                    />
+                  </View>
+                  <View style={themed($controlGroup)}>
+                    <Text preset="formLabel" text="Repair Status" />
+                    <RepairStatus
+                      value={store?.screenWalls.railingDetails?.assessment.repairStatus as any}
+                      onChange={(v) =>
+                        store?.screenWalls.railingDetails
+                          ? store?.screenWalls.railingDetails.update({ assessment: { repairStatus: v } })
+                          : store?.updateScreenWalls({ railingDetails: { assessment: { repairStatus: v } } as any })
+                      }
+                    />
+                  </View>
+                  <TextField
+                    label="Amount to Repair ($)"
+                    placeholder="Dollar amount"
+                    keyboardType="decimal-pad"
+                    value={store?.screenWalls.railingDetails?.assessment.amountToRepair ?? ""}
+                    onChangeText={(t) =>
                       store?.screenWalls.railingDetails
-                        ? store?.screenWalls.railingDetails.update({ assessment: { condition: v } })
-                        : store?.updateScreenWalls({ railingDetails: { assessment: { condition: v } } as any })
+                        ? store?.screenWalls.railingDetails.update({ assessment: { amountToRepair: t } })
+                        : store?.updateScreenWalls({ railingDetails: { assessment: { amountToRepair: t } } as any })
                     }
                   />
                 </View>
-                <View style={themed($controlGroup)}>
-                  <Text preset="formLabel" text="Repair Status" />
-                  <RepairStatus
-                    value={store?.screenWalls.railingDetails?.assessment.repairStatus as any}
-                    onChange={(v) =>
-                      store?.screenWalls.railingDetails
-                        ? store?.screenWalls.railingDetails.update({ assessment: { repairStatus: v } })
-                        : store?.updateScreenWalls({ railingDetails: { assessment: { repairStatus: v } } as any })
-                    }
-                  />
-                </View>
-                <TextField
-                  label="Amount to Repair ($)"
-                  placeholder="Dollar amount"
-                  keyboardType="decimal-pad"
-                  value={store?.screenWalls.railingDetails?.assessment.amountToRepair ?? ""}
-                  onChangeText={(t) =>
-                    store?.screenWalls.railingDetails
-                      ? store?.screenWalls.railingDetails.update({ assessment: { amountToRepair: t } })
-                      : store?.updateScreenWalls({ railingDetails: { assessment: { amountToRepair: t } } as any })
-                  }
-                />
-               </View>
-             </View>
+              </View>
+            </SectionAccordion>
            )}
              </View>
            )}
@@ -664,6 +674,7 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
           title="Water Features"
           expanded={openKey === "waterFeatures"}
           onToggle={(n) => setOpenKey(n ? "waterFeatures" : null)}
+          scrollViewRef={scrollViewRef}
         >
           <View style={themed($sectionBody)}>
             <ChecklistField
@@ -802,6 +813,13 @@ const $titleStyle: any = ({ colors }: any) => ({ color: colors.palette.primary2 
 const $toggleWrap: ViewStyle = { flexDirection: "row", alignItems: "center", gap: 8 }
 const $pill = (on: boolean): ViewStyle => ({ height: 32, minWidth: 64, paddingHorizontal: 12, borderRadius: 16, alignItems: "center", justifyContent: "center", backgroundColor: on ? "#dbeafe" : "#e5e7eb" })
 const $controlGroup: ViewStyle = { gap: 8 }
+
+const $assessmentBlock: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+  backgroundColor: colors.palette.checklistAlternatingBackground,
+  borderRadius: 8,
+  padding: spacing.sm,
+  gap: spacing.sm,
+})
 
 const $naHeaderStyle: ThemedStyle<ViewStyle> = ({ colors }) => ({
   backgroundColor: colors.palette.background1,

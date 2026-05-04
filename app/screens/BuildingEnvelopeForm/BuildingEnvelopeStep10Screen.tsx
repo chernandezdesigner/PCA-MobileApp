@@ -1,4 +1,4 @@
-import { FC, useState } from "react"
+import { FC, useRef, useState } from "react"
 import { View, ViewStyle, TouchableOpacity, TextStyle, ScrollView } from "react-native"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import { Screen } from "@/components/Screen"
@@ -49,6 +49,7 @@ export const BuildingEnvelopeStep10Screen: FC<BuildingEnvelopeStep10ScreenProps>
     // Accordion states
     const [swimmingPoolExpanded, setSwimmingPoolExpanded] = useState(false)
     const [spaExpanded, setSpaExpanded] = useState(false)
+    const scrollViewRef = useRef<ScrollView>(null)
 
     // Convert options to ChecklistItems
     const poolSpaConstructionItems: ChecklistItem[] = POOL_SPA_CONSTRUCTION_TYPE_OPTIONS.map((opt) => ({

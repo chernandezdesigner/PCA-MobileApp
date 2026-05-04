@@ -1,10 +1,12 @@
-import { FC, useState } from "react"
+import { FC, useState, useRef } from "react"
 import { View, ViewStyle, ScrollView, TouchableOpacity, TextStyle } from "react-native"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
 import { TextField } from "@/components/TextField"
 import { Button } from "@/components/Button"
+import { AnimatedPressable } from "@/components/AnimatedPressable"
+import { Icon } from "@/components/Icon"
 import { Card } from "@/components/Card"
 import { ConditionAssessment } from "@/components/ConditionAssessment"
 import { RepairStatus } from "@/components/RepairStatus"
@@ -21,7 +23,7 @@ import { observer } from "mobx-react-lite"
 import { useNavigation } from "@react-navigation/native"
 import { useDrawerControl } from "@/context/DrawerContext"
 import { useAppTheme } from "@/theme/context"
-import { $formScreen, $stickyHeader, $stickyFooter } from "@/theme/styles"
+import { $formScreen, $stickyHeader, $stickyFooter, radii } from "@/theme/styles"
 import { useResponsiveLayout } from "@/hooks/useResponsiveLayout"
 import type { ThemedStyle } from "@/theme/types"
 import type { MechanicalSystemsFormNavigatorParamList } from "@/navigators/MechanicalSystemsFormNavigator"
@@ -36,7 +38,7 @@ interface MechanicalSystemsStep3ScreenProps
   extends NativeStackScreenProps<MechanicalSystemsFormNavigatorParamList, "MechanicalSystemsStep3"> {}
 
 export const MechanicalSystemsStep3Screen: FC<MechanicalSystemsStep3ScreenProps> = observer(() => {
-  const { themed } = useAppTheme()
+  const { themed, theme } = useAppTheme()
   const { contentMaxWidth } = useResponsiveLayout()
   const navigation = useNavigation()
   const { openDrawer } = useDrawerControl()
@@ -49,6 +51,7 @@ export const MechanicalSystemsStep3Screen: FC<MechanicalSystemsStep3ScreenProps>
 
   // Local accordion control: only one open at a time
   const [openKey, setOpenKey] = useState<string | null>(null)
+  const scrollViewRef = useRef<ScrollView>(null)
 
   const onNext = () => {
     // @ts-expect-error route params for animation
@@ -93,7 +96,7 @@ export const MechanicalSystemsStep3Screen: FC<MechanicalSystemsStep3ScreenProps>
         />
       </View>
       
-      <ScrollView contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
+      <ScrollView ref={scrollViewRef} contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
         <View style={$introBlock}>
           <Text preset="subheading" text="Chillers & Cooling Towers" style={themed($titleStyle)} />
           <ProgressBar current={3} total={9} />
@@ -103,6 +106,7 @@ export const MechanicalSystemsStep3Screen: FC<MechanicalSystemsStep3ScreenProps>
         {/* CHILLERS */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Chillers"
           expanded={!store?.chillers.NotApplicable && openKey === "chillers"}
           onToggle={(n) => {
@@ -302,13 +306,16 @@ export const MechanicalSystemsStep3Screen: FC<MechanicalSystemsStep3ScreenProps>
                           minRows={2}
                         />
 
-                        <View style={$alignEnd}>
-                          <Button
-                            preset="reversed"
-                            text="Remove Chiller"
-                            onPress={() => store?.removeChiller(unit.id)}
-                          />
-                        </View>
+                        <AnimatedPressable
+                          scaleDown={0.9}
+                          onPress={() => store?.removeChiller(unit.id)}
+                          accessibilityLabel="Remove Chiller"
+                          accessibilityRole="button"
+                          style={themed($removeRow)}
+                        >
+                          <Icon icon="x" size={14} color={theme.colors.error} />
+                          <Text text="Remove Chiller" size="xs" weight="medium" style={{ color: theme.colors.error }} />
+                        </AnimatedPressable>
                       </View>
                     }
                   />
@@ -322,6 +329,7 @@ export const MechanicalSystemsStep3Screen: FC<MechanicalSystemsStep3ScreenProps>
         {/* COOLING TOWERS */}
         {/* ============================================ */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Cooling Towers"
           expanded={!store?.coolingTowers.NotApplicable && openKey === "coolingTowers"}
           onToggle={(n) => {
@@ -512,13 +520,16 @@ export const MechanicalSystemsStep3Screen: FC<MechanicalSystemsStep3ScreenProps>
                           minRows={2}
                         />
 
-                        <View style={$alignEnd}>
-                          <Button
-                            preset="reversed"
-                            text="Remove Cooling Tower"
-                            onPress={() => store?.removeCoolingTower(unit.id)}
-                          />
-                        </View>
+                        <AnimatedPressable
+                          scaleDown={0.9}
+                          onPress={() => store?.removeCoolingTower(unit.id)}
+                          accessibilityLabel="Remove Cooling Tower"
+                          accessibilityRole="button"
+                          style={themed($removeRow)}
+                        >
+                          <Icon icon="x" size={14} color={theme.colors.error} />
+                          <Text text="Remove Cooling Tower" size="xs" weight="medium" style={{ color: theme.colors.error }} />
+                        </AnimatedPressable>
                       </View>
                     }
                   />
@@ -638,9 +649,18 @@ const $cardFields: ViewStyle = {
   gap: 12,
 }
 
-const $alignEnd: ViewStyle = {
-  alignItems: "flex-end",
-}
+const $removeRow: ThemedStyle<ViewStyle> = ({ colors }) => ({
+  flexDirection: "row",
+  alignItems: "center",
+  alignSelf: "flex-end",
+  gap: 4,
+  paddingVertical: 6,
+  paddingHorizontal: 12,
+  borderRadius: radii.sm,
+  borderWidth: 1,
+  borderColor: colors.error + "30",
+  backgroundColor: colors.error + "08",
+})
 
 const $row: ViewStyle = {
   flexDirection: "row",

@@ -1,4 +1,4 @@
-import { FC, useState } from "react"
+import { FC, useRef, useState } from "react"
 import { View, ViewStyle, ScrollView, TouchableOpacity } from "react-native"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import { Screen } from "@/components/Screen"
@@ -53,6 +53,7 @@ export const BuildingEnvelopeStep9Screen: FC<BuildingEnvelopeStep9ScreenProps> =
 
   // Local accordion control: only one open at a time
   const [openKey, setOpenKey] = useState<string | null>(null)
+  const scrollViewRef = useRef<ScrollView>(null)
 
   // Doors data
   const doorTypesData = store?.doors.doorTypes ?? []
@@ -272,7 +273,7 @@ export const BuildingEnvelopeStep9Screen: FC<BuildingEnvelopeStep9ScreenProps> =
           onRightPress={openDrawer}
         />
       </View>
-      <ScrollView contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
+      <ScrollView ref={scrollViewRef} contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
         <View style={$introBlock}>
           <Text preset="subheading" text="Doors" style={themed($titleStyle)} />
           <ProgressBar current={9} total={10} />
@@ -280,6 +281,7 @@ export const BuildingEnvelopeStep9Screen: FC<BuildingEnvelopeStep9ScreenProps> =
 
         {/* Doors Accordion */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Doors"
           expanded={openKey === "doors"}
           onToggle={(n) => setOpenKey(n ? "doors" : null)}
@@ -321,6 +323,7 @@ export const BuildingEnvelopeStep9Screen: FC<BuildingEnvelopeStep9ScreenProps> =
 
         {/* Service Doors Accordion */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Service Doors"
           expanded={openKey === "serviceDoors"}
           onToggle={(n) => setOpenKey(n ? "serviceDoors" : null)}
@@ -362,6 +365,7 @@ export const BuildingEnvelopeStep9Screen: FC<BuildingEnvelopeStep9ScreenProps> =
 
         {/* Hardware Type Accordion */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Hardware Type"
           expanded={openKey === "hardwareType"}
           onToggle={(n) => setOpenKey(n ? "hardwareType" : null)}
@@ -397,6 +401,7 @@ export const BuildingEnvelopeStep9Screen: FC<BuildingEnvelopeStep9ScreenProps> =
 
         {/* Balcony/Patio Door Accordion */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Balconies/Patios Doors"
           expanded={!store?.balconyPatioDoor.NotApplicable && openKey === "balconyPatioDoor"}
           onToggle={(n) => {
@@ -456,6 +461,7 @@ export const BuildingEnvelopeStep9Screen: FC<BuildingEnvelopeStep9ScreenProps> =
 
         {/* Overhead Door Accordion */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Overhead Door"
           expanded={!store?.overheadDoor.NotApplicable && openKey === "overheadDoor"}
           onToggle={(n) => {
@@ -517,6 +523,7 @@ export const BuildingEnvelopeStep9Screen: FC<BuildingEnvelopeStep9ScreenProps> =
 
         {/* Dock Equipment Accordion */}
         <SectionAccordion
+          scrollViewRef={scrollViewRef}
           title="Dock Equipment"
           expanded={!store?.dockEquipment.NotApplicable && openKey === "dockEquipment"}
           onToggle={(n) => {

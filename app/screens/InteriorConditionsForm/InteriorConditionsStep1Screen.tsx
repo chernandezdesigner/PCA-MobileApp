@@ -1,4 +1,4 @@
-import { FC, useState } from "react"
+import { FC, useRef, useState } from "react"
 import { View, ViewStyle, ScrollView, TouchableOpacity, TextStyle } from "react-native"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
@@ -68,6 +68,7 @@ export const InteriorConditionsStep1Screen: FC = observer(() => {
     ? rootStore.assessments.get(rootStore.activeAssessmentId)
     : undefined
   const store = activeAssessment?.interiorConditions?.step1
+  const scrollViewRef = useRef<ScrollView>(null)
 
   // Local accordion control: only one open at a time
   const [openKey, setOpenKey] = useState<string | null>(null)
@@ -94,7 +95,7 @@ export const InteriorConditionsStep1Screen: FC = observer(() => {
         />
       </View>
 
-      <ScrollView contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
+      <ScrollView ref={scrollViewRef} contentContainerStyle={[themed($content), contentMaxWidth ? { maxWidth: contentMaxWidth, alignSelf: "center" as const, width: "100%" as const } : undefined]} style={$scrollArea} keyboardShouldPersistTaps="handled">
         <View style={$introBlock}>
           <Text preset="subheading" text="Commercial Tenant Unit Finishes" style={themed($titleStyle)} />
           <ProgressBar current={1} total={4} />
@@ -115,7 +116,7 @@ export const InteriorConditionsStep1Screen: FC = observer(() => {
         {/* ============================================ */}
         {/* TENANT FLOORS, WALLS & CEILINGS */}
         {/* ============================================ */}
-        <SectionAccordion
+        <SectionAccordion scrollViewRef={scrollViewRef}
           title="Tenant Floors, Walls & Ceilings"
           expanded={!store?.tenantFinishes.NotApplicable && openKey === "tenantFinishes"}
           onToggle={(n) => {
@@ -221,7 +222,7 @@ export const InteriorConditionsStep1Screen: FC = observer(() => {
         {/* ============================================ */}
         {/* RESTROOM FLOORS, WALLS & CEILINGS */}
         {/* ============================================ */}
-        <SectionAccordion
+        <SectionAccordion scrollViewRef={scrollViewRef}
           title="Restroom Floors, Walls & Ceilings"
           expanded={!store?.restroomFinishes.NotApplicable && openKey === "restroomFinishes"}
           onToggle={(n) => {
@@ -335,7 +336,7 @@ export const InteriorConditionsStep1Screen: FC = observer(() => {
         {/* ============================================ */}
         {/* KITCHEN FLOORS, WALLS & CEILINGS */}
         {/* ============================================ */}
-        <SectionAccordion
+        <SectionAccordion scrollViewRef={scrollViewRef}
           title="Kitchen Floors, Walls & Ceilings"
           expanded={!store?.kitchenFinishes.NotApplicable && openKey === "kitchenFinishes"}
           onToggle={(n) => {
@@ -441,7 +442,7 @@ export const InteriorConditionsStep1Screen: FC = observer(() => {
         {/* ============================================ */}
         {/* WAREHOUSE FLOORS, WALLS & CEILINGS */}
         {/* ============================================ */}
-        <SectionAccordion
+        <SectionAccordion scrollViewRef={scrollViewRef}
           title="Warehouse Floors, Walls & Ceilings"
           expanded={!store?.warehouseFinishes.NotApplicable && openKey === "warehouseFinishes"}
           onToggle={(n) => {
