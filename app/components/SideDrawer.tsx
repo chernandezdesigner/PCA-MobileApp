@@ -270,29 +270,42 @@ export const SideDrawer = (props: SideDrawerProps) => {
         if (result.assessmentId) {
           assessment.setSupabaseId(result.assessmentId)
         }
-        assessment.markAsSubmitted()
         const failedCount = result.failedPhotoCount ?? 0
         if (failedCount > 0) {
-          window.alert(`Assessment submitted! ${failedCount} photo(s) couldn't upload. Open this menu and tap Submit again to retry the photos.`)
+          // Keep as draft so the user can open this menu and tap Submit again
+          // to retry just the failed photos. markAsSubmitted() is intentionally
+          // skipped here — it would remove the assessment from the drafts list,
+          // leaving no way to access the retry path.
+          window.alert(`Form data saved. ${failedCount} photo(s) failed to upload. Open this menu and tap Submit again to retry.`)
         } else {
+          assessment.markAsSubmitted()
           window.alert('Assessment submitted successfully!')
         }
       } else if (result.error === 'OFFLINE') {
-        window.alert('No internet connection. Your assessment is saved locally — reconnect and tap Submit again.')
+        assessment.markAsPendingSync()
+        window.alert('No internet connection. Assessment saved locally — it will appear as "Pending Sync" on the home screen.')
+        onClose?.()
+        setTimeout(() => {
+          try { if (navigationRef.isReady()) resetRoot({ index: 0, routes: [{ name: "Home" }] }) } catch (_) {}
+        }, 100)
+      } else if (result.error === 'AUTH_EXPIRED') {
+        window.alert('Your session has expired. Please sign out and sign back in — your draft is saved locally.')
       } else {
         window.alert(`Submit failed: ${result.error || 'Unknown error'}`)
       }
     } else {
-      // Native platform - use Alert.alert
+      // Native platform - use Alert.alert.
+      // isSubmitting is set to true BEFORE the dialog so the Submit button is
+      // disabled for the entire confirmation flow, preventing double-taps.
+      setIsSubmitting(true)
       Alert.alert(
         'Ready to Submit?',
         'Once submitted, this assessment cannot be edited. Make sure everything looks correct before continuing.',
         [
-          { text: 'Cancel', style: 'cancel' },
+          { text: 'Cancel', style: 'cancel', onPress: () => setIsSubmitting(false) },
           {
             text: 'Submit',
             onPress: async () => {
-              setIsSubmitting(true)
               const result = await AssessmentService.submitAssessment(assessment)
               setIsSubmitting(false)
 
@@ -300,20 +313,40 @@ export const SideDrawer = (props: SideDrawerProps) => {
                 if (result.assessmentId) {
                   assessment.setSupabaseId(result.assessmentId)
                 }
-                assessment.markAsSubmitted()
                 const failedCount = result.failedPhotoCount ?? 0
                 if (failedCount > 0) {
+                  // Keep as draft so the user can open this menu and tap Submit again
+                  // to retry just the failed photos. markAsSubmitted() is intentionally
+                  // skipped — it would remove the assessment from the drafts list,
+                  // leaving no way to access the retry path.
                   Alert.alert(
-                    'Submitted',
-                    `Assessment submitted! ${failedCount} photo(s) couldn't upload. Open this menu and tap Submit again to retry the photos.`
+                    'Form Data Saved',
+                    `${failedCount} photo(s) failed to upload. Open this menu and tap Submit again to retry.`
                   )
                 } else {
+                  assessment.markAsSubmitted()
                   Alert.alert('Submitted', 'Assessment submitted successfully.')
                 }
               } else if (result.error === 'OFFLINE') {
+                // Queue for later and send user to home screen with clear context.
+                assessment.markAsPendingSync()
                 Alert.alert(
-                  'No Internet Connection',
-                  'Your assessment is saved locally. Reconnect and tap Submit again to send it.'
+                  'Saved for Later',
+                  'No internet connection. Your assessment is saved and queued — tap "Sync Now" from the home screen when you\'re back online.',
+                  [{
+                    text: 'Go to Home',
+                    onPress: () => {
+                      onClose?.()
+                      setTimeout(() => {
+                        try { if (navigationRef.isReady()) resetRoot({ index: 0, routes: [{ name: "Home" }] }) } catch (_) {}
+                      }, 300)
+                    },
+                  }]
+                )
+              } else if (result.error === 'AUTH_EXPIRED') {
+                Alert.alert(
+                  'Session Expired',
+                  'Your login session has expired. Please sign out and sign back in — your draft is saved locally.'
                 )
               } else {
                 Alert.alert('Submit Failed', result.error || 'Something went wrong. Please try again.')

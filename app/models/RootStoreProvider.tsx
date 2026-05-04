@@ -7,11 +7,26 @@ import throttle from "lodash.throttle"
 
 const STORE_KEY = "rootStore.v1"
 
+// ─── Storage warning context ───────────────────────────────────────────────
+// Surfaces a persistent UI warning when MMKV writes start failing (e.g. device
+// storage full). Separate from RootStoreContext so components can read it
+// without subscribing to the full store.
+
+type StorageWarningContextValue = { hasStorageWarning: boolean }
+const StorageWarningContext = createContext<StorageWarningContextValue>({ hasStorageWarning: false })
+export const useStorageWarning = () => useContext(StorageWarningContext)
+
+// ─── RootStore context ─────────────────────────────────────────────────────
+
 const RootStoreContext = createContext<RootStoreInstance | null>(null)
 
 export const RootStoreProvider: FC<PropsWithChildren<{}>> = ({ children }) => {
   const storeRef = useRef<RootStoreInstance | null>(null)
   const [isHydrated, setIsHydrated] = useState(false)
+  const [hasStorageWarning, setHasStorageWarning] = useState(false)
+  // Counts consecutive MMKV write failures. Three in a row (≥ 2.25 s of
+  // failed writes) is enough to be certain this isn't a transient blip.
+  const failureCountRef = useRef(0)
 
   useEffect(() => {
     // Safely hydrate — a corrupt or schema-mismatched snapshot should never crash cold start.
@@ -50,7 +65,19 @@ export const RootStoreProvider: FC<PropsWithChildren<{}>> = ({ children }) => {
       }
     }
 
-    const saveThrottled = throttle((snap: RootStoreSnapshot) => storage.save(STORE_KEY, snap), 750, { leading: true, trailing: true })
+    const saveThrottled = throttle((snap: RootStoreSnapshot) => {
+      const ok = storage.save(STORE_KEY, snap)
+      if (ok) {
+        failureCountRef.current = 0
+      } else {
+        failureCountRef.current += 1
+        // Surface a warning after 3 consecutive failures so the user knows
+        // their data is not persisting (most likely cause: device storage full).
+        if (failureCountRef.current >= 3) {
+          setHasStorageWarning(true)
+        }
+      }
+    }, 750, { leading: true, trailing: true })
     const disposer = onSnapshot(storeRef.current, (snap) => {
       saveThrottled(snap)
     })
@@ -75,7 +102,13 @@ export const RootStoreProvider: FC<PropsWithChildren<{}>> = ({ children }) => {
 
   if (!isHydrated || !value) return null
 
-  return <RootStoreContext.Provider value={value}>{children}</RootStoreContext.Provider>
+  return (
+    <RootStoreContext.Provider value={value}>
+      <StorageWarningContext.Provider value={{ hasStorageWarning }}>
+        {children}
+      </StorageWarningContext.Provider>
+    </RootStoreContext.Provider>
+  )
 }
 
 export const useStores = () => {

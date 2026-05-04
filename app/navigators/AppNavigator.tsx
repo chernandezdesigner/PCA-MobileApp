@@ -5,6 +5,7 @@
  * and a "main" flow which the user will use once logged in.
  */
 import { useEffect, useRef } from "react"
+import { View, ViewStyle, TextStyle } from "react-native"
 import { NavigationContainer } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 
@@ -14,10 +15,50 @@ import { ErrorBoundary } from "@/screens/ErrorScreen/ErrorBoundary"
 import { LoginScreen } from "@/screens/LoginScreen"
 import { HomeScreen } from "@/screens/HomeScreen"
 import { useAppTheme } from "@/theme/context"
+import { Text } from "@/components/Text"
+import { useStorageWarning } from "@/models/RootStoreProvider"
+import type { ThemedStyle } from "@/theme/types"
 
 import { AssessmentNavigator } from "./AssessmentNavigator"
 import type { AppStackParamList, NavigationProps } from "./navigationTypes"
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
+
+// ─── Storage warning banner ────────────────────────────────────────────────
+// Shown as a persistent overlay when MMKV writes fail repeatedly. This is the
+// only user-visible signal that their data is not being saved to local storage.
+
+const StorageWarningBanner = () => {
+  const { hasStorageWarning } = useStorageWarning()
+  const { themed } = useAppTheme()
+
+  if (!hasStorageWarning) return null
+
+  return (
+    <View style={themed($warningBanner)} accessibilityLiveRegion="assertive" accessibilityRole="alert">
+      <Text style={themed($warningText)}>
+        Storage full — data is not saving. Free up space on your device immediately.
+      </Text>
+    </View>
+  )
+}
+
+const $warningBanner: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+  position: "absolute",
+  top: 0,
+  left: 0,
+  right: 0,
+  zIndex: 9999,
+  backgroundColor: colors.palette.angry500,
+  paddingHorizontal: spacing.md,
+  paddingVertical: spacing.xs,
+})
+
+const $warningText: ThemedStyle<TextStyle> = ({ colors }) => ({
+  color: colors.palette.neutral100,
+  fontSize: 13,
+  fontWeight: "600",
+  textAlign: "center",
+})
 
 /**
  * This is a list of all the route names that will exit the app if the back button
@@ -88,11 +129,17 @@ export const AppNavigator = ({ initialState, ...rest }: NavigationProps) => {
 
   useBackButtonHandler((routeName) => exitRoutes.includes(routeName))
 
+  const $navigatorRoot: ViewStyle = { flex: 1 }
+
   return (
-    <NavigationContainer ref={navigationRef} theme={navigationTheme} initialState={safeInitialState} {...rest}>
-      <ErrorBoundary catchErrors={Config.catchErrors}>
-        <AppStack />
-      </ErrorBoundary>
-    </NavigationContainer>
+    <View style={$navigatorRoot}>
+      <NavigationContainer ref={navigationRef} theme={navigationTheme} initialState={safeInitialState} {...rest}>
+        <ErrorBoundary catchErrors={Config.catchErrors}>
+          <AppStack />
+        </ErrorBoundary>
+      </NavigationContainer>
+      {/* Rendered outside NavigationContainer so it overlays every screen */}
+      <StorageWarningBanner />
+    </View>
   )
 }

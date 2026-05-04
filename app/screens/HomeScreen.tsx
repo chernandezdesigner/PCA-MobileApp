@@ -10,6 +10,8 @@ import { AnimatedPressable } from "@/components/AnimatedPressable"
 import { useStores } from "@/models/RootStoreProvider"
 import { useAuth } from "@/context/AuthContext"
 import { AssessmentService } from "@/services/supabase/assessmentService"
+import { PhotoService } from "@/services/supabase/photoService"
+import { generateUUID } from "@/utils/generateUUID"
 import { useResponsiveLayout } from "@/hooks/useResponsiveLayout"
 import type { AppStackScreenProps } from "@/navigators/navigationTypes"
 import { useAppTheme } from "@/theme/context"
@@ -41,6 +43,9 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
   const [isLoading, setIsLoading] = useState(false)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [loadError, setLoadError] = useState<string | null>(null)
+  // Tracks which pending-sync assessment is currently being submitted so we
+  // can show a per-card loading state without blocking the whole screen.
+  const [syncingId, setSyncingId] = useState<string | null>(null)
 
   // Get draft assessments from MST
   const draftAssessments = Array.from(rootStore.assessments.values()).filter(
@@ -77,8 +82,26 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
     loadSubmittedAssessments()
   }, [])
 
+  // Prune submitted assessments from local MMKV storage on every home screen
+  // mount. Once an assessment reaches "submitted" status its canonical copy is
+  // in Supabase — keeping it in MMKV only bloats the snapshot that is
+  // serialized and written on every form change. Photo files are deleted first
+  // so we don't leave orphaned images in DocumentDir.
+  useEffect(() => {
+    const pruneSubmitted = async () => {
+      const submitted = Array.from(rootStore.assessments.values()).filter(
+        (a) => a.status === "submitted"
+      )
+      for (const assessment of submitted) {
+        await PhotoService.cleanupLocalPhotos(assessment.id)
+        rootStore.deleteAssessment(assessment.id)
+      }
+    }
+    pruneSubmitted()
+  }, [])
+
   const handleStartNewAssessment = () => {
-    const id = `assessment_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`
+    const id = generateUUID()
     rootStore.createAssessment(id)
     navigation.navigate("Assessment")
   }
@@ -110,6 +133,44 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
   }
 
 
+  const handleSyncNow = async (assessmentId: string) => {
+    const assessment = rootStore.assessments.get(assessmentId)
+    if (!assessment || syncingId) return
+
+    setSyncingId(assessmentId)
+    const result = await AssessmentService.submitAssessment(assessment)
+    setSyncingId(null)
+
+    if (result.success) {
+      if (result.assessmentId) assessment.setSupabaseId(result.assessmentId)
+      const failedCount = result.failedPhotoCount ?? 0
+      if (failedCount > 0) {
+        // Keep as draft so the inspector can tap Continue → open the drawer →
+        // tap Submit to retry just the failed photos. markAsSubmitted() is
+        // intentionally skipped — it would remove the assessment from the
+        // drafts list, cutting off the only retry path.
+        assessment.clearPendingSync()
+        Alert.alert(
+          'Form Data Saved',
+          `${failedCount} photo(s) failed to upload. Tap Continue on this assessment, then use the menu to Submit and retry.`
+        )
+      } else {
+        assessment.markAsSubmitted() // clears pendingSync internally
+        Alert.alert('Submitted', 'Assessment submitted successfully.')
+        loadSubmittedAssessments()
+      }
+    } else if (result.error === 'OFFLINE') {
+      Alert.alert('Still Offline', 'You appear to be offline. Try again when you have a connection.')
+    } else if (result.error === 'AUTH_EXPIRED') {
+      Alert.alert(
+        'Session Expired',
+        'Your login session has expired. Sign out and back in — your draft is saved locally.'
+      )
+    } else {
+      Alert.alert('Submit Failed', result.error || 'Something went wrong. Please try again.')
+    }
+  }
+
   const draftCount = draftAssessments.length
   const submittedCount = submittedAssessments.length
 
@@ -117,13 +178,15 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
     const projectName = item.projectSummary.projectName || "Untitled Assessment"
     const lastModified = formatDateFns(item.updatedAt, "MMM dd, yyyy h:mm a")
     const created = formatDateFns(item.createdAt, "MMM dd, yyyy")
+    const isPendingSync = !!item.pendingSync
+    const isSyncing = syncingId === item.id
 
     return (
       <AnimatedPressable
         onPress={() => handleContinueDraft(item.id)}
-        accessibilityLabel={`Continue ${projectName}`}
-        accessibilityHint="Opens this draft assessment"
-        style={themed($card)}
+        accessibilityLabel={isPendingSync ? `Sync ${projectName}` : `Continue ${projectName}`}
+        accessibilityHint={isPendingSync ? "Assessment queued for sync" : "Opens this draft assessment"}
+        style={[themed($card), isPendingSync && themed($pendingSyncCard)]}
       >
         <View style={themed($cardInner)}>
           {/* Top row: name + badge */}
@@ -131,8 +194,18 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
             <Text preset="subheading" style={themed($projectNameText)} numberOfLines={2}>
               {projectName}
             </Text>
-            <Text preset="badge" style={themed($draftBadge)}>DRAFT</Text>
+            {isPendingSync
+              ? <Text preset="badge" style={themed($pendingSyncBadge)}>PENDING SYNC</Text>
+              : <Text preset="badge" style={themed($draftBadge)}>DRAFT</Text>
+            }
           </View>
+
+          {/* Pending sync notice */}
+          {isPendingSync && (
+            <Text size="xs" style={themed($pendingSyncNote)}>
+              Saved offline — connect to internet and tap Sync Now
+            </Text>
+          )}
 
           {/* Metadata */}
           {item.projectSummary.projectNumber ? (
@@ -143,12 +216,32 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
           <Text size="sm" style={themed($detailText)}>Created: {created}</Text>
           <Text size="xs" style={themed($metaText)}>Last modified: {lastModified}</Text>
 
-          {/* Footer: continue hint + delete */}
+          {/* Footer */}
           <View style={themed($cardFooter)}>
-            <View style={themed($continueHint)}>
-              <Text size="sm" style={themed($continueText)}>Continue</Text>
-              <Icon icon="caretRight" size={14} color={theme.colors.tint} />
-            </View>
+            {isPendingSync ? (
+              // Pending sync: Sync Now is the primary action, Continue is secondary
+              <AnimatedPressable
+                onPress={(e) => {
+                  e?.stopPropagation?.()
+                  handleSyncNow(item.id)
+                }}
+                hitSlop={8}
+                style={themed($syncNowBtn)}
+                disabled={isSyncing}
+                accessibilityLabel={`Sync ${projectName}`}
+                accessibilityRole="button"
+                scaleDown={0.95}
+              >
+                <Text size="sm" style={themed($syncNowText)}>
+                  {isSyncing ? "Syncing..." : "Sync Now"}
+                </Text>
+              </AnimatedPressable>
+            ) : (
+              <View style={themed($continueHint)}>
+                <Text size="sm" style={themed($continueText)}>Continue</Text>
+                <Icon icon="caretRight" size={14} color={theme.colors.tint} />
+              </View>
+            )}
 
             <AnimatedPressable
               onPress={(e) => {
@@ -525,6 +618,45 @@ const $emptySubtext: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
 
 const $emptyCtaButton: ThemedStyle<ViewStyle> = () => ({
   minWidth: 200,
+})
+
+// ── Pending Sync card ──
+
+const $pendingSyncCard: ThemedStyle<ViewStyle> = ({ colors }) => ({
+  borderColor: colors.palette.conditionFairBorder,
+  borderWidth: 1.5,
+})
+
+const $pendingSyncBadge: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
+  color: colors.palette.neutral100,
+  backgroundColor: colors.palette.conditionFairBorder,
+  paddingHorizontal: spacing.xs,
+  paddingVertical: spacing.xxs,
+  borderRadius: radii.xs,
+  overflow: "hidden",
+})
+
+const $pendingSyncNote: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
+  color: colors.palette.conditionFairBorder,
+  marginBottom: spacing.xs,
+  fontStyle: "italic",
+})
+
+const $syncNowBtn: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+  flexDirection: "row",
+  alignItems: "center",
+  minHeight: 36,
+  paddingVertical: spacing.xxs,
+  paddingHorizontal: spacing.sm,
+  borderRadius: radii.sm,
+  borderWidth: 1,
+  borderColor: colors.palette.conditionFairBorder,
+  backgroundColor: colors.palette.conditionFairBorder + "15",
+})
+
+const $syncNowText: ThemedStyle<TextStyle> = ({ colors }) => ({
+  color: colors.palette.conditionFairBorder,
+  fontWeight: "600",
 })
 
 // ── Offline Notice ──

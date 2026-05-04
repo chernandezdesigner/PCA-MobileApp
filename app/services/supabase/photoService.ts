@@ -84,6 +84,16 @@ export class PhotoService {
 
     const storagePath = `${userId}/${assessmentId}/${photo.filename || photo.id + ".jpg"}`
 
+    // Collect result into a local variable so we can always clean up the
+    // compressed temp file before returning, regardless of success or failure.
+    // ImageManipulator writes to the temp directory and never cleans up after
+    // itself — on a 30-photo assessment with retries this can accumulate
+    // 50–100 MB of orphaned files if we return early without deleting them.
+    let result: { success: boolean; storagePath?: string; error?: string } = {
+      success: false,
+      error: "Upload failed after maximum retries",
+    }
+
     for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
       try {
         // Attempt 1: fetch(file://) → Blob.  This is memory-efficient because the data
@@ -125,7 +135,8 @@ export class PhotoService {
             continue
           }
           if (__DEV__) console.warn("Photo upload failed after retries:", uploadError.message)
-          return { success: false, error: uploadError.message }
+          result = { success: false, error: uploadError.message }
+          break
         }
 
         // Upsert metadata to photos table
@@ -159,10 +170,12 @@ export class PhotoService {
             continue
           }
           if (__DEV__) console.warn("Photo metadata upsert failed after retries:", dbError.message)
-          return { success: false, error: dbError.message }
+          result = { success: false, error: dbError.message }
+          break
         }
 
-        return { success: true, storagePath }
+        result = { success: true, storagePath }
+        break
       } catch (error: any) {
         if (attempt < MAX_RETRIES) {
           if (__DEV__) console.warn(`Photo upload attempt ${attempt + 1} failed, retrying:`, error.message)
@@ -170,11 +183,23 @@ export class PhotoService {
           continue
         }
         if (__DEV__) console.warn("Photo upload error after retries:", error.message)
-        return { success: false, error: error.message }
+        result = { success: false, error: error.message }
+        break
       }
     }
 
-    return { success: false, error: "Upload failed after maximum retries" }
+    // Always clean up the compressed temp file. ImageManipulator never removes
+    // its output files, and early returns would otherwise leave them orphaned.
+    try {
+      const tempPath = compressed.uri.replace(/^file:\/\//, "")
+      if (await FileSystem.exists(tempPath)) {
+        await FileSystem.unlink(tempPath)
+      }
+    } catch (_cleanupErr) {
+      // Non-blocking — the OS will eventually reclaim the temp directory.
+    }
+
+    return result
   }
 
   /**

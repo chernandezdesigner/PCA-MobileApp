@@ -11,6 +11,9 @@ export const AssessmentModel = types
     id: types.identifier,
     supabaseId: types.optional(types.string, ""),
     status: types.optional(types.enumeration(["draft", "submitted", "synced"]), "draft"),
+    // True when the user attempted to submit while offline.
+    // Drives the "Sync Now" UI on the home screen.
+    pendingSync: types.optional(types.boolean, false),
     createdAt: types.optional(types.Date, () => new Date()),
     updatedAt: types.optional(types.Date, () => new Date()),
 
@@ -30,11 +33,20 @@ export const AssessmentModel = types
     },
     markAsSubmitted() {
       self.status = "submitted"
+      self.pendingSync = false
       self.updatedAt = new Date()
     },
     markAsSynced() {
       self.status = "synced"
+      self.pendingSync = false
       self.updatedAt = new Date()
+    },
+    markAsPendingSync() {
+      self.pendingSync = true
+      self.updatedAt = new Date()
+    },
+    clearPendingSync() {
+      self.pendingSync = false
     },
     setSupabaseId(id: string) {
       self.supabaseId = id

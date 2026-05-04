@@ -258,21 +258,39 @@ export class AssessmentService {
       }
 
     } catch (error: any) {
-      // Classify network / connectivity failures so the UI can show a human-friendly
-      // message instead of raw fetch/auth error strings.
+      // Classify failures into three buckets so callers can show actionable messages:
+      //
+      //   OFFLINE       — network connectivity issue (transient, retry when back online)
+      //   AUTH_EXPIRED  — session missing or JWT expired (user must sign in again)
+      //   <string>      — any other server-side or unexpected error
+      //
+      // Keeping these separate is critical: 'Not authenticated' must NOT be
+      // treated as OFFLINE. An inspector who has been offline long enough for
+      // their refresh token to expire will see "Still Offline" if we collapse
+      // them, and will have no idea they need to re-authenticate.
       const msg: string = error.message || ''
+      const lc = msg.toLowerCase()
+
       const isOffline =
+        lc.includes('network request failed') ||
+        lc.includes('fetch failed') ||
+        lc.includes('failed to fetch') ||
+        lc.includes('network error')
+
+      const isAuthExpired =
         msg === 'Not authenticated' ||
-        msg.toLowerCase().includes('network request failed') ||
-        msg.toLowerCase().includes('fetch failed') ||
-        msg.toLowerCase().includes('failed to fetch') ||
-        msg.toLowerCase().includes('network error')
+        lc.includes('jwt expired') ||
+        lc.includes('invalid jwt') ||
+        lc.includes('token is expired') ||
+        lc.includes('refresh_token_not_found')
 
       return {
         success: false,
         error: isOffline
           ? 'OFFLINE'
-          : msg || 'Failed to submit assessment',
+          : isAuthExpired
+            ? 'AUTH_EXPIRED'
+            : msg || 'Failed to submit assessment',
       }
     }
   }
@@ -286,10 +304,11 @@ export class AssessmentService {
     error?: string
   }> {
     try {
-      const { data: { user }, error: userError } = await supabase.auth.getUser()
-      if (userError || !user) {
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+      if (sessionError || !session?.user) {
         throw new Error('Not authenticated')
       }
+      const user = session.user
 
       const { data, error } = await supabase
         .from('assessments')
