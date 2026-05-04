@@ -21,6 +21,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
+import * as MediaLibrary from "expo-media-library"
 import { generateUUID } from "@/utils/generateUUID"
 import { Text } from "@/components/Text"
 import { Button } from "@/components/Button"
@@ -144,6 +145,16 @@ export const CameraScreen: FC = observer(() => {
         width: photo.width,
         height: photo.height,
       })
+
+      // Save to device camera roll — fire-and-forget, never blocks capture flow
+      try {
+        const { status } = await MediaLibrary.requestPermissionsAsync(false)
+        if (status === "granted") {
+          await MediaLibrary.saveToLibraryAsync(saveResult.localUri)
+        }
+      } catch (mediaError) {
+        if (__DEV__) console.warn("Camera roll save failed (non-fatal):", mediaError)
+      }
     } catch (error) {
       if (__DEV__) console.warn("Photo capture failed:", error)
     } finally {

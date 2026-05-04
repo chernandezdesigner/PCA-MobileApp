@@ -1,5 +1,5 @@
 import { FC, useEffect, useMemo, useRef, useState } from "react"
-import { View, ViewStyle, Platform, StyleSheet, ScrollView } from "react-native"
+import { View, ViewStyle, TextStyle, Platform, StyleSheet, ScrollView, Pressable } from "react-native"
 import { useForm, Controller } from "react-hook-form"
 import { observer } from "mobx-react-lite"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
@@ -274,22 +274,26 @@ export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = obs
                 onFocus={() => setShowDatePicker(true)}
               />
               {showDatePicker && (
-                <DateTimePicker
-                  value={value}
-                  mode="date"
-                  display={Platform.OS === "ios" ? "compact" : "default"}
-                  onChange={(event: DateTimePickerEvent, selectedDate?: Date) => {
-                    // compact mode on iOS fires once on confirm/dismiss (not on every scroll tick)
-                    if (Platform.OS === "android") setShowDatePicker(false)
-                    if (Platform.OS === "ios") setShowDatePicker(false)
-                    if (event.type === "dismissed") return
-                    if (selectedDate) {
-                      onChange(selectedDate)
-                      onBlur()
-                    }
-                  }}
-                  onTouchCancel={() => setShowDatePicker(false)}
-                />
+                <>
+                  {Platform.OS === "ios" && (
+                    <Pressable onPress={() => setShowDatePicker(false)} style={$pickerDoneRow}>
+                      <Text weight="semiBold" text="Done" style={themed($pickerDoneText)} />
+                    </Pressable>
+                  )}
+                  <DateTimePicker
+                    value={value}
+                    mode="date"
+                    display={Platform.OS === "ios" ? "spinner" : "default"}
+                    onChange={(event: DateTimePickerEvent, selectedDate?: Date) => {
+                      if (Platform.OS === "android") setShowDatePicker(false)
+                      if (event.type === "dismissed") { setShowDatePicker(false); return }
+                      if (selectedDate) {
+                        onChange(selectedDate)
+                        onBlur()
+                      }
+                    }}
+                  />
+                </>
               )}
             </>
           )}
@@ -311,22 +315,27 @@ export const ProjectSummaryStep1Screen: FC<ProjectSummaryStep1ScreenProps> = obs
                 onFocus={() => setShowTimePicker(true)}
               />
               {showTimePicker && (
-                <DateTimePicker
-                  value={value ? new Date(`1970-01-01T${value}:00`) : new Date()}
-                  mode="time"
-                  display={Platform.OS === "ios" ? "compact" : "default"}
-                  onChange={(event: DateTimePickerEvent, selectedDate?: Date) => {
-                    if (Platform.OS === "android") setShowTimePicker(false)
-                    if (Platform.OS === "ios") setShowTimePicker(false)
-                    if (event.type === "dismissed") return
-                    if (selectedDate) {
-                      const formatted = formatDateFns(selectedDate, "HH:mm")
-                      onChange(formatted)
-                      onBlur()
-                    }
-                  }}
-                  onTouchCancel={() => setShowTimePicker(false)}
-                />
+                <>
+                  {Platform.OS === "ios" && (
+                    <Pressable onPress={() => setShowTimePicker(false)} style={$pickerDoneRow}>
+                      <Text weight="semiBold" text="Done" style={themed($pickerDoneText)} />
+                    </Pressable>
+                  )}
+                  <DateTimePicker
+                    value={value ? new Date(`1970-01-01T${value}:00`) : new Date()}
+                    mode="time"
+                    display={Platform.OS === "ios" ? "spinner" : "default"}
+                    onChange={(event: DateTimePickerEvent, selectedDate?: Date) => {
+                      if (Platform.OS === "android") setShowTimePicker(false)
+                      if (event.type === "dismissed") { setShowTimePicker(false); return }
+                      if (selectedDate) {
+                        const formatted = formatDateFns(selectedDate, "HH:mm")
+                        onChange(formatted)
+                        onBlur()
+                      }
+                    }}
+                  />
+                </>
               )}
             </>
           )}
@@ -441,3 +450,15 @@ const $scrollArea: ViewStyle = { flex: 1 }
 const $progressHeaderText: ThemedStyle<any> = ({ colors }) => ({ color: colors.palette.primary2 as any })
 const $titleStyle: ThemedStyle<any> = ({ colors }) => ({ color: colors.palette.primary2 as any, fontSize: 24, fontFamily: undefined })
 const $introBlock: ViewStyle = { paddingTop: 16, paddingBottom: 32 }
+
+const $pickerDoneRow: ViewStyle = {
+  flexDirection: "row",
+  justifyContent: "flex-end",
+  paddingHorizontal: 16,
+  paddingTop: 8,
+}
+
+const $pickerDoneText: ThemedStyle<TextStyle> = ({ colors }) => ({
+  color: colors.tint,
+  fontSize: 17,
+})

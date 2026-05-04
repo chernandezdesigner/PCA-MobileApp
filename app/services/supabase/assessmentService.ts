@@ -89,6 +89,7 @@ export class AssessmentService {
             
             // Step 3 (as JSONB)
             documents: ps.documents || {},
+            other_documentation_specification: ps.otherDocumentationSpecification || "",
             personnel_interviewed: ps.personnelInterviewed || [],
             commercial_tenants: ps.commercialTenants || [],
             
@@ -230,6 +231,16 @@ export class AssessmentService {
               userId: user.id,
             })
             failedPhotoCount = photoResult.failed
+
+            // Write upload status back to MST so completed photos are skipped on re-submit
+            // and the "skip already uploaded" filter in uploadAllPhotos actually works
+            for (const r of photoResult.results) {
+              if (r.success) {
+                assessment.photoStore.updateUploadStatus(r.photoId, "completed", r.storagePath)
+              } else {
+                assessment.photoStore.updateUploadStatus(r.photoId, "failed")
+              }
+            }
           }
         } catch (_photoError) {
           // Non-blocking: photo upload errors do not fail the assessment submission

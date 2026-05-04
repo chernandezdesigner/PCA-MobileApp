@@ -7,7 +7,7 @@ import {
 } from "@react-navigation/native"
 import { NativeStackScreenProps } from "@react-navigation/native-stack"
 
-// Demo Tab Navigator types — kept for boilerplate screen compilation, not navigable in production
+// Demo Tab Navigator types — dead code, kept so Demo screens compile
 export type DemoTabParamList = {
   DemoCommunity: undefined
   DemoShowroom: { queryIndex?: string; itemIndex?: string }
@@ -20,9 +20,9 @@ export type AppStackParamList = {
   Home: undefined
   Login: undefined
   Assessment: undefined
-  // Boilerplate routes — not registered in AppNavigator, kept for type compatibility
-  Welcome: undefined
   Demo: NavigatorScreenParams<DemoTabParamList>
+  // Type-only entries below — not registered in AppNavigator, never navigable
+  Welcome: undefined
   // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
 

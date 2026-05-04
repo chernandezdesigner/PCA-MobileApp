@@ -8,7 +8,7 @@ import { TextField } from "@/components/TextField"
 import { Pill } from "@/components/Pill"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
-import { Icon } from "@/components/Icon"
+import { Ionicons } from "@expo/vector-icons"
 
 export type ChecklistItem = { id: string; label: string; checked: boolean; comments?: string }
 
@@ -26,7 +26,7 @@ type Props = {
 
 export const ChecklistCard: FC<Props> = (props) => {
   const { title, items, showComments = false, onToggle, onChangeComment, onSelectAll, onClearAll, onOpen, openButtonText = "Open Checklist" } = props
-  const { themed } = useAppTheme()
+  const { themed, theme } = useAppTheme()
   const [expanded, setExpanded] = useState<Record<string, boolean>>({})
 
   const selectedCount = items.reduce((acc, it) => acc + (it.checked ? 1 : 0), 0)
@@ -75,7 +75,12 @@ export const ChecklistCard: FC<Props> = (props) => {
                           onPress={() => toggleRow(item.id)}
                           style={themed($commentBtn(!!expanded[item.id]))}
                           LeftAccessory={({ style }) => (
-                            <Icon icon="more" size={20} containerStyle={style} />
+                            <Ionicons
+                              name="chatbubble-outline"
+                              size={18}
+                              color={expanded[item.id] ? theme.colors.tint : theme.colors.textDim}
+                              style={style}
+                            />
                           )}
                           accessibilityLabel="Toggle comment"
                         />

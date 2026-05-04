@@ -42,7 +42,8 @@
     "infoPlist": {
       "ITSAppUsesNonExemptEncryption": false,
       "NSCameraUsageDescription": "This app uses the camera to capture photos during property condition assessments.",
-      "NSLocationWhenInUseUsageDescription": "Location may be recorded with photos during property condition assessments."
+      "NSLocationWhenInUseUsageDescription": "Location may be recorded with photos during property condition assessments.",
+      "NSPhotoLibraryAddUsageDescription": "Property assessment photos are saved to your camera roll for your records."
     }
   },
   "web": {
@@ -75,6 +76,14 @@
       "react-native-vision-camera",
       {
         "cameraPermissionText": "This app uses the camera to capture photos during property condition assessments."
+      }
+    ],
+    [
+      "expo-media-library",
+      {
+        "photosPermission": "Allow PCA to save assessment photos to your camera roll.",
+        "savePhotosPermission": "Allow PCA to save assessment photos to your camera roll.",
+        "isAccessMediaLocationEnabled": false
       }
     ]
   ],

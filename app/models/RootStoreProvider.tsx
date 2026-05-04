@@ -1,4 +1,5 @@
 import { createContext, FC, PropsWithChildren, useContext, useEffect, useMemo, useRef, useState } from "react"
+import { AppState } from "react-native"
 import { onSnapshot } from "mobx-state-tree"
 import { RootStore, RootStoreInstance, RootStoreSnapshot } from "./RootStore"
 import * as storage from "@/utils/storage"
@@ -13,17 +14,33 @@ export const RootStoreProvider: FC<PropsWithChildren<{}>> = ({ children }) => {
   const [isHydrated, setIsHydrated] = useState(false)
 
   useEffect(() => {
-    const snapshot = storage.load<RootStoreSnapshot>(STORE_KEY)
-    const migrated = migrateSnapshot(snapshot)
-    storeRef.current = RootStore.create(migrated ?? {})
+    // Safely hydrate — a corrupt or schema-mismatched snapshot should never crash cold start
+    try {
+      const snapshot = storage.load<RootStoreSnapshot>(STORE_KEY)
+      const migrated = migrateSnapshot(snapshot)
+      storeRef.current = RootStore.create(migrated ?? {})
+    } catch (e) {
+      if (__DEV__) console.warn("RootStore hydration failed, starting fresh:", e)
+      storeRef.current = RootStore.create({})
+    }
 
     const saveThrottled = throttle((snap: RootStoreSnapshot) => storage.save(STORE_KEY, snap), 750, { leading: true, trailing: true })
     const disposer = onSnapshot(storeRef.current, (snap) => {
       saveThrottled(snap)
     })
 
+    // Flush any pending throttled write when iOS backgrounds or kills the app.
+    // Without this, the trailing write (up to 750ms of state) can be dropped silently.
+    const appStateSub = AppState.addEventListener("change", (nextState) => {
+      if (nextState === "background" || nextState === "inactive") {
+        saveThrottled.flush()
+      }
+    })
+
     setIsHydrated(true)
     return () => {
+      appStateSub.remove()
+      saveThrottled.flush() // flush any trailing write on unmount
       disposer()
     }
   }, [])

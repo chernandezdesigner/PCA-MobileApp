@@ -6,6 +6,10 @@ import type { PhotoModelSnapshot } from "@/models/PhotoStore"
 // Max concurrent uploads — enough to saturate LTE without hitting rate limits
 const CONCURRENT_UPLOADS = 4
 
+// Retry configuration for transient network failures
+const MAX_RETRIES = 2
+const RETRY_BASE_DELAY_MS = 1000
+
 /**
  * Service for managing photo storage locally and uploading to Supabase
  */
@@ -66,70 +70,90 @@ export class PhotoService {
   }): Promise<{ success: boolean; storagePath?: string; error?: string }> {
     const { photo, assessmentId, userId } = params
 
+    // Compress once — reused across retries to avoid re-processing
+    let compressed: Awaited<ReturnType<typeof ImageManipulator.manipulateAsync>> | null = null
     try {
-      // Compress the image before upload (max 1920px wide, 80% JPEG quality)
-      const compressed = await ImageManipulator.manipulateAsync(
+      compressed = await ImageManipulator.manipulateAsync(
         photo.localUri,
         [{ resize: { width: 1920 } }],
         { compress: 0.8, format: ImageManipulator.SaveFormat.JPEG },
       )
-
-      // Fetch the compressed file as a native Blob — the data stays in the native
-      // layer and is never copied into the JS heap as a string.
-      const response = await fetch(compressed.uri)
-      const blob = await response.blob()
-
-      // Build storage path
-      const storagePath = `${userId}/${assessmentId}/${photo.filename || photo.id + ".jpg"}`
-
-      // Upload to Supabase Storage
-      const { error: uploadError } = await supabase.storage
-        .from("assessment-photos")
-        .upload(storagePath, blob, {
-          contentType: "image/jpeg",
-          upsert: true,
-        })
-
-      if (uploadError) {
-        if (__DEV__) console.warn("Photo upload failed:", uploadError.message)
-        return { success: false, error: uploadError.message }
-      }
-
-      // Upsert metadata to photos table
-      const { error: dbError } = await supabase.from("photos").upsert(
-        {
-          id: photo.id,
-          assessment_id: assessmentId,
-          user_id: userId,
-          storage_path: storagePath,
-          filename: photo.filename || photo.id + ".jpg",
-          mime_type: "image/jpeg",
-          file_size: photo.fileSize || 0,
-          width: photo.width || 0,
-          height: photo.height || 0,
-          form_type: photo.formType || "",
-          form_step: photo.formStep || 0,
-          field_name: photo.fieldName || "",
-          notes: photo.notes || "",
-          captured_at: photo.capturedAt
-            ? new Date(photo.capturedAt).toISOString()
-            : new Date().toISOString(),
-          upload_status: "completed",
-          updated_at: new Date().toISOString(),
-        },
-        { onConflict: "id" },
-      )
-
-      if (dbError) {
-        if (__DEV__) console.warn("Photo metadata upsert failed:", dbError.message)
-        return { success: false, error: dbError.message }
-      }
-
-      return { success: true, storagePath }
     } catch (error: any) {
-      if (__DEV__) console.warn("Photo upload error:", error.message)
-      return { success: false, error: error.message }
+      return { success: false, error: `Compression failed: ${error.message}` }
     }
+
+    const storagePath = `${userId}/${assessmentId}/${photo.filename || photo.id + ".jpg"}`
+
+    for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+      try {
+        // Fetch the compressed file as a native Blob — data stays in native layer,
+        // never copied into the JS heap as a string (critical for 20-60 photo batches).
+        const response = await fetch(compressed.uri)
+        const blob = await response.blob()
+
+        const { error: uploadError } = await supabase.storage
+          .from("assessment-photos")
+          .upload(storagePath, blob, {
+            contentType: "image/jpeg",
+            upsert: true,
+          })
+
+        if (uploadError) {
+          if (attempt < MAX_RETRIES) {
+            await new Promise((r) => setTimeout(r, RETRY_BASE_DELAY_MS * (attempt + 1)))
+            continue
+          }
+          if (__DEV__) console.warn("Photo upload failed after retries:", uploadError.message)
+          return { success: false, error: uploadError.message }
+        }
+
+        // Upsert metadata to photos table
+        const { error: dbError } = await supabase.from("photos").upsert(
+          {
+            id: photo.id,
+            assessment_id: assessmentId,
+            user_id: userId,
+            storage_path: storagePath,
+            filename: photo.filename || photo.id + ".jpg",
+            mime_type: "image/jpeg",
+            file_size: photo.fileSize || 0,
+            width: photo.width || 0,
+            height: photo.height || 0,
+            form_type: photo.formType || "",
+            form_step: photo.formStep || 0,
+            field_name: photo.fieldName || "",
+            notes: photo.notes || "",
+            captured_at: photo.capturedAt
+              ? new Date(photo.capturedAt).toISOString()
+              : new Date().toISOString(),
+            upload_status: "completed",
+            updated_at: new Date().toISOString(),
+          },
+          { onConflict: "id" },
+        )
+
+        if (dbError) {
+          if (attempt < MAX_RETRIES) {
+            await new Promise((r) => setTimeout(r, RETRY_BASE_DELAY_MS * (attempt + 1)))
+            continue
+          }
+          if (__DEV__) console.warn("Photo metadata upsert failed after retries:", dbError.message)
+          return { success: false, error: dbError.message }
+        }
+
+        return { success: true, storagePath }
+      } catch (error: any) {
+        if (attempt < MAX_RETRIES) {
+          if (__DEV__) console.warn(`Photo upload attempt ${attempt + 1} failed, retrying:`, error.message)
+          await new Promise((r) => setTimeout(r, RETRY_BASE_DELAY_MS * (attempt + 1)))
+          continue
+        }
+        if (__DEV__) console.warn("Photo upload error after retries:", error.message)
+        return { success: false, error: error.message }
+      }
+    }
+
+    return { success: false, error: "Upload failed after maximum retries" }
   }
 
   /**
