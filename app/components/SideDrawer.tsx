@@ -325,7 +325,19 @@ export const SideDrawer = (props: SideDrawerProps) => {
                   )
                 } else {
                   assessment.markAsSubmitted()
-                  Alert.alert('Submitted', 'Assessment submitted successfully.')
+                  Alert.alert(
+                    'Submitted',
+                    'Assessment submitted successfully.',
+                    [{
+                      text: 'Go to Home',
+                      onPress: () => {
+                        onClose?.()
+                        setTimeout(() => {
+                          try { if (navigationRef.isReady()) resetRoot({ index: 0, routes: [{ name: "Home" }] }) } catch (_) {}
+                        }, 300)
+                      },
+                    }]
+                  )
                 }
               } else if (result.error === 'OFFLINE') {
                 // Queue for later and send user to home screen with clear context.

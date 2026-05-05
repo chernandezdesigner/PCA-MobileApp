@@ -1,5 +1,5 @@
 import { ReactNode, useEffect, useMemo, useRef, useState } from "react"
-import { findNodeHandle, ScrollView, StyleProp, View, ViewStyle } from "react-native"
+import { ScrollView, StyleProp, View, ViewStyle } from "react-native"
 import Animated, { useSharedValue, useAnimatedStyle, withTiming } from "react-native-reanimated"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle, ThemedStyleArray } from "@/theme/types"
@@ -95,10 +95,8 @@ export const SectionAccordion = (props: SectionAccordionProps) => {
 
     if (next && scrollViewRef?.current && viewRef.current) {
       setTimeout(() => {
-        const scrollNode = findNodeHandle(scrollViewRef.current)
-        if (!scrollNode) return
         viewRef.current?.measureLayout(
-          scrollNode,
+          scrollViewRef.current as any,
           (_x, y) => scrollViewRef.current?.scrollTo({ y, animated: true }),
           () => {}, // noop on error
         )

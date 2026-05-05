@@ -699,6 +699,7 @@ const $materialCard: ThemedStyle<ViewStyle> = ({ colors }) => ({
   borderRadius: 8,
   padding: 12,
   gap: 12,
+  backgroundColor: "#FFFFFF",
 })
 
 const $materialAssessment: ThemedStyle<ViewStyle> = ({ colors }) => ({

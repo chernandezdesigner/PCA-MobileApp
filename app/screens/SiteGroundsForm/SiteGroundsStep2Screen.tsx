@@ -52,6 +52,10 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
 
   // local accordion control: only one open at a time, default all closed
   const [openKey, setOpenKey] = useState<string | null>(null)
+  // Controlled state for nested railing accordions — lifted here so MobX re-renders
+  // don't re-mount the SectionAccordion and reset its internalExpanded state
+  const [retainingRailingOpen, setRetainingRailingOpen] = useState(true)
+  const [screenRailingOpen, setScreenRailingOpen] = useState(true)
 
   // react-hook-form setup
   type ConditionT = "good" | "fair" | "poor"
@@ -488,7 +492,10 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
             <View style={themed($toggleWrap)}>
               <Checkbox
                 value={store?.retainingWalls.railing === "yes"}
-                onValueChange={(checked) => store?.updateRetainingWalls({ railing: checked ? "yes" : "no" })}
+                onValueChange={(checked) => {
+                  store?.updateRetainingWalls({ railing: checked ? "yes" : "no" })
+                  setValue("retainingWalls.railing", checked ? "yes" : "no", { shouldDirty: true })
+                }}
               />
               <View style={$pill(store?.retainingWalls.railing === "yes")}> 
                 <Text text={store?.retainingWalls.railing === "yes" ? "Yes" : "No"} />
@@ -496,7 +503,7 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
             </View>
           </View>
           {store?.retainingWalls.railing === "yes" && (
-            <SectionAccordion title="Railing" defaultExpanded={true} scrollViewRef={scrollViewRef}>
+            <SectionAccordion title="Railing" expanded={retainingRailingOpen} onToggle={setRetainingRailingOpen} scrollViewRef={scrollViewRef}>
               <View style={themed($sectionBody)}>
                 <ChecklistField
                   label="Railing Materials"
@@ -613,7 +620,10 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
             <View style={themed($toggleWrap)}>
               <Checkbox
                 value={store?.screenWalls.railing === "yes"}
-                onValueChange={(checked) => store?.updateScreenWalls({ railing: checked ? "yes" : "no" })}
+                onValueChange={(checked) => {
+                  store?.updateScreenWalls({ railing: checked ? "yes" : "no" })
+                  setValue("screenWalls.railing", checked ? "yes" : "no", { shouldDirty: true })
+                }}
               />
               <View style={$pill(store?.screenWalls.railing === "yes")}> 
                 <Text text={store?.screenWalls.railing === "yes" ? "Yes" : "No"} />
@@ -621,7 +631,7 @@ export const SiteGroundsStep2Screen: FC<SiteGroundsStep2ScreenProps> = observer(
             </View>
           </View>
           {store?.screenWalls.railing === "yes" && (
-            <SectionAccordion title="Railing" defaultExpanded={true} scrollViewRef={scrollViewRef}>
+            <SectionAccordion title="Railing" expanded={screenRailingOpen} onToggle={setScreenRailingOpen} scrollViewRef={scrollViewRef}>
               <View style={themed($sectionBody)}>
                 <ChecklistField
                   label="Railing Materials"
