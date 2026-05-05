@@ -112,6 +112,7 @@ export class AssessmentService {
             
             current_step: ps.currentStep,
             last_modified: ps.lastModified ? new Date(ps.lastModified).toISOString() : new Date().toISOString(),
+            updated_at: new Date().toISOString(),
           }, {
             onConflict: 'assessment_id' // Upsert based on assessment_id (which is UNIQUE)
           })
@@ -134,6 +135,7 @@ export class AssessmentService {
             step4: sg.step4 || {},
             current_step: sg.currentStep,
             last_modified: sg.lastModified ? new Date(sg.lastModified).toISOString() : new Date().toISOString(),
+            updated_at: new Date().toISOString(),
           }, {
             onConflict: 'assessment_id'
           })
@@ -161,10 +163,11 @@ export class AssessmentService {
             step8: be.step8 || {},
             step9: be.step9 || {},
             step10: be.step10 || {},
-            current_step: typeof be.currentStep === 'string' 
-              ? parseInt(be.currentStep.replace('step', '')) || 1 
+            current_step: typeof be.currentStep === 'string'
+              ? parseInt(be.currentStep.replace('step', '')) || 1
               : be.currentStep,
             last_modified: be.lastModified ? new Date(be.lastModified).toISOString() : new Date().toISOString(),
+            updated_at: new Date().toISOString(),
           }, {
             onConflict: 'assessment_id'
           })
@@ -192,6 +195,7 @@ export class AssessmentService {
             step9: ms.step9 || {},
             current_step: ms.currentStep,
             last_modified: ms.lastModified ? new Date(ms.lastModified).toISOString() : new Date().toISOString(),
+            updated_at: new Date().toISOString(),
           }, {
             onConflict: 'assessment_id'
           })
@@ -214,6 +218,7 @@ export class AssessmentService {
             step4: ic.step4 || {},
             current_step: ic.currentStep,
             last_modified: ic.lastModified ? new Date(ic.lastModified).toISOString() : new Date().toISOString(),
+            updated_at: new Date().toISOString(),
           }, {
             onConflict: 'assessment_id'
           })

@@ -1,4 +1,4 @@
-import { FC, useRef, useState } from "react"
+import { FC, RefObject, useRef, useState } from "react"
 import { View, ViewStyle, ScrollView, TouchableOpacity, TextStyle } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
 import { Screen } from "@/components/Screen"
@@ -240,6 +240,7 @@ export const InteriorConditionsStep4Screen: FC = observer(() => {
               openKey={hotelOpenKey}
               setOpenKey={setHotelOpenKey}
               themed={themed}
+              scrollViewRef={scrollViewRef}
             />
           </View>
         )}
@@ -255,6 +256,7 @@ export const InteriorConditionsStep4Screen: FC = observer(() => {
               openKey={apartmentOpenKey}
               setOpenKey={setApartmentOpenKey}
               themed={themed}
+              scrollViewRef={scrollViewRef}
             />
           </View>
         )}
@@ -272,21 +274,21 @@ export const InteriorConditionsStep4Screen: FC = observer(() => {
         {store?.isMobileHomesSelected && (
           <View style={themed($propertyTypeSection)}>
             <Text preset="subheading" text="Mobile Homes" style={themed($propertySectionTitle)} />
-            <MobileHomesSection store={store} themed={themed} />
+            <MobileHomesSection store={store} themed={themed} scrollViewRef={scrollViewRef} />
           </View>
         )}
 
         {store?.isNursingHomesSelected && (
           <View style={themed($propertyTypeSection)}>
             <Text preset="subheading" text="Nursing Homes" style={themed($propertySectionTitle)} />
-            <NursingHomesSection store={store} themed={themed} />
+            <NursingHomesSection store={store} themed={themed} scrollViewRef={scrollViewRef} />
           </View>
         )}
 
         {store?.isMultiFamilySelected && (
           <View style={themed($propertyTypeSection)}>
             <Text preset="subheading" text="Multi-Family" style={themed($propertySectionTitle)} />
-            <MultiFamilySection store={store} themed={themed} />
+            <MultiFamilySection store={store} themed={themed} scrollViewRef={scrollViewRef} />
           </View>
         )}
 
@@ -329,7 +331,8 @@ const HotelAccordions: FC<{
   openKey: string | null
   setOpenKey: (key: string | null) => void
   themed: ThemedFn
-}> = observer(({ store, openKey, setOpenKey, themed }) => {
+  scrollViewRef: RefObject<ScrollView>
+}> = observer(({ store, openKey, setOpenKey, themed, scrollViewRef }) => {
   const { theme } = useAppTheme()
   const hotel = store?.hotel
 
@@ -570,6 +573,7 @@ const HotelAccordions: FC<{
         updateFn="updateHotelAdminOfficeFinishes"
         hasEffectiveAge
         themed={themed}
+        scrollViewRef={scrollViewRef}
       />
 
       {/* 4. Lounge Finishes */}
@@ -584,6 +588,7 @@ const HotelAccordions: FC<{
         updateFn="updateHotelLoungeFinishes"
         hasEffectiveAge
         themed={themed}
+        scrollViewRef={scrollViewRef}
       />
 
       {/* 5. Restrooms Finishes */}
@@ -598,6 +603,7 @@ const HotelAccordions: FC<{
         updateFn="updateHotelRestroomsFinishes"
         hasEffectiveAge
         themed={themed}
+        scrollViewRef={scrollViewRef}
       />
 
       {/* 6. Kitchen Finishes */}
@@ -612,6 +618,7 @@ const HotelAccordions: FC<{
         updateFn="updateHotelKitchenFinishes"
         hasEffectiveAge
         themed={themed}
+        scrollViewRef={scrollViewRef}
       />
 
       {/* 7. Guest Laundry */}
@@ -1270,7 +1277,8 @@ const ApartmentAccordions: FC<{
   openKey: string | null
   setOpenKey: (key: string | null) => void
   themed: ThemedFn
-}> = observer(({ store, openKey, setOpenKey, themed }) => {
+  scrollViewRef: RefObject<ScrollView>
+}> = observer(({ store, openKey, setOpenKey, themed, scrollViewRef }) => {
   const { theme } = useAppTheme()
   const apt = store?.apartment
 
@@ -1415,6 +1423,7 @@ const ApartmentAccordions: FC<{
         updateFn="updateApartmentUnitFinishes"
         hasEffectiveAge
         themed={themed}
+        scrollViewRef={scrollViewRef}
       />
 
       {/* 2. Restroom Finishes */}
@@ -1429,6 +1438,7 @@ const ApartmentAccordions: FC<{
         updateFn="updateApartmentRestroomFinishes"
         hasEffectiveAge
         themed={themed}
+        scrollViewRef={scrollViewRef}
       />
 
       {/* 3. Kitchen Finishes */}
@@ -1443,6 +1453,7 @@ const ApartmentAccordions: FC<{
         updateFn="updateApartmentKitchenFinishes"
         hasEffectiveAge
         themed={themed}
+        scrollViewRef={scrollViewRef}
       />
 
       {/* 4. Interior Doors */}
@@ -1529,6 +1540,7 @@ const ApartmentAccordions: FC<{
         updateFn="updateApartmentClubhouseLobbyFinishes"
         hasEffectiveAge
         themed={themed}
+        scrollViewRef={scrollViewRef}
       />
 
       {/* 6. Corridor Finishes */}
@@ -1543,6 +1555,7 @@ const ApartmentAccordions: FC<{
         updateFn="updateApartmentCorridorFinishes"
         hasEffectiveAge
         themed={themed}
+        scrollViewRef={scrollViewRef}
       />
 
       {/* 7. Common Restrooms Finishes */}
@@ -1615,6 +1628,7 @@ const ApartmentAccordions: FC<{
         updateFn="updateApartmentExerciseRoomFinishes"
         hasEffectiveAge={false}
         themed={themed}
+        scrollViewRef={scrollViewRef}
       />
 
       {/* 9. Common Kitchen Finishes */}
@@ -1731,6 +1745,7 @@ const ApartmentAccordions: FC<{
         updateFn="updateApartmentManagerUnitFinishes"
         hasEffectiveAge={false}
         themed={themed}
+        scrollViewRef={scrollViewRef}
       />
 
       {/* 12. Lobby FF&E */}
@@ -2148,7 +2163,8 @@ const StandardFinishesAccordion: FC<{
   updateFn: string
   hasEffectiveAge: boolean
   themed: ThemedFn
-}> = observer(({ title, accordionKey, openKey, setOpenKey, store, subStore, options, updateFn, hasEffectiveAge, themed }) => {
+  scrollViewRef: RefObject<ScrollView>
+}> = observer(({ title, accordionKey, openKey, setOpenKey, store, subStore, options, updateFn, hasEffectiveAge, themed, scrollViewRef }) => {
   const update = (data: any) => (store as any)?.[updateFn]?.(data)
   const storeItems = subStore?.items?.slice() ?? []
 
@@ -2265,7 +2281,7 @@ const StorageSection: FC<{ store: Step4Store | undefined; themed: ThemedFn }> = 
 // MOBILE HOMES SECTION
 // ============================================
 
-const MobileHomesSection: FC<{ store: Step4Store | undefined; themed: ThemedFn }> = observer(({ store, themed }) => {
+const MobileHomesSection: FC<{ store: Step4Store | undefined; themed: ThemedFn; scrollViewRef: RefObject<ScrollView> }> = observer(({ store, themed, scrollViewRef }) => {
   const [openKey, setOpenKey] = useState<string | null>(null)
   const mh = store?.mobileHomes
   return (
@@ -2364,7 +2380,7 @@ const MobileHomesSection: FC<{ store: Step4Store | undefined; themed: ThemedFn }
 // NURSING HOMES SECTION
 // ============================================
 
-const NursingHomesSection: FC<{ store: Step4Store | undefined; themed: ThemedFn }> = observer(({ store, themed }) => {
+const NursingHomesSection: FC<{ store: Step4Store | undefined; themed: ThemedFn; scrollViewRef: RefObject<ScrollView> }> = observer(({ store, themed, scrollViewRef }) => {
   const [openKey, setOpenKey] = useState<string | null>(null)
   const nh = store?.nursingHomes
   return (
@@ -2494,7 +2510,7 @@ const NursingHomesSection: FC<{ store: Step4Store | undefined; themed: ThemedFn 
 // MULTI-FAMILY SECTION
 // ============================================
 
-const MultiFamilySection: FC<{ store: Step4Store | undefined; themed: ThemedFn }> = observer(({ store, themed }) => {
+const MultiFamilySection: FC<{ store: Step4Store | undefined; themed: ThemedFn; scrollViewRef: RefObject<ScrollView> }> = observer(({ store, themed, scrollViewRef }) => {
   const [openKey, setOpenKey] = useState<string | null>(null)
   const mf = store?.multiFamily
   return (

@@ -158,6 +158,9 @@ export class PhotoService {
             captured_at: photo.capturedAt
               ? new Date(photo.capturedAt).toISOString()
               : new Date().toISOString(),
+            created_at: photo.capturedAt
+              ? new Date(photo.capturedAt).toISOString()
+              : new Date().toISOString(),
             upload_status: "completed",
             updated_at: new Date().toISOString(),
           },
