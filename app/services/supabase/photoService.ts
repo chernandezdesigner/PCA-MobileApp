@@ -2,6 +2,7 @@ import { supabase } from "@/services/supabase/client"
 import { FileSystem, Dirs } from "react-native-file-access"
 import * as ImageManipulator from "expo-image-manipulator"
 import type { PhotoModelSnapshot } from "@/models/PhotoStore"
+import Config from "@/config"
 
 // Max concurrent uploads — enough to saturate LTE without hitting rate limits
 const CONCURRENT_UPLOADS = 4
@@ -60,8 +61,9 @@ export class PhotoService {
 
   /**
    * Upload a single photo to Supabase Storage and upsert metadata to the photos table.
-   * Uses native Blob via fetch(file://) to avoid loading the full image as a base64
-   * string in the JS heap — critical for memory on 20-60 photo assessments.
+   * Uses React Native's native FormData file pattern ({ uri, name, type }) with a direct
+   * REST call to the Supabase Storage API, bypassing the JS storage client to avoid
+   * the RCTNetworking "Property 'blob' doesn't exist" crash on iOS.
    */
   static async uploadPhoto(params: {
     photo: PhotoModelSnapshot
@@ -94,48 +96,59 @@ export class PhotoService {
       error: "Upload failed after maximum retries",
     }
 
+    // Get session once before the retry loop. autoRefreshToken handles background
+    // renewal; for a 3-attempt window (~6 s total) the token won't expire mid-loop.
+    const {
+      data: { session },
+    } = await supabase.auth.getSession()
+    if (!session?.access_token) {
+      return { success: false, error: "Not authenticated" }
+    }
+
     for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
       try {
-        // Attempt 1: fetch(file://) → Blob.  This is memory-efficient because the data
-        // stays in the native layer.  However, on some device/OS combinations the native
-        // fetch handler returns a zero-byte Blob for file:// URIs without throwing, so
-        // we validate the size and fall back to a direct FileSystem read when needed.
-        let uploadData: Blob | Uint8Array
-        try {
-          const response = await fetch(compressed.uri)
-          const blob = await response.blob()
-          if (blob.size > 0) {
-            uploadData = blob
-          } else {
-            throw new Error("empty blob")
-          }
-        } catch (_fetchErr) {
-          // Fallback: read the file as base64 and decode into a Uint8Array.
-          // This is slightly more memory-intensive but works across all platforms.
-          const pathStr = compressed.uri.replace(/^file:\/\//, "")
-          const b64 = await FileSystem.readFile(pathStr, "base64")
-          const binaryStr = atob(b64)
-          const bytes = new Uint8Array(binaryStr.length)
-          for (let i = 0; i < binaryStr.length; i++) {
-            bytes[i] = binaryStr.charCodeAt(i)
-          }
-          uploadData = bytes
-        }
+        // Use React Native's native FormData file upload pattern: pass { uri, name, type }
+        // as a FormData part. iOS's RCTNetworking reads the file from disk natively and
+        // streams it as multipart binary — no Blob or Uint8Array ever enters the JS heap.
+        //
+        // The previous approach (fetch(file://) → response.blob() → Supabase storage
+        // client → new FormData → body.append('', blob)) crashed 100% of the time with
+        // "Property 'blob' doesn't exist". That error is thrown by RCTNetworking's native
+        // Objective-C layer, which expects a `blob` key in the FormData part dictionary.
+        // Spreading a React Native Blob class instance produces `_data`, not `blob`, so
+        // the native lookup always fails. Bypassing the Supabase JS storage client and
+        // using the REST endpoint directly avoids all of that internal wrapping.
+        const formData = new FormData()
+        formData.append("", {
+          uri: compressed.uri,
+          name: photo.filename || `${photo.id}.jpg`,
+          type: "image/jpeg",
+        } as any)
+        formData.append("cacheControl", "3600")
 
-        const { error: uploadError } = await supabase.storage
-          .from("assessment-photos")
-          .upload(storagePath, uploadData, {
-            contentType: "image/jpeg",
-            upsert: true,
-          })
+        const uploadUrl = `${Config.SUPABASE_URL}/storage/v1/object/assessment-photos/${storagePath}`
+        const uploadResponse = await fetch(uploadUrl, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+            apikey: Config.SUPABASE_ANON_KEY,
+            "x-upsert": "true",
+          },
+          body: formData,
+        })
 
-        if (uploadError) {
+        if (!uploadResponse.ok) {
+          const errData = await uploadResponse.json().catch(() => ({}))
+          const uploadError =
+            (errData as any).message ||
+            (errData as any).error ||
+            `Upload failed: ${uploadResponse.status}`
           if (attempt < MAX_RETRIES) {
             await new Promise((r) => setTimeout(r, RETRY_BASE_DELAY_MS * (attempt + 1)))
             continue
           }
-          if (__DEV__) console.warn("Photo upload failed after retries:", uploadError.message)
-          result = { success: false, error: uploadError.message }
+          if (__DEV__) console.warn("Photo upload failed after retries:", uploadError)
+          result = { success: false, error: uploadError }
           break
         }
 
