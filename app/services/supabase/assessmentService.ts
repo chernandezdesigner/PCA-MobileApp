@@ -218,7 +218,6 @@ export class AssessmentService {
             step4: ic.step4 || {},
             current_step: ic.currentStep,
             last_modified: ic.lastModified ? new Date(ic.lastModified).toISOString() : new Date().toISOString(),
-            updated_at: new Date().toISOString(),
           }, {
             onConflict: 'assessment_id'
           })
