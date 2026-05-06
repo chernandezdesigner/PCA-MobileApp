@@ -1,6 +1,7 @@
 import { ComponentType, forwardRef, Ref, useImperativeHandle, useRef } from "react"
 import {
   ImageStyle,
+  InputAccessoryView,
   StyleProp,
   // eslint-disable-next-line no-restricted-imports
   TextInput,
@@ -154,6 +155,18 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
 
   const disabled = TextInputProps.editable === false || status === "disabled"
 
+  // iOS: numeric keyboards and multiline inputs have no built-in dismiss mechanism.
+  // Use InputAccessoryView to show a "Done" toolbar above the keyboard.
+  const inputAccessoryViewID = useRef(
+    `tf-${Math.random().toString(36).slice(2)}`
+  ).current
+  const needsAccessoryView =
+    Platform.OS === "ios" &&
+    (TextInputProps.multiline === true ||
+      (["numeric", "number-pad", "decimal-pad", "phone-pad"] as Array<TextInputProps["keyboardType"]>).includes(
+        TextInputProps.keyboardType
+      ))
+
   const placeholderContent = placeholderTx
     ? translate(placeholderTx, placeholderTxOptions)
     : placeholder
@@ -281,6 +294,7 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
           placeholder={placeholderContent}
           placeholderTextColor={colors.palette.FormInputPlaceholderText}
           {...TextInputProps}
+          inputAccessoryViewID={needsAccessoryView ? inputAccessoryViewID : undefined}
           editable={!disabled}
           multiline={TextInputProps.multiline}
           onFocus={(e) => {
@@ -337,15 +351,31 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
   // On iOS/web, wrap in Pressable for enhanced touch target; on Android, use plain View to avoid touch conflicts
   if (Platform.OS !== "android") {
     return (
-      <Pressable
-        onPress={focusInput}
-        accessible={true}
-        accessibilityLabel={typeof label === "string" ? label : undefined}
-        accessibilityState={{ disabled }}
-        style={$containerStyles}
-      >
-        {renderContent()}
-      </Pressable>
+      <>
+        <Pressable
+          onPress={focusInput}
+          accessible={true}
+          accessibilityLabel={typeof label === "string" ? label : undefined}
+          accessibilityState={{ disabled }}
+          style={$containerStyles}
+        >
+          {renderContent()}
+        </Pressable>
+        {needsAccessoryView && (
+          <InputAccessoryView nativeID={inputAccessoryViewID}>
+            <View style={themed($accessoryBarStyle)}>
+              <TouchableOpacity
+                onPress={() => input.current?.blur()}
+                style={themed($accessoryDoneButtonStyle)}
+                accessibilityLabel="Done"
+                accessibilityRole="button"
+              >
+                <Text preset="formLabel" text="Done" style={themed($accessoryDoneTextStyle)} />
+              </TouchableOpacity>
+            </View>
+          </InputAccessoryView>
+        )}
+      </>
     )
   }
 
@@ -400,4 +430,24 @@ const $leftAccessoryStyle: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   height: 40,
   justifyContent: "center",
   alignItems: "center",
+})
+
+const $accessoryBarStyle: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+  flexDirection: "row",
+  justifyContent: "flex-end",
+  alignItems: "center",
+  paddingHorizontal: spacing.md,
+  paddingVertical: spacing.xs,
+  backgroundColor: colors.palette.neutral100,
+  borderTopWidth: 1,
+  borderTopColor: colors.palette.neutral300,
+})
+
+const $accessoryDoneButtonStyle: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  paddingHorizontal: spacing.sm,
+  paddingVertical: spacing.xxs,
+})
+
+const $accessoryDoneTextStyle: ThemedStyle<TextStyle> = ({ colors }) => ({
+  color: colors.tint,
 })
